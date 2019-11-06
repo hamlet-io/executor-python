@@ -1,0 +1,15 @@
+version: '3.5'
+
+networks:
+  internal:
+    name: gen3-cli-internal
+
+services:
+  gen3-cli:
+    image: gen3-cli
+    container_name: gen3-cli
+    build:
+      context: ./gen3-cli
+      dockerfile: ./Dockerfile
+    networks:
+      - internal
