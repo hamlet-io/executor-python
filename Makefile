@@ -18,7 +18,7 @@ run-fg:
 build:
 	@ docker-compose build --no-cache
 
-.PHONY: ssh-project
+.PHONY: ssh-gen3-cli
 .ONESHELL:
-ssh-project:
+ssh-gen3-cli:
 	@ docker-compose exec gen3-cli /bin/sh

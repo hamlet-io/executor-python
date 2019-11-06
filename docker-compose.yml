@@ -9,7 +9,10 @@ services:
     image: gen3-cli
     container_name: gen3-cli
     build:
+      target: dev
       context: ./gen3-cli
       dockerfile: ./Dockerfile
     networks:
       - internal
+    volumes:
+      - './gen3-cli:/gen3-cli'
