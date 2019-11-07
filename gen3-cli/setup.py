@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'cli=src:main'
+            'cli=src.cli:root'
         ]
     }
 )

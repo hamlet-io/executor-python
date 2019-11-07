@@ -21,4 +21,4 @@ build:
 .PHONY: ssh-gen3-cli
 .ONESHELL:
 ssh-gen3-cli:
-	@ docker-compose exec gen3-cli /bin/sh
+	@ docker-compose exec gen3-cli /bin/bash
