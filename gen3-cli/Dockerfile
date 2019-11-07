@@ -6,5 +6,6 @@ RUN apk update && apk upgrade && apk add make && apk add bash
 
 FROM base as dev
 
+ENV PYTHONDONTWRITEBYTECODE=1
 RUN pip install -r requirements/dev.txt -r requirements/prod.txt
 CMD tail -f -s 60 /dev/null

@@ -18,7 +18,7 @@ lint:
 .PHONY: install
 .ONESHELL:
 install:
-	pip uninstall cli -y
+	pip uninstall codeontap-cli -y
 	python setup.py bdist_wheel clean --all
-	rm -rf cli.egg-info
-	pip install --no-index --find-links=dist cli
+	rm -rf codeontap_cli.egg-info
+	pip install --no-index --find-links=dist codeontap-cli

@@ -1,19 +1,19 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
+packages = find_packages(exclude=["tests.*", "tests"])
+
+print(packages)
 
 setup(
-    name='cli',
+    name='codeontap-cli',
     version='0.1',
-    packages=['src'],
-    package_dir={
-        'src': 'src'
-    },
+    packages=packages,
     install_requires=[
         'Click',
     ],
     entry_points={
         'console_scripts': [
-            'cli=src.cli:root'
+            'cot=src:command.group'
         ]
     }
 )
