@@ -13,7 +13,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'cot=src:command.group'
+            'cot=cot:command.root'
         ]
     }
 )

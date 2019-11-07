@@ -1,5 +1,4 @@
 # triggering __init__ to add all commands to the command.group
-from __init__ import command
+from cot import command
 
-
-command.group()
+command.root()

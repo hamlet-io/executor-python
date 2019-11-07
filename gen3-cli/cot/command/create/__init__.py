@@ -1,4 +1,4 @@
-from src.command import group as cli
+from cot.command import root as cli
 from .template import template
 from .blueprint import blueprint
 
