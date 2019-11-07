@@ -23,6 +23,7 @@ Dev env container **Makefile** has next commands:
 1. ```make install``` - builds wheel package and installs it using pip.
 1. ```make coverage``` - creates tests coverage report.
 1. ```make tests``` - tests project without coverage report.
+1. ```make lint``` - lints projects python files.
 
 To live test project in dev env container as cli you need to:
 1. ```make install``` - build and install cli

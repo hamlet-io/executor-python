@@ -10,6 +10,10 @@ coverage:
 		coverage report -m
 		coverage html
 
+.PHONY: lint
+.ONESHELL:
+lint:
+	PYTHONDONTWRITEBYTECODE=1 flake8 src tests setup.py
 
 .PHONY: install
 .ONESHELL:
