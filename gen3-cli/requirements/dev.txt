@@ -1,0 +1,5 @@
+coverage
+pytest
+freezegun
+setuptools
+flake8

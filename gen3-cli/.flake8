@@ -1,0 +1,4 @@
+[flake8]
+max-line-length = 120
+exclude = .svn,CVS,.bzr,.hg,.git,__pycache__,.tox,.eggs,*.egg,var
+import-order-style = pep8
