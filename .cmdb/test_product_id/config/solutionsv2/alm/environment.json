@@ -1,0 +1,7 @@
+{
+  "Environment" : {
+    "Id" : "alm",
+    "Name" : "alm",
+    "MultiAZ" : False
+  }
+}

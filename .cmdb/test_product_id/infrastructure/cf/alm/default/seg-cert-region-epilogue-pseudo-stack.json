@@ -1,0 +1,17 @@
+{
+    "Stacks": [
+        {
+            "Comment": "Certificate",
+            "Outputs": [
+                {
+                    "OutputKey": "certificateXtest_certificate_cnXcom",
+                    "OutputValue": "arn:partition:service:region:account-id:resource-id"
+                },
+                {
+                    "OutputKey": "certificateXtest_certificate_cnXcomXarn",
+                    "OutputValue": "arn:partition:service:region:account-id:resource-id"
+                }
+            ]
+        }
+    ]
+}
