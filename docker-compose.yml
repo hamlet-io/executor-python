@@ -16,3 +16,5 @@ services:
       - internal
     volumes:
       - './gen3-cli:/gen3-cli'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './.cmdb:/var/opt/codeontap'

@@ -1,0 +1,9 @@
+{
+    "AWS" : {
+        "Automation" : {
+            "Policies" : ""
+        }
+    },
+    "ENABLE_DOCKER" : true,
+    "DOCKER_STAGE_DIR"  : "/temp"
+}

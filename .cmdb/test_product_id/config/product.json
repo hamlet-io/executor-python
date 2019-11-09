@@ -1,0 +1,7 @@
+{
+    "Product" : {
+        "Id" : "test_product_id",
+        "Name" : "test_product_id",
+        "Domain" : "test_domain_id"
+    }
+}

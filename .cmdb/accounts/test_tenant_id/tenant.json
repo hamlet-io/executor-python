@@ -1,0 +1,20 @@
+{
+    "Tenant" : {
+        "Id" : "test_tenant_id",
+        "Name" : "test_tenant_id",
+        "CertificateBehaviours" : {
+            "External" : true
+        }
+    },
+    "Account" : {
+        "Region" : "ap-southeast-2",
+        "Domain" : "test_tenant_id",
+        "Audit" : {
+            "Offline" :  90,
+            "Expiration" :  2555
+        }
+    },
+    "Product" : {
+        "Region" : "ap-southeast-2"
+    }
+}

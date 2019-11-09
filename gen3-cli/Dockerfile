@@ -1,9 +1,8 @@
 # BASE IMAGE
-FROM python:3.7-alpine AS base
+FROM codeontap/gen3 AS base
 
 COPY . /gen3-cli
 WORKDIR /gen3-cli
-RUN apk update && apk upgrade && apk add make && apk add bash
 
 # DEV ENV IMAGE
 FROM base as dev
