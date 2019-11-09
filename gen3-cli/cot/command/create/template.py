@@ -4,12 +4,12 @@ import click
 from cot import env
 
 
-@click.command()
+@click.command(context_settings=dict(max_content_width=240))
 @click.option(
     '-c',
     '--config-ref',
     help='identifier of the configuration used to generate this template',
-    default=env.CONFIGURATION_REFERENCE_DEFAULT,
+    default='unassigned',
     show_default=True
 )
 @click.option(
@@ -36,7 +36,7 @@ from cot import env
     '-q',
     '--request-ref',
     help='opaque value to link this template to a triggering request management system',
-    default=env.REQUEST_REFERENCE_DEFAULT,
+    default='unassigned',
     show_default=True
 )
 @click.option(
@@ -57,21 +57,21 @@ from cot import env
     '-d',
     '--deployment-mode',
     help='deployment mode the template will be generated for',
-    default=env.DEPLOYMENT_MODE_DEFAULT,
+    default='update',
     show_default=True
 )
 @click.option(
     '-p',
     '--generation-provider',
     help='provider to for template generation',
-    default=env.GENERATION_PROVIDER_DEFAULT,
+    default='aws',
     show_default=True
 )
 @click.option(
     '-f',
     '--generation-framework',
     help='output framework to use for template generation',
-    default=env.GENERATION_FRAMEWORK_DEFAULT,
+    default='cf',
     show_default=True
 )
 @click.option(
