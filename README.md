@@ -27,4 +27,4 @@ Dev env container **Makefile** has next commands:
 
 To live test project in dev env container as cli you need to:
 1. ```make install``` - build and install cli
-2. ```cli --help``` - get available commands list
+2. ```cot --help``` - get available commands list
