@@ -11,7 +11,8 @@ from cot import utils
         [
             'delete',
             'update'
-        ]
+        ],
+        case_sensitive=False
     )
 )
 @click.option(
