@@ -2,6 +2,7 @@ import os
 import subprocess
 import click
 from cot import env
+from cot import utils
 
 
 @click.command(context_settings=dict(max_content_width=240))
@@ -124,13 +125,13 @@ def template(
         '-t': generation_testcase,
         '-s': generation_scenarios
     }
-    args = []
-    for key, value in options.items():
-        if value:
-            args.append(key)
-            args.append(value)
-    script_path = os.path.join(env.GENERATION_DIR, 'createTemplate.sh')
+    script_call_line = utils.cli_params_to_script_call(
+        env.GENERATION_DIR,
+        'createTemplate.sh',
+        args=[],
+        options=options
+    )
     subprocess.run(
-        ' '.join([script_path] + args),
+        script_call_line,
         shell=True
     )
