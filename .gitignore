@@ -1,5 +1,0 @@
-
-# CodeOnTap CMDB templates and cache should be generated on demand
-.cmdb/cache
-.cmdb/**/infrastructure/**
-!.cmdb/**/infrastructure/**/seg-cert*
