@@ -35,7 +35,13 @@ from cot import env
 @click.option(
     '-f',
     '--crypto-file',
-    help='file which contains the plaintext or ciphertext to be processed'
+    help='file which contains the plaintext or ciphertext to be processed',
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True
+    )
 )
 @click.option(
     '-k',
