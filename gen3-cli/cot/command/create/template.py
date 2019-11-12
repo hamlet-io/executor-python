@@ -1,4 +1,3 @@
-import os
 import subprocess
 import click
 from cot import env
@@ -108,7 +107,8 @@ def template(
     3. DEPLOYMENT_UNIT must be one of "s3", "cert", "roles", "apigateway" or "waf" for the "account" level
     4. DEPLOYMENT_UNIT must be one of "cmk", "cert", "sns" or "shared" for the "product" level
     5. For the "segment" level the "baseline" unit must be deployed before any other unit
-    6. When deploying network level components in the "segment" level you must deploy vpc before igw, nat, or vpcendpoint
+    6. When deploying network level components in the "segment" level you must deploy vpc before
+    igw, nat, or vpcendpoint
 
     """
     options = {
