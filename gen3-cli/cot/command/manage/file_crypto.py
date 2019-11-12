@@ -25,7 +25,13 @@ from cot import env
 @click.option(
     '-f',
     '--crypto-file',
-    help='path to the file managed'
+    help='path to the file managed',
+    type=click.Path(
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True
+    )
 )
 @click.option(
     '-u',
