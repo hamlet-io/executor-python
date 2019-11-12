@@ -12,4 +12,5 @@ from .template import template
 def blueprint(ctx, **kwargs):
     ctx.forward(template, level='blueprint')
 
-blueprint.params = list(filter(lambda p: p.name!='level', template.params))
+
+blueprint.params = list(filter(lambda p: p.name != 'level', template.params))

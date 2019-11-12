@@ -9,5 +9,6 @@ def group():
     Manages stuff
     """
 
+
 group.add_command(deployment)
 group.add_command(stack)
