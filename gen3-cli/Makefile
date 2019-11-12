@@ -1,6 +1,6 @@
 .PHONY: test
 .ONESHELL:
-test:
+tests:
 	@ pytest tests -vv -x
 
 .PHONY: coverage
@@ -13,7 +13,7 @@ coverage:
 .PHONY: lint
 .ONESHELL:
 lint:
-	@ PYTHONDONTWRITEBYTECODE=1 flake8 --exit-zero --config=.flake8 cot tests setup.py 
+	@ PYTHONDONTWRITEBYTECODE=1 flake8 --exit-zero --config=.flake8 cot tests setup.py
 
 .PHONY: install
 .ONESHELL:

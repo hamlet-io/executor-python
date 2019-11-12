@@ -5,15 +5,11 @@ from cot import utils
 
 
 @click.command(context_settings=dict(max_content_width=240))
-@click.argument(
-    'operation',
-    type=click.Choice(
-        [
-            'update',
-            'delete'
-        ],
-        case_sensitive=False
-    )
+@click.option(
+    '-d',
+    '--delete',
+    help='delete the deployment',
+    is_flag=True
 )
 @click.option(
     '-i',
@@ -88,7 +84,7 @@ from cot import utils
     help='subset of the deployment unit required'
 )
 def deployment(
-    operation,
+    delete,
     deployment_initiate,
     level,
     deployment_monitor,
@@ -106,7 +102,7 @@ def deployment(
         env.GENERATION_DIR,
         'manageDeployment.sh',
         options={
-            '-d': operation == 'delete',
+            '-d': delete,
             '-i': deployment_initiate,
             '-m': deployment_monitor,
             '-l': level,

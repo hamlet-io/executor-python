@@ -30,7 +30,8 @@ from cot import utils
             "application"
         ],
         case_sensitive=False
-    )
+    ),
+    required=True
 )
 @click.option(
     '-q',
@@ -46,7 +47,8 @@ from cot import utils
 @click.option(
     '-u',
     '--deployment-unit',
-    help='deployment unit to be included in the template'
+    help='deployment unit to be included in the template',
+    required=True
 )
 @click.option(
     '-z',

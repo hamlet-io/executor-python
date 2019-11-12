@@ -5,15 +5,11 @@ from cot import utils
 
 
 @click.command(context_settings=dict(max_content_width=240))
-@click.argument(
-    'operation',
-    type=click.Choice(
-        [
-            'delete',
-            'update'
-        ],
-        case_sensitive=False
-    )
+@click.option(
+    '-d',
+    '--delete',
+    help='delete the stack',
+    is_flag=True
 )
 @click.option(
     '-i',
@@ -81,7 +77,7 @@ from cot import utils
     help='show what will happen without actually updating the stack'
 )
 def stack(
-    operation,
+    delete,
     stack_initiate,
     stack_monitor,
     stack_wait,
@@ -110,7 +106,7 @@ def stack(
         env.GENERATION_DIR,
         'manageStack.sh',
         options={
-            '-d': operation == 'delete',
+            '-d': delete,
             '-i': stack_initiate,
             '-m': stack_monitor,
             '-w': stack_wait,
