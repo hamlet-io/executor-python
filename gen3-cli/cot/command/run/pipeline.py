@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'pipeline',
+    short_help='Run an AWS Data pipeline',
     context_settings=dict(
         max_content_width=240
     )

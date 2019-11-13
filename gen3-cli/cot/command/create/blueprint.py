@@ -3,6 +3,8 @@ from .template import template
 
 
 @click.command(
+    'blueprint',
+    short_help='Create a blueprint output of the segment',
     context_settings=dict(
         allow_extra_args=True,
         ignore_unknown_options=True,

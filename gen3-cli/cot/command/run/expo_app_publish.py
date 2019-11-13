@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'expo-app-publish',
+    short_help='Run a task based build of an Expo app binary',
     context_settings=dict(
         max_content_width=240
     )

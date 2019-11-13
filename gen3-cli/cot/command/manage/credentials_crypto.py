@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'credential-crypto',
+    short_help='Manage crypto for credential storage',
     context_settings=dict(
         max_content_width=240
     )
