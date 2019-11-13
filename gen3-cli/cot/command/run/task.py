@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'task',
+    short_help='Run an ECS task',
     context_settings=dict(
         max_content_width=240
     )

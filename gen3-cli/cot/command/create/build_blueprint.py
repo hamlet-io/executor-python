@@ -4,6 +4,7 @@ from .template import template
 
 @click.command(
     'build-blueprint',
+    short_help='Create a blueprint output for the provided deployment unit',
     context_settings=dict(
         allow_extra_args=True,
         ignore_unknown_options=True,

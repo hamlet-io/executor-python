@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'sentry-release',
+    short_help='Upload sourcemap files to sentry for a specific release',
     context_settings=dict(
         max_content_width=240
     )

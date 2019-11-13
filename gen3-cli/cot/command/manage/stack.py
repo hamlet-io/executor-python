@@ -4,7 +4,13 @@ from cot import env
 from cot import utils
 
 
-@click.command(context_settings=dict(max_content_width=240))
+@click.command(
+    'stack',
+    short_help='Manage a CloudFormation stack',
+    context_settings=dict(
+        max_content_width=240
+    )
+)
 @click.option(
     '-d',
     '--delete',

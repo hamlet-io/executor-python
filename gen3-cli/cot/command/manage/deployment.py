@@ -4,7 +4,13 @@ from cot import env
 from cot import utils
 
 
-@click.command(context_settings=dict(max_content_width=240))
+@click.command(
+    'deployment',
+    short_help='Manage an Azure Resource Manager (ARM) deployment',
+    context_settings=dict(
+        max_content_width=240
+    )
+)
 @click.option(
     '-d',
     '--delete',

@@ -5,6 +5,8 @@ from cot import env
 
 
 @click.command(
+    'reference',
+    short_help='Create a Codeontap Component Reference',
     context_settings=dict(
         max_content_width=240
     )

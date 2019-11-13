@@ -4,7 +4,13 @@ from cot import env
 from cot import utils
 
 
-@click.command(context_settings=dict(max_content_width=240))
+@click.command(
+    'template',
+    short_help='Create a CloudFormation (CF) template',
+    context_settings=dict(
+        max_content_width=240
+    )
+)
 @click.option(
     '-c',
     '--config-ref',

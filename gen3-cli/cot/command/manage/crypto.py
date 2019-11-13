@@ -5,6 +5,8 @@ from cot import env
 
 
 @click.command(
+    'crypto',
+    short_help='Manage cryptographic operations using KMS',
     context_settings=dict(
         max_content_width=240
     )

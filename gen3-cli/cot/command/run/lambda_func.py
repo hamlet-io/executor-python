@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'lambda',
+    short_help='Run an AWS Lambda Function',
     context_settings=dict(
         max_content_width=240
     )

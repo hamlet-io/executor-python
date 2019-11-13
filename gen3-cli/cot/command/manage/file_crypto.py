@@ -6,6 +6,7 @@ from cot import env
 
 @click.command(
     'file-crypto',
+    short_help='Manage crypto for files',
     context_settings=dict(
         max_content_width=240
     )
