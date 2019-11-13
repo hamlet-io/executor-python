@@ -93,7 +93,8 @@ def credentials_crypto(
             '-i': credential_id,
             '-n': credential_path,
             '-v': visible,
-            '-y': credential_type
+            '-y': credential_type,
+            '-s': credential_secret
         }
     )
     subprocess.run(
