@@ -75,6 +75,7 @@ def expo_app_publish(
     """
     Run a task based build of an Expo app binary
 
+    \b
     NOTES:
     RELEASE_CHANNEL default is environment
     """
