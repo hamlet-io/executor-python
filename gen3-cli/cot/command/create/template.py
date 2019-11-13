@@ -86,6 +86,11 @@ from cot import utils
     '--generation-scenarios',
     help='comma seperated list of framework scenarios to load'
 )
+@click.option(
+    '-i',
+    '--generation-input-source',
+    help='source of input data to use when generating the template'
+)
 def template(
     config_ref,
     resource_group,
@@ -98,7 +103,8 @@ def template(
     generation_provider,
     generation_framework,
     generation_testcase,
-    generation_scenarios
+    generation_scenarios,
+    generation_input_source,
 ):
     """
     Create a CloudFormation (CF) template
@@ -125,7 +131,8 @@ def template(
         '-p': generation_provider,
         '-f': generation_framework,
         '-t': generation_testcase,
-        '-s': generation_scenarios
+        '-s': generation_scenarios,
+        '-i': generation_input_source
     }
     script_call_line = utils.cli_params_to_script_call(
         env.GENERATION_DIR,
