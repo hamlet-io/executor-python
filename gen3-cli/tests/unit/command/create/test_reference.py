@@ -7,7 +7,7 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-t,--reference-type'] = 'type'
+ALL_VALID_OPTIONS['!-t,--reference-type'] = 'type'
 ALL_VALID_OPTIONS['-o,--reference-output-dir'] = 'output_dir'
 
 

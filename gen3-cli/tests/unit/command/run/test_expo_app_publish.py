@@ -6,7 +6,7 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'unit'
+ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'unit'
 ALL_VALID_OPTIONS['-s,--run-setup'] = [True, False]
 ALL_VALID_OPTIONS['-t,--binary-expiration'] = 1000
 ALL_VALID_OPTIONS['-f,--force-binary-build'] = [True, False]

@@ -6,9 +6,9 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-m,--sentry-source-map-s3-url'] = 'url'
+ALL_VALID_OPTIONS['!-m,--sentry-source-map-s3-url'] = 'url'
+ALL_VALID_OPTIONS['!-r,--sentry-release-name'] = 'release_name'
 ALL_VALID_OPTIONS['-p,--sentry-url-prefix'] = 'url_prefix'
-ALL_VALID_OPTIONS['-r,--sentry-release-name'] = 'release_name'
 ALL_VALID_OPTIONS['-s,--run-setup'] = [True, False]
 
 

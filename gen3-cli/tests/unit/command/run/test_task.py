@@ -6,15 +6,15 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
+ALL_VALID_OPTIONS['!-i,--component'] = 'container_name'
+ALL_VALID_OPTIONS['!-w,--task'] = 'task_name'
+ALL_VALID_OPTIONS['!-t,--tier'] = 'tier'
 ALL_VALID_OPTIONS['-c,--container-id'] = 'container_id'
 ALL_VALID_OPTIONS['-d,--delay'] = 100
 ALL_VALID_OPTIONS['-e,--env'] = 'somevar'
-ALL_VALID_OPTIONS['-i,--component'] = 'container_name'
 ALL_VALID_OPTIONS['-j,--component-instance'] = 'component_instance'
 ALL_VALID_OPTIONS['-k,--component-version'] = 'component_version'
-ALL_VALID_OPTIONS['-t,--tier'] = 'tier'
 ALL_VALID_OPTIONS['-v,--value'] = 'value'
-ALL_VALID_OPTIONS['-w,--task'] = 'task_name'
 ALL_VALID_OPTIONS['-x,--instance'] = 'task_instance'
 ALL_VALID_OPTIONS['-y,--version'] = 'task_version'
 

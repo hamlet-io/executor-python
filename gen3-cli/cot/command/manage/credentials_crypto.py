@@ -61,9 +61,7 @@ from cot import env
             'env'
         ],
         case_sensitive=False
-    ),
-    default='login',
-    show_default=True
+    )
 )
 def credentials_crypto(
     credential_email,

@@ -6,8 +6,8 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-i,--component'] = 'component'
-ALL_VALID_OPTIONS['-t,--tier'] = 'tier'
+ALL_VALID_OPTIONS['!-i,--component'] = 'component'
+ALL_VALID_OPTIONS['!-t,--tier'] = 'tier'
 ALL_VALID_OPTIONS['-x,--instance'] = 'instance'
 ALL_VALID_OPTIONS['-y,--version'] = 'version'
 ALL_VALID_OPTIONS['-s,--pipeline-status-only'] = [True, False]

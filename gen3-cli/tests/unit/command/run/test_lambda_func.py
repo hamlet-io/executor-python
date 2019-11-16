@@ -6,8 +6,8 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'unit'
-ALL_VALID_OPTIONS['-f,--function-id'] = 'function_id'
+ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'unit'
+ALL_VALID_OPTIONS['!-f,--function-id'] = 'function_id'
 ALL_VALID_OPTIONS['-i,--input-payload'] = 'payload'
 ALL_VALID_OPTIONS['-l,--include-log-tail'] = [True, False]
 

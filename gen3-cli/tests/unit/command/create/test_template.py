@@ -7,18 +7,18 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 
-ALL_VALID_OPTIONS['-c,--config-ref'] = 'config_ref'
-ALL_VALID_OPTIONS['-g,--resource-group'] = 'resource_group'
-ALL_VALID_OPTIONS['-l,--level'] = [
+ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'deployment_unit'
+ALL_VALID_OPTIONS['!-l,--level'] = [
     "blueprint",
     "account",
     "segment",
     "solution",
     "application"
 ]
+ALL_VALID_OPTIONS['-c,--config-ref'] = 'config_ref'
+ALL_VALID_OPTIONS['-g,--resource-group'] = 'resource_group'
 ALL_VALID_OPTIONS['-q,--request-ref'] = 'request_ref'
 ALL_VALID_OPTIONS['-r,--region'] = 'region'
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'deployment_unit'
 ALL_VALID_OPTIONS['-z,--deployment-unit-subset'] = 'deployment_unit_subset'
 ALL_VALID_OPTIONS['-d,--deployment-mode'] = 'deployment_mode'
 ALL_VALID_OPTIONS['-p,--generation-provider'] = 'generation_provider'
