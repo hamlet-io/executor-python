@@ -81,7 +81,8 @@ from cot import env
 @click.option(
     '-v',
     '--visible',
-    help='result is base64 decoded (visible)'
+    help='result is base64 decoded (visible)',
+    is_flag=True
 )
 def crypto(
     alias,

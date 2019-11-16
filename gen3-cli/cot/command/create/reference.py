@@ -20,7 +20,13 @@ from cot import env
 @click.option(
     '-o',
     '--reference-output-dir',
-    help='output directory'
+    help='output directory',
+    type=click.Path(
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+        writable=True
+    )
 )
 def reference(
     reference_type,

@@ -1,9 +1,9 @@
 from cot.command import root as cli
-from .expo_app_publish import expo_app_publish
-from .task import task
-from .lambda_func import lambda_func
-from .pipeline import pipeline
-from .sentry_release import sentry_release
+from .expo_app_publish import expo_app_publish as expo_app_publish_cmd
+from .task import task as task_cmd
+from .lambda_func import lambda_func as lambda_func_cmd
+from .pipeline import pipeline as pipeline_cmd
+from .sentry_release import sentry_release as sentry_release_cmd
 
 
 @cli.group('run')
@@ -13,8 +13,8 @@ def group():
     """
 
 
-group.add_command(expo_app_publish)
-group.add_command(task)
-group.add_command(lambda_func)
-group.add_command(pipeline)
-group.add_command(sentry_release)
+group.add_command(expo_app_publish_cmd)
+group.add_command(task_cmd)
+group.add_command(lambda_func_cmd)
+group.add_command(pipeline_cmd)
+group.add_command(sentry_release_cmd)

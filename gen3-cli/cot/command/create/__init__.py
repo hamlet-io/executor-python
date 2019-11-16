@@ -1,8 +1,9 @@
 from cot.command import root as cli
-from .template import template
-from .blueprint import blueprint
-from .build_blueprint import build_blueprint
-from .reference import reference
+#  to avoid mock.patch path interpretation issuses
+from .template import template as template_cmd
+from .blueprint import blueprint as blueprint_cmd
+from .build_blueprint import build_blueprint as build_blueprint_cmd
+from .reference import reference as reference_cmd
 
 
 @cli.group('create')
@@ -12,7 +13,7 @@ def group():
     """
 
 
-group.add_command(template)
-group.add_command(blueprint)
-group.add_command(build_blueprint)
-group.add_command(reference)
+group.add_command(template_cmd)
+group.add_command(blueprint_cmd)
+group.add_command(build_blueprint_cmd)
+group.add_command(reference_cmd)
