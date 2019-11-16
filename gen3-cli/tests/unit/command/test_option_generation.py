@@ -1,3 +1,4 @@
+import copy
 import collections
 import pytest
 from cot.loggers import logging
@@ -178,6 +179,64 @@ def generate_test_options_collection(all_options):
         optional_keys_collection_values
     ):
         yield args
+
+
+def options_dict_to_list(options):
+    args = []
+    for key, value in options.items():
+        args.append(key)
+        args.append(value)
+    return args
+
+
+def run_single_validatable_option_test(
+    runner,
+    cmd,
+    subprocess_mock,
+    options,
+    key,
+    incorrect,
+    correct,
+):
+    logger.info('[validation test:%s]', key)
+    logger.info('invalid value:%s', incorrect)
+    options = copy.deepcopy(options)
+    options[key] = incorrect
+    result = runner.invoke(
+        cmd,
+        options_dict_to_list(options)
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+    logger.info('valid value:%s', correct)
+    options[key] = correct
+    result = runner.invoke(
+        cmd,
+        options_dict_to_list(options)
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0
+    logger.info('[success]')
+
+
+def run_validatable_option_test(
+    runner,
+    cmd,
+    subprocess_mock,
+    options,
+    tests
+):
+    for key, incorrect, correct in tests:
+        run_single_validatable_option_test(
+            runner,
+            cmd,
+            subprocess_mock,
+            options,
+            key,
+            incorrect,
+            correct
+        )
 
 
 def run_options_test(runner, cmd, options, subprocess_mock):
