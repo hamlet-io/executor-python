@@ -2,10 +2,7 @@ import collections
 from unittest import mock
 from click.testing import CliRunner
 from cot.command.create.blueprint import blueprint as create_blueprint
-from tests.unit.command.test_option_generation import (
-    generate_test_options_collection,
-    generate_incremental_required_options_collection
-)
+from tests.unit.command.test_option_generation import run_options_test
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
@@ -20,21 +17,4 @@ ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarious'
 
 @mock.patch('cot.command.create.template.subprocess')
 def test_input_valid(subprocess_mock):
-    assert len(ALL_VALID_OPTIONS) == len(create_blueprint.params)
-    runner = CliRunner()
-
-    for args, error in generate_incremental_required_options_collection(ALL_VALID_OPTIONS):
-        result = runner.invoke(create_blueprint, args)
-        if error:
-            assert result.exit_code == 2, result.output
-            assert subprocess_mock.run.call_count == 0
-        else:
-            assert result.exit_code == 0, result.output
-            assert subprocess_mock.run.call_count == 1
-            subprocess_mock.run.call_count = 0
-
-    for args in generate_test_options_collection(ALL_VALID_OPTIONS):
-        result = runner.invoke(create_blueprint, args)
-        assert result.exit_code == 0, result.output
-        assert subprocess_mock.run.call_count == 1
-        subprocess_mock.run.call_count = 0
+    run_options_test(CliRunner(), create_blueprint, ALL_VALID_OPTIONS, subprocess_mock)
