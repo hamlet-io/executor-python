@@ -180,6 +180,26 @@ def generate_test_options_collection(all_options):
         yield args
 
 
+def run_options_test(runner, cmd, options, subprocess_mock):
+    assert len(options) == len(cmd.params)
+    # testing that's impossible to run without full set of required options
+    for args, error in generate_incremental_required_options_collection(options):
+        result = runner.invoke(cmd, args)
+        if error:
+            assert result.exit_code == 2, result.output
+            assert subprocess_mock.run.call_count == 0
+        else:
+            assert result.exit_code == 0, result.output
+            assert subprocess_mock.run.call_count == 1
+            subprocess_mock.run.call_count = 0
+
+    for args in generate_test_options_collection(options):
+        result = runner.invoke(cmd, args)
+        assert result.exit_code == 0, result.output
+        assert subprocess_mock.run.call_count == 1
+        subprocess_mock.run.call_count = 0
+
+
 def test_option_generation():
     options = collections.OrderedDict()
     options['!-a,--a'] = 'avalue'
