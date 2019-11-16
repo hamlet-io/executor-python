@@ -37,3 +37,75 @@ def test_input_valid(subprocess_mock):
         assert result.exit_code == 0, result.output
         assert subprocess_mock.run.call_count == 1
         subprocess_mock.run.call_count = 0
+
+
+@mock.patch('cot.command.manage.deployment.subprocess')
+def test_input_validation(subprocess_mock):
+    runner = CliRunner()
+    # test level option
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'badlevelvalue'
+        ],
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'segment'
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0
+    # test deployment scope option
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'segment',
+            '-s', 'sfafs'
+        ],
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'segment',
+            '-s', 'resourceGroup'
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0
+    # test deployment wait
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'segment',
+            '-w', 'not an int'
+        ],
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        manage_deployment,
+        [
+            '-u', 'unit',
+            '-l', 'segment',
+            '-w', '10'
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0

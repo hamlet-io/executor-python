@@ -25,3 +25,29 @@ def test_input_valid(subprocess_mock):
         assert result.exit_code == 0, result.output
         assert subprocess_mock.run.call_count == 1
         subprocess_mock.run.call_count = 0
+
+
+@mock.patch('cot.command.run.expo_app_publish.subprocess')
+def test_input_validation(subprocess_mock):
+    runner = CliRunner()
+    # testing delay option
+    result = runner.invoke(
+        run_expo_app_publish,
+        [
+            '-u', 'unit',
+            '-t', 'not an int'
+        ]
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        run_expo_app_publish,
+        [
+            '-u', 'unit',
+            '-t', '1000'
+        ]
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0

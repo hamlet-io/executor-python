@@ -37,3 +37,27 @@ def test_input_valid(subprocess_mock):
         assert result.exit_code == 0, result.output
         assert subprocess_mock.run.call_count == 1
         subprocess_mock.run.call_count = 0
+
+
+@mock.patch('cot.command.create.template.subprocess')
+def test_input_validation(subprocess_mock):
+    runner = CliRunner()
+    result = runner.invoke(
+        create_template,
+        [
+            '-u', 'unit',
+            '-l', 'badlevelvalue'
+        ],
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        create_template,
+        [
+            '-u', 'unit',
+            '-l', 'blueprint'
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
