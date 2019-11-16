@@ -1,7 +1,7 @@
-.PHONY: test
+.PHONY: tests
 .ONESHELL:
 tests:
-	@ pytest tests -vv -x
+	@ pytest tests -vv -x -c pytest.ini
 
 .PHONY: coverage
 .ONESHELL:

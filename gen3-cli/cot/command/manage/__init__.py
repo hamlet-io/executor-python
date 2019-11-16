@@ -1,9 +1,9 @@
 from cot.command import root as cli
-from .stack import stack
-from .deployment import deployment
-from .crypto import crypto
-from .file_crypto import file_crypto
-from .credentials_crypto import credentials_crypto
+from .stack import stack as stack_cmd
+from .deployment import deployment as deployment_cmd
+from .crypto import crypto as crypto_cmd
+from .file_crypto import file_crypto as file_crypto_cmd
+from .credentials_crypto import credentials_crypto as credentials_crypto_cmd
 
 
 @cli.group('manage')
@@ -13,8 +13,8 @@ def group():
     """
 
 
-group.add_command(deployment)
-group.add_command(stack)
-group.add_command(crypto)
-group.add_command(file_crypto)
-group.add_command(credentials_crypto)
+group.add_command(deployment_cmd)
+group.add_command(stack_cmd)
+group.add_command(crypto_cmd)
+group.add_command(file_crypto_cmd)
+group.add_command(credentials_crypto_cmd)
