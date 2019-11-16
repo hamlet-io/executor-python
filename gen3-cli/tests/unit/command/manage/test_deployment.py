@@ -2,7 +2,7 @@ import collections
 from unittest import mock
 from click.testing import CliRunner
 from cot.command.manage.deployment import deployment as manage_deployment
-from tests.unit.command.test_option_generation import run_options_test
+from tests.unit.command.test_option_generation import run_options_test, run_validatable_option_test
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'unit'
@@ -35,70 +35,17 @@ def test_input_valid(subprocess_mock):
 @mock.patch('cot.command.manage.deployment.subprocess')
 def test_input_validation(subprocess_mock):
     runner = CliRunner()
-    # test level option
-    result = runner.invoke(
+    run_validatable_option_test(
+        runner,
         manage_deployment,
+        subprocess_mock,
+        {
+            '-u': 'unit',
+            '-l': 'segment'
+        },
         [
-            '-u', 'unit',
-            '-l', 'badlevelvalue'
-        ],
+            ('-l', 'badlevelvalue', 'segment'),
+            ('-s', 'badscopevalue', 'resourceGroup'),
+            ('-w', 'not_an_int', 10)
+        ]
     )
-    assert result.exit_code == 2, result.output
-    assert subprocess_mock.run.call_count == 0
-
-    result = runner.invoke(
-        manage_deployment,
-        [
-            '-u', 'unit',
-            '-l', 'segment'
-        ],
-    )
-    assert result.exit_code == 0, result.output
-    assert subprocess_mock.run.call_count == 1
-    subprocess_mock.run.call_count = 0
-    # test deployment scope option
-    result = runner.invoke(
-        manage_deployment,
-        [
-            '-u', 'unit',
-            '-l', 'segment',
-            '-s', 'sfafs'
-        ],
-    )
-    assert result.exit_code == 2, result.output
-    assert subprocess_mock.run.call_count == 0
-
-    result = runner.invoke(
-        manage_deployment,
-        [
-            '-u', 'unit',
-            '-l', 'segment',
-            '-s', 'resourceGroup'
-        ],
-    )
-    assert result.exit_code == 0, result.output
-    assert subprocess_mock.run.call_count == 1
-    subprocess_mock.run.call_count = 0
-    # test deployment wait
-    result = runner.invoke(
-        manage_deployment,
-        [
-            '-u', 'unit',
-            '-l', 'segment',
-            '-w', 'not an int'
-        ],
-    )
-    assert result.exit_code == 2, result.output
-    assert subprocess_mock.run.call_count == 0
-
-    result = runner.invoke(
-        manage_deployment,
-        [
-            '-u', 'unit',
-            '-l', 'segment',
-            '-w', '10'
-        ],
-    )
-    assert result.exit_code == 0, result.output
-    assert subprocess_mock.run.call_count == 1
-    subprocess_mock.run.call_count = 0
