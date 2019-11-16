@@ -24,10 +24,15 @@ def test_input_valid(subprocess_mock):
     assert len(ALL_VALID_OPTIONS) == len(run_expo_app_publish.params)
     runner = CliRunner()
     # testing that's impossible to run without full set of required options
-    for args in generate_incremental_required_options_collection(ALL_VALID_OPTIONS):
+    for args, error in generate_incremental_required_options_collection(ALL_VALID_OPTIONS):
         result = runner.invoke(run_expo_app_publish, args)
-        assert result.exit_code == 2, result.output
-        assert subprocess_mock.run.call_count == 0
+        if error:
+            assert result.exit_code == 2, result.output
+            assert subprocess_mock.run.call_count == 0
+        else:
+            assert result.exit_code == 0, result.output
+            assert subprocess_mock.run.call_count == 1
+            subprocess_mock.run.call_count = 0
 
     for args in generate_test_options_collection(ALL_VALID_OPTIONS):
         result = runner.invoke(run_expo_app_publish, args)
