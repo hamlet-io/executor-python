@@ -6,9 +6,8 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-d,--delete'] = [True, False]
-ALL_VALID_OPTIONS['-i,--deployment-initiate'] = [True, False]
-ALL_VALID_OPTIONS['-l,--level'] = [
+ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'unit'
+ALL_VALID_OPTIONS['!-l,--level'] = [
     'account',
     'product',
     'segment',
@@ -16,6 +15,8 @@ ALL_VALID_OPTIONS['-l,--level'] = [
     'application',
     'multiple'
 ]
+ALL_VALID_OPTIONS['-d,--delete'] = [True, False]
+ALL_VALID_OPTIONS['-i,--deployment-initiate'] = [True, False]
 ALL_VALID_OPTIONS['-m,--deployment-monitor'] = [True, False]
 ALL_VALID_OPTIONS['-n,--deployment-name'] = 'name'
 ALL_VALID_OPTIONS['-r,--region'] = 'region'
@@ -23,7 +24,6 @@ ALL_VALID_OPTIONS['-s,--deployment-scope'] = [
     'subscription',
     'resourceGroup'
 ]
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'unit'
 ALL_VALID_OPTIONS['-w,--deployment-wait'] = 10
 ALL_VALID_OPTIONS['-z,--deployment-unit-subset'] = 'subset'
 

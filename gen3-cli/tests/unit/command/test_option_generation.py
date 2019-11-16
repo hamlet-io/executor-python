@@ -116,14 +116,19 @@ def generate_test_options_collection(all_options):
                             options
                         )
     # generating using only required options
-    if required_options and len(required_options) != len(all_options):
+    if len(required_options) != len(all_options):
         logger.info('[required]')
-        for args in generate_args_group(
-            required_keys_max_parts,
-            required_options,
-            required_keys_collection_values
-        ):
-            yield args
+        if required_options:
+            for args in generate_args_group(
+                required_keys_max_parts,
+                required_options,
+                required_keys_collection_values
+            ):
+                yield args
+        else:
+            # command should run without options
+            logger.info('None')
+            yield []
 
     # generating using all options
     logger.info('[all]')

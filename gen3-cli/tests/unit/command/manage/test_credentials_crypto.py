@@ -7,13 +7,13 @@ from tests.unit.command.test_option_generation import generate_test_options_coll
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
+ALL_VALID_OPTIONS['!-n,--credential-path'] = 'credential_path'
+ALL_VALID_OPTIONS['!-y,--credential-type'] = ['login', 'api', 'env']
 ALL_VALID_OPTIONS['-e,--credential-email'] = 'email@email.com'
 ALL_VALID_OPTIONS['-f,--crypto-file'] = 'crypto_file'
 ALL_VALID_OPTIONS['-i,--credential-id'] = 'credential_id'
-ALL_VALID_OPTIONS['-n,--credential-path'] = 'credential_path'
 ALL_VALID_OPTIONS['-s,--credential-secret'] = 'credential_secret'
 ALL_VALID_OPTIONS['-v,--visible'] = [True, False]
-ALL_VALID_OPTIONS['-y,--credential-type'] = ['login', 'api', 'env']
 
 
 @mock.patch('cot.command.manage.credentials_crypto.subprocess')
