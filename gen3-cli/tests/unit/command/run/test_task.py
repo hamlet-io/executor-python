@@ -28,3 +28,33 @@ def test_input_valid(subprocess_mock):
         assert result.exit_code == 0, result.output
         assert subprocess_mock.run.call_count == 1
         subprocess_mock.run.call_count = 0
+
+
+@mock.patch('cot.command.run.task.subprocess')
+def test_input_validation(subprocess_mock):
+    runner = CliRunner()
+    # testing delay option
+    result = runner.invoke(
+        run_task,
+        [
+            '-i', 'container_name',
+            '-w', 'task_name',
+            '-t', 'tier',
+            '-d', 'not an int'
+        ]
+    )
+    assert result.exit_code == 2, result.output
+    assert subprocess_mock.run.call_count == 0
+
+    result = runner.invoke(
+        run_task,
+        [
+            '-i', 'container_name',
+            '-w', 'task_name',
+            '-t', 'tier',
+            '-d', '100'
+        ]
+    )
+    assert result.exit_code == 0, result.output
+    assert subprocess_mock.run.call_count == 1
+    subprocess_mock.run.call_count = 0

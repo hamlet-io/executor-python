@@ -6,6 +6,63 @@ from cot.loggers import logging
 logger = logging.getLogger('options')
 
 
+def are_required_keys(keys):
+    return keys.startswith('!')
+
+
+def parse_keys(keys):
+    # removing spaces and required flag
+    return tuple(key.strip().strip('!') for key in keys.split(',') if key)
+
+
+def get_key(keys, index):
+    keys = parse_keys(keys)
+    try:
+        return keys[index]
+    except IndexError:
+        return keys[-1]
+
+
+def is_values_collection(values):
+    return isinstance(values, collections.abc.Iterable) and not isinstance(values, str)
+
+
+def generate_incremental_required_options_collection(all_options):
+    required_options = collections.OrderedDict()
+    required_keys_max_parts = 1
+    for keys, values in all_options.items():
+        if are_required_keys(keys):
+            if is_values_collection(values):
+                value = values[0]
+            else:
+                value = values
+            required_options[keys] = value
+            required_keys_max_parts = max(required_keys_max_parts, len(parse_keys(keys)))
+
+    if not required_options:
+        logger.info(['no required options'])
+        return
+
+    for key_index in range(required_keys_max_parts):
+        for max_arguments in range(len(required_options)):
+            args = []
+            str_args = []
+            for keys, value in required_options.items():
+                if len(str_args) >= max_arguments:
+                    break
+                key = get_key(keys, key_index)
+                args.append(key)
+                args.append(value)
+                str_args.append(
+                    '{} {}'.format(key, value)
+                )
+            logger.info('[required options: %s/%s]', len(str_args), len(required_options))
+            logger.info(
+                '\n'.join(str_args)
+            )
+            yield args
+
+
 def generate_test_options_collection(all_options):
     """
     Generates collection of CLI options based on OrderedDict with next structure:
@@ -37,23 +94,6 @@ def generate_test_options_collection(all_options):
     required_keys_max_parts = 1
     required_keys_collection_values = []
     optional_keys_collection_values = []
-
-    def are_required_keys(keys):
-        return keys.startswith('!')
-
-    def parse_keys(keys):
-        # remoing spaces and required flag
-        return tuple(key.strip().strip('!') for key in keys.split(',') if key)
-
-    def get_key(keys, index):
-        keys = parse_keys(keys)
-        try:
-            return keys[index]
-        except IndexError:
-            return keys[-1]
-
-    def is_values_collection(values):
-        return isinstance(values, collections.abc.Iterable) and not isinstance(values, str)
 
     for keys, values in all_options.items():
         key_parts = parse_keys(keys)

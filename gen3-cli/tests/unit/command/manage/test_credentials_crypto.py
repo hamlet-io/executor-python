@@ -27,3 +27,55 @@ def test_input_valid(subprocess_mock):
             assert result.exit_code == 0, result.output
             assert subprocess_mock.run.call_count == 1
             subprocess_mock.run.call_count = 0
+
+
+@mock.patch('cot.command.manage.credentials_crypto.subprocess')
+def test_input_validation(subprocess_mock):
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        # testing credential-type option
+        result = runner.invoke(
+            manage_credentials_crypto,
+            [
+                '-n', 'credential_path',
+                '-y', 'wrong_type'
+            ]
+        )
+        assert result.exit_code == 2, result.output
+        assert subprocess_mock.run.call_count == 0
+
+        result = runner.invoke(
+            manage_credentials_crypto,
+            [
+                '-n', 'credential_path',
+                '-y', 'login'
+            ]
+        )
+        assert result.exit_code == 0, result.output
+        assert subprocess_mock.run.call_count == 1
+        subprocess_mock.run.call_count = 0
+
+        # testing crypto-file option
+        result = runner.invoke(
+            manage_credentials_crypto,
+            [
+                '-n', 'credential_path',
+                '-y', 'login',
+                '-f', 'crypto_file'
+            ]
+        )
+        assert result.exit_code == 2, result.output
+        assert subprocess_mock.run.call_count == 0
+        # creating file
+        os.mknod('crypto_file')
+        result = runner.invoke(
+            manage_credentials_crypto,
+            [
+                '-n', 'credential_path',
+                '-y', 'login',
+                '-f', 'crypto_file'
+            ]
+        )
+        assert result.exit_code == 0, result.output
+        assert subprocess_mock.run.call_count == 1
+        subprocess_mock.run.call_count = 0
