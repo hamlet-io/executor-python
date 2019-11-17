@@ -1,6 +1,20 @@
+"""
+This module's idea is the automation of very repetitive tests which we must have
+to test the correctness of our cli configuration. This module's functions greatly reduce the number of lines
+that we need to maintain. And because of that tests become much more accurate
+and reliable.
+
+Sure, manual individual testing is somewhat better but I think that we'll test "backend" part of our script separately.
+Therefore this module will be usefull even after we'll rewrite everything in python.
+"""
+
+
 import copy
 import collections
+from unittest import mock
 import pytest
+import click
+from click.testing import CliRunner
 from cot.loggers import logging
 
 
@@ -29,6 +43,36 @@ def is_values_collection(values):
 
 
 def generate_incremental_required_options_collection(all_options):
+    """
+    Generates collection of cli required option(marked by!)
+    Used to test that command can't run without all being given all required options.
+    For example we have 3 required options with an alternative key each.
+    Function will produce generator which will give:
+    ([], True),
+    (
+        [
+            -first-required-option, value
+        ],
+        True
+    ),
+    (
+        [
+            -first-required-option, value,
+            -second-required-option, value
+        ],
+        True
+    ),
+    (
+        [
+            -first-required-option, value,
+            -second-required-option, value
+            -third-required-option, value
+        ],
+        False
+    )
+    Where first element of tuple is args list and second element is bool error flag.
+    Error flag used to select correct check for given args list.
+    """
     required_options = collections.OrderedDict()
     required_keys_max_parts = 1
     for keys, values in all_options.items():
@@ -181,6 +225,7 @@ def generate_test_options_collection(all_options):
         yield args
 
 
+# pure utility function
 def options_dict_to_list(options):
     args = []
     for key, value in options.items():
@@ -192,12 +237,17 @@ def options_dict_to_list(options):
 def run_single_validatable_option_test(
     runner,
     cmd,
-    subprocess_mock,
+    runner_mock,
     options,
     key,
     incorrect,
     correct,
 ):
+    """
+    Test option validation rule by providing incorrect and correct values for the same option.
+    That's is not the best test in the world, but click env is quite isolated.
+    Therefore I can't capture click's standard exceptions.
+    """
     logger.info('[validation test:%s]', key)
     logger.info('invalid value:%s', incorrect)
     options = copy.deepcopy(options)
@@ -207,7 +257,7 @@ def run_single_validatable_option_test(
         options_dict_to_list(options)
     )
     assert result.exit_code == 2, result.output
-    assert subprocess_mock.run.call_count == 0
+    assert runner_mock.run.call_count == 0
     logger.info('valid value:%s', correct)
     options[key] = correct
     result = runner.invoke(
@@ -215,23 +265,26 @@ def run_single_validatable_option_test(
         options_dict_to_list(options)
     )
     assert result.exit_code == 0, result.output
-    assert subprocess_mock.run.call_count == 1
-    subprocess_mock.run.call_count = 0
+    assert runner_mock.run.call_count == 1
+    runner_mock.run.call_count = 0
     logger.info('[success]')
 
 
 def run_validatable_option_test(
     runner,
     cmd,
-    subprocess_mock,
+    runner_mock,
     options,
     tests
 ):
+    """
+    Handy shortcut for testing multiply options of the same command using run_single_validatable_option_test
+    """
     for key, incorrect, correct in tests:
         run_single_validatable_option_test(
             runner,
             cmd,
-            subprocess_mock,
+            runner_mock,
             options,
             key,
             incorrect,
@@ -239,24 +292,202 @@ def run_validatable_option_test(
         )
 
 
-def run_options_test(runner, cmd, options, subprocess_mock):
-    assert len(options) == len(cmd.params)
-    # testing that's impossible to run without full set of required options
+def run_options_test(runner, cmd, options, runner_mock):
+    """
+    Shortcut which runs generalized tests:
+    1. Testing that no more options exist
+    2. Testing that required options are required.
+    3. Testing that all options accepted and all expected values pass validation.
+    """
+    assert len(cmd.params) == len(options)
     for args, error in generate_incremental_required_options_collection(options):
         result = runner.invoke(cmd, args)
         if error:
             assert result.exit_code == 2, result.output
-            assert subprocess_mock.run.call_count == 0
+            assert runner_mock.run.call_count == 0
         else:
             assert result.exit_code == 0, result.output
-            assert subprocess_mock.run.call_count == 1
-            subprocess_mock.run.call_count = 0
+            assert runner_mock.run.call_count == 1
+            runner_mock.run.call_count = 0
 
     for args in generate_test_options_collection(options):
         result = runner.invoke(cmd, args)
         assert result.exit_code == 0, result.output
-        assert subprocess_mock.run.call_count == 1
-        subprocess_mock.run.call_count = 0
+        assert runner_mock.run.call_count == 1
+        runner_mock.run.call_count = 0
+
+
+def test_run_options_test():
+
+    runner_mock = mock.MagicMock()
+    runner = CliRunner()
+
+    @click.command()
+    @click.option('-a', '--a', required=True)
+    @click.option('-b', '--b', required=True, type=click.Choice(['bvalue1', 'bvalue2']))
+    @click.option(
+        '-c', '--c',
+        type=click.Choice(
+            [
+                'cvalue1',
+                'cvalue2',
+                'cvalue3'
+            ]
+        )
+    )
+    @click.option('-f', '--f', is_flag=True)
+    def test_command(a, b, c, f):
+        runner_mock.run()
+
+    def run_test(options, error=True):
+        if error:
+            with pytest.raises(AssertionError):
+                run_options_test(runner, test_command, options, runner_mock)
+        else:
+            run_options_test(runner, test_command, options, runner_mock)
+
+    correct_options = collections.OrderedDict()
+    correct_options['!-a,--a'] = 'avalue'
+    correct_options['!-b,--b'] = ['bvalue1', 'bvalue2']
+    correct_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    correct_options['-f,--f'] = [True, False]
+
+    # tests should pass for correct options
+    run_test(correct_options, False)
+
+    not_all_options = collections.OrderedDict()
+    not_all_options['!-a,--a'] = 'avalue'
+    not_all_options['!-b,--b'] = ['bvalue1', 'bvalue2']
+    not_all_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+
+    # should fail because not all options listed
+    run_test(not_all_options)
+
+    incorrect_value_options = collections.OrderedDict()
+    incorrect_value_options['!-a,--a'] = 'avalue'
+    incorrect_value_options['!-b,--b'] = ['bvalue1', 'bvalue2', 'bvalue3']
+    incorrect_value_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    incorrect_value_options['-f,--f'] = [True, False]
+
+    # should fail because bvalue3 is not accepted
+    run_test(incorrect_value_options)
+
+    required_is_optional_options = collections.OrderedDict()
+    required_is_optional_options['!-a,--a'] = 'avalue'
+    required_is_optional_options['-b,--b'] = ['bvalue1', 'bvalue2']
+    required_is_optional_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    required_is_optional_options['-f,--f'] = [True, False]
+
+    # should fail because b is not required
+    run_test(required_is_optional_options)
+
+    optional_is_required_options = collections.OrderedDict()
+    optional_is_required_options['!-a,--a'] = 'avalue'
+    optional_is_required_options['!-b,--b'] = ['bvalue1', 'bvalue2']
+    optional_is_required_options['!-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    optional_is_required_options['-f,--f'] = [True, False]
+
+    # should fail because c is required
+    run_test(optional_is_required_options)
+
+
+def test_validatable_options_test():
+
+    runner_mock = mock.MagicMock()
+    runner = CliRunner()
+
+    @click.command()
+    @click.option('-r', required=True, type=click.INT)
+    @click.option('-o', type=click.INT)
+    def test_command(r, o):
+        runner_mock.run()
+
+    def run_test(options, error=True):
+        def start():
+            run_validatable_option_test(
+                runner,
+                test_command,
+                runner_mock,
+                {
+                    '-r': '10'
+                },
+                options
+            )
+        if error:
+            with pytest.raises(AssertionError):
+                start()
+        else:
+            start()
+
+        # will raise error because all values valid
+        run_test(
+            [
+                ('-r', '10', '10'),
+                ('-o', 'not_an_int', '10')
+            ]
+        )
+        # will raise error because -r option incorrect value passes validation
+        run_test(
+            [
+                ('-r', '10', 'not_an_int'),
+                ('-o', 'not_an_int', '10')
+            ]
+        )
+        # will raise error because -o option all invalid
+        run_test(
+            [
+                ('-r', 'not_an_int', '10'),
+                ('-o', 'not_an_int', 'not_an_int')
+            ]
+        )
+        # tests must pass
+        run_test(
+            [
+                ('-r', 'not_an_int', '10'),
+                ('-o', 'not_an_int', '10')
+            ],
+            False
+        )
+
+
+def test_generate_incremental_required_options_collection():
+    options = collections.OrderedDict()
+    options['!-a,--a'] = 'avalue'
+    options['-b,--b'] = ['bvalue1', 'bvalue2']
+    options['!-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    options['-f,--f'] = [True, False]
+
+    generator = generate_incremental_required_options_collection(options)
+    assert next(generator) == ([], True)
+    assert next(generator) == (
+        [
+            '-a', 'avalue'
+        ],
+        True
+    )
+    assert next(generator) == (
+        [
+            '-a', 'avalue',
+            '-c', 'cvalue1'
+        ],
+        False
+    )
+    assert next(generator) == ([], True)
+    assert next(generator) == (
+        [
+            '--a', 'avalue'
+        ],
+        True
+    )
+    assert next(generator) == (
+        [
+            '--a', 'avalue',
+            '--c', 'cvalue1'
+        ],
+        False
+    )
+    with pytest.raises(StopIteration):
+        next(generator)
 
 
 def test_option_generation():
