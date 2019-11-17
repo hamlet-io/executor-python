@@ -17,7 +17,7 @@ There are several commands in root **Makefile**:
 
 To start you need to run ```make run``` or ```make run-fg```.
 
-After all services launched you need to run ```make ssh-gen3-cli```. This command opens ssh session to gen3-cli dev env service container.
+After all services launched you need to run ```make shell```. This command opens ssh session to gen3-cli dev env service container.
 
 Dev env container **Makefile** has next commands:
 1. ```make install``` - builds wheel package and installs it using pip.
