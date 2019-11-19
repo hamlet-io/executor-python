@@ -19,7 +19,7 @@ lint:
 .ONESHELL:
 install:
 	pip uninstall codeontap-cli -y
-	python setup.py bdist_wheel clean --all
+	python setup.py sdist clean --all
 	rm -rf codeontap_cli.egg-info
 	pip install --no-index --find-links=dist codeontap-cli
 
