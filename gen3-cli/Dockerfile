@@ -1,5 +1,5 @@
 # BASE IMAGE
-FROM codeontap/gen3 AS base
+FROM codeontap/gen3:latest-builder AS base
 
 COPY . /gen3-cli
 WORKDIR /gen3-cli

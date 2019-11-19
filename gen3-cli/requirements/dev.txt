@@ -3,3 +3,4 @@ pytest
 freezegun
 setuptools
 flake8
+wheel
