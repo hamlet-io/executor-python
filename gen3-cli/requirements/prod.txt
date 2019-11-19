@@ -1,2 +1,2 @@
-Click
-cookiecutter
+Click==7.0
+cookiecutter==1.6.0
