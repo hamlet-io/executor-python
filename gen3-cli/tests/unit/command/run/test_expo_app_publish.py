@@ -16,18 +16,18 @@ ALL_VALID_OPTIONS['-b,--binary-build-process'] = 'turtle'
 ALL_VALID_OPTIONS['-q,--qr-build-formats'] = 'formats'
 
 
-@mock.patch('cot.command.run.expo_app_publish.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), run_expo_app_publish, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.run.expo_app_publish.run_expo_app_publish_backend')
+def test_input_valid(run_expo_app_publish_backend):
+    run_options_test(CliRunner(), run_expo_app_publish, ALL_VALID_OPTIONS, run_expo_app_publish_backend)
 
 
-@mock.patch('cot.command.run.expo_app_publish.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.run.expo_app_publish.run_expo_app_publish_backend')
+def test_input_validation(run_expo_app_publish_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         run_expo_app_publish,
-        subprocess_mock,
+        run_expo_app_publish_backend,
         {
             '-u': 'unit',
         },

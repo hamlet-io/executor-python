@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.run import expo_app_publish as run_expo_app_publish_backend
 
 
 @click.command(
@@ -63,16 +61,7 @@ from cot import env
     default='ios,android',
     show_default=True
 )
-def expo_app_publish(
-    deployment_unit,
-    run_setup,
-    binary_expiration,
-    force_binary_build,
-    submit_binary,
-    disable_ota,
-    binary_build_process,
-    qr_build_formats
-):
+def expo_app_publish(**kwargs):
     """
     Run a task based build of an Expo app binary
 
@@ -80,21 +69,4 @@ def expo_app_publish(
     NOTES:
     RELEASE_CHANNEL default is environment
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runExpoAppPublish.sh',
-        options={
-            '-u': deployment_unit,
-            '-s': run_setup,
-            '-t': binary_expiration,
-            '-f': force_binary_build,
-            '-m': submit_binary,
-            '-o': disable_ota,
-            '-b': binary_build_process,
-            '-q': qr_build_formats
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    run_expo_app_publish_backend.run(**kwargs)

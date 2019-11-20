@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.manage import credential_crypto as manage_credentials_crypto_backend
 
 
 @click.command(
@@ -63,15 +61,7 @@ from cot import env
         case_sensitive=False
     )
 )
-def credentials_crypto(
-    credential_email,
-    crypto_file,
-    credential_id,
-    credential_path,
-    credential_secret,
-    visible,
-    credential_type
-):
+def credentials_crypto(**kwargs):
     """
     Manage crypto for credential storage
 
@@ -83,20 +73,4 @@ def credentials_crypto(
     4. For CREDENTIAL_TYPE of ${CREDENTIAL_TYPE_API}, Id Attribute = AccessKey, Secret Attribute = SecretKey
     5. For CREDENTIAL_TYPE of ${CREDENTIAL_TYPE_ENV}, Id Attribute = ACCESS_KEY, Secret Attribute = SECRET_KEY
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageCredentialCrypto.sh',
-        options={
-            '-e': credential_email,
-            '-f': crypto_file,
-            '-i': credential_id,
-            '-n': credential_path,
-            '-v': visible,
-            '-y': credential_type,
-            '-s': credential_secret
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    manage_credentials_crypto_backend.run(**kwargs)

@@ -15,6 +15,6 @@ ALL_VALID_OPTIONS['-i,--generation-input-source'] = 'input-source'
 ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarious'
 
 
-@mock.patch('cot.command.create.template.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), create_blueprint, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.create.template.create_template_backend')
+def test_input_valid(create_template_backend):
+    run_options_test(CliRunner(), create_blueprint, ALL_VALID_OPTIONS, create_template_backend)

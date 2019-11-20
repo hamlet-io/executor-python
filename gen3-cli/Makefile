@@ -18,6 +18,7 @@ lint:
 .PHONY: install
 .ONESHELL:
 install:
+	rm -rf dist
 	pip uninstall codeontap-cli -y
 	python setup.py sdist clean --all
 	rm -rf codeontap_cli.egg-info

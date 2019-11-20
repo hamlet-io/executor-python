@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.run import lambda_func as run_lambda_func_backend
 
 
 @click.command(
@@ -34,26 +32,8 @@ from cot import env
     help='include the last 4kb of the execution log',
     is_flag=True
 )
-def lambda_func(
-    function_id,
-    deployment_unit,
-    input_payload,
-    include_log_tail
-):
+def lambda_func(**kwargs):
     """
     Run an AWS Lambda Function
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runLambda.sh',
-        options={
-            '-f': function_id,
-            '-u': deployment_unit,
-            '-i': input_payload,
-            '-l': include_log_tail
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    run_lambda_func_backend.run(**kwargs)

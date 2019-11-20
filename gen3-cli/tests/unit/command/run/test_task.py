@@ -18,18 +18,18 @@ ALL_VALID_OPTIONS['-x,--instance'] = 'task_instance'
 ALL_VALID_OPTIONS['-y,--version'] = 'task_version'
 
 
-@mock.patch('cot.command.run.task.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), run_task, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.run.task.run_task_backend')
+def test_input_valid(run_task_backend):
+    run_options_test(CliRunner(), run_task, ALL_VALID_OPTIONS, run_task_backend)
 
 
-@mock.patch('cot.command.run.task.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.run.task.run_task_backend')
+def test_input_validation(run_task_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         run_task,
-        subprocess_mock,
+        run_task_backend,
         {
             '-i': 'container_name',
             '-w': 'task_name',

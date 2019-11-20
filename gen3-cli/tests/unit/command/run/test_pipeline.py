@@ -13,6 +13,6 @@ ALL_VALID_OPTIONS['-s,--pipeline-status-only'] = [True, False]
 ALL_VALID_OPTIONS['-c,--pipeline-allow-concurrent'] = [True, False]
 
 
-@mock.patch('cot.command.run.pipeline.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), run_pipeline, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.run.pipeline.run_pipeline_backend')
+def test_input_valid(run_pipeline_backend):
+    run_options_test(CliRunner(), run_pipeline, ALL_VALID_OPTIONS, run_pipeline_backend)

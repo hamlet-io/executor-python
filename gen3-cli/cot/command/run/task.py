@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.run import task as run_task_backend
 
 
 @click.command(
@@ -73,19 +71,7 @@ from cot import env
     '--version',
     help='version of the task to be run'
 )
-def task(
-    container_id,
-    delay,
-    env_name,
-    component,
-    component_instance,
-    component_version,
-    tier,
-    value,
-    task,
-    instance,
-    version
-):
+def task(**kwargs):
     """
     Run an ECS task
 
@@ -94,25 +80,4 @@ def task(
     1. The ECS cluster is found using the provided tier and component combined with the product and segment
     2. ENV and VALUE should always appear in pairs
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runTask.sh',
-        options={
-            '-c': container_id,
-            '-d': delay,
-            '-e': env_name,
-            '-i': component,
-            '-j': component_instance,
-            '-k': component_version,
-            '-t': tier,
-            '-v': value,
-            '-w': task,
-            '-x': instance,
-            '-y': version
-        }
-    )
-
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    run_task_backend.run(**kwargs)

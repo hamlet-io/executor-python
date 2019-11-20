@@ -27,18 +27,18 @@ ALL_VALID_OPTIONS['-w,--deployment-wait'] = 10
 ALL_VALID_OPTIONS['-z,--deployment-unit-subset'] = 'subset'
 
 
-@mock.patch('cot.command.manage.deployment.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), manage_deployment, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.manage.deployment.manage_deployment_backend')
+def test_input_valid(manage_deployment_backend):
+    run_options_test(CliRunner(), manage_deployment, ALL_VALID_OPTIONS, manage_deployment_backend)
 
 
-@mock.patch('cot.command.manage.deployment.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.manage.deployment.manage_deployment_backend')
+def test_input_validation(manage_deployment_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         manage_deployment,
-        subprocess_mock,
+        manage_deployment_backend,
         {
             '-u': 'unit',
             '-l': 'segment'

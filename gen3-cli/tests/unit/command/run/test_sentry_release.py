@@ -11,6 +11,6 @@ ALL_VALID_OPTIONS['-p,--sentry-url-prefix'] = 'url_prefix'
 ALL_VALID_OPTIONS['-s,--run-setup'] = [True, False]
 
 
-@mock.patch('cot.command.run.sentry_release.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), run_sentry_release, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.run.sentry_release.run_sentry_release_backend')
+def test_input_valid(run_sentry_release_backend):
+    run_options_test(CliRunner(), run_sentry_release, ALL_VALID_OPTIONS, run_sentry_release_backend)

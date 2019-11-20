@@ -25,18 +25,18 @@ ALL_VALID_OPTIONS['-z,--deployment-unit-subset'] = 'subset'
 ALL_VALID_OPTIONS['-y,--dryrun'] = [True, False]
 
 
-@mock.patch('cot.command.manage.stack.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), manage_stack, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.manage.stack.manage_stack_backend')
+def test_input_valid(manage_stack_backend):
+    run_options_test(CliRunner(), manage_stack, ALL_VALID_OPTIONS, manage_stack_backend)
 
 
-@mock.patch('cot.command.manage.stack.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.manage.stack.manage_stack_backend')
+def test_input_validation(manage_stack_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         manage_stack,
-        subprocess_mock,
+        manage_stack_backend,
         {
             '-u': 'unit',
             '-l': 'segment'
