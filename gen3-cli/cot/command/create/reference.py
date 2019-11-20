@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.create import reference as create_reference_backend
 
 
 @click.command(
@@ -28,22 +26,8 @@ from cot import env
         writable=True
     )
 )
-def reference(
-    reference_type,
-    reference_output_dir
-):
+def reference(**kwargs):
     """
     Create a Codeontap Component Reference
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'createReference.sh',
-        options={
-            '-t': reference_type,
-            '-o': reference_output_dir
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    create_reference_backend.run(**kwargs)

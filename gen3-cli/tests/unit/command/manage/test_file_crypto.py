@@ -13,23 +13,23 @@ ALL_VALID_OPTIONS['-f,--crypto-file'] = 'crypto_file'
 ALL_VALID_OPTIONS['-u,--update'] = [True, False]
 
 
-@mock.patch('cot.command.manage.file_crypto.subprocess')
-def test_input_valid(subprocess_mock):
+@mock.patch('cot.command.manage.file_crypto.manage_file_crypto_backend')
+def test_input_valid(manage_file_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mknod('crypto_file')
-        run_options_test(runner, manage_file_crypto, ALL_VALID_OPTIONS, subprocess_mock)
+        run_options_test(runner, manage_file_crypto, ALL_VALID_OPTIONS, manage_file_crypto_backend)
 
 
-@mock.patch('cot.command.manage.file_crypto.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.manage.file_crypto.manage_file_crypto_backend')
+def test_input_validation(manage_file_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mknod('crypto_file')
         run_validatable_option_test(
             runner,
             manage_file_crypto,
-            subprocess_mock,
+            manage_file_crypto_backend,
             {},
             [
                 ('-f', 'nonexistingfile', 'crypto_file')

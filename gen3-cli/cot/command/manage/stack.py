@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import env
-from cot import utils
+from cot.backend.manage import stack as manage_stack_backend
 
 
 @click.command(
@@ -82,18 +80,7 @@ from cot import utils
     is_flag=True,
     help='show what will happen without actually updating the stack'
 )
-def stack(
-    delete,
-    stack_initiate,
-    stack_monitor,
-    stack_wait,
-    stack_name,
-    level,
-    region,
-    deployment_unit,
-    deployment_unit_subset,
-    dryrun
-):
+def stack(**kwargs):
     """
     Manage a CloudFormation stack
 
@@ -108,23 +95,4 @@ def stack(
     6. A dryrun creates a change set, then displays it. It only applies when
        the STACK_OPERATION=update
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageStack.sh',
-        options={
-            '-d': delete,
-            '-i': stack_initiate,
-            '-m': stack_monitor,
-            '-w': stack_wait,
-            '-n': stack_name,
-            '-r': region,
-            '-y': dryrun,
-            '-u': deployment_unit,
-            '-z': deployment_unit_subset,
-            '-l': level
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    manage_stack_backend.run(**kwargs)

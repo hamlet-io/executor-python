@@ -28,18 +28,18 @@ ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarios'
 ALL_VALID_OPTIONS['-i,--generation-input-source'] = 'generation_input_source'
 
 
-@mock.patch('cot.command.create.template.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), create_template, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.create.template.create_template_backend')
+def test_input_valid(create_template_backend):
+    run_options_test(CliRunner(), create_template, ALL_VALID_OPTIONS, create_template_backend)
 
 
-@mock.patch('cot.command.create.template.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.create.template.create_template_backend')
+def test_input_validation(create_template_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         create_template,
-        subprocess_mock,
+        create_template_backend,
         {
             '-u': 'unit',
             '-l': 'blueprint'

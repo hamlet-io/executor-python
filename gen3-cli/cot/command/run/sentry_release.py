@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.run import sentry_release as run_sentry_release_backend
 
 
 @click.command(
@@ -34,26 +32,8 @@ from cot import env
     help='run setup installation to prepare',
     is_flag=True
 )
-def sentry_release(
-    sentry_source_map_s3_url,
-    sentry_url_prefix,
-    sentry_release_name,
-    run_setup
-):
+def sentry_release(**kwargs):
     """
     Upload sourcemap files to sentry for a specific release
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runSentryRelease.sh',
-        options={
-            '-m': sentry_source_map_s3_url,
-            '-p': sentry_url_prefix,
-            '-r': sentry_release_name,
-            '-s': run_setup
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    run_sentry_release_backend.run(**kwargs)

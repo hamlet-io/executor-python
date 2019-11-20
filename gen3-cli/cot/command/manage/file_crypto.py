@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.manage import file_crypto as manage_file_crypto_backend
 
 
 @click.command(
@@ -40,12 +38,7 @@ from cot import env
     is_flag=True,
     help='update the file'
 )
-def file_crypto(
-    decrypt,
-    encrypt,
-    crypto_file,
-    update
-):
+def file_crypto(**kwargs):
     """
     Manage crypto for files
 
@@ -53,17 +46,4 @@ def file_crypto(
     NOTES:
     1. If no operation is provided, the current file contents are displayed
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageFileCrypto.sh',
-        options={
-            '-d': decrypt,
-            '-e': encrypt,
-            '-f': crypto_file,
-            '-u': update
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    manage_file_crypto_backend.run(**kwargs)

@@ -12,6 +12,6 @@ ALL_VALID_OPTIONS['-i,--input-payload'] = 'payload'
 ALL_VALID_OPTIONS['-l,--include-log-tail'] = [True, False]
 
 
-@mock.patch('cot.command.run.lambda_func.subprocess')
-def test_input_valid(subprocess_mock):
-    run_options_test(CliRunner(), run_lambda_func, ALL_VALID_OPTIONS, subprocess_mock)
+@mock.patch('cot.command.run.lambda_func.run_lambda_func_backend')
+def test_input_valid(run_lambda_func_backend):
+    run_options_test(CliRunner(), run_lambda_func, ALL_VALID_OPTIONS, run_lambda_func_backend)

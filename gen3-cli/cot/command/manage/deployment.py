@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import env
-from cot import utils
+from cot.backend.manage import deployment as manage_deployment_backend
 
 
 @click.command(
@@ -89,38 +87,8 @@ from cot import utils
     '--deployment-unit-subset',
     help='subset of the deployment unit required'
 )
-def deployment(
-    delete,
-    deployment_initiate,
-    level,
-    deployment_monitor,
-    deployment_name,
-    region,
-    deployment_scope,
-    deployment_unit,
-    deployment_wait,
-    deployment_unit_subset
-):
+def deployment(**kwargs):
     """
     Manage an Azure Resource Manager (ARM) deployment
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageDeployment.sh',
-        options={
-            '-d': delete,
-            '-i': deployment_initiate,
-            '-m': deployment_monitor,
-            '-l': level,
-            '-n': deployment_name,
-            '-r': region,
-            '-s': deployment_scope,
-            '-u': deployment_unit,
-            '-w': deployment_wait,
-            '-z': deployment_unit_subset
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    manage_deployment_backend.run(**kwargs)

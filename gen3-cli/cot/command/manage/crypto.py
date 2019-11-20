@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import utils
-from cot import env
+from cot.backend.manage import crypto as manage_crypto_backend
 
 
 @click.command(
@@ -84,20 +82,7 @@ from cot import env
     help='result is base64 decoded (visible)',
     is_flag=True
 )
-def crypto(
-    alias,
-    base64_decode,
-    decrypt,
-    encrypt,
-    crypto_file,
-    key_id,
-    no_alteration,
-    json_path,
-    quiet,
-    crypto_text,
-    update,
-    visible
-):
+def crypto(**kwargs):
     """
     Manage cryptographic operations using KMS
 
@@ -128,25 +113,4 @@ def crypto(
        visibility flag is set
     8. Decrypted files will have a ".decrypted" extension added so they can be ignored by git
     """
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageCrypto.sh',
-        options={
-            '-a': alias,
-            '-b': base64_decode,
-            '-d': decrypt,
-            '-e': encrypt,
-            '-f': crypto_file,
-            '-k': key_id,
-            '-n': no_alteration,
-            '-p': json_path,
-            '-q': quiet,
-            '-t': crypto_text,
-            '-u': update,
-            '-v': visible
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    manage_crypto_backend.run(**kwargs)

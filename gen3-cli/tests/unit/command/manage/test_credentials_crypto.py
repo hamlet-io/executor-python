@@ -16,24 +16,24 @@ ALL_VALID_OPTIONS['-s,--credential-secret'] = 'credential_secret'
 ALL_VALID_OPTIONS['-v,--visible'] = [True, False]
 
 
-@mock.patch('cot.command.manage.credentials_crypto.subprocess')
-def test_input_valid(subprocess_mock):
+@mock.patch('cot.command.manage.credentials_crypto.manage_credentials_crypto_backend')
+def test_input_valid(manage_credentials_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mknod('crypto_file')
         # testing that's impossible to run without full set of required options
-        run_options_test(runner, manage_credentials_crypto, ALL_VALID_OPTIONS, subprocess_mock)
+        run_options_test(runner, manage_credentials_crypto, ALL_VALID_OPTIONS, manage_credentials_crypto_backend)
 
 
-@mock.patch('cot.command.manage.credentials_crypto.subprocess')
-def test_input_validation(subprocess_mock):
+@mock.patch('cot.command.manage.credentials_crypto.manage_credentials_crypto_backend')
+def test_input_validation(manage_credentials_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mknod('crypto_file')
         run_validatable_option_test(
             runner,
             manage_credentials_crypto,
-            subprocess_mock,
+            manage_credentials_crypto_backend,
             {
                 '-n': 'credential_path',
                 '-y': 'login'

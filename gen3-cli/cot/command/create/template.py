@@ -1,7 +1,5 @@
-import subprocess
 import click
-from cot import env
-from cot import utils
+from cot.backend.create import template as create_template_backend
 
 
 @click.command(
@@ -97,21 +95,7 @@ from cot import utils
     '--generation-input-source',
     help='source of input data to use when generating the template'
 )
-def template(
-    config_ref,
-    resource_group,
-    level,
-    request_ref,
-    region,
-    deployment_unit,
-    deployment_unit_subset,
-    deployment_mode,
-    generation_provider,
-    generation_framework,
-    generation_testcase,
-    generation_scenarios,
-    generation_input_source,
-):
+def template(**kwargs):
     """
     Create a CloudFormation (CF) template
 
@@ -125,28 +109,4 @@ def template(
     igw, nat, or vpcendpoint
 
     """
-    options = {
-        '-c': config_ref,
-        '-g': resource_group,
-        '-l': level,
-        '-q': request_ref,
-        '-r': region,
-        '-u': deployment_unit,
-        '-z': deployment_unit_subset,
-        '-d': deployment_mode,
-        '-p': generation_provider,
-        '-f': generation_framework,
-        '-t': generation_testcase,
-        '-s': generation_scenarios,
-        '-i': generation_input_source
-    }
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'createTemplate.sh',
-        args=[],
-        options=options
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    create_template_backend.run(**kwargs)
