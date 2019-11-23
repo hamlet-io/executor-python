@@ -1,0 +1,12 @@
+{
+    "Product" : {
+        "Id" : "test_product_id",
+        "Name" : "test_product",
+        "Domain" : "test_tenant_id"
+    },
+    "Environments" : {
+        "alm" : {
+            "MultiAZ" : false
+        }
+    }
+}

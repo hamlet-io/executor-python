@@ -1,7 +1,7 @@
 {
     "Tenant" : {
         "Id" : "test_tenant_id",
-        "Name" : "test_tenant_id",
+        "Name" : "test_tenant",
         "CertificateBehaviours" : {
             "External" : true
         }

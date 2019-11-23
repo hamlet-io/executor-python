@@ -163,7 +163,7 @@
     "Processors" : {
         "default" : {
             "ECS": {
-                "Processor": "t2.medium",
+                "Processor": "t3.medium",
                 "MinPerZone": 1,
                 "MaxPerZone": 1,
                 "DesiredPerZone": 1
