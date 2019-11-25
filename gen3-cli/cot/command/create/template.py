@@ -109,4 +109,4 @@ def template(**kwargs):
     igw, nat, or vpcendpoint
 
     """
-    create_template_backend.run(**kwargs)
+    create_template_backend.run(**kwargs, _is_cli=True)
