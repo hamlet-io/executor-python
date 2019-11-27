@@ -42,15 +42,18 @@ def test_account(cmdb, clear_cmdb_dir):
 
     #  check that files were created
     with cmdb('accounts', ACCOUNT, 'infrastructure', 'cf', 'shared') as filename:
-        prefix = [
-            'account',
-            's3',
-            ACCOUNT,
-            account_region,
-        ]
+
+        def prefix(level):
+            return [
+                'account',
+                level,
+                ACCOUNT,
+                account_region,
+            ]
+
         assert os.path.exists(
             filename(
-                *prefix,
+                *prefix('s3'),
                 'epilogue',
                 sep='-',
                 ext='sh'
@@ -58,20 +61,39 @@ def test_account(cmdb, clear_cmdb_dir):
         )
         assert os.path.exists(
             filename(
-                *prefix,
+                *prefix('s3'),
                 'genplan',
                 sep='-',
                 ext='sh'
             )
         )
 
-        cf_template_filename = filename(
-            *prefix,
+        assert os.path.exists(
+            filename(
+                *prefix('audit'),
+                'genplan',
+                sep='-',
+                ext='sh'
+            )
+        )
+
+        cf_s3_template_filename = filename(
+            *prefix('s3'),
             'template',
             sep='-',
             ext='json'
         )
 
-        assert os.path.exists(cf_template_filename)
-        with open(cf_template_filename) as f:
+        cf_audit_template_filename = filename(
+            *prefix('audit'),
+            'template',
+            sep='-',
+            ext='json'
+        )
+
+        assert os.path.exists(cf_s3_template_filename)
+        assert os.path.exists(cf_audit_template_filename)
+        with open(cf_s3_template_filename) as f:
+            json.load(f)
+        with open(cf_audit_template_filename) as f:
             json.load(f)
