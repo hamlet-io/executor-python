@@ -66,13 +66,13 @@ def generate_base(
 
     prompt.product_id()
     prompt.product_name(default=kwargs['product_id'])
-    prompt.domain_id(default=kwargs['product_id'])
+    prompt.domain_id()
 
-    prompt.solution_id(default='app')
+    prompt.solution_id()
     prompt.solution_name(default=kwargs['solution_id'])
 
-    prompt.environment_id(default='int')
-    prompt.environment_name(default='integration')
+    prompt.environment_id()
+    prompt.environment_name(default=kwargs['environment_id'])
 
     prompt.segment_id(default='default')
     prompt.segment_name(default=kwargs['segment_id'])
@@ -126,13 +126,26 @@ def generate_base(
     '--certificate-region'
 )
 @click.option(
-    '--slave-provider'
+    '--slave-provider',
+    type=click.Choice(
+        [
+            'ecs',
+            'docker'
+        ]
+    )
 )
 @click.option(
     '--ecs_instance_type'
 )
 @click.option(
-    '--security-realm'
+    '--security-realm',
+    type=click.Choice(
+        [
+            'local',
+            'github',
+            'saml'
+        ]
+    )
 )
 @click.option(
     '--auth-local-user'
@@ -183,7 +196,7 @@ def generate_app_lifecycle_mgmt(
 
     prompt.product_id()
     prompt.product_name(default=kwargs['product_id'])
-    prompt.domain_id(default=kwargs['product_id'])
+    prompt.domain_id()
 
     prompt.solution_id(default='alm')
     prompt.solution_name(default=kwargs['solution_id'])
@@ -199,16 +212,17 @@ def generate_app_lifecycle_mgmt(
     prompt.certificate_arn(default='arn:aws:acm:us-east-1:123456789:certificate/replace-this-with-your-arn')
     prompt.certificate_cn(default='*.alm.local')
     prompt.certificate_region(default=kwargs['certificate_arn'].split(':')[3])
-    prompt.slave_provider()
+    prompt.slave_provider(default='ecs')
     prompt.ecs_instance_type(default='t3.medium' if kwargs['slave_provider'] == 'ecs' else 'n/a')
-    prompt.security_realm()
+    prompt.security_realm(default='local')
     prompt.auth_local_user(default='admin' if kwargs['security_realm'] == 'local' else 'n/a')
     prompt.auth_local_pass(default='' if kwargs['security_realm'] == 'local' else 'n/a')
+
     prompt.auth_github_client_id(default='' if kwargs['security_realm'] == 'github' else 'n/a')
     prompt.auth_github_secret(default='' if kwargs['security_realm'] == 'github' else 'n/a')
     prompt.auth_github_admin_role(default='' if kwargs['security_realm'] == 'github' else 'n/a')
-    prompt.github_repo_user()
-    prompt.github_repo_pass()
+    prompt.github_repo_user(default='')
+    prompt.github_repo_pass(default='')
     if prompt.confirm():
         generate_app_lifecycle_mgmt_backend.run(**kwargs)
 
@@ -382,7 +396,7 @@ def generate_django(
 
     prompt.container_placement_strategy()
 
-    if prompt.use_celery():
+    if prompt.use_celery(default=False):
         prompt.celery_flower_username(default='admin')
 
     prompt.email_from(default="{} - {} <noreply@local.host>".format(kwargs['product_id'], kwargs['environment_name']))
@@ -395,16 +409,16 @@ def generate_django(
     prompt.loadbalancer_healthcheck_healthy_responsecode(default=200)
     prompt.public_media_paths(default='static,media,CACHE')
 
-    prompt.allow_user_registration()
+    prompt.allow_user_registration(default=False)
 
-    prompt.sentry_dsn()
+    prompt.sentry_dsn(default='')
 
-    if prompt.alerts_use_ktlg():
-        prompt.alerts_ktlg_hostname()
-        prompt.alerts_ktlg_channel()
+    if prompt.alerts_use_ktlg(default=False):
+        prompt.alerts_ktlg_hostname(default='')
+        prompt.alerts_ktlg_channel(default='')
         prompt.alerts_ktlg_hex_colorcode(default='DC143C')
-        if prompt.alerts_use_email():
-            prompt.alerts_email_address()
+        if prompt.alerts_use_email(default=False):
+            prompt.alerts_email_address(default='')
 
     if prompt.confirm():
         generate_django_backend.run(**kwargs)

@@ -11,10 +11,10 @@ def group():
 
 @group.command('account')
 @click.option(
-    '--id'
+    '--account-id'
 )
 @click.option(
-    '--name'
+    '--account-name'
 )
 @click.option(
     '--seed'
@@ -62,33 +62,26 @@ def generate_account(
 
 @group.command('tenant')
 @click.option(
-    '-i',
-    '--id'
+    '--tenant-id'
 )
 @click.option(
-    '-n',
-    '--name'
+    '--tenant-name'
 )
 @click.option(
-    '-d',
     '--domain-stem'
 )
 @click.option(
-    '-r',
     '--default-region'
 )
 @click.option(
-    '-a',
     '--audit-log-expiry-days',
     type=click.INT
 )
 @click.option(
-    '-o',
     '--audit-log-offline-days',
     type=click.INT
 )
 @click.option(
-    '-d',
     '--use-default',
     is_flag=True
 )

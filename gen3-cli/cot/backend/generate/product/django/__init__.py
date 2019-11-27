@@ -9,9 +9,6 @@ TEMPLATES_DIR = os.path.join(conf.COOKIECUTTER_TEMPLATES_BASE_DIR, 'products')
 def run(
     **kwargs
 ):
-    for key, value in kwargs.items():
-        if value is None:
-            kwargs[key] = ''
 
     kwargs['use_celery'] = 'yes' if kwargs['use_celery'] else 'no'
     kwargs['allow_user_registration'] = 'yes' if kwargs['allow_user_registration'] else 'no'
