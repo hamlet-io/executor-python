@@ -1,20 +1,21 @@
 import os
 from cookiecutter.main import cookiecutter
 from cot import conf
+from cot.backend.generate import utils
 
 
 TEMPLATES_DIR = os.path.join(conf.COOKIECUTTER_TEMPLATES_BASE_DIR, 'products')
 
 
-def run(
-    **kwargs
-):
-
-    kwargs['use_celery'] = 'yes' if kwargs['use_celery'] else 'no'
-    kwargs['allow_user_registration'] = 'yes' if kwargs['allow_user_registration'] else 'no'
-    kwargs['alerts_use_ktlg'] = 'yes' if kwargs['alerts_use_ktlg'] else 'no'
-    kwargs['alerts_use_email'] = 'yes' if kwargs['alerts_use_email'] else 'no'
-
+def run(**kwargs):
+    utils.replace_parameters_values(
+        kwargs,
+        [
+            [None, ''],
+            [True, 'yes'],
+            [False, 'no']
+        ]
+    )
     template_path = os.path.join(TEMPLATES_DIR, 'django-cookiecutter')
     cookiecutter(
         template_path,

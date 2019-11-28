@@ -1,5 +1,6 @@
 import click
-from cot import utils
+from cot.utils import dynamic_option
+from cot.command.generate import utils
 from cot.backend.generate.product import django as generate_django_backend
 from cot.backend.generate.product import base as generate_base_backend
 from cot.backend.generate.product import app_lifecycle_mgmt as generate_app_lifecycle_mgmt_backend
@@ -10,43 +11,19 @@ def group():
     pass
 
 
-@click.option(
-    '--product-id'
-)
-@click.option(
-    '--product-name'
-)
-@click.option(
-    '--domain-id'
-)
-@click.option(
-    '--solution-id'
-)
-@click.option(
-    '--solution-name'
-)
-@click.option(
-    '--environment-id'
-)
-@click.option(
-    '--environment-name'
-)
-@click.option(
-    '--segment-id'
-)
-@click.option(
-    '--segment-name'
-)
-@click.option(
-    '--use-default',
-    is_flag=True
-)
-@click.option(
-    '--prompt',
-    is_flag=True
-)
-@click.pass_context
 @group.command('base')
+@dynamic_option('--product-id', required=True)
+@dynamic_option('--product-name', default=lambda p: p.product_id)
+@dynamic_option('--domain-id', default='')
+@dynamic_option('--solution-id', required=True)
+@dynamic_option('--solution-name', default=lambda p: p.solution_id)
+@dynamic_option('--environment-id', required=True)
+@dynamic_option('--environment-name', default=lambda p: p.environment_id)
+@dynamic_option('--segment-id', default='default')
+@dynamic_option('--segment-name', default=lambda p: p.segment_id)
+@click.option('--use-default', is_flag=True)
+@click.option('--prompt', is_flag=True)
+@click.pass_context
 def generate_base(
     ctx,
     prompt=None,
@@ -58,86 +35,37 @@ def generate_base(
     This creates a base product with no deployed components.
     This template should be run from the root of an empty product directory.
     """
-    if not prompt:
-        generate_base_backend.run(**kwargs)
-        return
-
-    prompt = utils.ClickMissingOptionsPrompt(ctx, kwargs, use_default)
-
-    prompt.product_id()
-    prompt.product_name(default=kwargs['product_id'])
-    prompt.domain_id()
-
-    prompt.solution_id()
-    prompt.solution_name(default=kwargs['solution_id'])
-
-    prompt.environment_id()
-    prompt.environment_name(default=kwargs['environment_id'])
-
-    prompt.segment_id(default='default')
-    prompt.segment_name(default=kwargs['segment_id'])
-
-    if prompt.confirm():
+    if not prompt or utils.confirm(kwargs):
         generate_base_backend.run(**kwargs)
 
 
 @group.command('app-lifecycle-mgmt')
-@click.option(
-    '--product-id'
-)
-@click.option(
-    '--product-name'
-)
-@click.option(
-    '--domain-id'
-)
-@click.option(
-    '--solution-id'
-)
-@click.option(
-    '--solution-name'
-)
-@click.option(
-    '--environment-id'
-)
-@click.option(
-    '--environment-name'
-)
-@click.option(
-    '--segment-id'
-)
-@click.option(
-    '--segment-name'
-)
-@click.option(
-    '--multi-az',
-    type=click.BOOL
-)
-@click.option(
-    '--source-ip-network'
-)
-@click.option(
-    '--certificate-arn'
-)
-@click.option(
-    '--certificate-cn'
-)
-@click.option(
-    '--certificate-region'
-)
-@click.option(
+@dynamic_option('--product-id', required=True)
+@dynamic_option('--product-name', default=lambda p: p.product_id)
+@dynamic_option('--domain-id', default='')
+@dynamic_option('--solution-id', default='alm')
+@dynamic_option('--solution-name', default=lambda p: p.solution_id)
+@dynamic_option('--environment-id', default='alm')
+@dynamic_option('--environment-name', default=lambda p: p.environment_id)
+@dynamic_option('--segment-id', default='default')
+@dynamic_option('--segment-name', default=lambda p: p.segment_id)
+@dynamic_option('--multi-az', is_flag=True)
+@dynamic_option('--source-ip-network', default='0.0.0.0/0')
+@dynamic_option('--certificate-arn', default='arn:aws:acm:us-east-1:123456789:certificate/replace-this-with-your-arn')
+@dynamic_option('--certificate-cn', default='*.alm.local')
+@dynamic_option('--certificate-region', default=lambda p: p.certificate_arn.split(':')[3])
+@dynamic_option(
     '--slave-provider',
     type=click.Choice(
         [
             'ecs',
             'docker'
         ]
-    )
+    ),
+    default='ecs'
 )
-@click.option(
-    '--ecs_instance_type'
-)
-@click.option(
+@dynamic_option('--ecs_instance_type', default=lambda p: 't3.medium' if p.slave_provider == 'ecs' else 'n/a')
+@dynamic_option(
     '--security-realm',
     type=click.Choice(
         [
@@ -145,37 +73,38 @@ def generate_base(
             'github',
             'saml'
         ]
-    )
+    ),
+    default='local'
 )
-@click.option(
-    '--auth-local-user'
+@dynamic_option(
+    '--auth-local-user',
+    default=lambda p: 'admin' if p.security_realm == 'local' else 'n/a',
+    prompt=lambda p: p.security_realm == 'local'
 )
-@click.option(
-    '--auth-local-pass'
+@dynamic_option(
+    '--auth-local-pass',
+    default=lambda p: '' if p.security_realm == 'local' else 'n/a',
+    prompt=lambda p: p.security_realm == 'local'
 )
-@click.option(
-    '--auth-github-client-id'
+@dynamic_option(
+    '--auth-github-client-id',
+    default=lambda p: '' if p.security_realm == 'github' else 'n/a',
+    prompt=lambda p: p.security_realm == 'github'
 )
-@click.option(
-    '--auth-github-secret'
+@dynamic_option(
+    '--auth-github-secret',
+    default=lambda p: '' if p.security_realm == 'github' else 'n/a',
+    prompt=lambda p: p.security_realm == 'github'
 )
-@click.option(
-    '--auth-github-admin-role'
+@dynamic_option(
+    '--auth-github-admin-role',
+    default=lambda p: '' if p.security_realm == 'github' else 'n/a',
+    prompt=lambda p: p.security_realm == 'github'
 )
-@click.option(
-    '--github-repo-user'
-)
-@click.option(
-    '--github-repo-path'
-)
-@click.option(
-    '--use-default',
-    is_flag=True
-)
-@click.option(
-    '--prompt',
-    is_flag=True
-)
+@dynamic_option('--github-repo-user', default='')
+@dynamic_option('--github-repo-path', default='')
+@click.option('--use-default', is_flag=True)
+@click.option('--prompt', is_flag=True)
 @click.pass_context
 def generate_app_lifecycle_mgmt(
     ctx,
@@ -188,163 +117,55 @@ def generate_app_lifecycle_mgmt(
     This product provisions a container based application lifecycle management service used
     to build and deploy codeontap managed applications.
     """
-    if not prompt:
-        generate_app_lifecycle_mgmt_backend.run(**kwargs)
-        return
-
-    prompt = utils.ClickMissingOptionsPrompt(ctx, kwargs, use_default)
-
-    prompt.product_id()
-    prompt.product_name(default=kwargs['product_id'])
-    prompt.domain_id()
-
-    prompt.solution_id(default='alm')
-    prompt.solution_name(default=kwargs['solution_id'])
-
-    prompt.environment_id(default='alm')
-    prompt.environment_name(default=kwargs['environment_id'])
-
-    prompt.segment_id(default='default')
-    prompt.segment_name(default=kwargs['segment_id'])
-
-    prompt.multi_az(default=False)
-    prompt.source_ip_network(default='0.0.0.0/0')
-    prompt.certificate_arn(default='arn:aws:acm:us-east-1:123456789:certificate/replace-this-with-your-arn')
-    prompt.certificate_cn(default='*.alm.local')
-    prompt.certificate_region(default=kwargs['certificate_arn'].split(':')[3])
-    prompt.slave_provider(default='ecs')
-    prompt.ecs_instance_type(default='t3.medium' if kwargs['slave_provider'] == 'ecs' else 'n/a')
-    prompt.security_realm(default='local')
-    prompt.auth_local_user(default='admin' if kwargs['security_realm'] == 'local' else 'n/a')
-    prompt.auth_local_pass(default='' if kwargs['security_realm'] == 'local' else 'n/a')
-
-    prompt.auth_github_client_id(default='' if kwargs['security_realm'] == 'github' else 'n/a')
-    prompt.auth_github_secret(default='' if kwargs['security_realm'] == 'github' else 'n/a')
-    prompt.auth_github_admin_role(default='' if kwargs['security_realm'] == 'github' else 'n/a')
-    prompt.github_repo_user(default='')
-    prompt.github_repo_pass(default='')
-    if prompt.confirm():
+    if not prompt or utils.confirm(kwargs):
         generate_app_lifecycle_mgmt_backend.run(**kwargs)
 
 
 @group.command('django')
-@click.option(
-    '--product-id'
-)
-@click.option(
-    '--product-name'
-)
-@click.option(
-    '--domain-id'
-)
-@click.option(
-    '--solution-id'
-)
-@click.option(
-    '--solution-name'
-)
-@click.option(
-    '--environment-id'
-)
-@click.option(
-    '--environment-name'
-)
-@click.option(
-    '--environment-log-level'
-)
-@click.option(
-    '--segment-id'
-)
-@click.option(
-    '--segment-name'
-)
-@click.option(
-    '--source-ip'
-)
-@click.option(
-    '--default-log-level'
-)
-@click.option(
-    '--database-size-gb'
-)
-@click.option(
-    '--database-postgres-version'
-)
-@click.option(
-    '--queue-redis-version'
-)
-@click.option(
+@dynamic_option('--product-id', required=True)
+@dynamic_option('--product-name', default=lambda p: p.product_id)
+@dynamic_option('--domain-id', default=lambda p: p.product_id)
+@dynamic_option('--solution-id', default='app')
+@dynamic_option('--solution-name', default=lambda p: p.solution_id)
+@dynamic_option('--environment-id', default='int')
+@dynamic_option('--environment-name', default='integration')
+@dynamic_option('--environment-log-level', default='info')
+@dynamic_option('--segment-id', default='default')
+@dynamic_option('--segment-name', default=lambda p: p.segment_id)
+@dynamic_option('--source-ip', default='_global')
+@dynamic_option('--default-log-level', default='info')
+@dynamic_option('--database-size-gb', type=click.INT, default=20)
+@dynamic_option('--database-postgres-version', default='9.6')
+@dynamic_option('--queue-redis-version', default='5.0.0')
+@dynamic_option(
     '--container-placement-strategy',
     type=click.Choice(
         [
             'daemon',
             'replica'
         ]
-    )
+    ),
+    default='daemon'
 )
-@click.option(
-    '--use-celery',
-    type=click.BOOL
-)
-@click.option(
-    '--celery-flower-username'
-)
-@click.option(
-    '--email-from'
-)
-@click.option(
-    '--email-server-from'
-)
-@click.option(
-    '--email-subject-prefix'
-)
-@click.option(
-    '--admin-url'
-)
-@click.option(
-    '--loadbalancer-healthcheck-path'
-)
-@click.option(
-    '--loadbalancer-healthcheck-healthy-responsecode'
-)
-@click.option(
-    '--public-media-paths'
-)
-@click.option(
-    '--allow-user-registration',
-    type=click.BOOL
-)
-@click.option(
-    '--sentry-dsn'
-)
-@click.option(
-    '--alerts-use-ktlg',
-    type=click.BOOL
-)
-@click.option(
-    '--alerts-ktlg-hostname'
-)
-@click.option(
-    '--alerts-ktlg-channel'
-)
-@click.option(
-    '--alerts-ktlg-hex-colorcode'
-)
-@click.option(
-    '--alerts-use-email',
-    type=click.BOOL
-)
-@click.option(
-    '--alerts-email-address'
-)
-@click.option(
-    '--use-default',
-    is_flag=True
-)
-@click.option(
-    '--prompt',
-    is_flag=True
-)
+@dynamic_option('--use-celery', is_flag=True)
+@dynamic_option('--celery-flower-username', default='admin', prompt=lambda p: p.use_celery)
+@dynamic_option('--email-from', default=lambda p: "%s - %s <noreply@local.host>" % (p.product_id, p.environment_name))
+@dynamic_option('--email-server-from', default=lambda p: p.email_from)
+@dynamic_option('--email-subject-prefix', default=lambda p: "%s - %s" % (p.product_id, p.environment_name))
+@dynamic_option('--admin-url', default='admin/')
+@dynamic_option('--loadbalancer-healthcheck-path', default='/healthcheck')
+@dynamic_option('--loadbalancer-healthcheck-healthy-responsecode', default=200, type=click.INT)
+@dynamic_option('--public-media-paths', default='static,media,CACHE')
+@dynamic_option('--allow-user-registration', is_flag=True)
+@dynamic_option('--sentry-dsn', default='')
+@dynamic_option('--alerts-use-ktlg', is_flag=True)
+@dynamic_option('--alerts-ktlg-hostname', default='', prompt=lambda p: p.alerts_use_ktlg)
+@dynamic_option('--alerts-ktlg-channel', default='', prompt=lambda p: p.alerts_use_ktlg)
+@dynamic_option('--alerts-ktlg-hex-colorcode', default='DC143C', prompt=lambda p: p.alerts_use_ktlg)
+@dynamic_option('--alerts-use-email', is_flag=True, prompt=lambda p: p.alerts_use_ktlg)
+@dynamic_option('--alerts-email-address', default='', prompt=lambda p: p.alerts_use_email)
+@click.option('--use-default', is_flag=True)
+@click.option('--prompt', is_flag=True)
 @click.pass_context
 def generate_django(
     ctx,
@@ -367,58 +188,5 @@ def generate_django(
     The template will create a single environment. If you want more you will need too add them manually.
     """
 
-    if not prompt:
-        generate_django_backend.run(**kwargs)
-        return
-
-    prompt = utils.ClickMissingOptionsPrompt(ctx, kwargs, use_default)
-    prompt.product_id()
-    prompt.product_name(default=kwargs['product_id'])
-    prompt.domain_id(default=kwargs['product_id'])
-
-    prompt.solution_id(default='app')
-    prompt.solution_name(default=kwargs['solution_id'])
-
-    prompt.environment_id(default='int')
-    prompt.environment_name(default='integration')
-    prompt.environment_log_level(default='info')
-
-    prompt.segment_id(default='default')
-    prompt.segment_name(default=kwargs['segment_id'])
-
-    prompt.source_ip(default='_global')
-
-    prompt.default_log_level(default='info')
-
-    prompt.database_size_gb(default=20)
-    prompt.database_postgres_version(default='9.6')
-    prompt.queue_redis_version(default='5.0.0')
-
-    prompt.container_placement_strategy()
-
-    if prompt.use_celery(default=False):
-        prompt.celery_flower_username(default='admin')
-
-    prompt.email_from(default="{} - {} <noreply@local.host>".format(kwargs['product_id'], kwargs['environment_name']))
-    prompt.email_server_from(default=kwargs['email_from'])
-    prompt.email_subject_prefix(default="{} - {}".format(kwargs['product_id'], kwargs['environment_name']))
-
-    prompt.admin_url(default='admin/')
-
-    prompt.loadbalancer_healthcheck_path(default='/healthcheck')
-    prompt.loadbalancer_healthcheck_healthy_responsecode(default=200)
-    prompt.public_media_paths(default='static,media,CACHE')
-
-    prompt.allow_user_registration(default=False)
-
-    prompt.sentry_dsn(default='')
-
-    if prompt.alerts_use_ktlg(default=False):
-        prompt.alerts_ktlg_hostname(default='')
-        prompt.alerts_ktlg_channel(default='')
-        prompt.alerts_ktlg_hex_colorcode(default='DC143C')
-        if prompt.alerts_use_email(default=False):
-            prompt.alerts_email_address(default='')
-
-    if prompt.confirm():
+    if not prompt or utils.confirm(kwargs):
         generate_django_backend.run(**kwargs)
