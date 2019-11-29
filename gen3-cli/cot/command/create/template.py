@@ -27,7 +27,6 @@ from cot.backend.create import template as create_template_backend
     help='template level',
     type=click.Choice(
         [
-            "blueprint",
             "account",
             "segment",
             "solution",

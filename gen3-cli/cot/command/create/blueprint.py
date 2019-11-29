@@ -1,6 +1,5 @@
-
 import click
-from .template import template
+from .template import template, create_template_backend
 
 
 @click.command(
@@ -12,8 +11,7 @@ from .template import template
         max_content_width=240
     )
 )
-@click.pass_context
-def blueprint(ctx, **kwargs):
+def blueprint(**kwargs):
     """
     Create a blueprint output of the segment
 
@@ -22,7 +20,7 @@ def blueprint(ctx, **kwargs):
 
     1. You must be in the directory specific to the level
     """
-    ctx.forward(template, level='blueprint')
+    create_template_backend.run(**kwargs)
 
 
 def filter_params(option):
@@ -31,8 +29,7 @@ def filter_params(option):
         'generation_framework',
         'generation_provider',
         'generation_testcase',
-        'generation_scenarios',
-        'deployment_unit'
+        'generation_scenarios'
     ]
 
 

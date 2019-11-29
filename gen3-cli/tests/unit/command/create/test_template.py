@@ -9,7 +9,6 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 
 ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'deployment_unit'
 ALL_VALID_OPTIONS['!-l,--level'] = [
-    "blueprint",
     "account",
     "segment",
     "solution",
