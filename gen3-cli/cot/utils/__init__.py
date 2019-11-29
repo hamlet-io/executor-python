@@ -1,4 +1,5 @@
 import os
+import click
 
 
 def cli_params_to_script_call(
@@ -27,3 +28,62 @@ def cli_params_to_script_call(
         options_list +
         args
     )
+
+
+class DynamicOption(click.Option):
+
+    class ContextValuesGetter:
+        def __init__(self, ctx):
+            self._ctx = ctx
+
+        def __getattribute__(self, name):
+            if name.startswith('_'):
+                return object.__getattribute__(self, name)
+            else:
+                return object.__getattribute__(self, '_ctx').params[name]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            **{
+                'show_default': True,
+                **kwargs
+            }
+        )
+
+    def get_default(self, ctx):
+        if callable(self.default):
+            self.default = self.default(self.ContextValuesGetter(ctx))
+        return self.default
+
+    @property
+    def prompt(self):
+        try:
+            if self.ctx.params.get('prompt'):
+                if self.ctx.params.get('use_default') and self.default is not None:
+                    return None
+                if callable(self.__prompt) and not self.__prompt(self.ContextValuesGetter(self.ctx)):
+                    return None
+                return 'Enter %s' % self.human_readable_name.replace('_', ' ')
+            else:
+                return None
+        except (AttributeError, KeyError):
+            return self.__prompt
+
+    @prompt.setter
+    def prompt(self, value):
+        self.__prompt = value
+
+    def full_process_value(self, ctx, value):
+        self.ctx = ctx
+        return super().full_process_value(ctx, value)
+
+
+def dynamic_option(*args, **kwargs):
+    def decorator(func):
+        return click.option(
+            *args,
+            **kwargs,
+            cls=DynamicOption
+        )(func)
+    return decorator
