@@ -15,7 +15,7 @@ def test_input_valid(create_reference_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
         os.mkdir('output_dir')
-        run_options_test(runner, create_reference, ALL_VALID_OPTIONS, create_reference_backend)
+        run_options_test(runner, create_reference, ALL_VALID_OPTIONS, create_reference_backend.run)
 
 
 @mock.patch('cot.command.create.reference.create_reference_backend')
@@ -26,7 +26,7 @@ def test_input_validation(create_reference_backend):
         run_validatable_option_test(
             runner,
             create_reference,
-            create_reference_backend,
+            create_reference_backend.run,
             {
                 '-t': 'type'
             },

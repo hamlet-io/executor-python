@@ -257,7 +257,7 @@ def run_single_validatable_option_test(
         options_dict_to_list(options)
     )
     assert result.exit_code == 2, result.output
-    assert runner_mock.run.call_count == 0
+    assert runner_mock.call_count == 0
     logger.info('valid value:%s', correct)
     options[key] = correct
     result = runner.invoke(
@@ -265,8 +265,8 @@ def run_single_validatable_option_test(
         options_dict_to_list(options)
     )
     assert result.exit_code == 0, result.output
-    assert runner_mock.run.call_count == 1
-    runner_mock.run.call_count = 0
+    assert runner_mock.call_count == 1
+    runner_mock.call_count = 0
     logger.info('[success]')
 
 
@@ -304,17 +304,17 @@ def run_options_test(runner, cmd, options, runner_mock):
         result = runner.invoke(cmd, args)
         if error:
             assert result.exit_code == 2, result.output
-            assert runner_mock.run.call_count == 0
+            assert runner_mock.call_count == 0
         else:
             assert result.exit_code == 0, result.output
-            assert runner_mock.run.call_count == 1
-            runner_mock.run.call_count = 0
+            assert runner_mock.call_count == 1
+            runner_mock.call_count = 0
 
     for args in generate_test_options_collection(options):
         result = runner.invoke(cmd, args)
         assert result.exit_code == 0, result.output
-        assert runner_mock.run.call_count == 1
-        runner_mock.run.call_count = 0
+        assert runner_mock.call_count == 1
+        runner_mock.call_count = 0
 
 
 def test_run_options_test():
@@ -337,7 +337,7 @@ def test_run_options_test():
     )
     @click.option('-f', '--f', is_flag=True)
     def test_command(a, b, c, f):
-        runner_mock.run()
+        runner_mock()
 
     def run_test(options, error=True):
         if error:
@@ -400,7 +400,7 @@ def test_validatable_options_test():
     @click.option('-r', required=True, type=click.INT)
     @click.option('-o', type=click.INT)
     def test_command(r, o):
-        runner_mock.run()
+        runner_mock()
 
     def run_test(options, error=True):
         def start():
