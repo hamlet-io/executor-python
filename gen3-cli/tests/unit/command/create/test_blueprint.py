@@ -16,4 +16,4 @@ ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarious'
 
 @mock.patch('cot.command.create.blueprint.create_template_backend')
 def test_input_valid(create_template_backend):
-    run_options_test(CliRunner(), create_blueprint, ALL_VALID_OPTIONS, create_template_backend)
+    run_options_test(CliRunner(), create_blueprint, ALL_VALID_OPTIONS, create_template_backend.run)

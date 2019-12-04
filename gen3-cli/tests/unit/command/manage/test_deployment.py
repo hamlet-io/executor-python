@@ -29,7 +29,7 @@ ALL_VALID_OPTIONS['-z,--deployment-unit-subset'] = 'subset'
 
 @mock.patch('cot.command.manage.deployment.manage_deployment_backend')
 def test_input_valid(manage_deployment_backend):
-    run_options_test(CliRunner(), manage_deployment, ALL_VALID_OPTIONS, manage_deployment_backend)
+    run_options_test(CliRunner(), manage_deployment, ALL_VALID_OPTIONS, manage_deployment_backend.run)
 
 
 @mock.patch('cot.command.manage.deployment.manage_deployment_backend')
@@ -38,7 +38,7 @@ def test_input_validation(manage_deployment_backend):
     run_validatable_option_test(
         runner,
         manage_deployment,
-        manage_deployment_backend,
+        manage_deployment_backend.run,
         {
             '-u': 'unit',
             '-l': 'segment'

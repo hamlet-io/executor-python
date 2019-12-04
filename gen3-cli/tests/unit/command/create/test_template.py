@@ -29,7 +29,7 @@ ALL_VALID_OPTIONS['-i,--generation-input-source'] = 'generation_input_source'
 
 @mock.patch('cot.command.create.template.create_template_backend')
 def test_input_valid(create_template_backend):
-    run_options_test(CliRunner(), create_template, ALL_VALID_OPTIONS, create_template_backend)
+    run_options_test(CliRunner(), create_template, ALL_VALID_OPTIONS, create_template_backend.run)
 
 
 @mock.patch('cot.command.create.template.create_template_backend')
@@ -38,7 +38,7 @@ def test_input_validation(create_template_backend):
     run_validatable_option_test(
         runner,
         create_template,
-        create_template_backend,
+        create_template_backend.run,
         {
             '-u': 'unit',
             '-l': 'blueprint'

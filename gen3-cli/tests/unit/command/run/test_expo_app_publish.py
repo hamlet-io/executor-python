@@ -18,7 +18,7 @@ ALL_VALID_OPTIONS['-q,--qr-build-formats'] = 'formats'
 
 @mock.patch('cot.command.run.expo_app_publish.run_expo_app_publish_backend')
 def test_input_valid(run_expo_app_publish_backend):
-    run_options_test(CliRunner(), run_expo_app_publish, ALL_VALID_OPTIONS, run_expo_app_publish_backend)
+    run_options_test(CliRunner(), run_expo_app_publish, ALL_VALID_OPTIONS, run_expo_app_publish_backend.run)
 
 
 @mock.patch('cot.command.run.expo_app_publish.run_expo_app_publish_backend')
@@ -27,7 +27,7 @@ def test_input_validation(run_expo_app_publish_backend):
     run_validatable_option_test(
         runner,
         run_expo_app_publish,
-        run_expo_app_publish_backend,
+        run_expo_app_publish_backend.run,
         {
             '-u': 'unit',
         },

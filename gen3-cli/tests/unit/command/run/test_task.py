@@ -20,7 +20,7 @@ ALL_VALID_OPTIONS['-y,--version'] = 'task_version'
 
 @mock.patch('cot.command.run.task.run_task_backend')
 def test_input_valid(run_task_backend):
-    run_options_test(CliRunner(), run_task, ALL_VALID_OPTIONS, run_task_backend)
+    run_options_test(CliRunner(), run_task, ALL_VALID_OPTIONS, run_task_backend.run)
 
 
 @mock.patch('cot.command.run.task.run_task_backend')
@@ -29,7 +29,7 @@ def test_input_validation(run_task_backend):
     run_validatable_option_test(
         runner,
         run_task,
-        run_task_backend,
+        run_task_backend.run,
         {
             '-i': 'container_name',
             '-w': 'task_name',
