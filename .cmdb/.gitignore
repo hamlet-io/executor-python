@@ -1,4 +1,3 @@
-# CodeOnTap CMDB templates and cache should be generated on demand
-cache
-**/infrastructure/**
-!**/infrastructure/**/seg-cert*
+*
+!.gitignore
+!root.json
