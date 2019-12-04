@@ -1,4 +1,0 @@
-{
-    "JENKINSHOMEVOLUME" : "/mnt/clusterstorage/jenkins_home",
-    "CODEONTAPVOLUME"   : "/mnt/clusterstorage/codeontap"
-}
