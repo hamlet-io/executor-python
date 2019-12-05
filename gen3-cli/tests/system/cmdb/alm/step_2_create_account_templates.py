@@ -2,41 +2,28 @@ import os
 import json
 from unittest import mock
 from cot.backend.create import template as create_template_backend
+from .conftest import conf
 
 
-TENANT = 'test_tenant'
-ACCOUNT = 'test_account'
-PRODUCT = 'test_product'
+ACCOUNT = conf['cmdb']['account']['account_name']
+LEVEL = 'account'
 
 
 #  test is made accordingly to quickstart guide
 @mock.patch.dict(
     os.environ,
     {
-        'ACCOUNT': ACCOUNT,
-        'GENERATION_INPUT_SOURCE_DEFAULT': 'mock'
+        'ACCOUNT': ACCOUNT
     }
 )
-def run(cmdb, clear_cmdb):
-    # clearing all dirs which should be empty on fresh start
-    clear_cmdb('cache')
-    clear_cmdb('accounts', ACCOUNT, 'infrastructure')
-
-    # reading region because it the part of the filenames
-    with cmdb('accounts', TENANT):
-        with open('tenant.json') as f:
-            tenant_json = json.load(f)
-
-    account_region = tenant_json['Account']['Region']
-
-    # cd to level dir
+def run(cmdb):
     with cmdb('accounts', ACCOUNT, 'config'):
         create_template_backend.run(
-            level='account',
+            level=LEVEL,
             deployment_unit='audit'
         )
         create_template_backend.run(
-            level='account',
+            level=LEVEL,
             deployment_unit='s3'
         )
 
@@ -45,10 +32,10 @@ def run(cmdb, clear_cmdb):
 
         def prefix(level):
             return [
-                'account',
+                LEVEL,
                 level,
                 ACCOUNT,
-                account_region,
+                conf['cmdb']['tenant']['default_region'],
             ]
 
         assert os.path.exists(
