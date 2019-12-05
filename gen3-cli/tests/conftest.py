@@ -42,9 +42,12 @@ def __clear_dir(dir):
             os.remove(entry)
 
 
-def __clear_cmdb_dir(*args):
-    with __CMDBContext():
-        __clear_dir(os.path.join(*args))
+def __clear_cmdb(*args):
+    with __CMDBContext() as path:
+        if not args:
+            __clear_dir(path())
+        else:
+            __clear_dir(os.path.join(*args))
 
 
 @pytest.fixture(scope='session')
@@ -53,5 +56,5 @@ def cmdb():
 
 
 @pytest.fixture(scope='session')
-def clear_cmdb_dir():
-    return __clear_cmdb_dir
+def clear_cmdb():
+    return __clear_cmdb

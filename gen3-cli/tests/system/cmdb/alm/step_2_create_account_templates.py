@@ -17,10 +17,10 @@ PRODUCT = 'test_product'
         'GENERATION_INPUT_SOURCE_DEFAULT': 'mock'
     }
 )
-def test_account(cmdb, clear_cmdb_dir):
+def run(cmdb, clear_cmdb):
     # clearing all dirs which should be empty on fresh start
-    clear_cmdb_dir('cache')
-    clear_cmdb_dir('accounts', ACCOUNT, 'infrastructure')
+    clear_cmdb('cache')
+    clear_cmdb('accounts', ACCOUNT, 'infrastructure')
 
     # reading region because it the part of the filenames
     with cmdb('accounts', TENANT):
