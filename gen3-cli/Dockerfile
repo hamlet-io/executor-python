@@ -7,10 +7,9 @@ RUN pip install -r requirements/prod.txt -r requirements/dev.txt
 # installs ruby because we need a gem to validate our templates
 COPY docker-install-ruby.sh /gen3-cli
 RUN bash docker-install-ruby.sh
-# stash files to prevent deletion when host volume mounts
-# useful when you want to break stuff using your favorite editor
-# which is not vim or emac.
-RUN mv /opt/codeontap /codeontap
+
+COPY docker-postinstall.sh /gen3-cli/
+RUN bash docker-postinstall.sh
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONPATH "$PYTHONPATH:/gen3-cli"
