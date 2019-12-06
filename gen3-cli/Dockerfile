@@ -5,7 +5,7 @@ WORKDIR /gen3-cli
 COPY requirements /gen3-cli/requirements
 RUN pip install -r requirements/prod.txt -r requirements/dev.txt
 # installs ruby because we need a gem to validate our templates
-COPY docker-install.sh /gen3-cli
+COPY docker-install-ruby.sh /gen3-cli
 RUN bash docker-install-ruby.sh
 # stash files to prevent deletion when host volume mounts
 # useful when you want to break stuff using your favorite editor

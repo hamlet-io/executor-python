@@ -1,11 +1,9 @@
 import os
 import json
 import subprocess
-from cot.loggers import logging
-logger = logging.getLogger()
 
 
-def find_syntax_errors(filename):
+def find_linter_errors(filename):
     cmd = ' '.join([
         'cfn-lint',
         '-f',
@@ -54,9 +52,9 @@ DATA_PATH = 'tests/data/system/testcases'
 
 
 # just a quick tests to check that everything is working
-def test_find_syntax_errors():
-    assert not find_syntax_errors(os.path.join(DATA_PATH, 'valid-syntax-cf.yml'))
-    assert find_syntax_errors(os.path.join(DATA_PATH, 'invalid-syntax-cf.yml'))
+def test_find_linter_errors():
+    assert not find_linter_errors(os.path.join(DATA_PATH, 'valid-syntax-cf.yml'))
+    assert find_linter_errors(os.path.join(DATA_PATH, 'invalid-syntax-cf.yml'))
 
 
 # another quick test
