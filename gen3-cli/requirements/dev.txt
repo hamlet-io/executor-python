@@ -5,3 +5,4 @@ setuptools
 flake8
 wheel
 cfn-lint==0.25.7
+cfn-flip==1.2.2
