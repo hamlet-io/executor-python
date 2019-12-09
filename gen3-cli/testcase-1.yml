@@ -5,6 +5,7 @@
         cmd: echo "Hello $NAME"
         env:
           NAME: TEST ONE
+          VAR: RANDOM
     test:
       filename: /gen3-cli/tests/data/system/testcases/valid-syntax-cf.yml
       exists:
@@ -34,7 +35,7 @@
   testTwo:
     setup:
       -
-        cmd: echo "Hello $NAME"
+        cmd: nit
         env:
           NAME: TEST TWO
     test:
