@@ -6,5 +6,5 @@ mv /opt/codeontap /codeontap
 echo "Current /codeontap content"
 tree /codeontap -L 2
 # make a command from a test module, just for demo purposes
-echo "Creating cot-tescase bin file"
-ln -s /gen3-cli/cot-testcase.sh /bin/cot-testcase
+echo "Creating cot-tescases bin file"
+ln -s /gen3-cli/cot-testcase.sh /bin/cot-testcases
