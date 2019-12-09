@@ -1,0 +1,60 @@
+{
+    "results": {
+        "testOne": {
+            "status": "PASSED",
+            "errors": null
+        },
+        "testTwo": {
+            "status": "FAILED",
+            "errors": {
+                "vulnerability": [
+                    {
+                        "id": "F1000",
+                        "type": "FAIL",
+                        "message": "Missing egress rule means all traffic is allowed outbound.  Make this explicit if it is desired configuration",
+                        "logical_resource_ids": [
+                            "sg"
+                        ],
+                        "line_numbers": [
+                            4
+                        ]
+                    }
+                ]
+            }
+        },
+        "testThree": {
+            "status": "FAILED",
+            "errors": {
+                "lint": [
+                    {
+                        "Filename": "/gen3-cli/tests/data/system/testcases/invalid-syntax-cf.yml",
+                        "Level": "Error",
+                        "Location": {
+                            "End": {
+                                "ColumnNumber": 12,
+                                "LineNumber": 17
+                            },
+                            "Path": [
+                                "Parameters",
+                                "TestEnvironment",
+                                "Default"
+                            ],
+                            "Start": {
+                                "ColumnNumber": 5,
+                                "LineNumber": 17
+                            }
+                        },
+                        "Message": "Default should be a value within AllowedValues",
+                        "Rule": {
+                            "Description": "Making sure the parameters have a default value inside AllowedValues, MinValue, MaxValue, AllowedPattern",
+                            "Id": "E2015",
+                            "ShortDescription": "Default value is within parameter constraints",
+                            "Source": "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "status": "FAILED"
+}
