@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: make build
+    - name: Run the compose network
+      run: make run
+    - name: Run the tests
+      run: docker-compose exec gen3-cli /bin/bash -c 'make tests'
