@@ -1,5 +1,5 @@
 # NOTE: all JSON scalar values must be in json format. Ex. true vs True
-cot-testcase \
+cot-testcases test \
   --no-lint \
   --file tests/data/system/testcases/valid-syntax-cf.yml \
   --match Parameters.ApplicationName.Type String \
