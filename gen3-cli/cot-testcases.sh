@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python /gen3-cli/tests/system/testcases $@
+python -m tests.system.testcases $@
