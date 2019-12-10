@@ -1,5 +1,5 @@
 ---
-  testThree:
+  testFailed:
     setup:
       -
         cmd: echo "Hello $NAME"

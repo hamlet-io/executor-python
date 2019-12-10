@@ -1,5 +1,5 @@
 ---
-  testOne:
+  testSuccess:
     setup:
       -
         cmd: echo "Hello $NAME"
@@ -37,12 +37,3 @@
         -
           - Parameters.Environment.AllowedValues
           - 2
-  testTwo:
-    setup:
-      -
-        cmd: nit
-        env:
-          NAME: TEST TWO
-    test:
-      filename: /gen3-cli/tests/data/system/testcases/insecure-cf.yml
-      no_lint: True
