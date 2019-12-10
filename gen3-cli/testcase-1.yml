@@ -6,6 +6,11 @@
         env:
           NAME: TEST ONE
           VAR: RANDOM
+      -
+        cmd: echo "Hello $NAME"
+        env:
+          NAME: TEST ONE VAR CHANGED
+
     test:
       filename: /gen3-cli/tests/data/system/testcases/valid-syntax-cf.yml
       exists:
