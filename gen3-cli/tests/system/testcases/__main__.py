@@ -62,6 +62,88 @@ class Echo:
         self.echo(text, 'yellow')
 
 
+def __compose_config(config_filenames):
+    conf = dict()
+    for filename in config_filenames:
+        with open(filename, 'rb') as f:
+            try:
+                conf.update(**json.load(f))
+            except ValueError:
+                pass
+        with open(filename, 'rb') as f:
+            try:
+                conf.update(**yaml.load(f, yaml.loader.SafeLoader))
+            except yaml.scanner.ScannerError:
+                pass
+    return conf
+
+
+def __run_testcase(
+    results,
+    casename,
+    caseconf,
+    casenumber,
+    total,
+    echo
+):
+    passed = True
+    echo.info('Starting testcase {} [{}/{}]'.format(casename, casenumber, total))
+    with echo.level():
+        # running setup commands
+        test_kwargs = caseconf['test']
+        setup = caseconf['setup']
+        echo.info('Starting setup')
+        with echo.level():
+            setup_step = 0
+            for setup_stage in setup:
+                setup_step += 1
+                echo.info('Step [{}/{}]'.format(setup_step, len(setup)))
+                env = setup_stage.get('env', {})
+                try:
+                    cmd = setup_stage['cmd']
+                except KeyError as e:
+                    echo.force_error('Setup step error in {} testcase. No "cmd" key'.format(casename))
+                    raise SystemExit(2) from e
+                with echo.level():
+                    with mock.patch.dict('os.environ', env):
+                        if env:
+                            echo.info('Updating env...'.format(env))
+                            with echo.level():
+                                for key, value in env.items():
+                                    echo.info('{}={}'.format(key, value), alt=True)
+                        echo.info('Running cmd...')
+                        with echo.level():
+                            result = subprocess.run(
+                                cmd,
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE
+                            )
+                            echo.info(cmd, alt=True)
+                            if result.returncode == 0:
+                                echo.success("OK".format(cmd))
+                            else:
+                                echo.error("FAILED".format(cmd))
+                            cmd_output = (result.stdout or result.stderr).decode('utf-8')
+                            if cmd_output.endswith('\n'):
+                                cmd_output = cmd_output[:-1]
+                            echo.echo(cmd_output)
+            echo.info('Setup completed')
+        errors = __test_template(**test_kwargs, verbose=echo._show, _echo_level=echo._level)
+        with echo.level(-1):
+            echo.info('RESULT:')
+            with echo.level():
+                if not errors:
+                    results[casename] = dict(status='PASSED', errors=None)
+                    echo.success('PASSED!')
+                else:
+                    results[casename] = dict(status='FAILED', errors=errors)
+                    passed = False
+                    echo.error('FAILED!')
+                echo.info('\n')
+    return passed
+
+
 @click.group()
 def root():
     pass
@@ -202,81 +284,17 @@ def run_testcases(config_filenames, output_filename, verbose):
 
     """
     # composing config
+    conf = __compose_config(config_filenames)
     echo = Echo(verbose)
-    conf = dict()
-    for filename in config_filenames:
-        with open(filename, 'rb') as f:
-            try:
-                conf.update(**json.load(f))
-            except ValueError:
-                pass
-        with open(filename, 'rb') as f:
-            try:
-                conf.update(**yaml.load(f, yaml.loader.SafeLoader))
-            except yaml.scanner.ScannerError:
-                pass
-
     # running tests from config
     results = dict()
     passed = True
     casenumber = 0
+
     for casename, caseconf in conf.items():
         casenumber += 1
-        echo.info('Starting testcase {}[{}/{}]'.format(casename, casenumber, len(conf)))
-        with echo.level():
-            # running setup commands
-            test_kwargs = caseconf['test']
-            setup = caseconf['setup']
-            echo.info('Starting setup')
-            with echo.level():
-                for setup_stage in setup:
-                    env = setup_stage.get('env', {})
-                    try:
-                        cmd = setup_stage['cmd']
-                    except KeyError:
-                        echo.force_error(
-                            'Setup step error in {} testcase. No "cmd" key'.format(casename)
-                        )
-                        raise SystemExit(2)
-                    with mock.patch.dict('os.environ', env):
-                        if env:
-                            echo.info('Updating env...'.format(env))
-                            with echo.level():
-                                for key, value in env.items():
-                                    echo.info('{}={}'.format(key, value), alt=True)
-                        echo.info('Running cmd...')
-                        with echo.level():
-                            result = subprocess.run(
-                                cmd,
-                                shell=True,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE
-                            )
-                            if result.returncode == 0:
-                                echo.success("{}:OK!".format(cmd))
-                            else:
-                                echo.error("{}:FAILED!".format(cmd))
-                            echo.echo((result.stdout or result.stderr).decode('utf-8'))
-                echo.info('Setup completed')
-            echo.info('Testing...')
-            errors = test_template(**test_kwargs, verbose=verbose, _echo_level=echo._level)
-            with echo.level(-1):
-                echo.info('RESULT:')
-                with echo.level():
-                    if not errors:
-                        results[casename] = dict(
-                            status='PASSED',
-                            errors=None
-                        )
-                        echo.success('PASSED!')
-                    else:
-                        results[casename] = dict(
-                            status='FAILED',
-                            errors=errors
-                        )
-                        passed = False
-                        echo.error('FAILED!')
-                    echo.info('\n')
+        passed = __run_testcase(results, casename, caseconf, casenumber, len(conf), echo) and passed
+
     # selecting output method
     output = dict(results=results)
     output['status'] = "PASSED" if passed else "FAILED"
@@ -377,7 +395,7 @@ def test_signle_template(**kwargs):
         }
     """
     try:
-        output = test_template(**kwargs)
+        output = __test_template(**kwargs)
     except ValueError as e:
         click.echo(str(e))
         raise SystemExit(2)
@@ -388,7 +406,7 @@ def test_signle_template(**kwargs):
     click.echo('OK')
 
 
-def test_template(
+def __test_template(
     filename=None,
     # rules
     match=None,
