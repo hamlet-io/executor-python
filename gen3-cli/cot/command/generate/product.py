@@ -7,7 +7,7 @@ from cot.backend.generate.product import app_lifecycle_mgmt as generate_app_life
 
 
 @click.group('product')
-def group():
+def group():  # pragma: no cover
     pass
 
 
