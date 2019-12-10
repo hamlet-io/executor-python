@@ -6,14 +6,14 @@ from cot.command.generate import utils
 
 
 @click.group('cmdb')
-def group():
+def group():  # pragma: no cover
     pass
 
 
 @group.command('account')
 @dynamic_option('--account-id', required=True)
 @dynamic_option('--account-name', default=lambda p: p.account_id)
-@dynamic_option('--account-seed', default=generate_account_backend.generate_account_seed())
+@dynamic_option('--account-seed', default=lambda p: generate_account_backend.generate_account_seed())
 @dynamic_option('--account-type', default='aws')
 @dynamic_option('--aws-account-id', default=lambda p: '' if p.account_type == 'aws' else 'n/a')
 @click.option('--prompt', is_flag=True)
