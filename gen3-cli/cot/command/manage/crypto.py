@@ -113,4 +113,4 @@ def crypto(**kwargs):
        visibility flag is set
     8. Decrypted files will have a ".decrypted" extension added so they can be ignored by git
     """
-    manage_crypto_backend.run(**kwargs)
+    manage_crypto_backend.run(**kwargs, _is_cli=True)

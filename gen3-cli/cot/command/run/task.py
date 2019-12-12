@@ -80,4 +80,4 @@ def task(**kwargs):
     1. The ECS cluster is found using the provided tier and component combined with the product and segment
     2. ENV and VALUE should always appear in pairs
     """
-    run_task_backend.run(**kwargs)
+    run_task_backend.run(**kwargs, _is_cli=True)

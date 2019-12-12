@@ -36,4 +36,4 @@ def lambda_func(**kwargs):
     """
     Run an AWS Lambda Function
     """
-    run_lambda_func_backend.run(**kwargs)
+    run_lambda_func_backend.run(**kwargs, _is_cli=True)

@@ -46,4 +46,4 @@ def file_crypto(**kwargs):
     NOTES:
     1. If no operation is provided, the current file contents are displayed
     """
-    manage_file_crypto_backend.run(**kwargs)
+    manage_file_crypto_backend.run(**kwargs, _is_cli=True)

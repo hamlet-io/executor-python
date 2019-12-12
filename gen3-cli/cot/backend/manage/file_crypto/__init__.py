@@ -1,25 +1,17 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
     decrypt=None,
     encrypt=None,
     crypto_file=None,
-    update=None
+    update=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageFileCrypto.sh',
-        options={
-            '-d': decrypt,
-            '-e': encrypt,
-            '-f': crypto_file,
-            '-u': update
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-d': decrypt,
+        '-e': encrypt,
+        '-f': crypto_file,
+        '-u': update
+    }
+    runner.run('manageFileCrypto.sh', [], options, _is_cli)

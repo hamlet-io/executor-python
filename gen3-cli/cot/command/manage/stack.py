@@ -95,4 +95,4 @@ def stack(**kwargs):
     6. A dryrun creates a change set, then displays it. It only applies when
        the STACK_OPERATION=update
     """
-    manage_stack_backend.run(**kwargs)
+    manage_stack_backend.run(**kwargs, _is_cli=True)

@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -10,22 +8,16 @@ def run(
     credential_path=None,
     credential_secret=None,
     visible=None,
-    credential_type=None
+    credential_type=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageCredentialCrypto.sh',
-        options={
-            '-e': credential_email,
-            '-f': crypto_file,
-            '-i': credential_id,
-            '-n': credential_path,
-            '-v': visible,
-            '-y': credential_type,
-            '-s': credential_secret
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-e': credential_email,
+        '-f': crypto_file,
+        '-i': credential_id,
+        '-n': credential_path,
+        '-v': visible,
+        '-y': credential_type,
+        '-s': credential_secret
+    }
+    runner.run('manageCredentialCrypto.sh', [], options, _is_cli)

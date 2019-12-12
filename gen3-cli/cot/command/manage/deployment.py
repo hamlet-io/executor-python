@@ -91,4 +91,4 @@ def deployment(**kwargs):
     """
     Manage an Azure Resource Manager (ARM) deployment
     """
-    manage_deployment_backend.run(**kwargs)
+    manage_deployment_backend.run(**kwargs, _is_cli=True)

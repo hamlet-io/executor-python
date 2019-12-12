@@ -73,4 +73,4 @@ def credentials_crypto(**kwargs):
     4. For CREDENTIAL_TYPE of ${CREDENTIAL_TYPE_API}, Id Attribute = AccessKey, Secret Attribute = SecretKey
     5. For CREDENTIAL_TYPE of ${CREDENTIAL_TYPE_ENV}, Id Attribute = ACCESS_KEY, Secret Attribute = SECRET_KEY
     """
-    manage_credentials_crypto_backend.run(**kwargs)
+    manage_credentials_crypto_backend.run(**kwargs, _is_cli=True)

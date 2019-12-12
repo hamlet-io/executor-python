@@ -36,4 +36,4 @@ def sentry_release(**kwargs):
     """
     Upload sourcemap files to sentry for a specific release
     """
-    run_sentry_release_backend.run(**kwargs)
+    run_sentry_release_backend.run(**kwargs, _is_cli=True)

@@ -20,7 +20,7 @@ def blueprint(**kwargs):
 
     1. You must be in the directory specific to the level
     """
-    create_template_backend.run(**kwargs)
+    create_template_backend.run(**kwargs, _is_cli=True)
 
 
 def filter_params(option):

@@ -1,21 +1,13 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
     reference_type=None,
-    reference_output_dir=None
+    reference_output_dir=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'createReference.sh',
-        options={
-            '-t': reference_type,
-            '-o': reference_output_dir
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-t': reference_type,
+        '-o': reference_output_dir
+    }
+    runner.run('createReference.sh', [], options, _is_cli)
