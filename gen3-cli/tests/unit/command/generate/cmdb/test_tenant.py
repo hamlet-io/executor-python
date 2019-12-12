@@ -15,7 +15,6 @@ OPTIONS['--audit-log-offline-days,audit_log_offline_days'] = (11, 90)
 
 @mock.patch('cot.command.generate.cmdb.generate_tenant_backend')
 def test(generate_tenant_backend):
-    
     run_generate_command_test(
         CliRunner(),
         generate_tenant,
