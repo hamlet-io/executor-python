@@ -1,5 +1,5 @@
 import click
-from cot.utils import dynamic_option
+from cot.utils import dynamic_option, DynamicCommand
 from cot.command.generate import utils
 from cot.backend.generate.product import django as generate_django_backend
 from cot.backend.generate.product import base as generate_base_backend
@@ -11,7 +11,7 @@ def group():  # pragma: no cover
     pass
 
 
-@group.command('base')
+@group.command('base', cls=DynamicCommand)
 @dynamic_option('--product-id', required=True)
 @dynamic_option('--product-name', default=lambda p: p.product_id)
 @dynamic_option('--domain-id', default='')
@@ -39,7 +39,7 @@ def generate_base(
         generate_base_backend.run(**kwargs)
 
 
-@group.command('app-lifecycle-mgmt')
+@group.command('app-lifecycle-mgmt', cls=DynamicCommand)
 @dynamic_option('--product-id', required=True)
 @dynamic_option('--product-name', default=lambda p: p.product_id)
 @dynamic_option('--domain-id', default='')
@@ -64,7 +64,7 @@ def generate_base(
     ),
     default='ecs'
 )
-@dynamic_option('--ecs_instance_type', default=lambda p: 't3.medium' if p.slave_provider == 'ecs' else 'n/a')
+@dynamic_option('--ecs-instance-type', default=lambda p: 't3.medium' if p.slave_provider == 'ecs' else 'n/a')
 @dynamic_option(
     '--security-realm',
     type=click.Choice(
@@ -121,7 +121,7 @@ def generate_app_lifecycle_mgmt(
         generate_app_lifecycle_mgmt_backend.run(**kwargs)
 
 
-@group.command('django')
+@group.command('django', cls=DynamicCommand)
 @dynamic_option('--product-id', required=True)
 @dynamic_option('--product-name', default=lambda p: p.product_id)
 @dynamic_option('--domain-id', default=lambda p: p.product_id)
