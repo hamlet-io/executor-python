@@ -1,7 +1,7 @@
 import click
 from cot.backend.generate.cmdb import account as generate_account_backend
 from cot.backend.generate.cmdb import tenant as generate_tenant_backend
-from cot.utils import dynamic_option
+from cot.utils import dynamic_option, DynamicCommand
 from cot.command.generate import utils
 
 
@@ -10,7 +10,7 @@ def group():  # pragma: no cover
     pass
 
 
-@group.command('account')
+@group.command('account', cls=DynamicCommand)
 @dynamic_option('--account-id', required=True)
 @dynamic_option('--account-name', default=lambda p: p.account_id)
 @dynamic_option('--account-seed', default=lambda p: generate_account_backend.generate_account_seed())
@@ -35,7 +35,7 @@ def generate_account(
         generate_account_backend.run(**kwargs)
 
 
-@group.command('tenant')
+@group.command('tenant', cls=DynamicCommand)
 @dynamic_option('--tenant-id', required=True)
 @dynamic_option('--tenant-name', default=lambda p: p.tenant_id)
 @dynamic_option('--domain-stem', default='')

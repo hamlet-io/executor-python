@@ -30,6 +30,18 @@ def cli_params_to_script_call(
     )
 
 
+class DynamicCommand(click.Command):
+    def invoke(self, ctx):
+        if self.callback is not None:
+            for param in self.params:
+                try:
+                    ctx.params[param.name]
+                except KeyError:
+                    if param.default is not None:
+                        ctx.param[param.name] == param.default
+        return super().invoke(ctx)
+
+
 class DynamicOption(click.Option):
 
     class ContextValuesGetter:
@@ -53,7 +65,7 @@ class DynamicOption(click.Option):
 
     def get_default(self, ctx):
         if callable(self.default):
-            self.default = self.default(self.ContextValuesGetter(ctx))
+            return self.default(self.ContextValuesGetter(ctx))
         return self.default
 
     @property
