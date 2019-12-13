@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -9,21 +7,15 @@ def run(
     instance=None,
     version=None,
     pipeline_status_only=None,
-    pipeline_allow_concurrent=None
+    pipeline_allow_concurrent=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runPipeline.sh',
-        options={
-            '-i': component,
-            '-t': tier,
-            '-x': instance,
-            '-y': version,
-            '-s': pipeline_status_only,
-            '-c': pipeline_allow_concurrent
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-i': component,
+        '-t': tier,
+        '-x': instance,
+        '-y': version,
+        '-s': pipeline_status_only,
+        '-c': pipeline_allow_concurrent
+    }
+    runner.run('runPipeline.sh', [], options, _is_cli)

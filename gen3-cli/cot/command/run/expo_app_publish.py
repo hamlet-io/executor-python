@@ -69,4 +69,4 @@ def expo_app_publish(**kwargs):
     NOTES:
     RELEASE_CHANNEL default is environment
     """
-    run_expo_app_publish_backend.run(**kwargs)
+    run_expo_app_publish_backend.run(**kwargs, _is_cli=True)

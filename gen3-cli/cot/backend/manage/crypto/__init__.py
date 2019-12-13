@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -15,27 +13,21 @@ def run(
     quiet=None,
     crypto_text=None,
     update=None,
-    visible=None
+    visible=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageCrypto.sh',
-        options={
-            '-a': alias,
-            '-b': base64_decode,
-            '-d': decrypt,
-            '-e': encrypt,
-            '-f': crypto_file,
-            '-k': key_id,
-            '-n': no_alteration,
-            '-p': json_path,
-            '-q': quiet,
-            '-t': crypto_text,
-            '-u': update,
-            '-v': visible
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-a': alias,
+        '-b': base64_decode,
+        '-d': decrypt,
+        '-e': encrypt,
+        '-f': crypto_file,
+        '-k': key_id,
+        '-n': no_alteration,
+        '-p': json_path,
+        '-q': quiet,
+        '-t': crypto_text,
+        '-u': update,
+        '-v': visible
+    }
+    runner.run('manageCrypto.sh', [], options, _is_cli)

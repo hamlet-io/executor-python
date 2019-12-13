@@ -30,4 +30,4 @@ def reference(**kwargs):
     """
     Create a Codeontap Component Reference
     """
-    create_reference_backend.run(**kwargs)
+    create_reference_backend.run(**kwargs, _is_cli=True)

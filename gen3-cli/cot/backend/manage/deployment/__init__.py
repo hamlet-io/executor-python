@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -13,25 +11,19 @@ def run(
     deployment_scope=None,
     deployment_unit=None,
     deployment_wait=None,
-    deployment_unit_subset=None
+    deployment_unit_subset=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageDeployment.sh',
-        options={
-            '-d': delete,
-            '-i': deployment_initiate,
-            '-m': deployment_monitor,
-            '-l': level,
-            '-n': deployment_name,
-            '-r': region,
-            '-s': deployment_scope,
-            '-u': deployment_unit,
-            '-w': deployment_wait,
-            '-z': deployment_unit_subset
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-d': delete,
+        '-i': deployment_initiate,
+        '-m': deployment_monitor,
+        '-l': level,
+        '-n': deployment_name,
+        '-r': region,
+        '-s': deployment_scope,
+        '-u': deployment_unit,
+        '-w': deployment_wait,
+        '-z': deployment_unit_subset
+    }
+    runner.run('manageDeployment.sh', [], options, _is_cli)

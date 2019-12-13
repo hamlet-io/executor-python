@@ -52,4 +52,4 @@ def pipeline(**kwargs):
     1. This will activate the pipeline and leave it running
     2. Pipelines take a long time so it is better to provide status via other means
     """
-    run_pipeline_backend.run(**kwargs)
+    run_pipeline_backend.run(**kwargs, _is_cli=True)

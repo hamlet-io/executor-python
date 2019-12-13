@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -14,27 +12,20 @@ def run(
     value=None,
     task=None,
     instance=None,
-    version=None
+    version=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'runTask.sh',
-        options={
-            '-c': container_id,
-            '-d': delay,
-            '-e': env_name,
-            '-i': component,
-            '-j': component_instance,
-            '-k': component_version,
-            '-t': tier,
-            '-v': value,
-            '-w': task,
-            '-x': instance,
-            '-y': version
-        }
-    )
-
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-c': container_id,
+        '-d': delay,
+        '-e': env_name,
+        '-i': component,
+        '-j': component_instance,
+        '-k': component_version,
+        '-t': tier,
+        '-v': value,
+        '-w': task,
+        '-x': instance,
+        '-y': version
+    }
+    runner.run('runTask.sh', [], options, _is_cli)

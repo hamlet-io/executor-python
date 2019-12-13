@@ -1,6 +1,4 @@
-import subprocess
-from cot import utils
-from cot import env
+from cot.backend.common import runner
 
 
 def run(
@@ -13,25 +11,19 @@ def run(
     region=None,
     deployment_unit=None,
     deployment_unit_subset=None,
-    dryrun=None
+    dryrun=None,
+    _is_cli=False
 ):
-    script_call_line = utils.cli_params_to_script_call(
-        env.GENERATION_DIR,
-        'manageStack.sh',
-        options={
-            '-d': delete,
-            '-i': stack_initiate,
-            '-m': stack_monitor,
-            '-w': stack_wait,
-            '-n': stack_name,
-            '-r': region,
-            '-y': dryrun,
-            '-u': deployment_unit,
-            '-z': deployment_unit_subset,
-            '-l': level
-        }
-    )
-    subprocess.run(
-        script_call_line,
-        shell=True
-    )
+    options = {
+        '-d': delete,
+        '-i': stack_initiate,
+        '-m': stack_monitor,
+        '-w': stack_wait,
+        '-n': stack_name,
+        '-r': region,
+        '-y': dryrun,
+        '-u': deployment_unit,
+        '-z': deployment_unit_subset,
+        '-l': level
+    }
+    runner.run('manageStack.sh', [], options, _is_cli)
