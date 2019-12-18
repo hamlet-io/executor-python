@@ -1,7 +1,7 @@
 FROM codeontap/gen3:latest-builder
 
 WORKDIR /gen3-cli
-
+USER root
 # installs ruby because we need a gem to validate our templates
 COPY docker-install-ruby.sh /gen3-cli
 RUN bash docker-install-ruby.sh
@@ -17,4 +17,4 @@ ENV PYTHONPATH "$PYTHONPATH:/gen3-cli"
 
 COPY ./ /gen3-cli
 
-CMD sh docker-cmd.sh
+ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]

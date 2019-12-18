@@ -1,13 +1,13 @@
 import os
 import string
-from .fsutils import ContextSearch
+from .fsutils import ContextSearch, Search
 
 
-class LevelError(Exception):
+class ContextError(Exception):
     pass
 
 
-class NoLevelFileError(LevelError):
+class NoLevelFileError(ContextError):
     def __init__(self, filename):
         super().__init__("Can't find level file {}".format(filename))
 
@@ -56,21 +56,29 @@ class Context:
             raise ValueError('{} is not dir'.format(value))
         self.__dir = value
         self.__search = ContextSearch(self.__dir)
-        self.__root = self.__search.upwards(self.levels.root.filename)
-        if not self.__root:
-            raise ValueError('Unable to find {} in {} or its parents'.format(self.levels.root.filename, self.__dir))
+        self.__try_to_set_root()
+        self.__try_to_set_tenant()
 
     @property
     def root(self):
         return self.__root
 
     @property
+    def tenant(self):
+        return self.__tenant
+
+    @property
+    def account(self):
+        return self.__account
+
+    @property
     def search(self):
         return self.__search
 
-    def __init__(self, dir):
+    def __init__(self, dir, account=None):
         self.dir = dir
         self.props = ContextProps()
+        self.__account = account
         if hasattr(self, 'filename'):
             self.__check_level_filename()
             self.setup()
@@ -78,6 +86,42 @@ class Context:
     def __check_level_filename(self):
         if not self.search.isfile(self.filename):
             raise NoLevelFileError(self.filename)
+
+    def __try_to_set_root(self):
+        self.__root = os.path.dirname(self.__search.upwards(self.levels.root.filename))
+        if not self.__root:
+            raise ValueError('Unable to find {} in {} or its parents'.format(self.levels.root.filename, self.__dir))
+
+    def __try_to_set_account(self):
+        found = Search.downwards(self.root, self.levels.account.filename)
+        if not found:
+            raise ContextError('No accounts found')
+        selected_account = None
+        found_accounts = []
+        for account_filename in found:
+            account_level_dir = self.levels.account(os.path.basename(account_filename))
+            try:
+                account = self.levels.account(account_level_dir)
+                found_accounts.append(account)
+                if self.account and account.props.name == self.account:
+                    selected_account = account
+            except ContextError as e:
+                raise ContextError('Corrupted account found in {}'.format(account_level_dir)) from e
+        if self.account is not None:
+            if selected_account is None:
+                raise ContextError("Can't find account {}".format(self.account))
+            else:
+                self.account = account
+        else:
+            if len(found_accounts) > 1:
+                raise ContextError("Can't automatically determine which account to use. Please specify account name.")
+            else:
+                self.account = found_accounts[0]
+
+    def __try_to_set_tenant(self):
+        found = Search.downwards(self.root, self.levels.tenant.filename)
+        if not found:
+            raise ContextError('Tenant not found')
 
     def __str__(self):
         template = "level: $name\ndir: $dir\nprops:\n$props"
@@ -128,8 +172,21 @@ class AccountLevel(Context, metaclass=LevelMetaclass):
     name = 'account'
     filename = 'account.json'
 
-    def setup(self):
+    def get_account_name_from_dirname(self):
+        prefix = os.path.join(self.root, 'accounts')
+        suffix = 'config'
+        self.props.name = Search.cut(self.dir, prefix, suffix)
+
+    def load_account_json(self):
         pass
+
+    def setup(self):
+        self.get_account_name_from_dirname()
+
+
+class TenantLevel(Context, metaclass=LevelMetaclass):
+    name = 'tenant'
+    filename = 'tenant.json'
 
 
 class ProductLevel(Context, metaclass=LevelMetaclass):
@@ -167,6 +224,10 @@ def Level(dir):
     for level in Context.levels:
         try:
             return Context.levels[level](dir)
-        except LevelError:
+        except ContextError:
             pass
     return None
+
+
+# print(RootLevel('/var/opt/codeontap'))
+# print(AccountLevel('/var/opt/codeontap/accounts/account/config'))
