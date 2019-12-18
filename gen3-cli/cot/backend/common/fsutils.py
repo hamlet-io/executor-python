@@ -41,6 +41,18 @@ class Search:
         return None
 
     @staticmethod
+    def downwards(directory, name):
+        found = []
+        for root, dirs, files in os.walk(directory, topdown=True):
+            for filename in files:
+                if filename == name:
+                    found.append(os.path.join(root, filename))
+            for dirname in dirs:
+                if dirname == name:
+                    found.append(os.path.join(root, dirname))
+        return found
+
+    @staticmethod
     def basename(path, up=0):
         parts = Search.split_path(path)
         up = min(len(parts), up)
@@ -53,6 +65,19 @@ class Search:
         up = min(len(parts), up)
         up = len(parts) - up
         return os.path.join(*parts[:up])
+
+    @staticmethod
+    def cut(path, prefix='', suffix=''):
+        path = Search.split_path(path)
+        if prefix:
+            prefix = Search.split_path(prefix)
+            if path[:len(prefix)] == prefix:
+                path = path[len(prefix):]
+        if suffix:
+            suffix = Search.split_path(suffix)
+            if path[-len(suffix):] == suffix:
+                path = path[:-len(suffix)]
+        return os.path.join(*path)
 
 
 class ContextSearch:
@@ -90,3 +115,26 @@ class ContextSearch:
 
     def parent(self, up=0):
         return Search.parent(self.cwd, up=up)
+
+
+class File:
+    def __init__(self, name):
+        pass
+
+
+class Directory:
+    def __init__(self, dir):
+        self.dir = dir
+
+    def __getitem__(self, key):
+        path = os.path.join(self._dir, key)
+        if not os.path.exists(path):
+            raise ValueError('{} does not exist'.format(path))
+        if os.path.isfile(path):
+            return File(path)
+        else:
+            return self.__class__(os.path.join(self.dir, key))
+
+    def __iter__(self):
+        for name in os.listdir(self.dir):
+            yield name
