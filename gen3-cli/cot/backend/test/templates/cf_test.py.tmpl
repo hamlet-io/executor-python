@@ -1,7 +1,6 @@
-import json
+def test_{{name}}():
+    import json
 
-
-def test():
     with open("{{filename}}") as f:
         data = json.load(f)
 
@@ -98,7 +97,7 @@ def test():
     try:
         value = data{{case.path}}
         try:
-            assert len(value) > {{case.value}}, "%s.length != {{case.value}}" % path
+            assert len(value) == {{case.value}}, "%s.length != {{case.value}}" % path
         except TypeError as e:
             raise AssertionError("Can't get length of %s" % path) from e
     except KeyError as e:

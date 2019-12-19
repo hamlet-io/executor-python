@@ -1,5 +1,5 @@
 import json
-from .templates_loader import loader
+from ..loader import loader
 
 
 def __render_python_dict_path(json_path_str):
@@ -14,6 +14,7 @@ def __render_python_dict_path(json_path_str):
 
 
 def prepare_template_context(
+    name="",
     filename="",
     exists=None,
     match=None,
@@ -32,6 +33,7 @@ def prepare_template_context(
     length = length or []
 
     context = dict(
+        name=name,
         filename=filename,
         exists=[],
         match=[],
@@ -54,6 +56,8 @@ def prepare_template_context(
             value = json.loads(value)
         except ValueError:
             value = "\"{}\"".format(value)
+        except TypeError:
+            pass
         context['match'].append(
             {
                 "path": __render_python_dict_path(path),
