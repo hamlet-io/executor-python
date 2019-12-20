@@ -1,0 +1,6 @@
+{
+    "insecure": {
+      "filename": "/gen3-cli/tests/data/integration/backend/test/cf/insecure.json",
+      "no_lint": true
+    }
+}
