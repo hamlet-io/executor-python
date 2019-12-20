@@ -2,7 +2,10 @@ import subprocess
 from pytest import ExitCode as ec
 
 
-def run(*testpaths):
+def run(
+    testpaths=None
+):
+    testpaths = testpaths or []
     # Do not use pytest.main because it can't correctly work with the files changed in runtime
     try:
         args = [
