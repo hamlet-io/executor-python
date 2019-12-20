@@ -1,0 +1,114 @@
+# ****************************************************
+# * CHECK TEMPLATE STRUCTURE MATCHES SPECIFIED RULES *
+# ****************************************************
+def test_structure():
+    import json
+    filename = "{{filename}}"
+    try:
+        with open(filename) as f:
+            data = json.load(f)
+    except FileNotFoundError as e:
+        raise AssertionError("%s does not exist" % filename)
+    except ValueError as e:
+        raise AssertionError("%s is not a valid JSON" % filename)
+
+    {% if exists %}
+    # **************************
+    # * CHECK THAT PATH EXISTS *
+    # **************************
+    {% for case in exists %}
+
+    # № {{loop.index}}. EXISTS {{case.path}}
+    try:
+        data{{case.path}}
+    except KeyError as e:
+        raise AssertionError("{{case.path}} does not exist") from e
+    {% endfor %}
+    {% endif %}
+    {% if match %}
+
+    # *******************************************
+    # * CHECK THAT PATH MATCHES SPECIFIED VALUE *
+    # *******************************************
+    {% for case in match %}
+
+    # № {{loop.index}}. MATCH {{case.path}} {{case.value}}
+    try:
+        value = data{{case.path}}
+        assert value == {{case.value}}
+    except KeyError as e:
+        raise AssertionError("{{case.path}} does not exist") from e
+    {% endfor %}
+    {% endif %}
+    {% if resource %}
+
+    # *************************************************************
+    # * CHECK THAT SPECIFIED RESOURCE EXISTS AND HAS CORRECT TYPE *
+    # *************************************************************
+    try:
+        resources = data['Resources']
+    except KeyError as e:
+        raise AssertionError("%s section does not exist" % str(e)) from e
+    {% for case in resource %}
+
+    # № {{loop.index}}. RESOURCE {{case.name}} {{case.type}}
+    name = "{{case.name}}"
+    type = "{{case.type}}"
+    resource = resources.get(name)
+    assert resource is not None, "Resource %s does not exist" % name
+    assert resource.get("Type") == type, "Resource ['%s']['Type'] != '%s'" % (resource, type)
+    {% endfor %}
+    {% endif %}
+    {%if output %}
+
+    # **************************************
+    # * CHECK THAT SPECIFIED OUTPUT EXISTS *
+    # **************************************
+    try:
+        output = data['Output']
+    except KeyError as e:
+        raise AssertionError("%s section does not exist" % str(e)) from e
+    {% for case in output %}
+
+    # № {{loop.index}}. OUTPUT {{case.name}}
+    assert output.get("{{case.name}}") is not None, "Output {{case.name}} does not exist"
+    {% endfor %}
+    {% endif %}
+    {% if not_empty %}
+
+    # ********************************
+    # * CHECK THAT PATH IS NOT EMPTY *
+    # ********************************
+    {% for case in not_empty %}
+
+    # № {{loop.index}}. NOT EMPTY {{case.path}}
+    path = "{{case.path}}"
+    try:
+        value = data{{case.path}}
+        try:
+            assert len(value) > 0, "%s is empty" % path
+        except TypeError:
+            assert value is not None, "%s is empty" % path
+    except KeyError as e:
+        raise AssertionError("%s does not exist" % path) from e
+    {% endfor %}
+    {% endif %}
+    {% if length %}
+
+    # ****************************************
+    # * CHECK THAT PATH HAS SPECIFIED LENGTH *
+    # ****************************************
+    {% for case in length %}
+
+    # № {{loop.index}}. LENGHT {{case.path}} {{case.value}}
+    path = "{{case.path}}"
+    try:
+        value = data{{case.path}}
+        try:
+            assert len(value) == {{case.value}}, "%s.length != {{case.value}}" % path
+        except TypeError as e:
+            raise AssertionError("Can't get length of %s" % path) from e
+    except KeyError as e:
+        raise AssertionError("%s does not exist" % path) from e
+    {% endfor %}
+    {% endif %}

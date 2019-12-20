@@ -13,7 +13,6 @@ def run(
     for filename in filenames:
         with open(filename, 'rt') as f:
             cases.update(**json.load(f))
-    append_file = False
     for casename in cases:
 
         casedata = cases[casename]
@@ -29,16 +28,11 @@ def run(
         if render is None:
             continue
 
-        template_text = render(**casedata, name=casename)
-        # if no output filename save to text output to be able to send it to stdout
-        if output is None:
-            text_output.append(template_text)
-            continue
+        text_output.append(render(**casedata, name=casename))
 
-        # override file if it's the first case in the line
-        # otherwise append generated tests
-        mode = "wt+" if append_file else "wt"
-        append_file = True
-        with open(output, mode) as f:
-            f.write(template_text)
-    return "\n".join(text_output)
+    text = "\n\n".join(text_output)
+    if output is not None:
+        with open(output, 'wt') as f:
+            f.write(text)
+        return ""
+    return text
