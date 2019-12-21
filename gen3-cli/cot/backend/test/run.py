@@ -11,12 +11,12 @@ def run(
     try:
         args = [
             'pytest',
-            '-vv',
+            '-xvvs' if not silent else '-x',
             '--cache-clear',
             *testpaths,
         ]
         cmd = " ".join(args)
-        stdin = subprocess.PIPE if silent else None
+        stdin = subprocess.PIPE
         stderr = subprocess.PIPE
         process = subprocess.Popen(
             [
