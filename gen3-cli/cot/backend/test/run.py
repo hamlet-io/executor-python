@@ -3,7 +3,8 @@ from pytest import ExitCode as ec
 
 
 def run(
-    testpaths=None
+    testpaths=None,
+    silent=True
 ):
     testpaths = testpaths or []
     # Do not use pytest.main because it can't correctly work with the files changed in runtime
@@ -15,12 +16,16 @@ def run(
             *testpaths,
         ]
         cmd = " ".join(args)
+        stdin = subprocess.PIPE if silent else None
+        stderr = subprocess.PIPE
         process = subprocess.Popen(
             [
                 '/bin/bash',
                 '-c',
                 cmd
             ],
+            stdin=stdin,
+            stderr=stderr,
             start_new_session=True
         )
         process.wait()

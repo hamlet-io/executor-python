@@ -3,6 +3,7 @@
 import cot.command  # noqa
 import cot.command.generate  # noqa
 import cot.command.create  # noqa
+import cot.command.test  # noqa
 # import cot.command.add  # noqa
 import cot.command.manage  # noqa
 import cot.command.run  # noqa
