@@ -1,3 +1,4 @@
+import os
 import click
 from cot.backend.test.generate import run as test_generate_backend
 
@@ -13,10 +14,19 @@ from cot.backend.test.generate import run as test_generate_backend
     '--filename',
     'filenames',
     multiple=True,
-    required=True,
     type=click.Path(
         file_okay=True,
         dir_okay=False,
+        exists=True
+    )
+)
+@click.option(
+    '-d',
+    '--directory',
+    'directory',
+    type=click.Path(
+        file_okay=False,
+        dir_okay=True,
         exists=True
     )
 )
@@ -31,8 +41,15 @@ from cot.backend.test.generate import run as test_generate_backend
 )
 def geneate(
     filenames,
-    output
+    output,
+    directory
 ):
-    result = test_generate_backend(filenames, output)
+    if not filenames and not directory:
+        directory = os.getcwd()
+    result = test_generate_backend(
+        filenames=filenames,
+        output=output,
+        directory=directory
+    )
     if not output:
         click.echo(result)

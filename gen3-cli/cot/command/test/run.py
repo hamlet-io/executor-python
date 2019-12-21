@@ -1,6 +1,6 @@
 import os
 import click
-from cot.backend.test import test_run_backend
+from cot.backend.test import run as test_run_backend
 
 
 @click.command(
@@ -10,10 +10,19 @@ from cot.backend.test import test_run_backend
     )
 )
 @click.argument(
-    'tests',
+    'testpaths',
     nargs=-1
 )
-def run(tests):
-    if not tests:
-        tests.append(os.getcwd())
-    test_run_backend.run(*tests)
+@click.option(
+    '-s',
+    '--silent',
+    'silent',
+    is_flag=True
+)
+def run(testpaths, silent):
+    if not testpaths:
+        testpaths.append(os.getcwd())
+    test_run_backend.run(
+        testpaths=testpaths,
+        silent=silent
+    )

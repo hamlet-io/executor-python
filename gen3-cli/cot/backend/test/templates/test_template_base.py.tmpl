@@ -1,0 +1,26 @@
+{% if test_lint %}
+
+
+{% include 'cf_test_lint_func_block.py' %}
+{% endif %}
+{% if test_vulnerability %}
+
+
+{% include 'cf_test_vulnerability_func_block.py' %}
+{% endif %}
+{% if test_structure %}
+
+
+{% include 'cf_structure_obj_block.py' %}
+{% endif %}
+{% for casename, case, type in cases %}
+
+
+
+# ***********{{'*' * casename|length}}**
+# * TESTCASE {{casename}} *
+# ***********{{'*' * casename|length}}**
+{% if type == 'cf' %}
+{% include 'cf_testcase_block.py.tmpl' %}
+{% endif %}
+{% endfor %}
