@@ -7,22 +7,36 @@ from cot.backend.test import run as test_run_backend
     'run',
     context_settings=dict(
         max_content_width=240
-    )
+    ),
+    short_help="Run pytest on specified files"
 )
-@click.argument(
-    'testpaths',
-    nargs=-1
+@click.option(
+    '-t',
+    '--test',
+    'tests',
+    multiple=True,
+    help='file or directory containing tests',
+    type=click.Path(
+        dir_okay=True,
+        file_okay=True,
+        exists=True
+    )
 )
 @click.option(
     '-s',
     '--silent',
     'silent',
-    is_flag=True
+    is_flag=True,
+    help='minimize pytest output'
 )
-def run(testpaths, silent):
-    if not testpaths:
-        testpaths.append(os.getcwd())
+def run(tests, silent):
+    """
+    Discover and run tests in specified files or/and directories. If no tests paths provided
+    current directory used as tests discovery root.
+    """
+    if not tests:
+        tests = (os.getcwd(),)
     test_run_backend.run(
-        testpaths=testpaths,
+        testpaths=tests,
         silent=silent
     )
