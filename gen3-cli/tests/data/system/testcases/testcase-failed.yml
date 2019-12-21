@@ -1,9 +1,0 @@
----
-  testFailed:
-    setup:
-      -
-        cmd: echo "Hello $NAME"
-        env:
-          NAME: TEST THREE
-    test:
-      filename: /gen3-cli/tests/data/system/testcases/invalid-syntax-cf.yml
