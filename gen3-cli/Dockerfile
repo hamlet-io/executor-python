@@ -7,7 +7,8 @@ COPY docker-install-ruby.sh /gen3-cli
 RUN bash docker-install-ruby.sh
 
 COPY requirements /gen3-cli/requirements
-RUN pip install -r requirements/prod.txt -r requirements/dev.txt
+COPY docker-install-python.sh docker-install-python.sh
+RUN bash docker-install-python.sh
 
 COPY docker-postinstall.sh /gen3-cli/
 RUN bash docker-postinstall.sh
