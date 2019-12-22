@@ -12,4 +12,4 @@ jobs:
     - name: Run the compose network
       run: make run
     - name: Run the tests
-      run: docker-compose exec gen3-cli /bin/bash -c -i 'make tests'
+      run: docker-compose exec gen3-cli /bin/bash -c 'source ~/.bashrc && make tests'
