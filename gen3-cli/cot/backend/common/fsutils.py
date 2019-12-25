@@ -1,4 +1,5 @@
 import os
+import json
 
 
 class Search:
@@ -28,7 +29,7 @@ class Search:
     @staticmethod
     def isdir(directory, name, up=0):
         dirname = Search.exists(directory, name, up)
-        return dirname if dirname is not None and os.path.isfile(dirname) else None
+        return dirname if dirname is not None and os.path.isdir(dirname) else None
 
     @staticmethod
     def upwards(directory, name):
@@ -110,6 +111,9 @@ class ContextSearch:
     def upwards(self, name):
         return Search.upwards(self.cwd, name)
 
+    def downwards(self, name):
+        return Search.downwards(self.cwd, name)
+
     def basename(self, up=0):
         return Search.basename(self.cwd, up=up)
 
@@ -118,23 +122,65 @@ class ContextSearch:
 
 
 class File:
-    def __init__(self, name):
-        pass
+
+    def __init__(self, path):
+        self.path = path
+        self.data = None
+        name, ext = os.path.splitext(self.path)
+        self.ext = ext
+
+    def load(self):
+        if self.data is not None:
+            return self.data
+        if self.ext == '.json':
+            with open(self.path, 'rb') as f:
+                self.data = json.load(f)
+        else:
+            with open(self.path, 'rt') as f:
+                self.data = f.read()
+        return self.data
+
+    def reload(self):
+        self.data = None
+        return self.load()
+
+    def write(self):
+        if self.ext == '.json':
+            def serialize():
+                return json.dumps(self.data)
+        else:
+            def serialize():
+                return self.data
+        with open(self.path, 'wt+') as f:
+            f.write(serialize())
+
+    def __getitem__(self, key):
+        try:
+            self.load()
+            return self.data[key]
+        except TypeError as e:
+            raise TypeError('Unstructured data') from e
 
 
 class Directory:
-    def __init__(self, dir):
-        self.dir = dir
+    def __init__(self, path):
+        self.path = path
 
     def __getitem__(self, key):
-        path = os.path.join(self._dir, key)
+        path = os.path.join(self.path, key)
         if not os.path.exists(path):
-            raise ValueError('{} does not exist'.format(path))
+            raise KeyError('Path {} does not exist'.format(path))
         if os.path.isfile(path):
             return File(path)
         else:
-            return self.__class__(os.path.join(self.dir, key))
+            return self.__class__(os.path.join(self.path, key))
 
     def __iter__(self):
-        for name in os.listdir(self.dir):
-            yield name
+        for path in os.listdir(self.path):
+            fullpath = os.path.join(self.path, path)
+            if os.path.isfile(fullpath):
+                yield File(fullpath)
+            elif os.path.isdir(fullpath):
+                yield self.__class__(fullpath)
+            else:
+                yield fullpath
