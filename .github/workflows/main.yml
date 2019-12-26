@@ -27,10 +27,10 @@ jobs:
     - name: Build image
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        docker build --cache-from my-image -t my-image .
-        docker save my-image > my-image.tar
+        docker build --cache-from gen3-cli -t gen3-cli ./gen3-cli
+        docker save gen3-cli > gen3-cli.tar
         mkdir docker-cache
-        split -b 100m my-image.tar docker-cache/x
+        split -b 100m gen3-cli.tar docker-cache/x
 
     - name: Run the compose network
       run: make run
