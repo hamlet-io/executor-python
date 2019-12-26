@@ -20,8 +20,8 @@ jobs:
     - name: Load cached Docker layers
       run: |
         if [ -d "docker-cache" ]; then
-          cat docker-cache/x* > my-image.tar
-          docker load < my-image.tar
+          cat docker-cache/x* > gen3-cli.tar
+          docker load < gen3-cli.tar
           rm -fr docker-cache
         fi
     - name: Build image
@@ -33,6 +33,6 @@ jobs:
         split -b 100m gen3-cli.tar docker-cache/x
 
     - name: Run the compose network
-      run: make run
+      run: docker-compose up -d
     - name: Run the tests
       run: docker-compose exec -T gen3-cli /bin/bash -c 'source ~/.bashrc && make tests'
