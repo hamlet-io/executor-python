@@ -121,6 +121,8 @@ class ContextSearch:
         return Search.parent(self.cwd, up=up)
 
 
+# TODO: Needs to be splitted into several subclasses like JSONFile, TXTFile, ByteFile
+# Then File may be used as an automated type resolver.
 class File:
 
     def __init__(self, path):
