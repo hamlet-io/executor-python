@@ -29,10 +29,10 @@ setup(
     install_requires=[
         'click>=7.0.0,<8.0.0',
         'pytest>=5.0.0,<6.0.0',
-        'cookiecutter>=1.7.0,<2.0.0',
+        'cookiecutter>=1.6.0,<2.0.0',
         'tabulate>=0.8.0,<1.0.0',
         'Jinja2>=2.10.0,<3.0.0',
-        'cfn-lint>=0.26.0,<1.0.0',
+        'cfn-lint>=0.25.0,<1.0.0',
         'cfn-flip>=1.2.0,<2.0.0',
     ],
     include_package_data=True,
