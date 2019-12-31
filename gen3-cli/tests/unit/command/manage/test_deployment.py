@@ -15,9 +15,9 @@ ALL_VALID_OPTIONS['!-l,--level'] = [
     'multiple'
 ]
 ALL_VALID_OPTIONS['-d,--delete'] = [True, False]
+ALL_VALID_OPTIONS['-g,--resource-group'] = 'group'
 ALL_VALID_OPTIONS['-i,--deployment-initiate'] = [True, False]
 ALL_VALID_OPTIONS['-m,--deployment-monitor'] = [True, False]
-ALL_VALID_OPTIONS['-n,--deployment-name'] = 'name'
 ALL_VALID_OPTIONS['-r,--region'] = 'region'
 ALL_VALID_OPTIONS['-s,--deployment-scope'] = [
     'subscription',

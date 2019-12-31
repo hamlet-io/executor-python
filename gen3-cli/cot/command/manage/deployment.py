@@ -16,6 +16,11 @@ from cot.backend.manage import deployment as manage_deployment_backend
     is_flag=True
 )
 @click.option(
+    '-g',
+    '--resource-group',
+    help='target resource group for the deployment.',
+)
+@click.option(
     '-i',
     '--deployment-initiate',
     help='initiate but do not monitor the deployment operation(disable monitoring)',
@@ -43,11 +48,6 @@ from cot.backend.manage import deployment as manage_deployment_backend
     '--deployment-monitor',
     help='monitor but do not initiate the deployment operation(disable initiation)',
     is_flag=True
-)
-@click.option(
-    '-n',
-    '--deployment-name',
-    help='override the standard deployment naming'
 )
 @click.option(
     '-r',

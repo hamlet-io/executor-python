@@ -3,10 +3,10 @@ from cot.backend.common import runner
 
 def run(
     delete=None,
+    resource_group=None,
     deployment_initiate=None,
     level=None,
     deployment_monitor=None,
-    deployment_name=None,
     region=None,
     deployment_scope=None,
     deployment_unit=None,
@@ -16,10 +16,10 @@ def run(
 ):
     options = {
         '-d': delete,
+        '-g': resource_group,
         '-i': deployment_initiate,
         '-m': deployment_monitor,
         '-l': level,
-        '-n': deployment_name,
         '-r': region,
         '-s': deployment_scope,
         '-u': deployment_unit,
