@@ -25,6 +25,7 @@ ALL_VALID_OPTIONS['-f,--generation-framework'] = 'generation_framework'
 ALL_VALID_OPTIONS['-t,--generation-testcase'] = 'generation_testcase'
 ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarios'
 ALL_VALID_OPTIONS['-i,--generation-input-source'] = 'generation_input_source'
+ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
 
 
 @mock.patch('cot.command.create.template.create_template_backend')
