@@ -94,6 +94,11 @@ from cot.backend.create import template as create_template_backend
     '--generation-input-source',
     help='source of input data to use when generating the template'
 )
+@click.option(
+    '-o',
+    '--output-dir',
+    help='the directory where the outputs will be saved. Mandatory when Input Source set to Mock.'
+)
 def template(**kwargs):
     """
     Create a CloudFormation (CF) template
