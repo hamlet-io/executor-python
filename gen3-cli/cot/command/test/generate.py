@@ -1,6 +1,7 @@
 import os
 import click
 from cot.backend.test.generate import run as test_generate_backend
+from cot.backend.common import exceptions
 
 
 @click.command(
@@ -45,6 +46,7 @@ from cot.backend.test.generate import run as test_generate_backend
     ),
     help='output file path'
 )
+@exceptions.handler()
 def geneate(
     filenames,
     output,

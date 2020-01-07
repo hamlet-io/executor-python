@@ -1,5 +1,6 @@
 import os
 import json
+from cot.backend.common.exceptions import UserFriendlyBackendException
 from .renderer import testcases_template
 
 
@@ -17,14 +18,21 @@ def run(
         for name in os.listdir(directory):
             if name.endswith(TESTCASE_EXT):
                 filenames.append(os.path.join(directory, name))
-
+    # if after all no files found raise an error
+    if not filenames:
+        raise UserFriendlyBackendException("No testcase files found!")
     # merging casefiles
     cases = dict()
     for filename in filenames:
         if not filename.endswith(TESTCASE_EXT):
-            raise ValueError('Invalid extension for [%s]. Must be [%s]' % (filename, TESTCASE_EXT))
+            raise UserFriendlyBackendException(f'Invalid extension for {filename}. Must be {TESTCASE_EXT}')
         with open(filename, 'rt') as f:
+            # TODO: add testcase data schema check
             cases.update(**json.load(f))
+
+    # if files have no testcases data
+    if not cases:
+        raise UserFriendlyBackendException("No testcases found!")
 
     text = testcases_template.render(cases)
     if output is not None:
