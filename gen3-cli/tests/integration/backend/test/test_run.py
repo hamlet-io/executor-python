@@ -12,17 +12,17 @@ def test():
         def testcase_filename(name):
             return os.path.join(DATA_DIR, 'testcase', name)
 
-        generate_test_backend([testcase_filename('secure.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('secure-testcase.json')], output_filename)
         assert run_test_backend([output_filename])
-        generate_test_backend([testcase_filename('insecure.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('insecure-testcase.json')], output_filename)
         assert not run_test_backend([output_filename])
 
-        generate_test_backend([testcase_filename('valid-syntax.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('valid-syntax-testcase.json')], output_filename)
         assert run_test_backend([output_filename])
-        generate_test_backend([testcase_filename('invalid-syntax.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('invalid-syntax-testcase.json')], output_filename)
         assert not run_test_backend([output_filename])
 
-        generate_test_backend([testcase_filename('structure-good.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('structure-good-testcase.json')], output_filename)
         assert run_test_backend([output_filename])
-        generate_test_backend([testcase_filename('structure-bad.testcase.json')], output_filename)
+        generate_test_backend([testcase_filename('structure-bad-testcase.json')], output_filename)
         assert not run_test_backend([output_filename])

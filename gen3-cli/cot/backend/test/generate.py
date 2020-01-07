@@ -3,7 +3,7 @@ import json
 from .renderer import testcases_template
 
 
-TESTCASE_EXT = '.testcase.json'
+TESTCASE_EXT = '-testcase.json'
 
 
 def run(
