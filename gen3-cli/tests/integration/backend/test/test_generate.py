@@ -9,7 +9,7 @@ def test():
     with tempfile.TemporaryDirectory() as dir:
         # testing single file with output file option and without
         output_filename = os.path.join(dir, 'test.py')
-        casefilename = os.path.join(DATA_DIR, 'testcase', 'secure.testcase.json')
+        casefilename = os.path.join(DATA_DIR, 'testcase', 'secure-testcase.json')
         generate_test_backend([casefilename], output_filename)
         with open(output_filename, 'rt') as f:
             file_text = f.read()
@@ -17,12 +17,12 @@ def test():
         assert file_text == stdout_text
         assert "test_secure():" in file_text
         casefiles = [
-            'secure.testcase.json',
-            'insecure.testcase.json',
-            'structure-good.testcase.json',
-            'structure-bad.testcase.json',
-            'invalid-syntax.testcase.json',
-            'valid-syntax.testcase.json'
+            'secure-testcase.json',
+            'insecure-testcase.json',
+            'structure-good-testcase.json',
+            'structure-bad-testcase.json',
+            'invalid-syntax-testcase.json',
+            'valid-syntax-testcase.json'
         ]
         # testing multiple files with output file option and without
         casefiles = list(map(lambda n: os.path.join(DATA_DIR, 'testcase', n), casefiles))
