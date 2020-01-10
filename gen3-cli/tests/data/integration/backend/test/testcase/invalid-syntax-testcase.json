@@ -1,5 +1,6 @@
 {
     "invalidSyntax": {
-      "filename": "/gen3-cli/tests/data/integration/backend/test/cf/invalid-syntax.json"
+      "filename": "/gen3-cli/tests/data/integration/backend/test/cf/invalid-syntax.json",
+      "cfn_lint": true
     }
 }

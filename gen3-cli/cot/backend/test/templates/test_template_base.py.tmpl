@@ -1,17 +1,36 @@
-{% if test_lint %}
+{% if cfn_lint_test %}
 
 
-{% include 'cf_test_lint_func_block.py' %}
+{% include 'cfn_lint_test_func_block.py' %}
 {% endif %}
-{% if test_vulnerability %}
+{% if cfn_nag_test %}
 
 
-{% include 'cf_test_vulnerability_func_block.py' %}
+{% include 'cfn_nag_test_func_block.py' %}
 {% endif %}
-{% if test_structure %}
+{% if json_validation_test %}
 
 
-{% include 'cf_structure_obj_block.py' %}
+{% include 'json_validator_obj_block.py' %}
+{% endif %}
+
+{% if json_structure_test %}
+
+
+{% include 'json_structure_obj_block.py' %}
+
+
+
+JSONStructure = JSONStructure(JSONValidator)
+{% endif %}
+{% if cfn_structure_test %}
+
+
+{% include 'cfn_structure_obj_block.py' %}
+
+
+
+CFNStructure = CFNStructure(JSONValidator)
 {% endif %}
 {% for casename, case, type in cases %}
 
@@ -21,6 +40,6 @@
 # * TESTCASE {{casename}} *
 # ***********{{'*' * casename|length}}**
 {% if type == 'cf' %}
-{% include 'cf_testcase_block.py.tmpl' %}
+{% include 'cfn_testcase_block.py.tmpl' %}
 {% endif %}
 {% endfor %}

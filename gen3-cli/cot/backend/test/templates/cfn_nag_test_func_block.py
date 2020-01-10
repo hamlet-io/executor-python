@@ -1,10 +1,11 @@
-def lint_test(filename):
+def cfn_nag_test(filename):
     import json
     import subprocess
     cmd = ' '.join([
-        'cfn-lint',
-        '-f',
+        'cfn_nag_scan',
+        '--output-format',
         'json',
+        '--input-path',
         filename
     ])
     result = subprocess.run(
@@ -17,6 +18,7 @@ def lint_test(filename):
     if result.stderr:
         raise Exception(result.stderr)
     else:
-        errors = json.loads(result.stdout)
+        errors = json.loads(result.stdout)[0]['file_results']['violations']
+        errors = list(e for e in errors if e['type'] != 'WARN')
         if errors:
             raise AssertionError(json.dumps(errors, indent=4))

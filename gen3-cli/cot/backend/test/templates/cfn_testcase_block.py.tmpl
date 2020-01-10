@@ -1,0 +1,59 @@
+def test_{{casename}}():
+    filename = "{{case.filename}}"
+    {% if case.cfn_lint %}
+
+    cfn_lint_test(filename)
+    {% endif %}
+    {% if case.json_structure %}
+
+    json_structure = JSONStructure.from_file(filename)
+    {% if case.json_structure.exists %}
+
+    {% for exists in case.json_structure.exists %}
+    json_structure.exists("{{exists.path}}")
+    {% endfor %}
+    {% endif %}
+    {% if case.json_structure.match %}
+
+    {% for match in case.json_structure.match %}
+    json_structure.match("{{match.path}}", {{match.value}})
+    {% endfor %}
+    {% endif %}
+    {% if case.json_structure.not_empty %}
+
+    {% for not_empty in case.json_structure.not_empty %}
+    json_structure.not_empty("{{not_empty.path}}")
+    {% endfor %}
+    {% endif %}
+    {% if case.json_structure.length %}
+
+    {% for length in case.json_structure.length %}
+    json_structure.len("{{length.path}}", {{length.value}})
+    {% endfor %}
+    {% endif %}
+
+    json_structure.assert_structure()
+    {% endif %}
+    {% if case.cfn_structure %}
+
+    cfn_structure = CFNStructure.from_file(filename)
+    {% if case.cfn_structure.resource %}
+
+    {% for resource in case.cfn_structure.resource %}
+    cfn_structure.resource("{{resource.id}}", "{{resource.type}}")
+    {% endfor %}
+    {% endif %}
+    {% if case.cfn_structure.output %}
+
+
+    {% for output in case.cfn_structure.output %}
+    cfn_structure.output("{{output.id}}")
+    {% endfor %}
+    {% endif %}
+
+    cfn_structure.assert_structure()
+    {% endif %}
+    {% if case.cfn_nag %}
+
+    cfn_nag_test(filename)
+    {% endif %}
