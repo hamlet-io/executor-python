@@ -3,27 +3,32 @@ from ..loader import loader
 
 
 def prepare_cf_testcase_context(case):
-    structure = case.get('structure', {})
-    match = structure.get('match', [])
+    json_structure = case.get('json_structure', {})
+    match = json_structure.get('match', [])
     stringified_match = []
-    for path, value in match:
+    for match_case in match:
+        value = match_case['value']
         try:
             value = json.loads(value)
         except ValueError:
             value = "\"{}\"".format(value)
         except TypeError:
             pass
-        stringified_match.append((path, value))
+        stringified_match.append({
+            'path': match_case['path'],
+            'value': value
+        })
 
-    if structure:
+    if json_structure:
         if match:
-            structure['match'] = stringified_match
+            json_structure['match'] = stringified_match
 
 
 def prepare_context(cases):
-    test_lint = False
-    test_structure = False
-    test_vulnerability = False
+    cfn_lint_test = False
+    cfn_structure_test = False
+    json_structure_test = False
+    cfn_nag_test = False
     prepared_cases = list()
     ordered_casenames = list(cases.keys())
     ordered_casenames.sort()
@@ -34,17 +39,17 @@ def prepare_context(cases):
             type = 'cf'
         if type == 'cf':
             prepare_cf_testcase_context(data)
-            if not data.get('no_lint', False):
-                test_lint = True
-            if not data.get('no_vulnerability_check', False):
-                test_vulnerability = True
-            if data.get('structure', False):
-                test_structure = True
+            cfn_lint_test = cfn_lint_test or data.get('cfn_lint', False)
+            cfn_nag_test = cfn_nag_test or data.get('cfn_nag', False)
+            cfn_structure_test = cfn_structure_test or data.get('cfn_structure', False)
+            json_structure_test = json_structure_test or data.get('json_structure', False)
         prepared_cases.append((casename, data, type))
     return {
-        "test_lint": test_lint,
-        "test_structure": test_structure,
-        "test_vulnerability": test_vulnerability,
+        "cfn_nag_test": cfn_nag_test,
+        "cfn_lint_test": cfn_lint_test,
+        "json_validation_test": cfn_structure_test or json_structure_test,
+        "cfn_structure_test": cfn_structure_test,
+        "json_structure_test": json_structure_test,
         "cases": prepared_cases
     }
 

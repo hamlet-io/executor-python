@@ -1,11 +1,10 @@
-def vulnerability_test(filename):
+def cfn_lint_test(filename):
     import json
     import subprocess
     cmd = ' '.join([
-        'cfn_nag_scan',
-        '--output-format',
+        'cfn-lint',
+        '-f',
         'json',
-        '--input-path',
         filename
     ])
     result = subprocess.run(
@@ -18,7 +17,6 @@ def vulnerability_test(filename):
     if result.stderr:
         raise Exception(result.stderr)
     else:
-        errors = json.loads(result.stdout)[0]['file_results']['violations']
-        errors = list(e for e in errors if e['type'] != 'WARN')
+        errors = json.loads(result.stdout)
         if errors:
             raise AssertionError(json.dumps(errors, indent=4))

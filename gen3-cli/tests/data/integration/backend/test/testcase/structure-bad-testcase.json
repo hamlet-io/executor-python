@@ -1,48 +1,70 @@
 {
     "structureBad": {
       "filename": "/gen3-cli/tests/data/integration/backend/test/cf/valid-syntax.json",
-      "structure": {
+      "cfn_nag": true,
+      "cfn_lint": true,
+      "json_structure": {
         "exists": [
-            "Resources",
-            "Parameters.Environment.Default",
-            "Parameters.Environment.AllowedValues[3]"
+          {
+            "path": "Resources"
+          },
+          {
+            "path": "Parameters.Environment.Default"
+          },
+          {
+            "path": "Parameters.Environment.AllowedValues[3]"
+          }
         ],
         "match": [
-            [
-                "Parameters.Environment.Default",
-                "Test"
-            ],
-            [
-                "Parameters.Environment.AllowedValues",
-                [
-                    "Dev",
-                    "Test"
-                ]
-            ],
-            [
-                "Parameters.Environment.AllowedValues[0]",
-                "Test"
-            ]
-        ],
-        "resource": [
-            [
-                "untaggedInstance",
-                "AWS::EC2::Instance"
-            ],
-            [
-                "myInstance",
-                "AWS::EC2::Instance"
-            ]
+            {
+              "path": "Parameters.Environment.Default",
+              "value": "Test"
+            },
+            {
+              "path": "Parameters.Environment.AllowedValues",
+              "value": [
+                  "Dev",
+                  "Test"
+              ]
+            },
+            {
+              "path": "Parameters.Environment.AllowedValues[0]",
+              "value": "Test"
+            }
         ],
         "not_empty": [
-            "Parameters.Environment.AllowedValues",
-            "Parameters.Environment.Default"
+            {
+              "path": "Parameters.Environment.AllowedValues"
+            },
+            {
+              "path": "Parameters.Environment.Default"
+            }
         ],
         "length": [
-            [
-                "Parameters.Environment.AllowedValues",
-                10
-            ]
+            {
+              "path": "Parameters.Environment.AllowedValues",
+              "value": 10
+            }
+        ]
+      },
+      "cfn_structure": {
+        "resource": [
+            {
+              "id": "untaggedInstance",
+              "type": "AWS::EC2::Instance"
+            },
+            {
+              "id": "myInstance",
+              "type": "AWS::EC2::Instance"
+            }
+        ],
+        "output": [
+            {
+              "id": "NonExisting"
+            },
+            {
+              "id": "MissingOutput"
+            }
         ]
       }
     }
