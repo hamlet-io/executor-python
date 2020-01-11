@@ -7,6 +7,7 @@ from cot.backend.test.templates.json_structure_obj_block import JSONStructure
 from cot.backend.test.templates.cfn_structure_obj_block import CFNStructure
 from cot.backend.test.templates.cfn_lint_test_func_block import cfn_lint_test
 from cot.backend.test.templates.cfn_nag_test_func_block import cfn_nag_test
+from cot.backend.test.testcase_schema import Testcase
 from .conftest import DATA_DIR
 
 CF_TEMPLATES_PATH = os.path.join(DATA_DIR, 'cf')
@@ -148,3 +149,55 @@ def test_json_validator_object():
 
         validator = JSONValidator.from_file(template_filename)
         validator.assert_structure()
+
+
+def test_testcase_schema():
+
+    Testcase().load({
+        "filename": "Test"
+    })
+
+    Testcase().load({
+        "filename": "Test",
+        "cfn_lint": True,
+        "cfn_nag": False,
+        "json_structure": {
+            "match": [
+                {
+                    "path": "testpath",
+                    "value": [
+                        "TestValue"
+                    ]
+                }
+            ],
+            "exists": [
+                {
+                    "path": "testpath"
+                }
+            ],
+            "length": [
+                {
+                    "path": "testpath",
+                    "value": 10
+                }
+            ],
+            "not_empty": [
+                {
+                    "path": "testpath"
+                }
+            ]
+        },
+        "cfn_structure": {
+            "resource": [
+                {
+                    "id": "resource_id",
+                    "type": "resource_type"
+                }
+            ],
+            "output": [
+                {
+                    "id": "output_id"
+                }
+            ]
+        }
+    })
