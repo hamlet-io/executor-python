@@ -1,3 +1,9 @@
+# NOTE: This file must remain valid python file in order to perform tests on it.
+# NOTE: Imports can't be used inside a template block because all code will be merged into a single file.
+# NOTE: The class is wrapped into function in order to make it testable. This adds an ability to provide parent classes
+# at runtime, otherwise, the module will raise NameError
+
+
 def CFNStructure(JSONValidator):
     class CFNStructure(JSONValidator):
 

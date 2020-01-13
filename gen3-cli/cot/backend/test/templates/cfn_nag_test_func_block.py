@@ -1,3 +1,6 @@
+# NOTE: this file must remain valid python file in order to perform tests on it
+
+
 def cfn_nag_test(filename):
     import json
     import subprocess
