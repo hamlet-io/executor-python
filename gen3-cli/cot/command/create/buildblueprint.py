@@ -1,10 +1,10 @@
 import click
-from cot.backend.create import blueprint as create_blueprint_backend
+from cot.backend.create import buildblueprint as create_buildblueprint_backend
 
 
 @click.command(
-    'blueprint',
-    short_help='Create a blueprint output of the segment',
+    'build-blueprint',
+    short_help='Create a blueprint output for the provided deployment unit',
     context_settings=dict(
         max_content_width=240
     )
@@ -43,13 +43,19 @@ from cot.backend.create import blueprint as create_blueprint_backend
     '--generation-scenarios',
     help='comma seperated list of framework scenarios to load'
 )
-def blueprint(**kwargs):
+@click.option(
+    '-u',
+    '--deployment-unit',
+    help='deployment unit to be included in the template',
+    required=True
+)
+def buildblueprint(**kwargs):
     """
-    Create a blueprint output of the segment
+    Create a blueprint output for the provided deployment unit
 
     \b
     NOTES:
 
     1. You must be in the directory specific to the level
     """
-    create_blueprint_backend.run(**kwargs, _is_cli=True)
+    create_buildblueprint_backend.run(**kwargs, _is_cli=True)

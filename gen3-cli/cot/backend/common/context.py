@@ -65,6 +65,11 @@ class Context():
     def root(self):
         return self.__root
 
+    # Cache dir path
+    @property
+    def cache(self):
+        return os.path.join(self.__root, 'cache')
+
     # Context search tied to current directory
     @property
     def search(self):
@@ -79,6 +84,7 @@ class Context():
         self.props = {}
         self.__search = ContextSearch(directory)
         self.__directory = directory
+        self.__cwd = directory
         self.__try_to_find_root()
         if self.ACCOUNT_REQUIRED or self.TENANT_REQUIRED:
             self.__try_to_set_tenant()

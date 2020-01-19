@@ -7,3 +7,4 @@ import cot.command.test  # noqa
 # import cot.command.add  # noqa
 import cot.command.manage  # noqa
 import cot.command.run  # noqa
+import cot.command.query # noqa
