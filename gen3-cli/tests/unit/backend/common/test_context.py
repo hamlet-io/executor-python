@@ -73,7 +73,7 @@ def test_context_basics():
             )
 
         context = Context(cmdb())
-        assert context.root == cmdb()
+        assert context.root_dir == cmdb()
 
         with pytest.raises(NoRootFileError):
             Context(temp_dir)
