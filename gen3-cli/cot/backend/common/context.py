@@ -62,13 +62,13 @@ class Context():
 
     # Root file directory
     @property
-    def root(self):
-        return self.__root
+    def root_dir(self):
+        return self.__root_dir
 
     # Cache dir path
     @property
-    def cache(self):
-        return os.path.join(self.__root, 'cache')
+    def cache_dir(self):
+        return os.path.join(self.__root_dir, 'cache')
 
     # Context search tied to current directory
     @property
@@ -98,7 +98,7 @@ class Context():
         found = self.search.upwards(RootLevel.level_file)
         if not found:
             raise NoRootFileError(f"Can't find {RootLevel.level_file} file.")
-        self.__root = Search.parent(found, up=1)
+        self.__root_dir = Search.parent(found, up=1)
 
     def __try_to_set_account(self):
         # Trying to find account directory in tenant directory(props['tenant'])
@@ -137,7 +137,7 @@ class Context():
     def __try_to_set_tenant(self):
         # Searching for tenant directory. Directory should contain TenantLevel.level_file
         # Multiple tenants not supported at the moment
-        found = Search.downwards(self.root, TenantLevel.level_file)
+        found = Search.downwards(self.root_dir, TenantLevel.level_file)
         if not found:
             raise NoTenantFoundError()
         elif len(found) > 1:
