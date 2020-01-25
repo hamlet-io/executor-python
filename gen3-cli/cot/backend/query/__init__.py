@@ -1,12 +1,30 @@
 import os
 import json
+
 import collections
 import jmespath
-from tabulate import tabulate
+
 from jmespath.exceptions import JMESPathError
 from cot.backend.create import blueprint
 from cot.backend.common import context
 from cot.backend.common import exceptions
+
+
+LIST_TIERS_QUERY = (
+    'Tenants[].Products[].Environments[].Segments[].Tiers[]'
+    '.{'
+    'Id:Id,'
+    'Name:Configuration.Name,'
+    'Description:Configuration.Description,'
+    'NetworkEnabledState:Configuration.Network.Enabled'
+    '}'
+)
+
+
+LIST_COMPONENTS_QUERY = (
+    'Tenants[].Products[].Environments[].Segments[].Tiers[].Components[]'
+    '.{Id:Id,Name:Name,Type:Type}'
+)
 
 
 def run(
@@ -22,7 +40,7 @@ def run(
     _is_cli=False
 ):
     ctx = context.Context(cwd)
-    output_dir = os.path.join(ctx.cache_dir, 'query', os.path.relpath(ctx.directory, ctx.root_dir))
+    output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
     blueprint_filename = os.path.join(output_dir, 'blueprint.json')
     # Due to the fact that it's hard to dermine refresh condition
     # I decided to save blueprint in the cache dir under query/cwd_cmdb_root_relpath/blueprint.json
@@ -43,56 +61,12 @@ def run(
         data = json.load(f)
     result = collections.OrderedDict()
     if list_tiers:
-        # TODO: extract tiers data from blueprint
-        tiers = [
-            {
-                "Name": "DummyTierName",
-                "Id": "DummyTierId",
-                "NetworkEnabledState": True
-            }
-        ]
-        result['tiers'] = tiers_table(tiers)
+        result['tiers'] = jmespath.search(LIST_TIERS_QUERY, data) or []
     if list_components:
-        # TODO: extract components data from blueprint
-        components = [
-            {
-                "Name": "DummyComponentName",
-                "Id": "DummyComponentId",
-                "Type": "DummyComponentType"
-            }
-        ]
-        result['components'] = components_table(components)
+        result['components'] = jmespath.search(LIST_COMPONENTS_QUERY, data) or []
     if query:
         try:
             result['query'] = jmespath.search(query, data)
         except JMESPathError as e:
             raise exceptions.UserFriendlyBackendException(f"JMESPath query error: {str(e)}") from e
     return result
-
-
-def tiers_table(data):
-    tablerows = []
-    index = 0
-    for row in data:
-        index += 1
-        tablerows.append([row['Name'], row['Id'], row['NetworkEnabledState']])
-    return tabulate(
-        tablerows,
-        headers=['Name', 'Id', 'NetworkEnabledState'],
-        showindex=True,
-        tablefmt="psql"
-    )
-
-
-def components_table(data):
-    tablerows = []
-    index = 0
-    for row in data:
-        index += 1
-        tablerows.append([row['Name'], row['Id'], row['Type']])
-    return tabulate(
-        tablerows,
-        headers=['Name', 'Id', 'Type'],
-        showindex=True,
-        tablefmt="psql"
-    )

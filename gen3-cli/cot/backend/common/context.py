@@ -1,4 +1,6 @@
 import os
+import json
+import hashlib
 from .fsutils import ContextSearch, Search, File
 
 
@@ -78,7 +80,11 @@ class Context():
     def setup(self):
         pass
 
-    def __init__(self, directory, config=None):
+    def md5_hash(self):
+        hash_str = f"{self.level_name}:{self.level_file}:{self.directory}:{json.dumps(self.config)}"
+        return hashlib.md5(hash_str.encode()).hexdigest()
+
+    def __init__(self, directory: str, config: dict = None):
         config = config or {}
         self.config = config
         self.props = {}
