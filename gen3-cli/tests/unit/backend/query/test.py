@@ -83,6 +83,17 @@ def test(blueprint_backend):
         # testing that refresh works
         query.run(cwd=temp_dir, blueprint_refresh=True)
         blueprint_backend.run.assert_called_once()
+        # resetting mock
+        blueprint_backend.run.reset_mock()
+        blueprint_backend.run.assert_not_called()
+        # testing that mock input source has unique cache
+        query.run(cwd=temp_dir, blueprint_generation_input_source='mock')
+        blueprint_backend.run.assert_called_once()
+        blueprint_backend.run.reset_mock()
+        blueprint_backend.run.assert_not_called()
+        # testing that previosly created cache is used
+        query.run(cwd=temp_dir)
+        blueprint_backend.run.assert_not_called()
         # testing queries
         results = query.run(cwd=temp_dir, list_tiers=True, list_components=True, query="Tenants[0].Id")
         # testing the contents of the results
