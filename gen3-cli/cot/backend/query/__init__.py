@@ -40,7 +40,10 @@ def run(
     _is_cli=False
 ):
     ctx = context.Context(cwd)
-    output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
+    if blueprint_generation_input_source == 'mock':
+        output_dir = os.path.join(ctx.cache_dir, 'query', 'mock')
+    else:
+        output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
     blueprint_filename = os.path.join(output_dir, 'blueprint.json')
     # Due to the fact that it's hard to dermine refresh condition
     # I decided to save blueprint in the cache dir under query/cwd_cmdb_root_relpath/blueprint.json
