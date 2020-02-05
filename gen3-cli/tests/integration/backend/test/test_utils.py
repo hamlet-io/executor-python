@@ -92,7 +92,7 @@ def test_cfn_structure_object():
                 "Type": "TestType"
             }
         },
-        "Output": {
+        "Outputs": {
             "TestOutput": {
                 "Property": "Value"
             }
