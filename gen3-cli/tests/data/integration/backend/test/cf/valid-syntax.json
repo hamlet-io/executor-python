@@ -107,5 +107,12 @@
                 ]
             }
         }
+    },
+    "Outputs" : {
+        "untaggedInstanceXid": {
+            "Value": {
+              "Ref": "untaggedInstance"
+            }
+        }
     }
 }
