@@ -9,7 +9,7 @@ def CFNStructure(JSONValidator):
 
         RESOURCES_KEY = 'Resources'
         RESOURCE_TYPE_KEY = 'Type'
-        OUTPUT_KEY = 'Output'
+        OUTPUT_KEY = 'Outputs'
 
         def __resource(self, id, type):
             def validator():
