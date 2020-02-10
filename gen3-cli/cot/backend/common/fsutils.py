@@ -1,5 +1,6 @@
 import os
 import json
+import pathlib
 
 
 class Search:
@@ -79,6 +80,32 @@ class Search:
             if path[-len(suffix):] == suffix:
                 path = path[:-len(suffix)]
         return os.path.join(*path)
+
+    @staticmethod
+    def match(*patterns, root=None):
+        root = root or os.getcwd()
+        root = pathlib.Path(root)
+        matches = []
+        for pattern in patterns:
+            matches_gen = root.glob(pattern)
+            matches += [str(match) for match in matches_gen]
+        # removing duplicates
+        return list(set(matches))
+
+    def match_dirs(*patterns, root=None):
+        matches = Search.match(*patterns, root=root)
+        filtered_matches = []
+        for match in matches:
+            if os.path.isfile(match):
+                filtered_matches.append(os.path.dirname(match))
+            else:
+                filtered_matches.append(match)
+        # removing duplicates
+        return list(set(filtered_matches))
+
+    def match_files(*patterns, root=None):
+        matches = Search.match(*patterns, root=root)
+        return [match for match in matches if os.path.isfile(match)]
 
 
 class ContextSearch:

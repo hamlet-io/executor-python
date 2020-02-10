@@ -84,7 +84,7 @@ def test_context_basics():
         os.remove(cmdb('accounts', 'tenant-second', 'tenant.json'))
         account_level = AccountLevel(cmdb('accounts', 'account-name-1'))
         assert account_level.props['Name'] == 'account-name-1'
-        assert account_level.props['Tenant'] == cmdb('accounts', 'tenant')
+        assert account_level.tenant_dir == cmdb('accounts', 'tenant')
         assert account_level.level_file_path == cmdb('accounts', 'account-name-1', 'config', 'account.json')
 
         tenant_level = TenantLevel(cmdb('accounts', 'tenant'))
@@ -97,12 +97,12 @@ def test_context_basics():
             ProductLevel(cmdb('product'))
 
         product_level = ProductLevel(cmdb('product'), config=dict(account="account-name-1"))
-        assert product_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert product_level.props['Account'] == cmdb('accounts', 'account-name-1')
+        assert product_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert product_level.account_dir == cmdb('accounts', 'account-name-1')
 
         product_level = ProductLevel(cmdb('product'), config=dict(account="account-name-2"))
-        assert product_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert product_level.props['Account'] == cmdb('accounts', 'account-name-2')
+        assert product_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert product_level.account_dir == cmdb('accounts', 'account-name-2')
 
         with pytest.raises(SpecifiedAccountNotFoundError):
             ProductLevel(cmdb('product'), config=dict(account="account-name-3"))
@@ -111,8 +111,8 @@ def test_context_basics():
             cmdb('product', 'config', 'solutions', 'environment'),
             config=dict(account='account-name-1')
         )
-        assert environment_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert environment_level.props['Account'] == cmdb('accounts', 'account-name-1')
+        assert environment_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert environment_level.account_dir == cmdb('accounts', 'account-name-1')
         assert environment_level.props['Environment'] == 'environment'
 
         segment_level = SegmentLevel(
@@ -121,23 +121,23 @@ def test_context_basics():
                 account='account-name-2'
             )
         )
-        assert segment_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert segment_level.props['Account'] == cmdb('accounts', 'account-name-2')
+        assert segment_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert segment_level.account_dir == cmdb('accounts', 'account-name-2')
         assert segment_level.props['Environment'] == 'environment'
         assert segment_level.props['Segment'] == 'segment'
 
         os.remove(cmdb('accounts', 'account-name-1', 'config', 'account.json'))
 
         product_level = ProductLevel(cmdb('product'), config=dict(account='account-name-2'))
-        assert product_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert product_level.props['Account'] == cmdb('accounts', 'account-name-2')
+        assert product_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert product_level.account_dir == cmdb('accounts', 'account-name-2')
 
         with pytest.raises(SpecifiedAccountNotFoundError):
             ProductLevel(cmdb('product'), config=dict(account='account-name-1'))
 
         product_level = ProductLevel(cmdb('product'))
-        assert product_level.props['Tenant'] == cmdb('accounts', 'tenant')
-        assert product_level.props['Account'] == cmdb('accounts', 'account-name-2')
+        assert product_level.tenant_dir == cmdb('accounts', 'tenant')
+        assert product_level.account_dir == cmdb('accounts', 'account-name-2')
 
         os.remove(cmdb('accounts', 'account-name-2', 'config', 'account.json'))
 

@@ -72,6 +72,18 @@ class Context():
     def cache_dir(self):
         return os.path.join(self.__root_dir, 'cache')
 
+    @property
+    def account_dir(self):
+        return self._account_dir
+
+    @property
+    def tenant_dir(self):
+        return self._tenant_dir
+
+    @property
+    def product_dir(self):
+        return self._product_dir
+
     # Context search tied to current directory
     @property
     def search(self):
@@ -91,6 +103,10 @@ class Context():
         self.__search = ContextSearch(directory)
         self.__directory = directory
         self.__cwd = directory
+        # semi private variables
+        self._product_dir = None
+        self._account_dir = None
+        self._tenant_dir = None
         self.__try_to_find_root()
         if self.ACCOUNT_REQUIRED or self.TENANT_REQUIRED:
             self.__try_to_set_tenant()
@@ -112,7 +128,7 @@ class Context():
         # found account will be used by default
         # If suggested account is set(config['account']), try to find account with name == config['account']
         # If no account with that name found raise SpecifiedAccountNotFoundError.
-        accounts_directory = Search.parent(self.props['Tenant'], up=1)
+        accounts_directory = Search.parent(self.tenant_dir, up=1)
         account_suffix = os.path.join('config', AccountLevel.level_file)
 
         # Each account filepath has common prefix and suffix
@@ -123,7 +139,7 @@ class Context():
         account_name = self.config.get('account')
         account_path = None
         if not found:
-            raise NoAccountsFoundError(f"Can't find accounts in {self.props['Tenant']}")
+            raise NoAccountsFoundError(f"Can't find accounts in {self.tenant_dir}")
         elif len(found) == 1:
             account_path = found[0]
             if account_name and account_name != name_from_path(account_path):
@@ -138,7 +154,7 @@ class Context():
                     break
             else:
                 raise SpecifiedAccountNotFoundError(f"Can't find account {account_name} in {accounts_directory}")
-        self.props["Account"] = Search.parent(account_path, up=2)
+        self._account_dir = Search.parent(account_path, up=2)
 
     def __try_to_set_tenant(self):
         # Searching for tenant directory. Directory should contain TenantLevel.level_file
@@ -149,7 +165,7 @@ class Context():
         elif len(found) > 1:
             raise MultipleTenantsFoundError()
         else:
-            self.props["Tenant"] = Search.parent(found[0], up=1)
+            self._tenant_dir = Search.parent(found[0], up=1)
 
     def __try_to_find_level_file(self):
         # Try to find level file, path to which is set by directory + level_file_directory + level_file
@@ -228,6 +244,9 @@ class ProductLevel(Context):
     level_name = 'product'
     level_file = 'product.json'
     level_file_directory = 'config'
+
+    def setup(self):
+        self._product_dir = self.directory
 
 
 class IntegratorLevel(Context):

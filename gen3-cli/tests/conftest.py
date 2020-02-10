@@ -15,7 +15,7 @@ class __CMDBContext:
             filename = os.path.join(root, name)
             if ext:
                 filename += '.%s' % ext
-            return filename
+            return os.path.normpath(filename)
         return cmdb_filename_compositor
 
     def __init__(self, *args):
