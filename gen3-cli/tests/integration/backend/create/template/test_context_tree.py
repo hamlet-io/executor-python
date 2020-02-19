@@ -7,7 +7,7 @@ from cot.backend.create.template import context_tree as ct
 from .conftest import conf
 
 
-def test(clear_cmdb, cmdb):
+def test_find_gen3_dirs(clear_cmdb, cmdb):
     clear_cmdb()
 
     tenant_name = conf['cmdb']['tenant']['tenant_name']
@@ -96,3 +96,13 @@ def test(clear_cmdb, cmdb):
         assert e.SEGMENT_SHARED_SOLUTIONS_DIR == segment_shared_solutions_dir
         assert e.SEGMENT_SHARED_OPERATIONS_DIR == segment_shared_operations_dir
         print(e)
+
+
+def test_cmdb_upgrade():
+    ct.process_cmdb(
+        '/var/opt/codeontap',
+        'upgrade',
+        'v0.0.3',
+        ['v1.0.0', 'v1.1.0', 'v1.2.0'],
+        True
+    )

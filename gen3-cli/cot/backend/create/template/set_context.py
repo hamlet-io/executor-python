@@ -8,6 +8,7 @@ from .context_tree import (
     find_gen3_dirs
 )
 from .environment import Environment
+from .utils import deep_dict_update
 
 
 def set_context(
@@ -157,15 +158,6 @@ def set_context(
                     f.write('{}')
             else:
                 #  merging blueprint components
-
-                def deep_dict_update(a, b):
-                    for b_key, b_value in b.items():
-                        a_value = a.get(b_key)
-                        if isinstance(a_value, dict) and isinstance(b_value, dict):
-                            deep_dict_update(a_value, b_value)
-                        else:
-                            a[b_key] = b_value
-
                 blueprint = {}
                 for blueprint_component_json in l.blueprint_array:
                     with open(blueprint_component_json, 'rt') as f:
