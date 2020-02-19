@@ -92,12 +92,13 @@ class Search:
         # removing duplicates
         return list(set(matches))
 
-    def match_dirs(*patterns, root=None):
+    def match_dirs(*patterns, root=None, include_file_dirs=False):
         matches = Search.match(*patterns, root=root)
         filtered_matches = []
         for match in matches:
             if os.path.isfile(match):
-                filtered_matches.append(os.path.dirname(match))
+                if include_file_dirs:
+                    filtered_matches.append(os.path.dirname(match))
             else:
                 filtered_matches.append(match)
         # removing duplicates
@@ -106,6 +107,15 @@ class Search:
     def match_files(*patterns, root=None):
         matches = Search.match(*patterns, root=root)
         return [match for match in matches if os.path.isfile(match)]
+
+    def list_all(dirname):
+        return [name for name in os.listdir(dirname)]
+
+    def list_files(dirname):
+        return [name for name in os.listdir(dirname) if os.path.isfile(name)]
+
+    def list_dirs(dirname):
+        return [name for name in os.listdir(dirname) if os.path.isdir(name)]
 
 
 class ContextSearch:

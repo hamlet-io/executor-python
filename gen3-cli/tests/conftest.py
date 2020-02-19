@@ -1,6 +1,13 @@
 import os
 import shutil
 import pytest
+from cot.loggers import (
+    logging,
+    root
+)
+
+
+root.setLevel(logging.DEBUG)
 
 
 class __CMDBContext:
