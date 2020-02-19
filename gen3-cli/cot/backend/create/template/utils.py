@@ -94,29 +94,27 @@ def semver_compare(v1, v2):
     return 0
 
 
-# a range is a list of comparator sets joined by "||"" or "|", true if one of sets is true
 # a comparator set is a list of comparators, true if all comparators are true
 # a comparator is an operator and a version
-def semver_satisfies(version, comparators_sets):
-    for comparators_set in comparators_sets:
-        for comparator in comparators_set:
-            logger.debug('Checking comparator "%s" ...', comparator)
-            match = re.match(r'^(<|<=|>|>=|=)(.+)$', comparator)
-            if not match:
-                raise ValueError(f'Unknown comparator {comparator}')
-            operator = match.group(1)
-            comparator_version = semver_clean(match.group(2))
-            comparator_result = semver_compare(version, comparator_version)
-            if operator == '<' and comparator_result < 0:
-                continue
-            elif operator == '<=' and comparator_result <= 0:
-                continue
-            elif operator == '>' and comparator_result > 0:
-                continue
-            elif operator == '<' and comparator_result >= 0:
-                continue
-            elif operator == '=' and comparator_result == 0:
-                continue
-            else:
-                return False
+def semver_satisfies(version, comparators_set):
+    for comparator in comparators_set:
+        logger.debug('Checking comparator "%s" ...', comparator)
+        match = re.match(r'^(<=|>=|=|<|>)(.+)$', comparator)
+        if not match:
+            raise ValueError(f'Unknown comparator {comparator}')
+        operator = match.group(1)
+        comparator_version = semver_clean(match.group(2))
+        comparator_result = semver_compare(version, comparator_version)
+        if operator == '<' and comparator_result < 0:
+            continue
+        elif operator == '>' and comparator_result > 0:
+            continue
+        elif operator == '=' and comparator_result == 0:
+            continue
+        elif operator == '<=' and comparator_result <= 0:
+            continue
+        elif operator == '>=' and comparator_result >= 0:
+            continue
+        else:
+            return False
     return True
