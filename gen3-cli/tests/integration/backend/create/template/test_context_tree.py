@@ -1,5 +1,7 @@
 import os
 import json
+import tempfile
+# import subprocess
 from cot.backend.generate.cmdb import account, tenant
 from cot.backend.generate.product import base
 from cot.backend.create.template.environment import Environment
@@ -98,11 +100,231 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
         print(e)
 
 
-def test_cmdb_upgrade():
-    ct.process_cmdb(
-        '/var/opt/codeontap',
-        'upgrade',
-        'v0.0.3',
-        ['v1.0.0', 'v1.1.0', 'v1.2.0'],
-        True
-    )
+class FSNode:
+
+    def __init__(self, path):
+        self.path = path
+
+    def __getitem__(self, key):
+        return self.__class__(os.path.join(self.path, key))
+
+    def __setitem__(self, key, value):
+        if not isinstance(value, str):
+            value = json.dumps(value, indent=4)
+        os.makedirs(self.path, exist_ok=True)
+        with open(os.path.join(self.path, key), 'wt+') as f:
+            f.write(value)
+
+    def exists(self):
+        return os.path.exists(self.path)
+
+    def mkdir(self):
+        os.makedirs(self.path, exist_ok=True)
+        return self
+
+    def mknod(self):
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        os.mknod(self.path)
+
+    def mkfile(self, data):
+        os.makedirs(os.path.dirname(self.path), exist_ok=True)
+        with open(self.path, 'wt+') as f:
+            f.write(data)
+        return self
+
+    def mkjson(self, data):
+        data = json.dumps(data)
+        self.mkfile(data)
+
+    def isfile(self):
+        return os.path.isfile(self.path)
+
+    def isdir(self):
+        return os.path.isdir(self.path)
+
+    def json(self):
+        if self.isfile():
+            with open(self.path, 'rt') as f:
+                return json.load(f)
+        raise TypeError(f'{self.path} is not a file')
+
+    def text(self):
+        if self.isfile():
+            with open(self.path, 'rt') as f:
+                return f.read()
+        raise TypeError(f'{self.path} is not a file')
+
+
+def test_upgrade_version_1_0_0():
+    def create_test_fs(root):
+        root = FSNode(root)
+
+        root['build.ref'] = 'commit1 tag1'
+        root['builds']['build.ref'] = 'commit2 tag2'
+
+        root['shared-build.ref'] = 'reference1'
+        root['shared-builds']['shared-build.ref'] = 'reference2'
+
+        root['credentials.json'] = {'Credentials': ['1', '2']}
+        root['credentials']['credentials.json'] = {'Credentials': ['3', '4']}
+
+        root['container.json'] = {'Id': '1'}
+        root['containers']['container.json'] = {'Id': '2'}
+
+    def assert_post_upgrade_structure(root):
+        root = FSNode(root)
+        # Legacy
+        assert not root['build.ref'].exists()
+        assert not root['builds']['build.ref'].exists()
+
+        assert not root['shared-build.ref'].exists()
+        assert not root['shared-builds']['shared-build.ref'].exists()
+
+        assert not root['container.json'].exists()
+        assert not root['containers']['container.json'].exists()
+        # Upgraded
+        assert root['build.json'].json() == {
+            'Commit': 'commit1',
+            'Tag': 'tag1',
+            'Formats': ['docker']
+        }
+        assert root['builds']['build.json'].json() == {
+            'Commit': 'commit2',
+            'Tag': 'tag2',
+            'Formats': ['docker']
+        }
+
+        assert root['shared_build.json'].json() == {
+            'Reference': 'reference1'
+        }
+        assert root['shared-builds']['shared_build.json'].json() == {
+            'Reference': 'reference2'
+        }
+
+        assert root['credentials.json'].json() == [
+            '1', '2'
+        ]
+        assert root['credentials']['credentials.json'].json() == [
+            '3', '4'
+        ]
+
+        assert root['segment.json'].json() == {
+            'Id': '1'
+        }
+        assert root['containers']['segment.json'].json() == {
+            'Id': '2'
+        }
+
+    with tempfile.TemporaryDirectory() as root:
+        create_test_fs(root)
+        ct.upgrade_cmdb_repo_to_v1_0_0(root, '')
+        ct.cleanup_cmdb_repo_to_v1_0_0(root, '')
+        assert_post_upgrade_structure(root)
+
+
+def test_upgrade_version_1_1_0():
+
+    def create_test_fs(root):
+        root = FSNode(root)
+
+        appsettings = root['appsettings']
+        appsettings['appsettings-file.json'].mknod()
+        appsettings['appsettings-env']['subdir']['appsettings-env-sub-file.json'].mknod()
+        appsettings['appsettings-env']['appsettings-env-file.json'].mknod()
+
+        solutions = root['solutions']
+        solutions['solutions-file.json'].mknod()
+        solutions['segment.json'] = {
+            'Segment': {
+                'Environment': 'solutions',
+                'Id': 'Id',
+                'Name': 'Name',
+                'Title': 'Title',
+                'NonLegacyKey': 'NonLegacyKey'
+            }
+        }
+        solutions['solutions-env']['subdir']['solutions-env-sub-file.json'].mknod()
+        solutions['solutions-env']['solutions-env-file.json'].mknod()
+        solutions['solutions-env']['segment.json'] = {
+            'Segment': {
+                'Environment': 'solutions-env',
+                'Id': 'Id',
+                'Name': 'Name',
+                'Title': 'Title',
+                'NonLegacyKey': 'NonLegacyKey'
+            }
+        }
+
+        credentials = root['credentials']
+        credentials['credentials-file.json'].mknod()
+        credentials['aws-ssh.pem'].mknod()
+        credentials['credentials-env']['subdir']['credentials-env-sub-file.json'].mknod()
+        credentials['credentials-env']['credentials-env-file.json'].mknod()
+        credentials['credentials-env']['.gitignore'] = 'test'
+        credentials['credentials-env']['aws-ssh-env.pem'].mknod()
+
+        aws = root['aws']
+        aws['aws-file.json'].mknod()
+        aws['cf']['aws-cf-file.json'].mknod()
+        aws['aws-env']['subdir']['aws-env-sub-file.json'].mknod()
+        aws['aws-env']['cf']['aws-env-cf-file.json'].mknod()
+        aws['aws-env']['cf']['subdir']['aws-env-cf-sub-file.json'].mknod()
+
+    def assert_post_upgrade_structure(root):
+        root = FSNode(root)
+        # Legacy
+        assert not root['appsettings'].exists()
+        # Upgraded
+        settings = root['settings']
+        assert settings['shared']['appsettings-file.json'].isfile()
+        assert settings['appsettings-env']['default']['subdir']['appsettings-env-sub-file.json'].isfile()
+        assert settings['appsettings-env']['default']['appsettings-env-file.json'].isfile()
+        # Legacy
+        assert not root['solutions'].exists()
+        # Upgraded
+        solutionsv2 = root['solutionsv2']
+        assert solutionsv2.isdir()
+        assert solutionsv2['shared']['default']['solutions-file.json'].isfile()
+        assert solutionsv2['shared']['default']['segment.json'].json() == {
+            'Segment': {
+                'Id': 'default'
+            }
+        }
+        assert solutionsv2['solutions-env']['default']['subdir']['solutions-env-sub-file.json'].isfile()
+        assert solutionsv2['solutions-env']['default']['solutions-env-file.json'].isfile()
+        assert solutionsv2['solutions-env']['default']['segment.json'].json() == {
+            'Segment': {
+                'NonLegacyKey': 'NonLegacyKey'
+            }
+        }
+        assert solutionsv2['solutions-env']['environment.json'].json() == {
+            'Environment': {
+                'Id': 'solutions-env'
+            }
+        }
+        # Legacy
+        assert not root['credentials'].exists()
+        # Upgraded
+        operations = root['operations']
+        assert operations['shared']['.aws-ssh.pem'].isfile()
+        assert operations['shared']['.gitignore'].text() == '\n'.join(['*.plaintext', '*.decrypted', '*.ppk'])
+        assert operations['shared']['credentials-file.json'].isfile()
+        assert operations['credentials-env']['default']['subdir']['credentials-env-sub-file.json'].isfile()
+        assert operations['credentials-env']['default']['credentials-env-file.json'].isfile()
+        assert operations['credentials-env']['default']['.aws-ssh-env.pem'].isfile()
+        assert operations['credentials-env']['default']['.gitignore'].text() == 'test'
+        # Legacy
+        cf = root['cf']
+        assert not cf['shared']['aws-file.json'].isfile()
+        assert cf['shared']['aws-cf-file.json'].isfile()
+        assert cf['aws-env']['default']['aws-env-cf-file.json'].isfile()
+        assert cf['aws-env']['default']['subdir']['aws-env-cf-sub-file.json'].isfile()
+        assert not cf['aws-env']['default']['aws-env-sub-file.json'].exists()
+
+    with tempfile.TemporaryDirectory() as root:
+        create_test_fs(root)
+        # subprocess.call('tree -a', shell=True, cwd=tmp_dir)
+        ct.upgrade_cmdb_repo_to_v1_1_0(root, '')
+        ct.cleanup_cmdb_repo_to_v1_1_0(root, '')
+        # subprocess.call('tree -a', shell=True, cwd=tmp_dir)
+        assert_post_upgrade_structure(root)

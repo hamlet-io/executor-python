@@ -112,10 +112,10 @@ class Search:
         return [name for name in os.listdir(dirname)]
 
     def list_files(dirname):
-        return [name for name in os.listdir(dirname) if os.path.isfile(name)]
+        return [name for name in os.listdir(dirname) if os.path.isfile(os.path.join(dirname, name))]
 
     def list_dirs(dirname):
-        return [name for name in os.listdir(dirname) if os.path.isdir(name)]
+        return [name for name in os.listdir(dirname) if os.path.isdir(os.path.join(dirname, name))]
 
 
 class ContextSearch:
