@@ -334,7 +334,7 @@ def upgrade_shared_build_ref(root_dir, dry_run):
         if dry_run:
             logger.info(upgraded_data)
             continue
-        with open(upgraded_file, 'wt') as f:
+        with open(upgraded_file, 'wt+') as f:
             f.write(upgraded_data)
 
 
@@ -391,7 +391,7 @@ def cleanup_cmdb_repo_to_v1_0_0(root_dir, dry_run):
             continue
         os.remove(legacy_file)
     # Change of naming from "container" to "segment"
-    legacy_files = Search.match_files(os.path.join('**', 'container.json'), root_dir=root_dir)
+    legacy_files = Search.match_files(os.path.join('**', 'container.json'), root=root_dir)
     for legacy_file in legacy_files:
         logger.info('%sDeleting %s', dry_run, legacy_file)
         if dry_run:
@@ -412,15 +412,19 @@ UPGRADE_V1_1_0_SOURCES = {
 def upgrade_cmdb_repo_to_v1_1_0_settings(root_dir, dry_run, target_dir):
     # Create the shared file location for default segment
     shared_dir = os.path.join(target_dir, 'shared')
+    os.makedirs(shared_dir, exist_ok=True)
     sub_files = Search.list_files(root_dir)
     for sub_file in sub_files:
-        logger.debug('Copying %s to %s', sub_file, shared_dir)
+        src = os.path.join(root_dir, sub_file)
+        dst = os.path.join(shared_dir, sub_file)
+        logger.debug('Copying %s to %s', src, dst)
         if dry_run:
             continue
-        shutil.copy2(os.path.join(root_dir, sub_file), os.path.join(shared_dir, sub_file))
+        shutil.copy2(src, dst)
     sub_dirs = Search.list_dirs(root_dir)
     for sub_dir in sub_dirs:
         environment = sub_dir
+        sub_dir = os.path.join(root_dir, sub_dir)
         segment_dir = os.path.join(target_dir, environment, 'default')
         os.makedirs(segment_dir, exist_ok=True)
         logger.debug('Copying %s to %s', sub_dir, segment_dir)
@@ -429,7 +433,7 @@ def upgrade_cmdb_repo_to_v1_1_0_settings(root_dir, dry_run, target_dir):
         for name in Search.list_all(sub_dir):
             src = os.path.join(sub_dir, name)
             dst = os.path.join(segment_dir, name)
-            if os.path.isdir(name):
+            if os.path.isdir(src):
                 shutil.copytree(src, dst)
             else:
                 shutil.copy2(src, dst)
@@ -464,12 +468,14 @@ def upgrade_cmdb_repo_to_v1_1_0_state(root_dir, dry_run, target_dir):
     # Process each sub dir
     sub_dirs = Search.list_dirs(root_dir)
     for sub_dir in sub_dirs:
+        if sub_dir == 'cf':
+            continue
         environment = sub_dir
         segment_dir = os.path.join(target_dir, environment, 'default')
-        os.makedirs(segment_dir, exist_ok=True)
         cf_dir = os.path.join(root_dir, sub_dir, 'cf')
         if not os.path.isdir(cf_dir):
             continue
+        os.makedirs(segment_dir, exist_ok=True)
         logger.debug('Copying %s to %s', cf_dir, segment_dir)
         if dry_run:
             continue
@@ -493,9 +499,9 @@ def upgrade_cmdb_repo_to_v1_1_0(root_dir, dry_run):
                 continue
             logger.info('Converting %s into %s', source_dir, target_dir)
             if source == 'aws':
-                upgrade_cmdb_repo_to_v1_1_0_state(root_dir, dry_run, target_dir)
+                upgrade_cmdb_repo_to_v1_1_0_state(source_dir, dry_run, target_dir)
             else:
-                upgrade_cmdb_repo_to_v1_1_0_settings(root_dir, dry_run, target_dir)
+                upgrade_cmdb_repo_to_v1_1_0_settings(source_dir, dry_run, target_dir)
             if dry_run:
                 continue
             # Special processing
@@ -530,11 +536,11 @@ def upgrade_cmdb_repo_to_v1_1_0(root_dir, dry_run):
                             },
                             f
                         )
-                    logger.debug('Cleaning %', segment_file)
+                    logger.debug('Cleaning %s', segment_file)
                     segment_legacy_keys = ['Id', 'Name', 'Title', 'Environment']
                     for segment_legacy_key in segment_legacy_keys:
                         try:
-                            segment['Segment'][segment_legacy_key]
+                            del segment['Segment'][segment_legacy_key]
                         except KeyError:
                             pass
                     with open(segment_file, 'wt') as f:
@@ -560,7 +566,7 @@ def upgrade_cmdb_repo_to_v1_1_0(root_dir, dry_run):
                     dst = os.path.join(segment_dir, '.' + filename)
                     logger.debug('Moving %s to %s', src, dst)
                     shutil.move(src, dst)
-                    segment_ignore_file = os.path.join(segment_dir, '..gitignore')
+                    segment_ignore_file = os.path.join(segment_dir, '.gitignore')
                     if not os.path.isfile(segment_ignore_file):
                         logger.debug('Creaging %s', segment_ignore_file)
                         ignore_list = ['*.plaintext', '*.decrypted', '*.ppk']
@@ -573,11 +579,12 @@ def cleanup_cmdb_repo_to_v1_1_0(root_dir, dry_run):
     for source in UPGRADE_V1_1_0_SOURCES:
         source_dirs = Search.match_dirs(os.path.join('**', source), root=root_dir)
         for source_dir in source_dirs:
-            target_dir = os.path.join(os.path.basename(source_dir), UPGRADE_V1_1_0_SOURCES[source])
+            target_dir = os.path.join(os.path.dirname(source_dir), UPGRADE_V1_1_0_SOURCES[source])
             logger.debug('Checking %s', source_dir)
+            logger.debug('Target dir %s', target_dir)
             if not os.path.isdir(target_dir):
                 continue
-            logger.info('%Deleting %s', dry_run, source_dir)
+            logger.info('%sDeleting %s', dry_run, source_dir)
             if dry_run:
                 continue
             shutil.rmtree(source_dir)
