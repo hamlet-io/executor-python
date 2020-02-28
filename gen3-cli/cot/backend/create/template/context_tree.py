@@ -39,8 +39,8 @@ def parse_stack_filename(filename):
     if match:
         return dict(
             stack_level=match.group(1),
-            stack_deployment_unit=match.get(2),
-            stack_region=match.get(3),
+            stack_deployment_unit=match.group(2),
+            stack_region=match.group(4),
             stack_account=''
         )
     pattern = r'([a-z0-9]+)-(.+)-([a-z]{2}-[a-z]+-[1-9])(-pseudo)?-(.+)'
@@ -52,7 +52,12 @@ def parse_stack_filename(filename):
             stack_region=match.group(3),
             stack_account=''
         )
-    return None
+    return dict(
+        stack_level='',
+        stack_deployment_unit='',
+        stack_region='',
+        stack_account=''
+    )
 
 
 def find_gen3_root_dir(dirname):
@@ -641,7 +646,7 @@ def upgrade_cmdb_repo_to_v1_3_0(root_dir, dry_run):
             logger.info('Looking for CMK account in %s', cmk_stack)
             with open(cmk_stack, 'rt') as f:
                 cmk_stack_data = json.load(f)
-            stack_outputs = cmk_stack_data[0]['Outputs']
+            stack_outputs = cmk_stack_data['Stacks'][0]['Outputs']
             cmk_account = None
             cmk_region = None
             for output in stack_outputs:
@@ -662,17 +667,11 @@ def upgrade_cmdb_repo_to_v1_3_0(root_dir, dry_run):
                     stack_outputs = stack_data['Stacks'][0]['Outputs']
                     stackoutput_account = None
                     stackoutput_region = None
-                    # stackoutput_level = None
-                    # stackoutput_deployment_unit = None
                     for output in stack_outputs:
                         if output['OutputKey'] == 'Account':
                             stackoutput_account = output['OutputValue']
                         elif output['OutputKey'] == 'Region':
                             stackoutput_region = output['OutputValue']
-                        # elif output['OutputKey'] == 'Level':
-                        #     stackoutput_level = output['OutputValue']
-                        # elif output['OutputKey'] == 'DeploymentUnit':
-                        #     stackoutput_deployment_unit = output['OutputValue']
                     if not stackoutput_account:
                         logger.debug('Adding Account Output to %s', stack_file)
                         for stack in stack_data['Stacks']:
@@ -691,7 +690,7 @@ def upgrade_cmdb_repo_to_v1_3_0(root_dir, dry_run):
                                     'OutputValue': parsed_stack['stack_region']
                                 }
                             )
-                    if not stackoutput_region or stackoutput_account:
+                    if not stackoutput_region or not stackoutput_account:
                         with open(stack_file, 'wt') as f:
                             json.dump(stack_data, f, indent=4)
                     if not parsed_stack['stack_account']:
@@ -699,7 +698,7 @@ def upgrade_cmdb_repo_to_v1_3_0(root_dir, dry_run):
                             f'-{parsed_stack["stack_region"]}-',
                             f'-{cmk_account_id}-{parsed_stack["stack_region"]}-'
                         )
-                        if stack_filename != new_stack_file_name and not stack_filename.contains(cmk_account_id):
+                        if stack_filename != new_stack_file_name and cmk_account_id not in stack_filename:
                             src = stack_file
                             dst = os.path.join(stack_dir, new_stack_file_name)
                             logger.debug('Moving %s to %s', src, dst)
