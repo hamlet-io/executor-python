@@ -217,8 +217,8 @@ def test_upgrade_version_1_0_0():
 
     with tempfile.TemporaryDirectory() as root:
         create_test_fs(root)
-        ct.upgrade_cmdb_repo_to_v1_0_0(root, '')
-        ct.cleanup_cmdb_repo_to_v1_0_0(root, '')
+        assert ct.upgrade_cmdb_repo_to_v1_0_0(root, '')
+        assert ct.cleanup_cmdb_repo_to_v1_0_0(root, '')
         assert_post_upgrade_structure(root)
 
 
@@ -326,8 +326,8 @@ def test_upgrade_version_1_1_0():
     with tempfile.TemporaryDirectory() as root:
         create_test_fs(root)
         # subprocess.call('tree -a', shell=True, cwd=tmp_dir)
-        ct.upgrade_cmdb_repo_to_v1_1_0(root, '')
-        ct.cleanup_cmdb_repo_to_v1_1_0(root, '')
+        assert ct.upgrade_cmdb_repo_to_v1_1_0(root, '')
+        assert ct.cleanup_cmdb_repo_to_v1_1_0(root, '')
         # subprocess.call('tree -a', shell=True, cwd=tmp_dir)
         assert_post_upgrade_structure(root)
 
@@ -361,7 +361,7 @@ def test_upgrade_version_1_2_0():
 
     with tempfile.TemporaryDirectory() as root:
         create_test_fs(root)
-        ct.upgrade_cmdb_repo_to_v1_2_0(root, '')
+        assert ct.upgrade_cmdb_repo_to_v1_2_0(root, '')
         assert_post_upgrade_structure(root)
 
 
@@ -461,5 +461,99 @@ def test_upgrade_version_1_3_0():
 
     with tempfile.TemporaryDirectory() as root:
         create_test_fs(root)
-        ct.upgrade_cmdb_repo_to_v1_3_0(root, '')
+        assert ct.upgrade_cmdb_repo_to_v1_3_0(root, '')
         assert_post_upgrade_structure(root)
+
+
+def test_upgrade_version_1_3_1():
+    import subprocess
+
+    CMK_STACK_DATA = {
+        'Stacks': [
+            {
+                'Outputs': [
+                    {
+                        'OutputKey': 'Account',
+                        'OutputValue': 'AWSId_1'
+                    },
+                    {
+                        'OutputKey': 'Region',
+                        'OutputValue': 'AWS_Region_1'
+                    }
+                ]
+            }
+        ]
+    }
+
+    ACCOUNT_DATA = {
+        'Account': {
+            'Id': '10000000000',
+            'AWSId': 'AWSId_1'
+        }
+    }
+
+    def create_test_fs(root):
+        root = FSNode(root)
+
+        accounts = root['accounts']
+        accounts['account']['config']['account.json'] = ACCOUNT_DATA
+        cf = root['infrastructure']['cf']
+
+        cf['seg-cmk-1-stack.json'] = CMK_STACK_DATA
+        cf['stacklevel-deplymentunit-10000000001-us-east-1-stack.json'] = '1'
+        cf['stacklevel-deplyment-unit-xxxx-us-east-1-stack.json'] = '2'
+        cf['stacklevel-deplymentunit-us-east-1-stack.json'] = '3'
+
+    def assert_post_upgrade_structure(root):
+        root = FSNode(root)
+
+        cf = root['infrastructure']['cf']
+
+        assert cf['seg-cmk-1-stack.json'].json() == CMK_STACK_DATA
+        assert cf['stacklevel-deplymentunit-10000000001-us-east-1-stack.json'].text() == '1'
+        assert not cf['stacklevel-deplyment-unit-xxxx-us-east-1-stack.json'].exists()
+        assert not cf['stacklevel-deplymentunit-us-east-1-stack.json'].exists()
+
+        assert cf['stacklevel-deplyment-unit-xxxx-10000000000-us-east-1-stack.json'].text() == '2'
+        assert cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'].text() == '3'
+
+    # Regular run without exceptional cases
+    with tempfile.TemporaryDirectory() as root:
+        create_test_fs(root)
+        subprocess.call('tree -a', shell=True, cwd=root)
+        assert ct.upgrade_cmdb_repo_to_v1_3_1(root, '')
+        subprocess.call('tree -a', shell=True, cwd=root)
+        assert_post_upgrade_structure(root)
+
+    # Exceptional cases:
+    # Files content is different, manual intervention required
+    with tempfile.TemporaryDirectory() as root_dir:
+        root = FSNode(root_dir)
+
+        cf = root['infrastructure']['cf']
+        accounts = root['accounts']
+        accounts['account']['config']['account.json'] = ACCOUNT_DATA
+        cf['seg-cmk-1-stack.json'] = CMK_STACK_DATA
+        cf['stacklevel-deplymentunit-us-east-1-stack.json'] = '1'
+        cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'] = '2'
+
+        assert not ct.upgrade_cmdb_repo_to_v1_3_1(root_dir, '')
+
+        assert cf['stacklevel-deplymentunit-us-east-1-stack.json'].text() == '1'
+        assert cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'].text() == '2'
+
+    # Files content is equal, removing legacy file
+    with tempfile.TemporaryDirectory() as root_dir:
+        root = FSNode(root_dir)
+
+        cf = root['infrastructure']['cf']
+        accounts = root['accounts']
+        accounts['account']['config']['account.json'] = ACCOUNT_DATA
+        cf['seg-cmk-1-stack.json'] = CMK_STACK_DATA
+        cf['stacklevel-deplymentunit-us-east-1-stack.json'] = '1'
+        cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'] = '1'
+
+        assert ct.upgrade_cmdb_repo_to_v1_3_1(root_dir, '')
+
+        assert not cf['stacklevel-deplymentunit-us-east-1-stack.json'].exists()
+        assert cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'].text() == '1'
