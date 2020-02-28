@@ -741,7 +741,7 @@ def upgrade_cmdb_repo_to_v1_3_1(root_dir, dry_run):
             logger.info('Looking for CMK account in %s', cmk_stack)
             with open(cmk_stack, 'rt') as f:
                 cmk_stack_data = json.load(f)
-            stack_outputs = cmk_stack_data[0]['Outputs']
+            stack_outputs = cmk_stack_data['Stacks'][0]['Outputs']
             cmk_account = None
             for output in stack_outputs:
                 if output['OutputKey'] == 'Account':
@@ -761,19 +761,23 @@ def upgrade_cmdb_repo_to_v1_3_1(root_dir, dry_run):
                         )
                         move_file = True
                         new_cf_file = os.path.join(stack_dir, new_cf_basename)
-                        if cf_basename != new_cf_basename and not cf_basename.contains(cmk_account_id):
-                            if filecmp.cmp(cf_file, new_cf_file, False):
-                                move_file = False
-                            else:
-                                logger.fatal(
-                                    'Rename failed - %s already exists. Manual intervention necessary.',
-                                    new_cf_file
-                                )
-                                return False
+                        if cf_basename != new_cf_basename and cmk_account_id not in cf_basename:
+                            if os.path.isfile(new_cf_file):
+                                if filecmp.cmp(cf_file, new_cf_file, False):
+                                    move_file = False
+                                else:
+                                    logger.fatal(
+                                        'Rename failed - %s already exists. Manual intervention necessary.',
+                                        new_cf_file
+                                    )
+                                    return False
+                        if cf_file == new_cf_file:
+                            logger.debug('Skipping %s, path is not changed', new_cf_file)
+                            continue
                         if move_file:
-                            logger.debug('Moving %s tp %s', cf_file, new_cf_file)
+                            logger.debug('Moving %s to %s', cf_file, new_cf_file)
                         else:
-                            logger.warn('%s already upgraded - removing')
+                            logger.warn('%s already upgraded - removing', cf_file)
                         if dry_run:
                             continue
                         if move_file:
