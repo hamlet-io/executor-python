@@ -314,6 +314,8 @@ def test_upgrade_version_1_1_0():
         assert operations['credentials-env']['default']['.aws-ssh-env.pem'].isfile()
         assert operations['credentials-env']['default']['.gitignore'].text() == 'test'
         # Legacy
+        assert not root['aws'].exists()
+        # Upgraded
         cf = root['cf']
         assert not cf['shared']['aws-file.json'].isfile()
         assert cf['shared']['aws-cf-file.json'].isfile()
@@ -327,4 +329,137 @@ def test_upgrade_version_1_1_0():
         ct.upgrade_cmdb_repo_to_v1_1_0(root, '')
         ct.cleanup_cmdb_repo_to_v1_1_0(root, '')
         # subprocess.call('tree -a', shell=True, cwd=tmp_dir)
+        assert_post_upgrade_structure(root)
+
+
+def test_upgrade_version_1_2_0():
+    def create_test_fs(root):
+        root = FSNode(root)
+        root['container_template.ftl'] = 'container_template'
+        root['container_blueprint.ftl'] = 'container_blueprint'
+        root['container_exists.ftl'] = 'container_exists'
+        root['fragment_exists.ftl'] = 'fragment_exists'
+
+        sub_dir = root['sub_dir']
+        sub_dir['container_template.ftl'] = 'container_template'
+        sub_dir['container_blueprint.ftl'] = 'container_blueprint'
+        sub_dir['container_exists.ftl'] = 'container_exists'
+        sub_dir['fragment_exists.ftl'] = 'fragment_exists'
+
+    def assert_post_upgrade_structure(root):
+        root = FSNode(root)
+        assert not root['container_template.ftl'].exists()
+        assert not root['container_blueprint.ftl'].exists()
+        assert root['container_exists.ftl'].text() == 'container_exists'
+        assert root['fragment_exists.ftl'].text() == 'fragment_exists'
+
+        sub_dir = root['sub_dir']
+        assert not sub_dir['container_template.ftl'].exists()
+        assert not sub_dir['container_blueprint.ftl'].exists()
+        assert sub_dir['container_exists.ftl'].text() == 'container_exists'
+        assert sub_dir['fragment_exists.ftl'].text() == 'fragment_exists'
+
+    with tempfile.TemporaryDirectory() as root:
+        create_test_fs(root)
+        ct.upgrade_cmdb_repo_to_v1_2_0(root, '')
+        assert_post_upgrade_structure(root)
+
+
+def test_upgrade_version_1_3_0():
+    CMK_STACK_DATA = {
+        'Stacks': [
+            {
+                'Outputs': [
+                    {
+                        'OutputKey': 'Account',
+                        'OutputValue': 'AWSId_1'
+                    },
+                    {
+                        'OutputKey': 'Region',
+                        'OutputValue': 'AWS_Region_1'
+                    }
+                ]
+            }
+        ]
+    }
+
+    EMPTY_STACK_DATA = {
+        'Stacks': [
+            {
+                'Outputs': [
+                    {
+                        'OutputKey': 'Custom',
+                        'OutputValue': 'Custom'
+                    }
+                ]
+            }
+        ]
+    }
+
+    UPDATED_EMPTY_STACK_DATA = {
+        'Stacks': [
+            {
+                'Outputs': [
+                    {
+                        'OutputKey': 'Custom',
+                        'OutputValue': 'Custom'
+                    },
+                    {
+                        'OutputKey': 'Account',
+                        'OutputValue': 'AWSId_1'
+                    },
+                    {
+                        'OutputKey': 'Region',
+                        'OutputValue': 'us-east-1'
+                    }
+                ]
+            }
+        ]
+    }
+
+    def create_test_fs(root):
+        root = FSNode(root)
+
+        accounts = root['accounts']
+        accounts['account']['config']['account.json'] = {
+            'Account': {
+                'Id': 'Id_1',
+                'AWSId': 'AWSId_1'
+            }
+        }
+        cf = root['infrastructure']['cf']
+        operations = root['infrastructure']['operations']
+
+        cf['seg-cmk-1-stack.json'] = CMK_STACK_DATA
+        cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'] = EMPTY_STACK_DATA
+        cf['stacklevel-deplyment-unit-xxxx-us-east-1-stack.json'] = EMPTY_STACK_DATA
+        cf['stacklevel-deplymentunit-us-east-1-stack.json'] = EMPTY_STACK_DATA
+
+        operations['.aws-ssh-0.pem'] = '0'
+        operations['.aws-ssh-1.pem'] = '1'
+
+    def assert_post_upgrade_structure(root):
+        root = FSNode(root)
+
+        cf = root['infrastructure']['cf']
+        operations = root['infrastructure']['operations']
+
+        assert cf['seg-cmk-1-stack.json'].json() == CMK_STACK_DATA
+
+        assert not cf['stacklevel-deplyment-unit-xxxx-us-east-1-stack.json'].exists()
+        assert not cf['stacklevel-deplymentunit-us-east-1-stack.json'].exists()
+
+        assert cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'].json() == UPDATED_EMPTY_STACK_DATA
+        assert cf['stacklevel-deplyment-unit-xxxx-Id_1-us-east-1-stack.json'].json() == UPDATED_EMPTY_STACK_DATA
+        assert cf['stacklevel-deplymentunit-Id_1-us-east-1-stack.json'].json() == UPDATED_EMPTY_STACK_DATA
+
+        assert not operations['.aws-ssh-0.pem'].exists()
+        assert not operations['.aws-ssh-1.pem'].exists()
+
+        assert operations['.aws-Id_1-AWS_Region_1-ssh-0.pem'].text() == '0'
+        assert operations['.aws-Id_1-AWS_Region_1-ssh-1.pem'].text() == '1'
+
+    with tempfile.TemporaryDirectory() as root:
+        create_test_fs(root)
+        ct.upgrade_cmdb_repo_to_v1_3_0(root, '')
         assert_post_upgrade_structure(root)
