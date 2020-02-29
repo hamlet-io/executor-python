@@ -907,7 +907,7 @@ def upgrade_cmdb_repo_to_v2_0_0(root_dir, dry_run):
     return True
 
 
-def ugrade_cmdb_repo_to_v2_0_1(root_dir, dry_run):
+def upgrade_cmdb_repo_to_v2_0_1(root_dir, dry_run):
     # Reorganise state files into a directory tree based on deployment unit and placement
     #
     # The format of the state tree will follow the pattern
@@ -1096,16 +1096,37 @@ def process_cmdb(
             else:
                 logger.debug('%s%s of repo "%s" to %s is compatible', dry_run, action.capitalize(), cmdb_repo, version)
 
-        cmdb_action_func = globals()[f'{action.lower()}_cmdb_repo_to_{version.replace(".", "_")}']
+            cmdb_action_func = globals()[f'{action.lower()}_cmdb_repo_to_{version.replace(".", "_")}']
+            if cmdb_action_func(cmdb_repo, dry_run):
+                if dry_run:
+                    logger.debug('%sSkipping later versions', dry_run)
+                    break
+                logger.info('%s of repo "%s" to %s successful', action.capitalize(), cmdb_repo, version)
+                with open(cmdb_version_file, 'rt') as f:
+                    cmdb_version_data = json.load(f)
+                utils.deep_dict_update(cmdb_version_data, {'Version': {action.capitalize(): version}})
+                with open(cmdb_version_file, 'wt') as f:
+                    json.dump(cmdb_version_data, f)
+                current_version = version
 
-        if cmdb_action_func(cmdb_repo, dry_run):
-            if dry_run:
-                logger.debug('%sSkipping later versions', dry_run)
-                break
-            logger.info('%s of repo "%s" to %s successful', action.capitalize(), cmdb_repo, version)
-            with open(cmdb_version_file, 'rt') as f:
-                cmdb_version_data = json.load(f)
-            utils.deep_dict_update(cmdb_version_data, {'Version': {action.capitalize(): version}})
-            with open(cmdb_version_file, 'wt') as f:
-                json.dump(cmdb_version_data, f)
-            current_version = version
+    return True
+
+
+def upgrade_cmdb(root_dir, gen3_version, dry_run, maximum_version):
+    maximum_version = maximum_version or 'v1.3.2'
+    upgrade_order = ['v1.0.0', 'v1.1.0', 'v1.2.0', 'v1.3.0', 'v1.3.1', 'v1.3.2', 'v2.0.0', 'v2.0.1']
+    logger.debug('Maximum CMDB upgrade version required is %s', maximum_version)
+    required_versions = utils.semver_upgrade_list(upgrade_order, maximum_version)
+    logger.debug('Required CMDB upgrade order is %s', required_versions)
+
+    return process_cmdb(root_dir, 'upgrade', gen3_version, required_versions, dry_run)
+
+
+def cleanup_cmdb(root_dir, gen3_version, dry_run, maximum_version):
+    maximum_version = maximum_version or 'v1.1.1'
+    upgrade_order = ['v1.0.0', 'v1.1.0', 'v1.1.1', 'v2.0.0']
+    logger.debug('Maximum CMDB cleanup version required is %s', maximum_version)
+    required_versions = utils.semver_upgrade_list(upgrade_order, maximum_version)
+    logger.debug('Required CMDB cleanup order is %s', required_versions)
+
+    return process_cmdb(root_dir, 'cleanup', gen3_version, required_versions, dry_run)

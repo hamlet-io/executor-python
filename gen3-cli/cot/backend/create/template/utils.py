@@ -118,3 +118,11 @@ def semver_satisfies(version, comparators_set):
         else:
             return False
     return True
+
+
+def semver_upgrade_list(upgrade_list, maximum_version):
+    # assuming the list is ordered
+    for i in range(len(upgrade_list)):
+        if semver_compare(maximum_version, upgrade_list[i]) < 0:
+            return upgrade_list[:i]
+    return upgrade_list
