@@ -5,7 +5,9 @@ import tempfile
 from cot.backend.common.fsutils import Search
 from .context_tree import (
     find_gen3_root_dir,
-    find_gen3_dirs
+    find_gen3_dirs,
+    upgrade_cmdb,
+    cleanup_cmdb
 )
 from .environment import Environment
 from .utils import deep_dict_update
@@ -30,10 +32,10 @@ def set_context(
     if not e.GENERATION_DATA_DIR:
         raise Exception("Can't locate the root of the directory tree.")
     if not e.GENERATION_NO_CMDB_CHECK:
-        # **********************************
-        # * TODO: add CMDB upgrade section *
-        # **********************************
-        pass
+        if not upgrade_cmdb(e.GENERATION_DATA_DIR, '', '', e.GENERATION_MAX_CMDB_UPGRADE_VERSION):
+            raise Exception('CMDB upgrade failed.')
+        if not cleanup_cmdb(e.GENERATION_DATA_DIR, '', '', e.GENERATION_MAX_CMDB_UPGRADE_VERSION):
+            raise Exception('CMDB cleanup failed.')
     e.CACHE_DIR = os.path.join(e.GENERATION_DATA_DIR, 'cache')
     os.makedirs(e.CACHE_DIR, exist_ok=True)
 

@@ -1,6 +1,7 @@
 import os
 import json
 import tempfile
+from unittest import mock
 # import subprocess
 from cot.backend.generate.cmdb import account, tenant
 from cot.backend.generate.product import base
@@ -633,7 +634,7 @@ def test_upgrade_version_2_0_1():
         # already moved
         # level product dunit cmk
         cf['cmk']['default']['product-us-east-9-suffix.json'].mknod()
-        assert ct.ugrade_cmdb_repo_to_v2_0_1(root.path, '')
+        assert ct.upgrade_cmdb_repo_to_v2_0_1(root.path, '')
 
         assert not cf['defn-deploymentunit-aa-eastus-suffix.json'].exists()
         # global if region == 'us-east-1' otherwise default
@@ -650,3 +651,59 @@ def test_upgrade_version_2_0_1():
         assert s3['global']['account-us-east-1-suffix.json'].isfile()
 
         assert cf['cmk']['default']['product-us-east-9-suffix.json'].isfile()
+
+
+# pretty basic test, just to check that there are no critical errors
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_0_0')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_1_0')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_2_0')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_3_0')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_3_1')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v1_3_2')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v2_0_0')
+@mock.patch('cot.backend.create.template.context_tree.upgrade_cmdb_repo_to_v2_0_1')
+@mock.patch('cot.backend.create.template.context_tree.cleanup_cmdb_repo_to_v1_0_0')
+@mock.patch('cot.backend.create.template.context_tree.cleanup_cmdb_repo_to_v1_1_0')
+@mock.patch('cot.backend.create.template.context_tree.cleanup_cmdb_repo_to_v1_1_1')
+@mock.patch('cot.backend.create.template.context_tree.cleanup_cmdb_repo_to_v2_0_0')
+def test_upgrade_cmdb(
+    cleanup_cmdb_repo_to_v2_0_0,
+    cleanup_cmdb_repo_to_v1_1_1,
+    cleanup_cmdb_repo_to_v1_1_0,
+    cleanup_cmdb_repo_to_v1_0_0,
+
+    upgrade_cmdb_repo_to_v2_0_1,
+    upgrade_cmdb_repo_to_v2_0_0,
+    upgrade_cmdb_repo_to_v1_3_2,
+    upgrade_cmdb_repo_to_v1_3_1,
+    upgrade_cmdb_repo_to_v1_3_0,
+    upgrade_cmdb_repo_to_v1_2_0,
+    upgrade_cmdb_repo_to_v1_1_0,
+    upgrade_cmdb_repo_to_v1_0_0
+):
+
+    with tempfile.TemporaryDirectory() as root:
+        root = FSNode(root)
+        root['.git'].mkdir()
+        ct.upgrade_cmdb(root.path, '', '', 'v2.0.1')
+        ct.cleanup_cmdb(root.path, '', '', 'v2.0.0')
+        assert root['.cmdb'].json() == {
+            'Version': {
+                'Upgrade': 'v2.0.1',
+                'Cleanup': 'v2.0.0'
+            }
+        }
+
+    cleanup_cmdb_repo_to_v2_0_0.assert_called_once()
+    cleanup_cmdb_repo_to_v1_1_1.assert_called_once()
+    cleanup_cmdb_repo_to_v1_1_0.assert_called_once()
+    cleanup_cmdb_repo_to_v1_0_0.assert_called_once()
+
+    upgrade_cmdb_repo_to_v2_0_1.assert_called_once()
+    upgrade_cmdb_repo_to_v2_0_0.assert_called_once()
+    upgrade_cmdb_repo_to_v1_3_2.assert_called_once()
+    upgrade_cmdb_repo_to_v1_3_1.assert_called_once()
+    upgrade_cmdb_repo_to_v1_3_0.assert_called_once()
+    upgrade_cmdb_repo_to_v1_2_0.assert_called_once()
+    upgrade_cmdb_repo_to_v1_1_0.assert_called_once()
+    upgrade_cmdb_repo_to_v1_0_0.assert_called_once()
