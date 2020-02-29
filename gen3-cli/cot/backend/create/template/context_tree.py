@@ -822,71 +822,77 @@ def upgrade_cmdb_repo_to_v2_0_0(root_dir, dry_run):
     config_dirs = Search.match_dirs(os.path.join('**', 'config'), root=root_dir)
     for config_dir in config_dirs:
         base_dir = os.path.dirname(config_dir)
+        solutions_dir = os.path.join(config_dir, 'solutionsv2')
+        settings_dir = os.path.join(config_dir, 'settings')
         infrastructure_dir = os.path.join(base_dir, 'infrastructure')
         state_dir = os.path.join(base_dir, 'state')
         operations_dir = os.path.join(base_dir, 'operations')
         state_subdirs = [os.path.join(infrastructure_dir, 'cf'), os.path.join(infrastructure_dir, 'cot')]
-        if os.path.isdir(infrastructure_dir):
-            logger.debug('%sChecking %s', dry_run, base_dir)
-            # Move the state into its own top level tree
-            os.makedirs(base_dir, exist_ok=True)
-            for state_subdir in state_subdirs:
-                if os.path.isdir(state_subdir):
-                    src = state_subdir
-                    dst = os.path.join(state_dir, os.path.basename(state_subdir))
-                    logger.info('%sMoving %s to %s', dry_run, src, dst)
-                    if dry_run:
-                        continue
-                    shutil.move(src, dst)
-            # Move operations settings into their own top level tree
-            orig_operations_settings_dir = os.path.join(infrastructure_dir, 'operations')
-            new_operation_settings_dir = os.path.join(operations_dir, 'settings')
-            if os.path.isdir(orig_operations_settings_dir):
-                logger.info('%sMoving %s to %s', dry_run, orig_operations_settings_dir, new_operation_settings_dir)
+        if not os.path.isdir(infrastructure_dir):
+            logger.warn(
+                '%sUpdate to v2.0.0 for %s must be manually performed for split cmdb repos',
+                dry_run,
+                config_dir
+            )
+            continue
+        logger.debug('%sChecking %s', dry_run, base_dir)
+        # Move the state into its own top level tree
+        os.makedirs(base_dir, exist_ok=True)
+        for state_subdir in state_subdirs:
+            if os.path.isdir(state_subdir):
+                src = state_subdir
+                dst = os.path.join(state_dir, os.path.basename(state_subdir))
+                logger.info('%sMoving %s to %s', dry_run, src, dst)
                 if dry_run:
                     continue
-                if not os.path.isdir(new_operation_settings_dir):
-                    os.makedirs(operations_dir, exist_ok=True)
-                    shutil.move(orig_operations_settings_dir, new_operation_settings_dir)
-            # Copy the solutions tree from config to infrastructure and rename
-            solutions_dir = os.path.join(config_dir, 'solutionsv2')
-            if os.path.isdir(solutions_dir):
-                logger.info('%sCopying %s to %s', dry_run, solutions_dir, infrastructure_dir)
-                if not dry_run:
-                    # Leave existing solutions dir in place as it may be the current directory
-                    src = solutions_dir
-                    dst = os.path.join(infrastructure_dir, os.path.basename(src))
-                    shutil.copytree(src, dst)
-                src = os.path.join(infrastructure_dir, 'solutionsv2')
-                dst = os.path.join(infrastructure_dir, 'solutions')
-                logger.info(
-                    '%sRenaming %s to %s',
-                    dry_run,
-                    src,
-                    dst
-                )
-                if not dry_run:
-                    shutil.move(src, dst)
-            # Copy the builds into their own tree
-            settings_dir = os.path.join(config_dir, 'settings')
-            builds_dir = os.path.join(infrastructure_dir, 'builds')
-            if not os.path.isdir(builds_dir):
-                src = settings_dir
-                dst = os.path.join(builds_dir, os.path.basename(src))
-                logger.info('%sCopying %s to %s', dry_run, src, dst)
-                if not dry_run:
-                    shutil.copytree(src, dst)
-            # Remove the build files from the settings tree
-            # Blob will pick up build references and shared builds
-            logger.info('%sCleaning the settings tree', dry_run)
-            setting_files = Search.match_files(os.path.join('**', '*build.json'), root=settings_dir)
-            for setting_file in setting_files:
-                logger.info('%sDeleting %s', dry_run, setting_file)
-                if dry_run:
-                    continue
-                os.remove(setting_file)
+                shutil.move(src, dst)
+        # Move operations settings into their own top level tree
+        orig_operations_settings_dir = os.path.join(infrastructure_dir, 'operations')
+        new_operation_settings_dir = os.path.join(operations_dir, 'settings')
+        if os.path.isdir(orig_operations_settings_dir):
+            logger.info('%sMoving %s to %s', dry_run, orig_operations_settings_dir, new_operation_settings_dir)
+            if dry_run:
+                continue
+            if not os.path.isdir(new_operation_settings_dir):
+                os.makedirs(operations_dir, exist_ok=True)
+                shutil.move(orig_operations_settings_dir, new_operation_settings_dir)
+        # Copy the solutions tree from config to infrastructure and rename
+        if os.path.isdir(solutions_dir):
+            logger.info('%sCopying %s to %s', dry_run, solutions_dir, infrastructure_dir)
+            if not dry_run:
+                # Leave existing solutions dir in place as it may be the current directory
+                src = solutions_dir
+                dst = os.path.join(infrastructure_dir, os.path.basename(src))
+                shutil.copytree(src, dst)
+            src = os.path.join(infrastructure_dir, 'solutionsv2')
+            dst = os.path.join(infrastructure_dir, 'solutions')
+            logger.info(
+                '%sRenaming %s to %s',
+                dry_run,
+                src,
+                dst
+            )
+            if not dry_run:
+                shutil.move(src, dst)
+        # Copy the builds into their own tree
+        builds_dir = os.path.join(infrastructure_dir, 'builds')
+        if not os.path.isdir(builds_dir):
+            src = settings_dir
+            dst = os.path.join(builds_dir, os.path.basename(src))
+            logger.info('%sCopying %s to %s', dry_run, src, dst)
+            if not dry_run:
+                shutil.copytree(src, dst)
+        # Remove the build files from the settings tree
+        # Blob will pick up build references and shared builds
+        logger.info('%sCleaning the settings tree', dry_run)
+        setting_files = Search.match_files(os.path.join('**', '*build.json'), root=settings_dir)
+        for setting_file in setting_files:
+            logger.info('%sDeleting %s', dry_run, setting_file)
+            if dry_run:
+                continue
+            os.remove(setting_file)
         # Build tree should only contain build references and shared builds
-        logger.info('%sCleaning the builds tree')
+        logger.info('%sCleaning the builds tree', dry_run)
         if dry_run:
             build_files = Search.match_files(os.path.join('**', '*'), root=settings_dir)
         else:
@@ -897,12 +903,7 @@ def upgrade_cmdb_repo_to_v2_0_0(root_dir, dry_run):
             if dry_run:
                 continue
             os.remove(build_file)
-        else:
-            logger.warn(
-                '%sUpdate to v2.0.0 for %s must be manually performed for split cmdb repos',
-                dry_run,
-                config_dir
-            )
+
     return True
 
 

@@ -125,6 +125,7 @@ class FSNode:
     def mknod(self):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
         os.mknod(self.path)
+        return self
 
     def mkfile(self, data):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
@@ -135,6 +136,7 @@ class FSNode:
     def mkjson(self, data):
         data = json.dumps(data)
         self.mkfile(data)
+        return self
 
     def isfile(self):
         return os.path.isfile(self.path)
@@ -557,3 +559,53 @@ def test_upgrade_version_1_3_1():
 
         assert not cf['stacklevel-deplymentunit-us-east-1-stack.json'].exists()
         assert cf['stacklevel-deplymentunit-10000000000-us-east-1-stack.json'].text() == '1'
+
+
+def test_upgrade_version_2_0_0():
+    with tempfile.TemporaryDirectory() as root:
+        root = FSNode(root)
+
+        product = root['product']
+        config = product['config'].mkdir()
+        config['config.json'].mknod()
+        settings = config['settings'].mkdir()
+        settings['build.json'].mknod()
+        settings['shared-build.json'].mknod()
+        settings['not-a-build-file.json'].mknod()
+        solutionsv2 = config['solutionsv2'].mkdir()
+        solutionsv2['solution.json'].mknod()
+        infrastructure = product['infrastructure'].mkdir()
+        infrastructure_cf = infrastructure['cf'].mkdir()
+        infrastructure_cf['cf.json'].mknod()
+        infrastructure_cot = infrastructure['cot'].mkdir()
+        infrastructure_cot['cot.json'].mknod()
+        infrastructure_operations = infrastructure['operations'].mkdir()
+        infrastructure_operations['infrastructure-operations.json'].mknod()
+        state = product['state'].mkdir()
+        state['state.json'].mknod()
+        operations = product['operations'].mkdir()
+        operations['operations.json'].mknod()
+
+        assert ct.upgrade_cmdb_repo_to_v2_0_0(root.path, '')
+        assert ct.cleanup_cmdb_repo_to_v2_0_0(root.path, '')
+
+        assert config['config.json'].isfile()
+        assert not config['solutionsv2'].exists()
+        assert settings['not-a-build-file.json'].isfile()
+        assert not settings['build.json'].exists()
+        assert not settings['shared-build.json'].exists()
+
+        assert not infrastructure_operations.exists()
+        assert not infrastructure_cf.exists()
+        assert not infrastructure_cot.exists()
+
+        assert state['cot']['cot.json'].isfile()
+        assert state['cf']['cf.json'].isfile()
+
+        assert operations['operations.json'].isfile()
+        assert operations['settings']['infrastructure-operations.json'].isfile()
+
+        assert infrastructure['builds']['settings']['build.json'].isfile()
+        assert infrastructure['builds']['settings']['shared-build.json'].isfile()
+
+        assert infrastructure['solutions']['solution.json'].isfile()
