@@ -599,13 +599,54 @@ def test_upgrade_version_2_0_0():
         assert not infrastructure_cf.exists()
         assert not infrastructure_cot.exists()
 
+        assert infrastructure['builds']['settings']['build.json'].isfile()
+        assert infrastructure['builds']['settings']['shared-build.json'].isfile()
+
+        assert infrastructure['solutions']['solution.json'].isfile()
+
         assert state['cot']['cot.json'].isfile()
         assert state['cf']['cf.json'].isfile()
 
         assert operations['operations.json'].isfile()
         assert operations['settings']['infrastructure-operations.json'].isfile()
 
-        assert infrastructure['builds']['settings']['build.json'].isfile()
-        assert infrastructure['builds']['settings']['shared-build.json'].isfile()
 
-        assert infrastructure['solutions']['solution.json'].isfile()
+def test_upgrade_version_2_0_1():
+    with tempfile.TemporaryDirectory() as root:
+        root = FSNode(root)
+        state = root['state'].mkdir()
+        cf = state['cf'].mkdir()
+
+        cf['level-deploymentunit-aa-us-east-1-suffix.json'].mknod()
+        # definition file should be removed
+        cf['defn-deploymentunit-aa-eastus-suffix.json'].mknod()
+        # level account
+        cf['account-deploymentunit-us-east-2-suffix.json'].mknod()
+        # level acccount dunit s3
+        cf['account-us-east-1-suffix.json'].mknod()
+        # level product dunit cmk
+        cf['product-us-east-1-suffix.json'].mknod()
+        # level seg dunit cmk
+        cf['seg-key-us-east-1-suffix.json'].mknod()
+        # level seg
+        cf['cont-deploymentunit-us-east-1-suffix.json'].mknod()
+        # already moved
+        # level product dunit cmk
+        cf['cmk']['default']['product-us-east-9-suffix.json'].mknod()
+        assert ct.ugrade_cmdb_repo_to_v2_0_1(root.path, '')
+
+        assert not cf['defn-deploymentunit-aa-eastus-suffix.json'].exists()
+        # global if region == 'us-east-1' otherwise default
+        cmk = cf['cmk']
+        assert cmk['global']['product-us-east-1-suffix.json'].isfile()
+        assert cmk['global']['seg-key-us-east-1-suffix.json'].isfile()
+
+        deploymentunit = cf['deploymentunit']
+        assert deploymentunit['default']['account-deploymentunit-us-east-2-suffix.json'].isfile()
+        assert deploymentunit['global']['cont-deploymentunit-us-east-1-suffix.json'].isfile()
+        assert deploymentunit['global']['level-deploymentunit-aa-us-east-1-suffix.json'].isfile()
+
+        s3 = cf['s3']
+        assert s3['global']['account-us-east-1-suffix.json'].isfile()
+
+        assert cf['cmk']['default']['product-us-east-9-suffix.json'].isfile()

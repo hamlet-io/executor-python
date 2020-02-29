@@ -907,7 +907,7 @@ def upgrade_cmdb_repo_to_v2_0_0(root_dir, dry_run):
     return True
 
 
-def update_cmdb_repo_to_v2_0_1(root_dir, dry_run):
+def ugrade_cmdb_repo_to_v2_0_1(root_dir, dry_run):
     # Reorganise state files into a directory tree based on deployment unit and placement
     #
     # The format of the state tree will follow the pattern
@@ -930,6 +930,9 @@ def update_cmdb_repo_to_v2_0_1(root_dir, dry_run):
                 pattern_1 = r"([a-z0-9]+)-(.+)-([a-z][a-z0-9]+)-([a-z]{2}-[a-z]+-[1-9])(-pseudo)?-(.+)"
                 pattern_2 = r"([a-z0-9]+)-(.+)-([a-z][a-z0-9]+)-(eastus|australiaeast|australiasoutheast|australiacentral|australiacentral2)(-pseudo)?-(.+)"  # noqa
                 match = re.match(pattern_1, state_basename) or re.match(pattern_2, state_basename)
+                stack_level = ''
+                stack_deployment_unit = ''
+                stack_region = ''
                 if match:
                     stack_level = match.group(1)
                     stack_deployment_unit = match.group(2)
@@ -980,16 +983,18 @@ def update_cmdb_repo_to_v2_0_1(root_dir, dry_run):
                     os.remove(state_file)
                 else:
                     # Add deployment unit based subdirectories
-                    if state_dirname.contains(stack_deployment_unit):
+                    if stack_deployment_unit in state_dirname:
                         logger.debug('%sIgnoring %s, already moved', dry_run, state_file)
                     else:
                         du_dir = format_unit_cf_dir(state_dirname, stack_level, stack_deployment_unit, '', stack_region)
-                        logger.info('%sMoving %s to %s', dry_run, state_file, du_dir)
+                        src = state_file
+                        dst = os.path.join(du_dir, state_basename)
+                        logger.info('%sMoving %s to %s', dry_run, src, dst)
                         if dry_run:
                             continue
                         if not os.path.isdir(du_dir):
                             os.makedirs(du_dir, exist_ok=True)
-                        shutil.move(state_file, os.path.join(du_dir, state_basename))
+                        shutil.move(src, dst)
     return True
 
 
