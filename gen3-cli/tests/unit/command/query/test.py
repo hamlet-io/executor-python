@@ -7,9 +7,6 @@ from click.testing import CliRunner
 from cot.command.query import query_group as query
 
 
-TEMP_CACHE_DIR = tempfile.mkdtemp()
-
-
 def blueprint_backend_run_mock(data):
     def run(
         output_dir=None,
@@ -30,14 +27,16 @@ def mock_backend(blueprint=None):
         @mock.patch('cot.backend.query.context.Context')
         @mock.patch('cot.backend.query.blueprint')
         def wrapper(blueprint_mock, ContextClassMock, *args, **kwargs):
+            with tempfile.TemporaryDirectory() as temp_cache_dir:
 
-            ContextObjectMock = ContextClassMock()
-            ContextObjectMock.md5_hash.return_value = str(hashlib.md5(str(blueprint).encode()).hexdigest())
-            ContextObjectMock.cache_dir = TEMP_CACHE_DIR
+                ContextObjectMock = ContextClassMock()
+                ContextObjectMock.md5_hash.return_value = str(hashlib.md5(str(blueprint).encode()).hexdigest())
+                ContextObjectMock.cache_dir = temp_cache_dir
 
-            blueprint_mock.run.side_effect = blueprint_backend_run_mock(blueprint)
+                blueprint_mock.run.side_effect = blueprint_backend_run_mock(blueprint)
 
-            return func(blueprint_mock, ContextClassMock, *args, **kwargs)
+                return func(blueprint_mock, ContextClassMock, *args, **kwargs)
+
         return wrapper
     return decorator
 
