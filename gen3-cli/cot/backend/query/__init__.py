@@ -252,7 +252,6 @@ class Query:
                     params[key]
                 except KeyError as e:
                     raise exceptions.UserFriendlyBackendException(f"Missing required query param:\"{key}\".") from e
-
         if params:
             # jsonify every param
             for key, value in params.items():
@@ -263,6 +262,7 @@ class Query:
                     jsonified_value = f"'{jsonified_value[1:-1]}'"
                 params[key] = jsonified_value
             query = query.format(**params)
+
         return self.perform_query(query, self.blueprint_data)
 
     def perform_query(self, query, data):
