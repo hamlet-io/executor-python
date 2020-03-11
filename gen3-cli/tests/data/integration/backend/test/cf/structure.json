@@ -1,0 +1,26 @@
+{
+  "Integer": 1,
+  "Float": 1.5,
+  "String": {
+    "Integer": "1",
+    "Float": "1.5",
+    "Text": "Hello world!",
+    "Object": "{\"Key\": \"Value\"}"
+  },
+  "Object": {
+    "Parent": {
+      "Child":{
+        "Param": "Value"
+      }
+    },
+    "Empty": {}
+  },
+  "List": {
+    "Empty": [],
+    "NotEmpty": [
+      1,
+      "2",
+      2.5
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+    "JSONStructureBad": {
+      "filename": "/gen3-cli/tests/data/integration/backend/test/cf/structure.json",
+      "json_structure": {
+        "exists": [
+            {
+              "path": "Object.Parent.NonExistingChild"
+            }
+        ],
+        "match": [
+           {
+             "path": "Integer",
+             "value": "1"
+           },
+           {
+             "path": "Float",
+             "value": "1.5"
+           },
+           {
+             "path": "String.Integer",
+             "value": 1
+           },
+           {
+             "path": "String.Float",
+             "value": 1.5
+           },
+           {
+             "path": "String.Object",
+             "value": {"Key": "Value"}
+           },
+           {
+             "path": "Object.Parent.Child.Param",
+             "value": "IncorrectValue"
+           },
+           {
+             "path": "Object.Parent",
+             "value": {
+               "Child": {
+                 "Param": "IncorrectValue"
+               }
+             }
+           },
+           {
+             "path": "List.NotEmpty",
+             "value": [
+               "1",
+               2,
+               "2.5"
+             ]
+           },
+           {
+             "path": "List.NotEmpty[0]",
+             "value": "1"
+           },
+           {
+             "path": "List.NotEmpty[1]",
+             "value": 2
+           },
+           {
+             "path": "List.NotEmpty[2]",
+             "value": "2.5"
+           }
+        ],
+        "not_empty": [
+          {
+            "path": "Object.Empty"
+          },
+          {
+            "path": "List.Empty"
+          }
+        ],
+        "length": [
+          {
+            "path": "Object.Parent",
+            "value": 0
+          },
+          {
+            "path": "List.NotEmpty",
+            "value": 4
+          },
+          {
+            "path": "Object.Empty",
+            "value": 1
+          },
+          {
+            "path": "List.Empty",
+            "value": 1
+          }
+        ]
+      }
+    }
+}

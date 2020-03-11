@@ -26,3 +26,8 @@ def test():
         assert run_test_backend([output_filename])
         generate_test_backend([testcase_filename('structure-bad-testcase.json')], output_filename)
         assert not run_test_backend([output_filename])
+
+        generate_test_backend([testcase_filename('json-structure-good-testcase.json')], output_filename)
+        assert run_test_backend([output_filename])
+        generate_test_backend([testcase_filename('json-structure-bad-testcase.json')], output_filename)
+        assert not run_test_backend([output_filename])

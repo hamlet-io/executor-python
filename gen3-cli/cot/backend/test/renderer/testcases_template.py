@@ -1,4 +1,3 @@
-import json
 from ..loader import loader
 
 
@@ -8,12 +7,10 @@ def prepare_cf_testcase_context(case):
     stringified_match = []
     for match_case in match:
         value = match_case['value']
-        try:
-            value = json.loads(value)
-        except ValueError:
-            value = "\"{}\"".format(value)
-        except TypeError:
-            pass
+        if isinstance(value, str):
+            value = value.replace("\"", r"\"")
+            value = value.replace("\'", r"\'")
+            value = f'"{value}"'
         stringified_match.append({
             'path': match_case['path'],
             'value': value
