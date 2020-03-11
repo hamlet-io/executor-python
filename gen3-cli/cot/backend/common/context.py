@@ -1,39 +1,51 @@
 import os
 import json
 import hashlib
+from .exceptions import UserFriendlyBackendException
 from .fsutils import ContextSearch, Search, File
 
 
-class ContextError(Exception):
-    pass
+# This is a legacy module that soon must be replaced by a new class based on results of direct shell scrips rewrite
+
+
+class ContextError(UserFriendlyBackendException):
+    def __init__(self, msg="Context error"):
+        super().__init__(msg)
 
 
 class NoLevelFileError(ContextError):
-    pass
+    def __init__(self, msg="Level file not found"):
+        super().__init__(msg)
 
 
 class NoRootFileError(ContextError):
-    pass
+    def __init__(self, msg="Root file not found"):
+        super().__init__(msg)
 
 
 class MultipleTenantsFoundError(ContextError):
-    pass
+    def __init__(self, msg="Multiple tenants found"):
+        super().__init__(msg)
 
 
 class NoTenantFoundError(ContextError):
-    pass
+    def __init__(self, msg="Tenant not found"):
+        super().__init__(msg)
 
 
 class NoAccountsFoundError(ContextError):
-    pass
+    def __init__(self, msg="No accounts found"):
+        super().__init__(msg)
 
 
 class MultipleAccountsFoundError(ContextError):
-    pass
+    def __init__(self, msg="Multiple accounts found"):
+        super().__init__(msg)
 
 
 class SpecifiedAccountNotFoundError(ContextError):
-    pass
+    def __init__(self, msg="Specified account not found"):
+        super().__init__(msg)
 
 
 class Context():
