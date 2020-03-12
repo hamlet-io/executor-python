@@ -4,3 +4,8 @@ tabulate==0.8.6
 Jinja2==2.10.3
 marshmallow==3.3.0
 jmespath==0.9.4
+pytest
+
+# AWS specifc tools
+cfn-flip==1.2.2
+cfn-lint>=0.25.0,<1.0.0 # need version to keep up with AWS CloudFormation Schema
