@@ -444,40 +444,6 @@ def test_query_describe_occurence(blueprint_mock, ContextClassMock):
         }
     } in result
 
-    # testing "or" condition [version_id==value[0] or instance_id==value[1]]
-    result = cli.invoke(
-        query,
-        [
-            'describe', 'occurrence',
-            '-t', 'TierId[2]',
-            '-c', 'ComponentId[2]',
-            '-i', 'InstanceId[2]',
-            '-v', 'VersionId[3]'
-        ]
-    )
-    result = json.loads(result.output)
-    assert len(result) == 2
-    assert {
-        "Core": {
-            "Instance": {
-                "Id": "InstanceId[2]"
-            },
-            "Version": {
-                "Id": "VersionId[2]"
-            }
-        }
-    } in result
-    assert {
-        "Core": {
-            "Instance": {
-                "Id": "InstanceId[3]"
-            },
-            "Version": {
-                "Id": "VersionId[3]"
-            }
-        }
-    } in result
-
 
 @mock_backend(Tiers(
     [
