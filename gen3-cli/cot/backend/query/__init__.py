@@ -84,14 +84,14 @@ class Query:
         "Tenants[].Products[].Environments[].Segments[]"
         ".Tiers[?Id=={tier_id}][]"
         ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.Id=={instance_id} || Core.Version.Id=={version_id}][]"
+        ".Occurrences[?Core.Instance.Id=={instance_id} && Core.Version.Id=={version_id}][]"
     )
 
     DESCRIBE_OCCURRENCE_ATTRIBUTES_QUERY = (
         "Tenants[].Products[].Environments[].Segments[]"
         ".Tiers[?Id=={tier_id}][]"
         ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.Id=={instance_id} || Core.Version.Id=={version_id}][]"
+        ".Occurrences[?Core.Instance.Id=={instance_id} && Core.Version.Id=={version_id}][]"
         ".State.ResourceGroups.*[].Attributes[]"
     )
 
@@ -99,7 +99,7 @@ class Query:
         "Tenants[].Products[].Environments[].Segments[]"
         ".Tiers[?Id=={tier_id}][]"
         ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.Id=={instance_id} || Core.Version.Id=={version_id}][]"
+        ".Occurrences[?Core.Instance.Id=={instance_id} && Core.Version.Id=={version_id}][]"
         ".Configuration.Solution"
     )
 
@@ -107,7 +107,7 @@ class Query:
         "Tenants[].Products[].Environments[].Segments[]"
         ".Tiers[?Id=={tier_id}][]"
         ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.Id=={instance_id} || Core.Version.Id=={version_id}][]"
+        ".Occurrences[?Core.Instance.Id=={instance_id} && Core.Version.Id=={version_id}][]"
         ".Configuration.Settings"
     )
 
@@ -115,7 +115,7 @@ class Query:
         "Tenants[].Products[].Environments[].Segments[]"
         ".Tiers[?Id=={tier_id}][]"
         ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.Id=={instance_id} || Core.Version.Id=={version_id}][]"
+        ".Occurrences[?Core.Instance.Id=={instance_id} && Core.Version.Id=={version_id}][]"
         ".State.Resources"
     )
 
