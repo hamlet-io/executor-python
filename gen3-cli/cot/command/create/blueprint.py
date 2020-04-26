@@ -22,7 +22,7 @@ from cot.backend.create import blueprint as create_blueprint_backend
 @click.option(
     '-p',
     '--generation-provider',
-    help='provider to for template generation',
+    help='provider to use for template generation',
     default='aws',
     show_default=True
 )
@@ -32,16 +32,6 @@ from cot.backend.create import blueprint as create_blueprint_backend
     help='output framework to use for template generation',
     default='cf',
     show_default=True
-)
-@click.option(
-    '-t',
-    '--generation-testcase',
-    help='test case you would like to generate a template for'
-)
-@click.option(
-    '-s',
-    '--generation-scenarios',
-    help='comma seperated list of framework scenarios to load'
 )
 def blueprint(**kwargs):
     """

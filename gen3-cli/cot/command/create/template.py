@@ -80,16 +80,6 @@ from cot.backend.create import template as create_template_backend
     show_default=True
 )
 @click.option(
-    '-t',
-    '--generation-testcase',
-    help='test case you would like to generate a template for'
-)
-@click.option(
-    '-s',
-    '--generation-scenarios',
-    help='comma seperated list of framework scenarios to load'
-)
-@click.option(
     '-i',
     '--generation-input-source',
     help='source of input data to use when generating the template'
