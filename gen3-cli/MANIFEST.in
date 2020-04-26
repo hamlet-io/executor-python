@@ -1,3 +1,0 @@
-include *.md
-include setup-autocomplete.sh
-include cot/backend/test/templates/*.tmpl

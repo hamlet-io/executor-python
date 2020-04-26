@@ -2,20 +2,20 @@ version: '3.5'
 
 networks:
   internal:
-    name: gen3-cli-internal
+    name: hamlet-cli-internal
 
 services:
-  gen3-cli:
-    image: gen3-cli
-    container_name: gen3-cli
+  hamlet-cli:
+    image: hamlet-cli
+    container_name: hamlet-cli
     build:
       # target: dev
-      context: ./gen3-cli
+      context: ./hamlet-cli
       dockerfile: ./Dockerfile
     networks:
       - internal
     volumes:
-      - './gen3-cli:/gen3-cli'
+      - './hamlet-cli:/hamlet-cli'
       - '/var/run/docker.sock:/var/run/docker.sock'
       - './.cmdb:/var/opt/codeontap'
       - './.codeontap:/opt/codeontap'
