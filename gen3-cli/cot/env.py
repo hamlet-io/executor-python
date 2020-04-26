@@ -1,3 +1,4 @@
 import os
 
 GENERATION_DIR = os.environ.get('GENERATION_DIR')
+GENERATION_PATTERNS_DIR = os.environ.get('GENERATION_PATTERNS_DIR')

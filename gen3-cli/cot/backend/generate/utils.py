@@ -1,6 +1,6 @@
 import os
 from cookiecutter.main import cookiecutter as cookiecutter_main
-from cot import conf
+from cot import env
 
 
 def replace_parameters_values(kwargs, replacers=None):
@@ -20,7 +20,7 @@ def cookiecutter(*template_path, **kwargs):
             [False, 'no']
         ]
     )
-    template_path = os.path.join(conf.COOKIECUTTER_TEMPLATES_BASE_DIR, *template_path)
+    template_path = os.path.join(env.GENERATION_PATTERNS_DIR, *template_path)
     cookiecutter_main(
         template_path,
         no_input=True,
