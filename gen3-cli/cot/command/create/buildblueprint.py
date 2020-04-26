@@ -34,16 +34,6 @@ from cot.backend.create import buildblueprint as create_buildblueprint_backend
     show_default=True
 )
 @click.option(
-    '-t',
-    '--generation-testcase',
-    help='test case you would like to generate a template for'
-)
-@click.option(
-    '-s',
-    '--generation-scenarios',
-    help='comma seperated list of framework scenarios to load'
-)
-@click.option(
     '-u',
     '--deployment-unit',
     help='deployment unit to be included in the template',

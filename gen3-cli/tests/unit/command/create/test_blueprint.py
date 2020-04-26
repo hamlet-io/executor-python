@@ -9,9 +9,7 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 
 ALL_VALID_OPTIONS['-p,--generation-provider'] = 'generation_provider'
 ALL_VALID_OPTIONS['-f,--generation-framework'] = 'generation_framework'
-ALL_VALID_OPTIONS['-t,--generation-testcase'] = 'generation_testcase'
 ALL_VALID_OPTIONS['-i,--generation-input-source'] = 'input-source'
-ALL_VALID_OPTIONS['-s,--generation-scenarios'] = 'generation_scenarious'
 ALL_VALID_OPTIONS['-o,--output-dir'] = '/tmp'
 
 
