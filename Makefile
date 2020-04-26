@@ -21,4 +21,4 @@ build:
 .PHONY: shell
 .ONESHELL:
 shell:
-	@ docker-compose exec gen3-cli /bin/bash
+	@ docker-compose exec hamlet-cli /bin/bash
