@@ -12,7 +12,7 @@ root.setLevel(logging.DEBUG)
 
 class __CMDBContext:
 
-    ROOT_DIR = '/var/opt/codeontap'
+    ROOT_DIR = '/var/opt/hamlet'
 
     def create_cmdb_filename_compositor(self):
         root = self.dir
