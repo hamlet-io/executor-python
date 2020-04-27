@@ -2,4 +2,7 @@ coverage
 freezegun
 setuptools
 flake8
+
+## packaging
 wheel
+twine
