@@ -1,5 +1,5 @@
 import click
-from cot.backend.create import reference as create_reference_backend
+from hamlet.backend.create import reference as create_reference_backend
 
 
 @click.command(
