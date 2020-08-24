@@ -4,7 +4,6 @@ pipeline {
     options {
         timestamps()
         disableConcurrentBuilds()
-        quietPeriod(30)
     }
 
     agent none
