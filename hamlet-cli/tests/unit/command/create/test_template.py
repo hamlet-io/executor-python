@@ -12,7 +12,8 @@ ALL_VALID_OPTIONS['!-l,--level'] = [
     "account",
     "segment",
     "solution",
-    "application"
+    "application",
+    "schema"
 ]
 ALL_VALID_OPTIONS['-c,--config-ref'] = 'config_ref'
 ALL_VALID_OPTIONS['-g,--resource-group'] = 'resource_group'
