@@ -30,7 +30,8 @@ from hamlet.backend.create import template as create_template_backend
             "account",
             "segment",
             "solution",
-            "application"
+            "application",
+            "schema"
         ],
         case_sensitive=False
     ),
