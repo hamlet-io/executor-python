@@ -23,13 +23,19 @@ from hamlet.backend.test import run as test_run_backend
     )
 )
 @click.option(
+    '-p',
+    '--pytest-args',
+    'pytest_args',
+    help='additional arguments for pytest'
+)
+@click.option(
     '-s',
     '--silent',
     'silent',
     is_flag=True,
     help='minimize pytest output'
 )
-def run(tests, silent):
+def run(tests, pytest_args, silent):
     """
     Discover and run tests in specified files or/and directories. If no tests paths provided
     current directory used as tests discovery root.
@@ -38,5 +44,6 @@ def run(tests, silent):
         tests = (os.getcwd(),)
     test_run_backend.run(
         testpaths=tests,
-        silent=silent
+        pytest_args=pytest_args,
+        silent=silent,
     )
