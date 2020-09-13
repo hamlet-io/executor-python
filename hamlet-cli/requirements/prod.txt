@@ -5,7 +5,7 @@ Jinja2==2.11.2
 marshmallow==3.7.1
 jmespath==0.10.0
 
-pytest>=5.3.5
+pytest==6.0.2
 
 # AWS specifc tools
 cfn-flip==1.2.3
