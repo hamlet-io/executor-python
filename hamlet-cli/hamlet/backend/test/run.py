@@ -4,6 +4,7 @@ from pytest import ExitCode as ec
 
 def run(
     testpaths=None,
+    pytest_args=None,
     silent=True
 ):
     testpaths = testpaths or []
@@ -13,8 +14,15 @@ def run(
             'pytest',
             '-xvvs' if not silent else '-x',
             '--cache-clear',
+        ]
+
+        if pytest_args is not None:
+            args.append(pytest_args)
+
+        args += [
             *testpaths,
         ]
+
         cmd = " ".join(args)
         stdin = subprocess.PIPE
         stderr = subprocess.PIPE

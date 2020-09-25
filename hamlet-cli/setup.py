@@ -34,7 +34,7 @@ setup(
     packages=packages,
     install_requires=[
         'click>=7.0.0,<8.0.0',
-        'pytest>=5.3.5,<5.4.0',
+        'pytest>=5.3.5,<7.0.0',
         'cookiecutter>=1.6.0,<2.0.0',
         'tabulate>=0.8.0,<1.0.0',
         'Jinja2>=2.10.0,<3.0.0',
