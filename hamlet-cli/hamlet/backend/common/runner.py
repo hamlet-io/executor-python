@@ -8,7 +8,8 @@ def __cli_params_to_script_call(
     script_path,
     script_name,
     args=None,
-    options=None
+    options=None,
+
 ):
     args = list(
         arg
@@ -21,6 +22,10 @@ def __cli_params_to_script_call(
             if isinstance(value, bool):
                 if value:
                     options_list.append(str(key))
+            elif isinstance(value, tuple):
+                for instance in value:
+                    options_list.append(str(key))
+                    options_list.append(str(instance))
             else:
                 options_list.append(str(key))
                 options_list.append(str(value))

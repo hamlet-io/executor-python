@@ -7,7 +7,6 @@ def run(
     generation_provider=None,
     generation_framework=None,
     generation_testcase=None,
-    generation_scenarios=None,
     _is_cli=False
 ):
     options = {
@@ -16,7 +15,6 @@ def run(
         '-p': generation_provider,
         '-f': generation_framework,
         '-t': generation_testcase,
-        '-s': generation_scenarios,
         '-l': 'unitlist'
     }
     runner.run('createTemplate.sh', [], options, _is_cli)

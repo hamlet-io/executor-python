@@ -17,5 +17,3 @@ services:
     volumes:
       - './hamlet-cli:/hamlet-cli'
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - './.cmdb:/var/opt/codeontap'
-      - './.codeontap:/opt/codeontap'

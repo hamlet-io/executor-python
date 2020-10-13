@@ -7,15 +7,7 @@ from tabulate import tabulate
 from hamlet.backend.common import exceptions
 from hamlet.backend import query as query_backend
 from hamlet.command import root
-
-
-MAX_TABLE_TEXT_CONTENT_WIDTH = 128
-
-
-def wrap_text(text):
-    if text is None:
-        return "None"
-    return "\n".join(textwrap.wrap(text, MAX_TABLE_TEXT_CONTENT_WIDTH))
+from hamlet.command.common.display import json_or_table_option, wrap_text
 
 
 def tiers_table(data):
@@ -88,28 +80,6 @@ def occurrences_table(data):
     )
 
 
-def json_or_table_option(tablefunc):
-    def decorator(func):
-        click.option(
-            '--output-format',
-            'output_format',
-            type=click.Choice(['table', 'json'], case_sensitive=False),
-            default='table',
-            help='Select output format'
-        )(func)
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            output_format = kwargs['output_format'].lower()
-            del kwargs['output_format']
-            result = func(*args, **kwargs)
-            if output_format == 'table':
-                click.echo(tablefunc(result))
-            elif output_format == 'json':
-                click.echo(json.dumps(result, indent=4))
-        return wrapper
-    return decorator
-
-
 @root.group(
     'query',
     context_settings=dict(
@@ -119,31 +89,26 @@ def json_or_table_option(tablefunc):
 @click.pass_context
 @click.option(
     '-i',
-    '--blueprint-generation-input-source',
+    '--generation-input-source',
     help='source of input data to use when generating the template'
 )
 @click.option(
     '-p',
-    '--blueprint-generation-provider',
+    '--generation-provider',
     help='provider to for template generation',
     default='aws',
     show_default=True
 )
 @click.option(
     '-f',
-    '--blueprint-generation-framework',
+    '--generation-framework',
     help='output framework to use for template generation',
     default='cf',
     show_default=True
 )
 @click.option(
-    '-s',
-    '--blueprint-generation-scenarios',
-    help='comma seperated list of framework scenarios to load'
-)
-@click.option(
     '-r',
-    '--blueprint-refresh',
+    '--refresh-output',
     is_flag=True,
     help='force refresh blueprint'
 )
@@ -151,7 +116,12 @@ def query_group(ctx, **kwargs):
     """
     Base command used to set blueprint generation options
     """
-    ctx.obj = dict(blueprint=kwargs)
+    blueprint_args = {
+        "generation_entrance" : 'blueprint',
+        'output_filename' : 'blueprint-config.json',
+        **kwargs
+    }
+    ctx.obj = dict(blueprint=blueprint_args)
 
 
 @query_group.command('get')
