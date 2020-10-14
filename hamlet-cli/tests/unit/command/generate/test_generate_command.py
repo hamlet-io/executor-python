@@ -22,7 +22,7 @@ def __split_key(key):
 
 def __get_key_part(key, index):
     parts = __split_key(key)
-    return parts[max(len(parts)-2, index)]
+    return parts[max(len(parts) - 2, index)]
 
 
 def __get_param_name_from_key(key):
@@ -78,7 +78,7 @@ def __generate_options_testcase(template):
         max_key_parts = 1
         for key in template:
             key_parts = __split_key(key)
-            max_key_parts = max(max_key_parts, len(key_parts)-1)
+            max_key_parts = max(max_key_parts, len(key_parts) - 1)
         for key_index in range(max_key_parts):
             options = []
             options_str = []

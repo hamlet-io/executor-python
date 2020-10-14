@@ -1,7 +1,5 @@
 import os
 import json
-import textwrap
-import functools
 import click
 from tabulate import tabulate
 from hamlet.backend.common import exceptions
@@ -117,8 +115,8 @@ def query_group(ctx, **kwargs):
     Base command used to set blueprint generation options
     """
     blueprint_args = {
-        "generation_entrance" : 'blueprint',
-        'output_filename' : 'blueprint-config.json',
+        "generation_entrance": 'blueprint',
+        'output_filename': 'blueprint-config.json',
         **kwargs
     }
     ctx.obj = dict(blueprint=blueprint_args)

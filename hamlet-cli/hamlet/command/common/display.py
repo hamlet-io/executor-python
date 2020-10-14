@@ -5,6 +5,7 @@ import textwrap
 
 MAX_TABLE_TEXT_CONTENT_WIDTH = 128
 
+
 def wrap_text(text):
     if text is None:
         return "None"
@@ -20,6 +21,7 @@ def json_or_table_option(tablefunc):
             default='table',
             help='Select output format'
         )(func)
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             output_format = kwargs['output_format'].lower()

@@ -62,8 +62,9 @@ def test_search():
             ) == test_directory_1_fullpath
         )
         assert (
-            ContextSearch(test_directory_fullpath).isdir(os.path.basename(test_directory_1_fullpath)) ==
-            test_directory_1_fullpath
+            ContextSearch(test_directory_fullpath).isdir(
+                os.path.basename(test_directory_1_fullpath)
+            ) == test_directory_1_fullpath
         )
         assert (
             Search.isdir(
@@ -73,8 +74,9 @@ def test_search():
             ) == test_directory_fullpath
         )
         assert (
-            ContextSearch(test_directory_1_fullpath).isdir(os.path.basename(test_directory_fullpath), up=2) ==
-            test_directory_fullpath
+            ContextSearch(test_directory_1_fullpath).isdir(
+                os.path.basename(test_directory_fullpath), up=2
+            ) == test_directory_fullpath
         )
 
         assert Search.upwards(test_directory_1_fullpath, 'node-0') == test_filename_fullpath

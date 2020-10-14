@@ -31,9 +31,7 @@ def __cli_params_to_script_call(
                 options_list.append(str(value))
     script_fullpath = os.path.join(script_path, script_name)
     return ' '.join(
-        [script_fullpath] +
-        options_list +
-        args
+        [script_fullpath] + options_list + args
     )
 
 

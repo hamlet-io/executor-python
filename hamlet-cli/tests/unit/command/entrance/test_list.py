@@ -44,14 +44,14 @@ def mock_backend(info=None):
 
 @mock_backend(
     {
-        'Entrances' : [
+        'Entrances': [
             {
                 'Type': 'EntranceType[1]',
-                'Description' : 'EntranceDescription[1]'
+                'Description': 'EntranceDescription[1]'
             },
             {
                 'Type': 'EntranceType[2]',
-                'Description' : 'EntranceDescription[2]'
+                'Description': 'EntranceDescription[2]'
             },
         ]
     }
@@ -69,9 +69,9 @@ def test_query_list_entrances(blueprint_mock, ContextClassMock):
     assert len(result) == 2
     assert {
         'Type': 'EntranceType[1]',
-        'Description' : 'EntranceDescription[1]'
+        'Description': 'EntranceDescription[1]'
     } in result
     assert {
         'Type': 'EntranceType[2]',
-        'Description' : 'EntranceDescription[2]'
+        'Description': 'EntranceDescription[2]'
     } in result

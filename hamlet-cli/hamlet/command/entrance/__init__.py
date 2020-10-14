@@ -1,6 +1,4 @@
 import os
-import json
-import textwrap
 import click
 
 
@@ -14,11 +12,13 @@ from hamlet.backend import query as query_backend
 
 class Generation(object):
     def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None):
-        self.generation_provider=generation_provider
-        self.generation_framework=generation_framework
-        self.generation_input_source=generation_input_source
+        self.generation_provider = generation_provider
+        self.generation_framework = generation_framework
+        self.generation_input_source = generation_input_source
+
 
 pass_generation = click.make_pass_decorator(Generation, ensure=True)
+
 
 @cli.group('entrance')
 @click.pass_context
@@ -26,7 +26,7 @@ pass_generation = click.make_pass_decorator(Generation, ensure=True)
     '-p',
     '--generation-provider',
     help='provider for output generation',
-    default=[ 'aws' ],
+    default=['aws'],
     multiple=True,
     show_default=True
 )
@@ -48,8 +48,11 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
     """
     Hamlet entrances provide access to the hamlet cmdb to perform different tasks
     """
-    ctx.obj = Generation(generation_provider=generation_provider, generation_framework=generation_framework, generation_input_source=generation_input_source)
-
+    ctx.obj = Generation(
+        generation_provider=generation_provider,
+        generation_framework=generation_framework,
+        generation_input_source=generation_input_source
+    )
 
 
 @group.command(
@@ -127,7 +130,8 @@ def invoke_entrance(generation, **kwargs):
         "generation_provider": generation.generation_provider,
         "generation_framework": generation.generation_framework,
         "generation_input_source": generation.generation_input_source,
-        **kwargs }
+        **kwargs
+    }
     create_template_backend.run(**args, _is_cli=True)
 
 
@@ -138,6 +142,7 @@ LIST_ENTRANCES_QUERY = (
     'Description:Description'
     '}'
 )
+
 
 def entrances_table(data):
     tablerows = []
@@ -165,7 +170,7 @@ def entrances_table(data):
 )
 @pass_generation
 @json_or_table_option(entrances_table)
-def list_entrances(generation ):
+def list_entrances(generation):
     """
     List available entrances
     """
@@ -173,9 +178,9 @@ def list_entrances(generation ):
         "generation_provider": generation.generation_provider,
         "generation_framework": generation.generation_framework,
         "generation_input_source": generation.generation_input_source,
-        "generation_entrance" : 'info',
-        'output_filename' : 'info.json',
-        "refresh_output" : True
+        "generation_entrance": 'info',
+        'output_filename': 'info.json',
+        "refresh_output": True
     }
 
     return query_backend.run(
