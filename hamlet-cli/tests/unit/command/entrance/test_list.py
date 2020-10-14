@@ -4,7 +4,7 @@ import json
 import tempfile
 from unittest import mock
 from click.testing import CliRunner
-from hamlet.command.entrance import list as list_entrance
+from hamlet.command.entrance import list_entrances as list_entrances
 
 
 def template_backend_run_mock(data):
@@ -59,7 +59,7 @@ def mock_backend(info=None):
 def test_query_list_entrances(blueprint_mock, ContextClassMock):
     cli = CliRunner()
     result = cli.invoke(
-        list_entrance,
+        list_entrances,
         [
             '--output-format', 'json'
         ]

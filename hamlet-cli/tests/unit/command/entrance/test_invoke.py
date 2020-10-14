@@ -1,7 +1,7 @@
 import collections
 from unittest import mock
 from click.testing import CliRunner
-from hamlet.command.entrance import invoke as invoke_entrance
+from hamlet.command.entrance import invoke_entrance as invoke_entrance
 from tests.unit.command.test_option_generation import run_options_test, run_validatable_option_test
 
 

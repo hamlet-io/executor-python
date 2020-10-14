@@ -53,7 +53,7 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
 
 
 @group.command(
-    'invoke',
+    'invoke-entrance',
     short_help='',
     context_settings=dict(
         max_content_width=240
@@ -119,7 +119,7 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
     default='unassigned',
     show_default=True
 )
-def invoke(generation, **kwargs):
+def invoke_entrance(generation, **kwargs):
     """
     Invoke a Hamlet Entrance
     """
@@ -157,7 +157,7 @@ def entrances_table(data):
 
 
 @group.command(
-    'list',
+    'list-entrances',
     short_help='',
     context_settings=dict(
         max_content_width=240
@@ -165,9 +165,9 @@ def entrances_table(data):
 )
 @pass_generation
 @json_or_table_option(entrances_table)
-def list(generation ):
+def list_entrances(generation ):
     """
-    List Entrances
+    List available entrances
     """
     args = {
         "generation_provider": generation.generation_provider,
