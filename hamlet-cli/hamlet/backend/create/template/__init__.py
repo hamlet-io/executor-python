@@ -2,6 +2,7 @@ from hamlet.backend.common import runner
 
 
 def run(
+    entrance=None,
     config_ref=None,
     resource_group=None,
     level=None,
@@ -12,13 +13,13 @@ def run(
     deployment_mode=None,
     generation_provider=None,
     generation_framework=None,
-    generation_testcase=None,
-    generation_scenarios=None,
     generation_input_source=None,
     output_dir=None,
+    disable_output_cleanup=None,
     _is_cli=False
 ):
     options = {
+        '-e': entrance,
         '-c': config_ref,
         '-g': resource_group,
         '-l': level,
@@ -29,9 +30,8 @@ def run(
         '-d': deployment_mode,
         '-p': generation_provider,
         '-f': generation_framework,
-        '-t': generation_testcase,
-        '-s': generation_scenarios,
         '-i': generation_input_source,
-        '-o': output_dir
+        '-o': output_dir,
+        '-x': disable_output_cleanup
     }
     runner.run('createTemplate.sh', [], options, _is_cli)

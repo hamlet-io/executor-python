@@ -5,18 +5,19 @@ import tempfile
 import jmespath
 
 from jmespath.exceptions import JMESPathError
-from hamlet.backend.create import blueprint
+from hamlet.backend.create import template
 from hamlet.backend.common import context
 from hamlet.backend.common import exceptions
 
 
 def run(
     cwd,
-    blueprint_generation_input_source=None,
-    blueprint_generation_provider=None,
-    blueprint_generation_framework=None,
-    blueprint_generation_scenarios=None,
-    blueprint_refresh=None,
+    generation_entrance=None,
+    generation_input_source=None,
+    generation_provider=None,
+    generation_framework=None,
+    output_filename=None,
+    refresh_output=None,
     query_text=None,
     query_name=None,
     query_params=None,
@@ -25,11 +26,12 @@ def run(
 ):
     query = Query(
         cwd,
-        blueprint_generation_input_source=blueprint_generation_input_source,
-        blueprint_generation_provider=blueprint_generation_provider,
-        blueprint_generation_framework=blueprint_generation_framework,
-        blueprint_generation_scenarios=blueprint_generation_scenarios,
-        blueprint_refresh=blueprint_refresh,
+        generation_entrance=generation_entrance,
+        generation_input_source=generation_input_source,
+        generation_provider=generation_provider,
+        generation_framework=generation_framework,
+        output_filename=output_filename,
+        refresh_output=refresh_output,
     )
     if query_name is not None:
         result = query.query_by_name(query_name, query_params or {})
@@ -122,30 +124,31 @@ class Query:
     def __init__(
         self,
         cwd,
-        blueprint_generation_input_source=None,
-        blueprint_generation_provider=None,
-        blueprint_generation_framework=None,
-        blueprint_generation_scenarios=None,
-        blueprint_refresh=None
+        generation_entrance=None,
+        generation_input_source=None,
+        generation_provider=None,
+        generation_framework=None,
+        output_filename=None,
+        refresh_output=None
     ):
         # mocked blueprint doesn't need the valid context
-        if blueprint_generation_input_source == 'mock':
+        if generation_input_source == 'mock':
             # using static temp dir to make cache work
             tempdir = tempfile.gettempdir()
             output_dir = os.path.join(tempdir, 'hamlet', 'query', 'mock')
         else:
             ctx = context.Context(cwd)
             output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
-        blueprint_filename = os.path.join(output_dir, 'blueprint.json')
-        if not os.path.isfile(blueprint_filename) or blueprint_refresh:
-            blueprint.run(
+        output_filepath = os.path.join(output_dir, output_filename)
+        if not os.path.isfile(output_filepath) or refresh_output:
+            template.run(
                 output_dir=output_dir,
-                generation_input_source=blueprint_generation_input_source,
-                generation_provider=blueprint_generation_provider,
-                generation_framework=blueprint_generation_framework,
-                generation_scenarios=blueprint_generation_scenarios
+                entrance=generation_entrance,
+                generation_input_source=generation_input_source,
+                generation_provider=generation_provider,
+                generation_framework=generation_framework,
             )
-        with open(blueprint_filename, 'rt') as f:
+        with open(output_filepath, 'rt') as f:
             self.blueprint_data = json.load(f)
 
     @mark_query

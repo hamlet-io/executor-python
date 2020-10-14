@@ -89,7 +89,7 @@ def generate_incremental_required_options_collection(all_options):
         return
 
     for key_index in range(required_keys_max_parts):
-        for max_arguments in range(len(required_options)+1):
+        for max_arguments in range(len(required_options) + 1):
             args = []
             str_args = []
             for keys, value in required_options.items():

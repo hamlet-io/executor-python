@@ -7,16 +7,17 @@ from click.testing import CliRunner
 from hamlet.command.query import query_group as query
 
 
-def blueprint_backend_run_mock(data):
+def template_backend_run_mock(data):
     def run(
+        entrance='blueprint',
         output_dir=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
-        generation_scenarios=None
+        output_filename='blueprint-config.json'
     ):
         os.makedirs(output_dir, exist_ok=True)
-        blueprint_filename = os.path.join(output_dir, 'blueprint.json')
+        blueprint_filename = os.path.join(output_dir, output_filename)
         with open(blueprint_filename, 'wt+') as f:
             json.dump(data, f)
     return run
@@ -25,7 +26,7 @@ def blueprint_backend_run_mock(data):
 def mock_backend(blueprint=None):
     def decorator(func):
         @mock.patch('hamlet.backend.query.context.Context')
-        @mock.patch('hamlet.backend.query.blueprint')
+        @mock.patch('hamlet.backend.query.template')
         def wrapper(blueprint_mock, ContextClassMock, *args, **kwargs):
             with tempfile.TemporaryDirectory() as temp_cache_dir:
 
@@ -33,7 +34,7 @@ def mock_backend(blueprint=None):
                 ContextObjectMock.md5_hash.return_value = str(hashlib.md5(str(blueprint).encode()).hexdigest())
                 ContextObjectMock.cache_dir = temp_cache_dir
 
-                blueprint_mock.run.side_effect = blueprint_backend_run_mock(blueprint)
+                blueprint_mock.run.side_effect = template_backend_run_mock(blueprint)
 
                 return func(blueprint_mock, ContextClassMock, *args, **kwargs)
 
@@ -84,7 +85,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         query,
         [
-            '--blueprint-refresh',
+            '--refresh-output',
             'get',
             'test.blueprint.data'
         ]
