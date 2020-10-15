@@ -20,13 +20,13 @@ class Generation(object):
 pass_generation = click.make_pass_decorator(Generation, ensure=True)
 
 
-@cli.group('entrance')
+@cli.group('visual')
 @click.pass_context
 @click.option(
     '-p',
     '--generation-provider',
     help='provider for output generation',
-    default=['aws'],
+    default=['aws', 'diagrams'],
     multiple=True,
     show_default=True
 )
@@ -46,7 +46,7 @@ pass_generation = click.make_pass_decorator(Generation, ensure=True)
 )
 def group(ctx, generation_provider, generation_framework, generation_input_source):
     """
-    Hamlet entrances provide access to the hamlet cmdb to perform different tasks
+    Generates visual representations of your hamlet deployment
     """
     ctx.obj = Generation(
         generation_provider=generation_provider,
@@ -54,63 +54,68 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
         generation_input_source=generation_input_source
     )
 
-LIST_ENTRANCES_QUERY = (
-    'Entrances[]'
+
+LIST_DIAGRAMS_QUERY = (
+    'Diagrams[]'
     '.{'
+    'Name:Name,'
     'Type:Type,'
+    'DeploymentGroup:DeploymentGroup,'
     'Description:Description'
     '}'
 )
 
 
-def entrances_table(data):
+def diagrams_table(data):
     tablerows = []
     for row in data:
         tablerows.append(
             [
+                wrap_text(row['Name']),
                 wrap_text(row['Type']),
+                wrap_text(row['DeploymentGroup']),
                 wrap_text(row['Description']),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Type', 'Description'],
+        headers=['Name', 'Type', 'DeploymentGroup', 'Description'],
         showindex=True,
         tablefmt="fancy_grid"
     )
 
 
 @group.command(
-    'list-entrances',
+    'list-diagrams',
     short_help='',
     context_settings=dict(
         max_content_width=240
     )
 )
 @pass_generation
-@json_or_table_option(entrances_table)
-def list_entrances(generation):
+@json_or_table_option(diagrams_table)
+def list_diagrams(generation):
     """
-    List available entrances
+    List available diagrams
     """
     args = {
         "generation_provider": generation.generation_provider,
         "generation_framework": generation.generation_framework,
         "generation_input_source": 'mock',
-        "generation_entrance": 'info',
-        'output_filename': 'info.json',
+        "generation_entrance": 'diagraminfo',
+        "output_filename": 'diagraminfo.json',
         "refresh_output": True
     }
 
     return query_backend.run(
         **args,
         cwd=os.getcwd(),
-        query_text=LIST_ENTRANCES_QUERY
+        query_text=LIST_DIAGRAMS_QUERY
     )
 
 
 @group.command(
-    'invoke-entrance',
+    'draw-diagram',
     short_help='',
     context_settings=dict(
         max_content_width=240
@@ -118,32 +123,10 @@ def list_entrances(generation):
 )
 @pass_generation
 @click.option(
-    '-e',
-    '--entrance',
-    help='The entrance to invoke for output generation',
-    required=True
-)
-@click.option(
     '-l',
     '--level',
-    help='template level',
-)
-@click.option(
-    '-u',
-    '--deployment-unit',
-    help='deployment unit to be included in the template',
-)
-@click.option(
-    '-z',
-    '--deployment-unit-subset',
-    help='subset of the deployment unit required'
-)
-@click.option(
-    '-d',
-    '--deployment-mode',
-    help='deployment mode the template will be generated for',
-    default='update',
-    show_default=True
+    required=True,
+    help='output level',
 )
 @click.option(
     '-o',
@@ -162,21 +145,7 @@ def list_entrances(generation):
     is_flag=True,
     help='disable the cleanup of the output directory before generation',
 )
-@click.option(
-    '-c',
-    '--config-ref',
-    help='identifier of the configuration used to generate this template',
-    default='unassigned',
-    show_default=True
-)
-@click.option(
-    '-q',
-    '--request-ref',
-    help='opaque value to link this template to a triggering request management system',
-    default='unassigned',
-    show_default=True
-)
-def invoke_entrance(generation, **kwargs):
+def draw_diagram(generation, **kwargs):
     """
     Invoke a Hamlet Entrance
     """
@@ -184,6 +153,7 @@ def invoke_entrance(generation, **kwargs):
         "generation_provider": generation.generation_provider,
         "generation_framework": generation.generation_framework,
         "generation_input_source": generation.generation_input_source,
+        "entrance" : 'diagram',
         **kwargs
     }
     create_template_backend.run(**args, _is_cli=True)
