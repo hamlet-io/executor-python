@@ -521,7 +521,7 @@ def test_query_describe_occurence_get(blueprint_mock, ContextClassMock):
                                             {
                                                 'Attribute[3]': 'Value[3]',
                                                 'Attribute[4]': 'Value[4]',
-                                                'Attribute[5]': 'Value[5]'
+                                                'Attribute[5]': 5
                                             }
                                         ]
                                     },
@@ -573,7 +573,7 @@ def test_query_describe_occurence_attributes(blueprint_mock, ContextClassMock):
     } in result
     assert {
         'Key': 'Attribute[5]',
-        'Value': 'Value[5]'
+        'Value': 5
     } in result
 
 

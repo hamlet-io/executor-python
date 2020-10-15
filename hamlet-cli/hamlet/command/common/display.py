@@ -9,6 +9,8 @@ MAX_TABLE_TEXT_CONTENT_WIDTH = 128
 def wrap_text(text):
     if text is None:
         return "None"
+    if text is isinstance(text, int):
+        return text
     return "\n".join(textwrap.wrap(text, MAX_TABLE_TEXT_CONTENT_WIDTH))
 
 
