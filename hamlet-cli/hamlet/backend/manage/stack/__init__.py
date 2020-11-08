@@ -11,6 +11,7 @@ def run(
     region=None,
     deployment_unit=None,
     deployment_unit_subset=None,
+    output_dir=None,
     dryrun=None,
     _is_cli=False
 ):
@@ -18,6 +19,7 @@ def run(
         '-d': delete,
         '-i': stack_initiate,
         '-m': stack_monitor,
+        '-o': output_dir,
         '-w': stack_wait,
         '-n': stack_name,
         '-r': region,

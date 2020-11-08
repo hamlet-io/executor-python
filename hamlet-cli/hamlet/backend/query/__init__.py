@@ -12,6 +12,7 @@ from hamlet.backend.common import exceptions
 
 def run(
     cwd,
+    deployment_mode=None,
     generation_entrance=None,
     generation_input_source=None,
     generation_provider=None,
@@ -26,6 +27,7 @@ def run(
 ):
     query = Query(
         cwd,
+        deployment_mode=deployment_mode,
         generation_entrance=generation_entrance,
         generation_input_source=generation_input_source,
         generation_provider=generation_provider,
@@ -124,6 +126,7 @@ class Query:
     def __init__(
         self,
         cwd,
+        deployment_mode,
         generation_entrance=None,
         generation_input_source=None,
         generation_provider=None,
@@ -143,6 +146,7 @@ class Query:
         if not os.path.isfile(output_filepath) or refresh_output:
             template.run(
                 output_dir=output_dir,
+                deployment_mode=deployment_mode,
                 entrance=generation_entrance,
                 generation_input_source=generation_input_source,
                 generation_provider=generation_provider,
