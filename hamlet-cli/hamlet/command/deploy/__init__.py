@@ -58,6 +58,7 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
 LIST_DEPLOYMENTS_QUERY = (
     'Stages[].Steps[]'
     '.{'
+    'Priority:Priority,'
     'DeploymentGroup:Parameters.DeploymentGroup,'
     'DeploymentUnit:Parameters.DeploymentUnit,'
     'DeploymentProvider:Parameters.DeploymentProvider'
@@ -192,7 +193,8 @@ def run_deployments(generation, deployment_mode, deployment_group, deployment_un
         return -1
 
     click.echo(click.style('Deployments Found:', bold=True))
-    for deployment in deployments:
+    prioritised_deployments = sorted(deployments, key=lambda deployment: deployment.Priority)
+    for deployment in prioritised_deployments:
         deployment_group = deployment['DeploymentGroup']
         deployment_unit = deployment['DeploymentUnit']
         click.echo(f'[*] {deployment_group}/{deployment_unit}')
@@ -205,7 +207,7 @@ def run_deployments(generation, deployment_mode, deployment_group, deployment_un
             deployment_unit = deployment['DeploymentUnit']
             return f"{deployment_group}/{deployment_unit}"
 
-    with click.progressbar(deployments, label='Running Deployments', item_show_func=show_deployment) as deployments_list:
+    with click.progressbar(prioritised_deployments, label='Running Deployments', item_show_func=show_deployment) as deployments_list:
         for deployment in deployments_list:
             generate_args = {
                 'generation_provider': generation.generation_provider,
