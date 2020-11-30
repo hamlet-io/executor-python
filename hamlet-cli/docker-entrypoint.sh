@@ -1,3 +1,6 @@
+# Create CMDB testing dir
+mkdir -p "${TEST_ROOT_DIR}"
+
 # clearing previos version
 echo "Current /opt/hamlet volume state"
 tree -L 2 /opt

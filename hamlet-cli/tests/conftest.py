@@ -12,7 +12,10 @@ root.setLevel(logging.DEBUG)
 
 class __CMDBContext:
 
-    ROOT_DIR = os.getcwd() + '/.cmdb'
+    if os.getenv('TEST_ROOT_DIR', None) is not None:
+        ROOT_DIR = os.getenv('TEST_ROOT_DIR')
+    else:
+        ROOT_DIR = os.getcwd() + '/.cmdb'
 
     def create_cmdb_filename_compositor(self):
         root = self.dir

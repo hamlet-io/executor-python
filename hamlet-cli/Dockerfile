@@ -1,5 +1,7 @@
 FROM hamletio/hamlet:latest
 
+ENV TEST_ROOT_DIR=/var/opt/hamlet
+
 WORKDIR /hamlet-cli
 USER root
 
