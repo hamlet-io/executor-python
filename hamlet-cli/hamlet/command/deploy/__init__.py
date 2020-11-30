@@ -127,26 +127,28 @@ def deployments_table(data):
     default='update',
     help='The deployment mode to use for the deployment'
 )
+@click.option(
+    '-l',
+    '--deployment-group',
+    default='.*',
+    show_default=True,
+    help='The deployment group pattern to match',
+)
+@click.option(
+    '-u',
+    '--deployment-unit',
+    default=['.*'],
+    show_default=True,
+    multiple=True,
+    help='The deployment unit pattern to match'
+)
 @json_or_table_option(deployments_table)
-def list_deployments(generation, deployment_mode):
+def list_deployments(generation, deployment_mode, deployment_group, deployment_unit):
     """
     List available deployments
     """
-    args = {
-        'deployment_mode': deployment_mode,
-        'generation_provider': generation.generation_provider,
-        'generation_framework': generation.generation_framework,
-        'generation_input_source': generation.generation_input_source,
-        'generation_entrance': 'unitlist',
-        'output_filename': 'unitlist-managementcontract.json',
-        'refresh_output': True
-    }
 
-    return query_backend.run(
-        **args,
-        cwd=os.getcwd(),
-        query_text=LIST_DEPLOYMENTS_QUERY
-    )
+    return find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
 
 @group.command(
