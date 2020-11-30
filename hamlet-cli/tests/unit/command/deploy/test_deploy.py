@@ -1,8 +1,7 @@
-import collections
 from unittest import mock
 from click.testing import CliRunner
 from hamlet.command.deploy import run_deployments as run_deployments
-from tests.unit.command.test_option_generation import run_options_test, run_validatable_option_test
+from tests.unit.command.test_option_generation import run_validatable_option_test
 
 
 @mock.patch('hamlet.command.deploy.create_template_backend')

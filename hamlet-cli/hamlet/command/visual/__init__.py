@@ -153,7 +153,7 @@ def draw_diagram(generation, **kwargs):
         "generation_provider": generation.generation_provider,
         "generation_framework": generation.generation_framework,
         "generation_input_source": generation.generation_input_source,
-        "entrance" : 'diagram',
+        "entrance": 'diagram',
         **kwargs
     }
     create_template_backend.run(**args, _is_cli=True)

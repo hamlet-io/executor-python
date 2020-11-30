@@ -10,7 +10,8 @@ from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.manage import stack as manage_stack_backend
 from hamlet.backend import query as query_backend
 
-def find_deployments_from_options(generation, deployment_mode,deployment_group, deployment_units):
+
+def find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_units):
     query_args = {
         'deployment_mode': deployment_mode,
         'generation_provider': generation.generation_provider,
@@ -21,12 +22,12 @@ def find_deployments_from_options(generation, deployment_mode,deployment_group, 
         'refresh_output': True
     }
     available_deployments = query_backend.run(
-                                **query_args,
-                                cwd=os.getcwd(),
-                                query_text=LIST_DEPLOYMENTS_QUERY
-                            )
+        **query_args,
+        cwd=os.getcwd(),
+        query_text=LIST_DEPLOYMENTS_QUERY
+    )
 
-    deployments=[]
+    deployments = []
 
     for deployment in available_deployments:
         if re.search(deployment_group, deployment['DeploymentGroup']):
@@ -35,6 +36,7 @@ def find_deployments_from_options(generation, deployment_mode,deployment_group, 
                     deployments.append(deployment)
 
     return deployments
+
 
 class Generation(object):
     def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None):
@@ -128,7 +130,7 @@ def list_deployments(generation, deployment_mode):
     List available deployments
     """
     args = {
-        'deployment_mode' : deployment_mode,
+        'deployment_mode': deployment_mode,
         'generation_provider': generation.generation_provider,
         'generation_framework': generation.generation_framework,
         'generation_input_source': generation.generation_input_source,
@@ -168,7 +170,7 @@ def list_deployments(generation, deployment_mode):
 @click.option(
     '-u',
     '--deployment-unit',
-    default=[ '.*' ],
+    default=['.*'],
     show_default=True,
     multiple=True,
     help='The deployment unit pattern to match'
@@ -194,12 +196,20 @@ def list_deployments(generation, deployment_mode):
     default=False,
     help='Confirm before executing each deployment'
 )
-def run_deployments(generation, deployment_mode, deployment_group, deployment_unit, output_dir, create, confirm, **kwargs):
+def run_deployments(
+        generation,
+        deployment_mode,
+        deployment_group,
+        deployment_unit,
+        output_dir,
+        create,
+        confirm,
+        **kwargs):
     """
     Create and run deployments
     """
 
-    deployments=find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
         click.echo(click.style('No deployments found that match pattern', bold=True, fg='red'))
@@ -210,7 +220,7 @@ def run_deployments(generation, deployment_mode, deployment_group, deployment_un
         deployment_group = deployment['DeploymentGroup']
         deployment_unit = deployment['DeploymentUnit']
         click.echo('')
-        click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green' )))
+        click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')))
         click.echo('')
 
         if create:
@@ -218,28 +228,29 @@ def run_deployments(generation, deployment_mode, deployment_group, deployment_un
                 'generation_provider': generation.generation_provider,
                 'generation_framework': generation.generation_framework,
                 'generation_input_source': generation.generation_input_source,
-                'entrance' : 'deployment',
-                'deployment_group' : deployment_group,
-                'deployment_unit' : deployment_unit,
-                'output_dir' : output_dir
+                'entrance': 'deployment',
+                'deployment_group': deployment_group,
+                'deployment_unit': deployment_unit,
+                'output_dir': output_dir
             }
             create_template_backend.run(**generate_args, _is_cli=True)
 
         for operation in deployment['Operations']:
 
-            if ( confirm and click.confirm(f'Start Deployment of ${deployment_group}/${deployment_unit} ?') ) or not confirm :
+            if (confirm and click.confirm(f'Start Deployment of ${deployment_group}/${deployment_unit} ?')) or not confirm:
 
                 if deployment['DeploymentProvider'] == 'aws':
                     manage_args = {
-                        'level' : deployment_group,
-                        'deployment_unit' : deployment_unit,
-                        'output_dir' : output_dir
+                        'level': deployment_group,
+                        'deployment_unit': deployment_unit,
+                        'output_dir': output_dir
                     }
 
                     if operation == 'delete':
                         manage_args['delete'] = True
 
                     manage_stack_backend.run(**manage_args, _is_cli=True)
+
 
 @group.command(
     'create-deployments',
@@ -265,7 +276,7 @@ def run_deployments(generation, deployment_mode, deployment_group, deployment_un
 @click.option(
     '-u',
     '--deployment-unit',
-    default=[ '.*' ],
+    default=['.*'],
     show_default=True,
     multiple=True,
     help='The deployment unit pattern to match'
@@ -286,7 +297,7 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
     Create deployment outputs
     """
 
-    deployments=find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
         click.echo(click.style('No deployments found that match pattern', bold=True, fg='red'))
@@ -302,10 +313,10 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
             'generation_provider': generation.generation_provider,
             'generation_framework': generation.generation_framework,
             'generation_input_source': generation.generation_input_source,
-            'entrance' : 'deployment',
-            'deployment_group' : deployment_group,
-            'deployment_unit' : deployment_unit,
-            'output_dir' : output_dir
+            'entrance': 'deployment',
+            'deployment_group': deployment_group,
+            'deployment_unit': deployment_unit,
+            'output_dir': output_dir
         }
         create_template_backend.run(**generate_args, _is_cli=False)
 
@@ -334,7 +345,7 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
 @click.option(
     '-u',
     '--deployment-unit',
-    default=[ '.*' ],
+    default=['.*'],
     show_default=True,
     multiple=True,
     help='The deployment unit pattern to match'
@@ -355,7 +366,7 @@ def test_deployments(generation, deployment_mode, deployment_group, deployment_u
     Test deployment outputs
     """
 
-    deployments=find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
         click.echo(click.style('No deployments found that match pattern', bold=True, fg='red'))
@@ -371,9 +382,9 @@ def test_deployments(generation, deployment_mode, deployment_group, deployment_u
             'generation_provider': generation.generation_provider,
             'generation_framework': generation.generation_framework,
             'generation_input_source': generation.generation_input_source,
-            'entrance' : 'deploymenttest',
-            'deployment_group' : deployment_group,
-            'deployment_unit' : deployment_unit,
-            'output_dir' : output_dir
+            'entrance': 'deploymenttest',
+            'deployment_group': deployment_group,
+            'deployment_unit': deployment_unit,
+            'output_dir': output_dir
         }
         create_template_backend.run(**generate_args, _is_cli=False)
