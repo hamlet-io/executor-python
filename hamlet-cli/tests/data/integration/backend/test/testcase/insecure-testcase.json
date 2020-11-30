@@ -1,6 +1,6 @@
 {
     "insecure": {
-      "filename": "/hamlet-cli/tests/data/integration/backend/test/cf/insecure.json",
+      "filename": "tests/data/integration/backend/test/cf/insecure.json",
       "cfn_nag": true
     }
 }
