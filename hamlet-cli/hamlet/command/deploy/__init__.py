@@ -31,11 +31,8 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
 
     for deployment in available_deployments:
         if re.fullmatch(deployment_group, deployment['DeploymentGroup']):
-            for unit_pattern in deployment_units:
-                if not unit_pattern.endswith('$'):
-                    unit_pattern = unit_pattern + '$'
-
-                if re.search(unit_pattern, deployment['DeploymentUnit']):
+            for deployment_unit in deployment_units:
+                if re.fullmatch(deployment_unit, deployment['DeploymentUnit']):
                     deployments.append(deployment)
 
     return deployments
@@ -242,7 +239,7 @@ def run_deployments(
 
         for operation in deployment['Operations']:
 
-            if (confirm and click.confirm(f'Start Deployment of ${deployment_group}/${deployment_unit} ?')) or not confirm:
+            if (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?')) or not confirm:
 
                 if deployment['DeploymentProvider'] == 'aws':
                     manage_args = {
