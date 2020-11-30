@@ -54,6 +54,7 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
         generation_input_source=generation_input_source
     )
 
+
 LIST_ENTRANCES_QUERY = (
     'Entrances[]'
     '.{'

@@ -6,4 +6,4 @@ mv /opt/hamlet /hamlet
 echo "Current /hamlet content"
 tree /hamlet -L 2
 
-mkdir -p /var/opt/hamlet
+mkdir -p .cmdb
