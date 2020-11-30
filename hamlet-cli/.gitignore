@@ -5,3 +5,6 @@
 **/htmlcov
 **/dist
 test-report.xml
+
+.cmdb
+**.egg-info

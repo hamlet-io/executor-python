@@ -1,6 +1,6 @@
 {
     "JSONStructureGood": {
-      "filename": "/hamlet-cli/tests/data/integration/backend/test/cf/structure.json",
+      "filename": "tests/data/integration/backend/test/cf/structure.json",
       "json_structure": {
         "exists": [
             {

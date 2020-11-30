@@ -1,1 +1,3 @@
-DATA_DIR = '/hamlet-cli/tests/data/integration/backend/test'
+import os
+
+DATA_DIR = os.getcwd() + '/tests/data/integration/backend/test'

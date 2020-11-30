@@ -164,13 +164,13 @@ def describe_group(ctx):
     '-i',
     '--instance-id',
     'instance_id',
-    required=True
+    default=''
 )
 @click.option(
     '-v',
     '--version-id',
     'version_id',
-    required=True
+    default=''
 )
 @exceptions.handler()
 def describe_occurrence(ctx, **query_params):

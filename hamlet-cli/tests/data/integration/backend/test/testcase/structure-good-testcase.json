@@ -1,6 +1,6 @@
 {
     "structureGood": {
-      "filename": "/hamlet-cli/tests/data/integration/backend/test/cf/valid-syntax.json",
+      "filename": "tests/data/integration/backend/test/cf/valid-syntax.json",
       "cfn_nag": true,
       "cfn_lint": true,
       "json_structure": {

@@ -1,6 +1,6 @@
 {
     "validSyntax": {
-        "filename": "/hamlet-cli/tests/data/integration/backend/test/cf/valid-syntax.json",
+        "filename": "tests/data/integration/backend/test/cf/valid-syntax.json",
         "cfn_lint": true
     }
 }
