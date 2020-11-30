@@ -5,5 +5,3 @@ echo "Moving /opt/hamlet => /hamlet to prevent overriding by volume"
 mv /opt/hamlet /hamlet
 echo "Current /hamlet content"
 tree /hamlet -L 2
-
-mkdir -p /hamlet-cli/.cmdb
