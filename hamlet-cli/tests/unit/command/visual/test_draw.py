@@ -7,7 +7,7 @@ from tests.unit.command.test_option_generation import run_options_test, run_vali
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 
-ALL_VALID_OPTIONS['!-l,--level'] = 'level'
+ALL_VALID_OPTIONS['!-l,--deployment-group'] = 'deployment_group'
 ALL_VALID_OPTIONS['-x,--disable-output-cleanup'] = [True]
 ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
 

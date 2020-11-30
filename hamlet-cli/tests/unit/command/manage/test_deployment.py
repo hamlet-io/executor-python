@@ -6,14 +6,7 @@ from tests.unit.command.test_option_generation import run_options_test, run_vali
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS['!-u,--deployment-unit'] = 'unit'
-ALL_VALID_OPTIONS['!-l,--level'] = [
-    'account',
-    'product',
-    'segment',
-    'solution',
-    'application',
-    'multiple'
-]
+ALL_VALID_OPTIONS['!-l,--deployment-group'] = 'group'
 ALL_VALID_OPTIONS['-d,--delete'] = [True, False]
 ALL_VALID_OPTIONS['-g,--resource-group'] = 'group'
 ALL_VALID_OPTIONS['-i,--deployment-initiate'] = [True, False]
@@ -41,10 +34,9 @@ def test_input_validation(manage_deployment_backend):
         manage_deployment_backend.run,
         {
             '-u': 'unit',
-            '-l': 'segment'
+            '-l': 'group'
         },
         [
-            ('-l', 'badlevelvalue', 'segment'),
             ('-s', 'badscopevalue', 'resourceGroup'),
             ('-w', 'not_an_int', 10)
         ]

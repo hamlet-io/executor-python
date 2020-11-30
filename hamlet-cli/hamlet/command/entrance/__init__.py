@@ -125,7 +125,7 @@ def list_entrances(generation):
 )
 @click.option(
     '-l',
-    '--level',
+    '--deployment-group',
     help='template level',
 )
 @click.option(

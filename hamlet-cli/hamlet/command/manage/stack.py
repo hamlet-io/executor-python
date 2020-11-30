@@ -36,32 +36,15 @@ from hamlet.backend.manage import stack as manage_stack_backend
     help='interval between checking the progress of the stack operation'
 )
 @click.option(
-    '-n',
-    '--stack-name',
-    default=None,
-    help='override standard stack naming'
-)
-@click.option(
-    '-l',
-    '--level',
-    type=click.Choice(
-        [
-            'account',
-            'product',
-            'segment',
-            'solution',
-            'application',
-            'multiple'
-        ],
-        case_sensitive=False
-    ),
-    help='stack level',
-    required=True
-)
-@click.option(
     '-r',
     '--region',
     help='AWS region identifier for the region in which the stack should be managed'
+)
+@click.option(
+    '-l',
+    '--deployment-group',
+    help='th deployment group to manage',
+    required=True
 )
 @click.option(
     '-u',
@@ -89,7 +72,6 @@ def stack(**kwargs):
     1. You must be in the correct directory corresponding to the requested stack level
     2. REGION is only relevant for the "product" level, where multiple product stacks are necessary
        if the product uses resources in multiple regions
-    3. "segment" is now used in preference to "container" to avoid confusion with docker
     4. If stack doesn't exist in AWS, the update operation will create the stack
     5. Overriding the stack name is not recommended except where legacy naming has to be maintained
     6. A dryrun creates a change set, then displays it. It only applies when

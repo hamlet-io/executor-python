@@ -28,19 +28,8 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 )
 @click.option(
     '-l',
-    '--level',
-    type=click.Choice(
-        [
-            'account',
-            'product',
-            'segment',
-            'solution',
-            'application',
-            'multiple'
-        ],
-        case_sensitive=False
-    ),
-    help='stack level',
+    '--deployment-group',
+    help='the deployment group the unit belongs to',
     required=True
 )
 @click.option(
