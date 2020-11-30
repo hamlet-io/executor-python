@@ -30,8 +30,11 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
     deployments = []
 
     for deployment in available_deployments:
-        if re.search(deployment_group, deployment['DeploymentGroup']):
+        if re.fullmatch(deployment_group, deployment['DeploymentGroup']):
             for unit_pattern in deployment_units:
+                if not unit_pattern.endswith('$'):
+                    unit_pattern = unit_pattern + '$'
+
                 if re.search(unit_pattern, deployment['DeploymentUnit']):
                     deployments.append(deployment)
 
@@ -202,7 +205,7 @@ def run_deployments(
         deployment_group,
         deployment_unit,
         output_dir,
-        create,
+        refresh_outputs,
         confirm,
         **kwargs):
     """
@@ -223,7 +226,7 @@ def run_deployments(
         click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')))
         click.echo('')
 
-        if create:
+        if refresh_outputs:
             generate_args = {
                 'generation_provider': generation.generation_provider,
                 'generation_framework': generation.generation_framework,
@@ -318,7 +321,7 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
             'deployment_unit': deployment_unit,
             'output_dir': output_dir
         }
-        create_template_backend.run(**generate_args, _is_cli=False)
+        create_template_backend.run(**generate_args, _is_cli=True)
 
 
 @group.command(
