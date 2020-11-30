@@ -124,7 +124,7 @@ def list_diagrams(generation):
 @pass_generation
 @click.option(
     '-l',
-    '--level',
+    '--deployment-group',
     required=True,
     help='output level',
 )

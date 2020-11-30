@@ -11,6 +11,7 @@ def template_backend_run_mock(data):
     def run(
         entrance='blueprint',
         output_dir=None,
+        deployment_mode=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
@@ -62,6 +63,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
             'test.blueprint.data'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == "test data"
 
@@ -90,6 +92,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
             'test.blueprint.data'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == "test data"
 
@@ -151,6 +154,7 @@ def test_query_list_tiers(blueprint_mock, ContextClassMock):
             '--output-format', 'json'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 2
@@ -206,6 +210,7 @@ def test_query_list_components(blueprint_mock, ContextClassMock):
             '--output-format', 'json'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 3
@@ -347,6 +352,7 @@ def test_query_list_occurrences(blueprint_mock, ContextClassMock):
             '--output-format', 'json'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 2
@@ -432,6 +438,7 @@ def test_query_describe_occurence(blueprint_mock, ContextClassMock):
             '-v', 'VersionId[2]'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
@@ -484,6 +491,7 @@ def test_query_describe_occurence_get(blueprint_mock, ContextClassMock):
             '[*].Core.Instance.Id'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 1
     assert "InstanceId[1]" in result
@@ -553,6 +561,7 @@ def test_query_describe_occurence_attributes(blueprint_mock, ContextClassMock):
             '--output-format', 'json'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 5
     assert {
@@ -620,6 +629,7 @@ def test_query_describe_occurence_solution(blueprint_mock, ContextClassMock):
             'solution'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
@@ -671,6 +681,7 @@ def test_query_describe_occurence_settings(blueprint_mock, ContextClassMock):
             'settings'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
@@ -722,6 +733,7 @@ def test_query_describe_occurence_resources(blueprint_mock, ContextClassMock):
             'resources'
         ]
     )
+    print(result.exception)
     result = json.loads(result.output)
     assert len(result) == 1
     assert [

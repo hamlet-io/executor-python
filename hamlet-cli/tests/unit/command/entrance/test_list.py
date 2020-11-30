@@ -14,6 +14,7 @@ def template_backend_run_mock(data):
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
+        deployment_mode=None,
         output_filename='info.json'
     ):
         os.makedirs(output_dir, exist_ok=True)
@@ -64,6 +65,7 @@ def test_query_list_entrances(blueprint_mock, ContextClassMock):
             '--output-format', 'json'
         ]
     )
+    print(result.exception)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 2
