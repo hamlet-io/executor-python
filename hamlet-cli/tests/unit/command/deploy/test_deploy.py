@@ -14,7 +14,7 @@ def test_input_validation(create_template_backend, manage_stack_backend):
         run_deployments,
         create_template_backend.run,
         {
-            '-g': 'segment',
+            '-l': 'segment',
             '-u': 'baseline'
         },
         []
