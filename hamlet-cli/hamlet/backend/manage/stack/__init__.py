@@ -7,7 +7,7 @@ def run(
     stack_monitor=None,
     stack_wait=None,
     stack_name=None,
-    level=None,
+    deployment_group=None,
     region=None,
     deployment_unit=None,
     deployment_unit_subset=None,
@@ -26,6 +26,6 @@ def run(
         '-y': dryrun,
         '-u': deployment_unit,
         '-z': deployment_unit_subset,
-        '-l': level
+        '-l': deployment_group
     }
     runner.run('manageStack.sh', [], options, _is_cli)
