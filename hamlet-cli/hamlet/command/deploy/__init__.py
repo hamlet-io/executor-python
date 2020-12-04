@@ -243,7 +243,7 @@ def run_deployments(
 
                 if deployment['DeploymentProvider'] == 'aws':
                     manage_args = {
-                        'level': deployment_group,
+                        'deployment_group': deployment_group,
                         'deployment_unit': deployment_unit,
                         'output_dir': output_dir
                     }

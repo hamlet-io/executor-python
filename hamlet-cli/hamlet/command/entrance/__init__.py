@@ -127,7 +127,7 @@ def list_entrances(generation):
 @click.option(
     '-l',
     '--deployment-group',
-    help='template level',
+    help='deployment group the deployment unit belongs to',
 )
 @click.option(
     '-u',

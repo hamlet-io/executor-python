@@ -43,7 +43,7 @@ from hamlet.backend.manage import stack as manage_stack_backend
 @click.option(
     '-l',
     '--deployment-group',
-    help='th deployment group to manage',
+    help='the deployment group to manage',
     required=True
 )
 @click.option(
