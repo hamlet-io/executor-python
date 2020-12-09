@@ -54,6 +54,7 @@ pass_generation = click.make_pass_decorator(Generation, ensure=True)
     '-p',
     '--generation-provider',
     help='provider for output generation',
+    default=['aws'],
     multiple=True,
     show_default=True
 )

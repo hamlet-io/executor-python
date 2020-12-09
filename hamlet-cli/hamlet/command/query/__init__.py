@@ -93,8 +93,9 @@ def occurrences_table(data):
 @click.option(
     '-p',
     '--generation-provider',
-    help='provider to for template generation',
-    default='aws',
+    help='provider for output generation',
+    default=['aws'],
+    multiple=True,
     show_default=True
 )
 @click.option(
