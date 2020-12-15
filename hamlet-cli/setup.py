@@ -40,6 +40,7 @@ setup(
         'Jinja2>=2.10.0,<3.0.0',
         'cfn-lint>=0.25.0,<1.0.0',
         'cfn-flip>=1.2.0,<2.0.0',
+        'diagrams>=0.18.0,<1.0.0'
     ],
     include_package_data=True,
     python_requires='>=3.6',
