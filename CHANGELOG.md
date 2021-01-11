@@ -2,7 +2,7 @@
 
 
 
-# [0.0.0](https://github.com/hamlet-io/engine-plugin-aws/compare/v7.0.0...v0.0.0) (2021-01-11)
+# [8.0.0](https://github.com/hamlet-io/engine-plugin-aws/compare/v7.0.0...v8.0.0) (2021-01-11)
 
 
 ### Bug Fixes
@@ -20,16 +20,21 @@
 
 ### Features
 
-* add create deployments and rework run deployments ([6279ee9](https://github.com/hamlet-io/engine-plugin-aws/commit/6279ee992a538a98499297a710d36f88c12778f9))
-* add deploy command ([bb264cd](https://github.com/hamlet-io/engine-plugin-aws/commit/bb264cd72e2060d67448b2281051accd33f127b9))
 * **deploy:** always appened end of line pattern ([646b4fe](https://github.com/hamlet-io/engine-plugin-aws/commit/646b4fe59fe18ede3ccd648df9e2268a96401429))
+* add deploy command ([bb264cd](https://github.com/hamlet-io/engine-plugin-aws/commit/bb264cd72e2060d67448b2281051accd33f127b9))
 * **schema:** add template level of schema for schema generation ([ae89c0d](https://github.com/hamlet-io/engine-plugin-aws/commit/ae89c0d12e30077db2ae9b2ca4be4236e81a7138))
+* add create deployments and rework run deployments ([6279ee9](https://github.com/hamlet-io/engine-plugin-aws/commit/6279ee992a538a98499297a710d36f88c12778f9))
 * add diagrams depdencies for visual ([#67](https://github.com/hamlet-io/engine-plugin-aws/issues/67)) ([cb6f945](https://github.com/hamlet-io/engine-plugin-aws/commit/cb6f945add04bc8c5887fae12f8401422a08c2c0))
 * add schema level test ([c77521c](https://github.com/hamlet-io/engine-plugin-aws/commit/c77521c58dfbdb3d9d277f158578dd4a56d8125c))
 * add support for diagram plugin generation and execution ([59d24d3](https://github.com/hamlet-io/engine-plugin-aws/commit/59d24d370cd0e2312e753d47178d3cb015a0a2cb))
 * add support for entrances ([#55](https://github.com/hamlet-io/engine-plugin-aws/issues/55)) ([3e31422](https://github.com/hamlet-io/engine-plugin-aws/commit/3e3142276ff14e5e99f297fee672f6af4bb62b59))
+* changelog generation ([#69](https://github.com/hamlet-io/engine-plugin-aws/issues/69)) ([ff7585f](https://github.com/hamlet-io/engine-plugin-aws/commit/ff7585fc573f8cd01b62ab747c2fdcdd6ead0f4d))
 * filter list-deployments in line with commands ([90d8b82](https://github.com/hamlet-io/engine-plugin-aws/commit/90d8b82c96bab3176fb20e9edaec94d0ba544b2a))
 * support additonal pytest arguments on run ([#52](https://github.com/hamlet-io/engine-plugin-aws/issues/52)) ([983508a](https://github.com/hamlet-io/engine-plugin-aws/commit/983508ab3ed7b1f55914d16a069f588b13a36f08))
+
+
+
+# 7.0.0 (2020-03-20)
 
 
 
