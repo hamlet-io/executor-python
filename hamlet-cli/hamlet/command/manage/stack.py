@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.manage import stack as manage_stack_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'stack',
@@ -77,4 +78,8 @@ def stack(**kwargs):
     6. A dryrun creates a change set, then displays it. It only applies when
        the STACK_OPERATION=update
     """
-    manage_stack_backend.run(**kwargs, _is_cli=True)
+    try:
+        manage_stack_backend.run(**kwargs, _is_cli=True)
+
+    except BackendException as e:
+        raise CommandError(str(e))

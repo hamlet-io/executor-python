@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.manage import file_crypto as manage_file_crypto_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'file-crypto',
@@ -46,4 +47,7 @@ def file_crypto(**kwargs):
     NOTES:
     1. If no operation is provided, the current file contents are displayed
     """
-    manage_file_crypto_backend.run(**kwargs, _is_cli=True)
+    try:
+        manage_file_crypto_backend.run(**kwargs, _is_cli=True)
+    except BackendException as e:
+        raise CommandError(str(e))

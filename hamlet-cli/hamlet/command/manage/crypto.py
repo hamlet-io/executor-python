@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.manage import crypto as manage_crypto_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'crypto',
@@ -113,4 +114,8 @@ def crypto(**kwargs):
        visibility flag is set
     8. Decrypted files will have a ".decrypted" extension added so they can be ignored by git
     """
-    manage_crypto_backend.run(**kwargs, _is_cli=True)
+    try:
+        manage_crypto_backend.run(**kwargs, _is_cli=True)
+
+    except BackendException as e:
+        raise CommandError(str(e))

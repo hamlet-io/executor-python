@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.run import expo_app_publish as run_expo_app_publish_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'expo-app-publish',
@@ -69,4 +70,7 @@ def expo_app_publish(**kwargs):
     NOTES:
     RELEASE_CHANNEL default is environment
     """
-    run_expo_app_publish_backend.run(**kwargs, _is_cli=True)
+    try:
+        run_expo_app_publish_backend.run(**kwargs, _is_cli=True)
+    except BackendException as e:
+        raise CommandError(str(e))
