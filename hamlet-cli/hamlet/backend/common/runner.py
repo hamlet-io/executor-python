@@ -52,6 +52,8 @@ def run(script_name, args, options, _is_cli):
         process.wait()
         if not _is_cli and process.returncode != 0:
             raise BackendException(process.stderr.read())
+        if _is_cli and process.returncode != 0:
+            raise BackendException(f'{script_name} failed to run')
     finally:
         try:
             process.kill()
