@@ -6,8 +6,10 @@ from tabulate import tabulate
 
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
+from hamlet.command.common.exceptions import CommandError
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
+from hamlet.backend.common.exceptions import BackendException
 
 
 class Generation(object):
@@ -187,4 +189,9 @@ def invoke_entrance(generation, **kwargs):
         "generation_input_source": generation.generation_input_source,
         **kwargs
     }
-    create_template_backend.run(**args, _is_cli=True)
+
+    try:
+        create_template_backend.run(**args, _is_cli=True)
+
+    except BackendException as e:
+        raise CommandError(str(e))

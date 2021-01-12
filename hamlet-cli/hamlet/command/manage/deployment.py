@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.manage import deployment as manage_deployment_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'deployment',
@@ -80,4 +81,7 @@ def deployment(**kwargs):
     """
     Manage an Azure Resource Manager (ARM) deployment
     """
-    manage_deployment_backend.run(**kwargs, _is_cli=True)
+    try:
+        manage_deployment_backend.run(**kwargs, _is_cli=True)
+    except BackendException as e:
+        raise CommandError(str(e))

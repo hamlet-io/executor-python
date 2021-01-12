@@ -1,6 +1,7 @@
 import click
 from hamlet.backend.run import pipeline as run_pipeline_backend
-
+from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common.exceptions import CommandError
 
 @click.command(
     'pipeline',
@@ -52,4 +53,7 @@ def pipeline(**kwargs):
     1. This will activate the pipeline and leave it running
     2. Pipelines take a long time so it is better to provide status via other means
     """
-    run_pipeline_backend.run(**kwargs, _is_cli=True)
+    try:
+        run_pipeline_backend.run(**kwargs, _is_cli=True)
+    except BackendException as e:
+        raise CommandError(str(e))
