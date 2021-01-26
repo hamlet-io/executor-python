@@ -89,8 +89,8 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
 LIST_SCHEMAS_QUERY = (
     'Stages[].Steps[]'
     '.{'
-    'DeploymentGroup:Parameters.DeploymentGroup,'
-    'DeploymentUnit:Parameters.DeploymentUnit,'
+    'Type:Parameters.DeploymentGroup,'
+    'Instance:Parameters.DeploymentUnit,'
     'DeploymentProvider:Parameters.DeploymentProvider'
     '}'
 )
@@ -100,13 +100,13 @@ def schema_table(data):
     for row in data:
         tablerows.append(
             [
-                wrap_text(row['DeploymentGroup']),
-                wrap_text(row['DeploymentUnit']),
+                wrap_text(row['Type']),
+                wrap_text(row['Instance']),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['DeploymentGroup', 'DeploymentUnit'],
+        headers=['Type', 'Instance'],
         tablefmt='github'
     )
 
