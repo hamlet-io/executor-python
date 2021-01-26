@@ -33,15 +33,15 @@ def find_schemas_from_options(generation, deployment_group, deployment_units):
     except BackendException as e:
         raise CommandError(str(e))
 
-    deployments = []
+    schemas = []
 
     for schema in available_schemas:
         if re.fullmatch(deployment_group, schema['DeploymentGroup']):
             for deployment_unit in deployment_units:
                 if re.fullmatch(deployment_unit, schema['DeploymentUnit']):
-                    deployments.append(schema)
+                    schemas.append(schema)
 
-    return deployments
+    return schemas
 
 class Generation(object):
     def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None):
