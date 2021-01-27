@@ -9,8 +9,6 @@ from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
-from hamlet.backend.manage import stack as manage_stack_backend
-from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
 
 def find_schemas_from_options(generation, deployment_group, deployment_units):
