@@ -8,7 +8,7 @@ from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
 from hamlet.backend import query as query_backend
-from hamlet.backend.create import template as create_template_backend
+from hamlet.backend.create import template as create_schema_backend
 from hamlet.backend.common.exceptions import BackendException
 
 def find_schemas_from_options(generation, deployment_group, deployment_units):
@@ -199,7 +199,7 @@ def create_schemas(
         }
 
         try:
-            create_template_backend.run(**schemaset_args, _is_cli=True)
+            create_schema_backend.run(**schemaset_args, _is_cli=True)
 
         except BackendException as e:
             raise CommandError('SchemaSet Generation failed: ' + str(e))
@@ -215,7 +215,7 @@ def create_schemas(
         }
 
         try:
-            create_template_backend.run(**template_args, _is_cli=True)
+            create_schema_backend.run(**template_args, _is_cli=True)
 
         except BackendException as e:
             raise CommandError('Schema Generation failed')
