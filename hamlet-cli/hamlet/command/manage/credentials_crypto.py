@@ -3,6 +3,7 @@ from hamlet.backend.manage import credential_crypto as manage_credentials_crypto
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'credential-crypto',
     short_help='Manage crypto for credential storage',

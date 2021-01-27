@@ -1,5 +1,6 @@
 from click import ClickException, style
 
+
 class CommandError(ClickException):
     """An exception occurred during processing"""
 

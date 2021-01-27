@@ -3,6 +3,7 @@ from hamlet.backend.manage import crypto as manage_crypto_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'crypto',
     short_help='Manage cryptographic operations using KMS',

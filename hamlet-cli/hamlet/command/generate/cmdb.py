@@ -15,7 +15,7 @@ def group():  # pragma: no cover
 @dynamic_option('--account-name', default=lambda p: p.account_id)
 @dynamic_option('--account-seed', default=lambda p: generate_account_backend.generate_account_seed())
 @dynamic_option('--provider-type', default='aws')
-@dynamic_option('--provider-id', required=True )
+@dynamic_option('--provider-id', required=True)
 @click.option('--prompt', is_flag=True)
 @click.option('--use-default', is_flag=True)
 @click.pass_context
@@ -26,7 +26,7 @@ def generate_account(
     **kwargs
 ):
     """
-    This template is for the creation of a codeontap account.
+    This template is for the creation of a hamlet account.
     The account template can be reused to create multiple accounts within a Tenant.
 
     This template should be run from a tenant directory
@@ -52,7 +52,7 @@ def generate_tenant(
     **kwargs
 ):
     """
-    This template is for the creation of a codeontap tenant.
+    This template is for the creation of a hamlet tenant.
     This should be run from the root of an accounts repository.
     """
     if not prompt or utils.confirm(kwargs):

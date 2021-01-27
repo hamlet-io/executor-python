@@ -3,6 +3,7 @@ from hamlet.backend.manage import file_crypto as manage_file_crypto_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'file-crypto',
     short_help='Manage crypto for files',

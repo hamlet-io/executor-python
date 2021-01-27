@@ -3,6 +3,7 @@ from hamlet.backend.run import lambda_func as run_lambda_func_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'lambda',
     short_help='Run an AWS Lambda Function',
