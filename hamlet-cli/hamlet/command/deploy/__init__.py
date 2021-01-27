@@ -7,11 +7,13 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common.context import pass_generation, Generation
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.manage import stack as manage_stack_backend
 from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
+
 
 def find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_units):
     query_args = {
@@ -42,16 +44,6 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
                     deployments.append(deployment)
 
     return deployments
-
-
-class Generation(object):
-    def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None):
-        self.generation_provider = generation_provider
-        self.generation_framework = generation_framework
-        self.generation_input_source = generation_input_source
-
-
-pass_generation = click.make_pass_decorator(Generation, ensure=True)
 
 
 @cli.group('deploy')
@@ -217,11 +209,10 @@ def run_deployments(
     """
     Create and run deployments
     """
-
     deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
-        raise click.UsageError(click.style('No deployments found that match pattern sorry', bold=True, fg='red'))
+        raise CommandError('No deployments found that match pattern')
 
     for deployment in deployments:
 
@@ -245,12 +236,15 @@ def run_deployments(
             try:
                 create_template_backend.run(**generate_args, _is_cli=True)
 
-            except BackendException as e:
+            except BackendException:
                 raise CommandError('Template generation failed')
 
         for operation in deployment['Operations']:
 
-            if (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?')) or not confirm:
+            if (
+                (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))
+                or not confirm
+            ):
 
                 manage_args = {
                     'deployment_group': deployment_group,
@@ -267,7 +261,7 @@ def run_deployments(
                     try:
                         manage_stack_backend.run(**manage_args, _is_cli=True)
 
-                    except BackendException as e:
+                    except BackendException:
                         raise CommandError('AWS deployment failed')
 
                 if deployment['DeploymentProvider'] == 'azure':
@@ -275,11 +269,13 @@ def run_deployments(
                     try:
                         manage_deployment_backend.run(**manage_args, _is_cli=True)
 
-                    except BackendException as e:
+                    except BackendException:
                         raise CommandError('Azure deployment failed')
 
                 if not supported_deployment_provider:
-                    raise CommandError(f'Deployment provider {deployment.DeploymentProvider} is not supported')
+                    deployment_provider = deployment.get('DeploymentProvider', None)
+                    raise CommandError(f'Deployment provider {deployment_provider} is not supported')
+
 
 @group.command(
     'create-deployments',
@@ -349,8 +345,9 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
         try:
             create_template_backend.run(**generate_args, _is_cli=True)
 
-        except BackendException as e:
+        except BackendException:
             raise CommandError('Output generation failed')
+
 
 @group.command(
     'test-deployments',
@@ -400,7 +397,7 @@ def test_deployments(generation, deployment_mode, deployment_group, deployment_u
     deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
-        raise click.UsageError(click.style('No deployments found that match pattern sorry', bold=True, fg='red'))
+        raise CommandError('No deployments found that match pattern')
 
     for deployment in deployments:
 
@@ -420,5 +417,5 @@ def test_deployments(generation, deployment_mode, deployment_group, deployment_u
         try:
             create_template_backend.run(**generate_args, _is_cli=False)
 
-        except BackendException as e:
+        except BackendException:
             raise CommandError('Output generation failed')
