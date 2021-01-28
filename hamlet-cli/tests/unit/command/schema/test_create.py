@@ -11,8 +11,8 @@ from tests.unit.command.test_option_generation import run_options_test, run_vali
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS['!-o,--output-dir'] = 'output_dir'
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'DeploymentUnit1'
-ALL_VALID_OPTIONS['-l,--deployment-group'] = 'DeploymentGroup1'
+ALL_VALID_OPTIONS['-t,--schema-type'] = 'SchemaType1'
+ALL_VALID_OPTIONS['-i,--schema-instance'] = 'SchemaInstance1'
 
 
 def template_backend_run_mock(data):
@@ -60,17 +60,15 @@ schema_set = {
                 {
                     'Id': 'StepId1',
                     'Parameters': {
-                        'DeploymentUnit': 'DeploymentUnit1',
-                        'DeploymentGroup': 'DeploymentGroup1',
-                        'DeploymentProvider': 'DeploymentProvider1'
+                        'SchemaType': 'SchemaType1',
+                        'SchemaInstance': 'SchemaInstance1',
                     }
                 },
                 {
                     'Id': 'StepId2',
                     'Parameters': {
-                        'DeploymentUnit': 'DeploymentUnit2',
-                        'DeploymentGroup': 'DeploymentGroup2',
-                        'DeploymentProvider': 'DeploymentProvider2'
+                        'SchemaType': 'SchemaType2',
+                        'SchemaInstance': 'SchemaInstance2',
                     }
                 }
             ]
@@ -92,8 +90,8 @@ def test_input_validation(blueprint_mock, ContextClassMock, create_template_back
         create_schemas,
         create_template_backend.run,
         {
-            '-l': 'DeploymentGroup1',
-            '-u': 'DeploymentUnit1',
+            '-t': 'SchemaType1',
+            '-i': 'SchemaInstance1',
             '-o': '.'
         },
         []

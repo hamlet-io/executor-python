@@ -13,7 +13,7 @@ from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
-def find_schemas_from_options(generation, deployment_group, deployment_units):
+def find_schemas_from_options(generation, schema_type, schema_instances):
     query_args = {
         'deployment_mode': None,
         'generation_entrance': 'schemaset',
@@ -36,9 +36,9 @@ def find_schemas_from_options(generation, deployment_group, deployment_units):
     schemas = []
 
     for schema in available_schemas:
-        if re.fullmatch(deployment_group, schema['Type']):
-            for deployment_unit in deployment_units:
-                if re.fullmatch(deployment_unit, schema['Instance']):
+        if re.fullmatch(schema_type, schema['SchemaType']):
+            for schema_instance in schema_instances:
+                if re.fullmatch(schema_instance, schema['SchemaInstance']):
                     schemas.append(schema)
     return schemas
 
@@ -81,8 +81,8 @@ def group(ctx, generation_provider, generation_framework, generation_input_sourc
 LIST_SCHEMAS_QUERY = (
     'Stages[].Steps[]'
     '.{'
-    'Type:Parameters.DeploymentGroup,'
-    'Instance:Parameters.DeploymentUnit'
+    'SchemaType:Parameters.SchemaType,'
+    'SchemaInstance:Parameters.SchemaInstance'
     '}'
 )
 
@@ -92,13 +92,13 @@ def schema_table(data):
     for row in data:
         tablerows.append(
             [
-                wrap_text(row['Type']),
-                wrap_text(row['Instance']),
+                wrap_text(row['SchemaType']),
+                wrap_text(row['SchemaInstance']),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Type', 'Instance'],
+        headers=['SchemaType', 'SchemaInstance'],
         tablefmt='github'
     )
 
@@ -112,27 +112,27 @@ def schema_table(data):
 )
 @pass_generation
 @click.option(
-    '-l',
-    '--deployment-group',
+    '-t',
+    '--schema-type',
     default='.*',
     show_default=True,
-    help='The deployment group pattern to match',
+    help='A schema type name pattern to filter results',
 )
 @click.option(
-    '-u',
-    '--deployment-unit',
+    '-i',
+    '--schema-instance',
     default=['.*'],
     show_default=True,
     multiple=True,
-    help='The deployment unit pattern to match'
+    help='A schema instance name pattern to filter results',
 )
 @json_or_table_option(schema_table)
-def list_schemas(generation, deployment_group, deployment_unit):
+def list_schemas(generation, schema_type, schema_instance):
     """
     List the available JSON schemas by data type
     """
 
-    return find_schemas_from_options(generation, deployment_group, deployment_unit)
+    return find_schemas_from_options(generation, schema_type, schema_instance)
 
 
 @group.command(
@@ -144,19 +144,19 @@ def list_schemas(generation, deployment_group, deployment_unit):
 )
 @pass_generation
 @click.option(
-    '-l',
-    '--deployment-group',
+    '-t',
+    '--schema-type',
     default='.*',
     show_default=True,
-    help='The deployment group pattern to match',
+    help='A schema type name pattern to filter results',
 )
 @click.option(
-    '-u',
-    '--deployment-unit',
+    '-i',
+    '--schema-instance',
     default=['.*'],
     show_default=True,
     multiple=True,
-    help='The deployment unit pattern to match'
+    help='A schema instance name pattern to filter results',
 )
 @click.option(
     '-o',
@@ -172,30 +172,30 @@ def list_schemas(generation, deployment_group, deployment_unit):
 )
 def create_schemas(
         generation,
-        deployment_group,
-        deployment_unit,
+        schema_type,
+        schema_instance,
         output_dir,
         **kwargs):
     """
     Create Hamlet data type schemas
     """
 
-    schemas = find_schemas_from_options(generation, deployment_group, deployment_unit)
+    schemas = find_schemas_from_options(generation, schema_type, schema_instance)
 
     if len(schemas) == 0:
         raise CommandError('No schemas found')
 
     for schema in schemas:
-        deployment_group = schema['Type']
-        deployment_unit = schema['Instance']
+        schema_type = schema['SchemaType']
+        schema_instance = schema['SchemaInstance']
         click.echo('')
-        click.echo((click.style(f'[*] Schema: {deployment_group}/{deployment_unit}', bold=True, fg='green')))
+        click.echo((click.style(f'[*] Schema: {schema_type}/{schema_instance}', bold=True, fg='green')))
         click.echo('')
 
         template_args = {
             'entrance': 'schema',
-            'deployment_group': deployment_group,
-            'deployment_unit': deployment_unit,
+            'deployment_group': schema_type,
+            'deployment_unit': schema_instance,
             'generation_provider': generation.generation_provider,
             'generation_framework': generation.generation_framework,
             'generation_input_source': generation.generation_input_source,

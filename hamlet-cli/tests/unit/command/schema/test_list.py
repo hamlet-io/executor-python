@@ -49,43 +49,39 @@ def mock_backend(schemaset=None):
     {
         'Stages': [
             {
-                'Id': 'StageId[1]',
+                'Id': 'StageId1',
                 'Steps': [
                     {
-                        'Id': 'StepId[1]',
+                        'Id': 'StepId1',
                         'Parameters': {
-                            'DeploymentUnit': 'DeploymentUnit[1]',
-                            'DeploymentGroup': 'DeploymentGroup[1]',
-                            'DeploymentProvider': 'DeploymentProvider[1]',
+                            'SchemaType': 'SchemaType1',
+                            'SchemaInstance': 'SchemaInstance1',
                         }
                     },
                     {
-                        'Id': 'StepId[2]',
+                        'Id': 'StepId2',
                         'Parameters': {
-                            'DeploymentUnit': 'DeploymentUnit[2]',
-                            'DeploymentGroup': 'DeploymentGroup[2]',
-                            'DeploymentProvider': 'DeploymentProvider[2]',
+                            'SchemaType': 'SchemaType2',
+                            'SchemaInstance': 'SchemaInstance2',
                         }
                     }
                 ]
             },
             {
-                'Id': 'StageId[2]',
+                'Id': 'StageId2',
                 'Steps': [
                     {
-                        'Id': 'StepId[3]',
+                        'Id': 'StepId3',
                         'Parameters': {
-                            'DeploymentUnit': 'DeploymentUnit[3]',
-                            'DeploymentGroup': 'DeploymentGroup[3]',
-                            'DeploymentProvider': 'DeploymentProvider[3]',
+                            'SchemaType': 'SchemaType3',
+                            'SchemaInstance': 'SchemaInstance3',
                         }
                     },
                     {
-                        'Id': 'StepId[4]',
+                        'Id': 'StepId4',
                         'Parameters': {
-                            'DeploymentUnit': 'DeploymentUnit[4]',
-                            'DeploymentGroup': 'DeploymentGroup[4]',
-                            'DeploymentProvider': 'DeploymentProvider[4]',
+                            'SchemaType': 'SchemaType4',
+                            'SchemaInstance': 'SchemaInstance4',
                         }
                     }
                 ]
@@ -109,18 +105,18 @@ def test_query_list_schemas(blueprint_mock, ContextClassMock):
     result = json.loads(result.output)
     assert len(result) == 4
     assert {
-        'Instance': 'DeploymentUnit[1]',
-        'Type': 'DeploymentGroup[1]',
+        'SchemaType': 'SchemaType1',
+        'SchemaInstance': 'SchemaInstance1',
     } in result
     assert {
-        'Instance': 'DeploymentUnit[2]',
-        'Type': 'DeploymentGroup[2]',
+        'SchemaType': 'SchemaType2',
+        'SchemaInstance': 'SchemaInstance2',
     } in result
     assert {
-        'Instance': 'DeploymentUnit[3]',
-        'Type': 'DeploymentGroup[3]',
+        'SchemaType': 'SchemaType3',
+        'SchemaInstance': 'SchemaInstance3',
     } in result
     assert {
-        'Instance': 'DeploymentUnit[4]',
-        'Type': 'DeploymentGroup[4]',
+        'SchemaType': 'SchemaType4',
+        'SchemaInstance': 'SchemaInstance4',
     } in result
