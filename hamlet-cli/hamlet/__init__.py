@@ -9,3 +9,4 @@ import hamlet.command.run  # noqa
 import hamlet.command.query  # noqa
 import hamlet.command.visual  # noqa
 import hamlet.command.deploy  # noqa
+import hamlet.command.schema  # noqa

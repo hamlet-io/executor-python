@@ -3,6 +3,7 @@ from hamlet.backend.run import expo_app_publish as run_expo_app_publish_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'expo-app-publish',
     short_help='Run a task based build of an Expo app binary',

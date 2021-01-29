@@ -3,6 +3,7 @@ from hamlet.backend.run import pipeline as run_pipeline_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'pipeline',
     short_help='Run an AWS Data pipeline',

@@ -3,6 +3,7 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'deployment',
     short_help='Manage an Azure Resource Manager (ARM) deployment',

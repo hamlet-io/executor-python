@@ -3,6 +3,7 @@ from hamlet.backend.run import task as run_task_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'task',
     short_help='Run an ECS task',

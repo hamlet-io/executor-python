@@ -306,12 +306,14 @@ def run_options_test(runner, cmd, options, runner_mock):
             assert result.exit_code == 2, result.output
             assert runner_mock.call_count == 0
         else:
+            logger.info(result.exception)
             assert result.exit_code == 0, result.output
             assert runner_mock.call_count == 1
             runner_mock.call_count = 0
 
     for args in generate_test_options_collection(options):
         result = runner.invoke(cmd, args)
+        logger.info(result.exc_info)
         assert result.exit_code == 0, result.output
         assert runner_mock.call_count == 1
         runner_mock.call_count = 0

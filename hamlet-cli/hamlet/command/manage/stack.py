@@ -3,6 +3,7 @@ from hamlet.backend.manage import stack as manage_stack_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
 
+
 @click.command(
     'stack',
     short_help='Manage a CloudFormation stack',
