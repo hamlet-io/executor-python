@@ -7,45 +7,19 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, Generation
+from hamlet.command.common.context import pass_generation, generation_config
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
 @cli.group('entrance')
-@click.pass_context
-@click.option(
-    '-p',
-    '--generation-provider',
-    help='provider for output generation',
-    default=['aws'],
-    multiple=True,
-    show_default=True
-)
-@click.option(
-    '-f',
-    '--generation-framework',
-    help='output framework to use for output generation',
-    default='cf',
-    show_default=True
-)
-@click.option(
-    '-i',
-    '--generation-input-source',
-    help='source of input data to use when generating the output',
-    default='composite',
-    show_default=True
-)
-def group(ctx, generation_provider, generation_framework, generation_input_source):
+@generation_config
+def group():
     """
     Hamlet entrances provide access to the hamlet cmdb to perform different tasks
     """
-    ctx.obj = Generation(
-        generation_provider=generation_provider,
-        generation_framework=generation_framework,
-        generation_input_source=generation_input_source
-    )
+    pass
 
 
 LIST_ENTRANCES_QUERY = (
@@ -81,8 +55,8 @@ def entrances_table(data):
         max_content_width=240
     )
 )
-@pass_generation
 @json_or_table_option(entrances_table)
+@pass_generation
 def list_entrances(generation):
     """
     List available entrances
@@ -93,7 +67,7 @@ def list_entrances(generation):
         "generation_input_source": 'mock',
         "generation_entrance": 'info',
         'output_filename': 'info.json',
-        "refresh_output": True
+        "use_cache": False
     }
 
     return query_backend.run(
@@ -110,7 +84,6 @@ def list_entrances(generation):
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-e',
     '--entrance',
@@ -170,6 +143,7 @@ def list_entrances(generation):
     default='unassigned',
     show_default=True
 )
+@pass_generation
 def invoke_entrance(generation, **kwargs):
     """
     Invoke a Hamlet Entrance

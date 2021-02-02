@@ -7,6 +7,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common.context import pass_generation, generation_config
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
@@ -23,38 +24,12 @@ pass_generation = click.make_pass_decorator(Generation, ensure=True)
 
 
 @cli.group('visual')
-@click.pass_context
-@click.option(
-    '-p',
-    '--generation-provider',
-    help='provider for output generation',
-    default=['aws', 'diagrams'],
-    multiple=True,
-    show_default=True
-)
-@click.option(
-    '-f',
-    '--generation-framework',
-    help='output framework to use for output generation',
-    default='cf',
-    show_default=True
-)
-@click.option(
-    '-i',
-    '--generation-input-source',
-    help='source of input data to use when generating the output',
-    default='composite',
-    show_default=True
-)
-def group(ctx, generation_provider, generation_framework, generation_input_source):
+@generation_config
+def group():
     """
     Generates visual representations of your hamlet deployment
     """
-    ctx.obj = Generation(
-        generation_provider=generation_provider,
-        generation_framework=generation_framework,
-        generation_input_source=generation_input_source
-    )
+    pass
 
 
 LIST_DIAGRAMS_QUERY = (
@@ -94,19 +69,19 @@ def diagrams_table(data):
         max_content_width=240
     )
 )
-@pass_generation
 @json_or_table_option(diagrams_table)
+@pass_generation
 def list_diagrams(generation):
     """
     List available diagrams
     """
     args = {
-        "generation_provider": generation.generation_provider,
-        "generation_framework": generation.generation_framework,
-        "generation_input_source": 'mock',
-        "generation_entrance": 'diagraminfo',
-        "output_filename": 'diagraminfo.json',
-        "refresh_output": True
+        'generation_provider': generation.generation_provider,
+        'generation_framework': generation.generation_framework,
+        'generation_input_source': 'mock',
+        'generation_entrance': 'diagraminfo',
+        'output_filename': 'diagraminfo.json',
+        'use_cache': False
     }
 
     return query_backend.run(
@@ -123,7 +98,6 @@ def list_diagrams(generation):
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-l',
     '--deployment-group',
@@ -141,6 +115,7 @@ def list_diagrams(generation):
     ),
     help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
 )
+@pass_generation
 @click.option(
     '-x',
     '--disable-output-cleanup',

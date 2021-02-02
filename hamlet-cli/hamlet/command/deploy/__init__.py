@@ -7,7 +7,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, Generation
+from hamlet.command.common.context import pass_generation, generation_config
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.manage import stack as manage_stack_backend
@@ -23,7 +23,7 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
         'generation_input_source': generation.generation_input_source,
         'generation_entrance': 'unitlist',
         'output_filename': 'unitlist-managementcontract.json',
-        'refresh_output': True
+        'use_cache': False
     }
     try:
         available_deployments = query_backend.run(
@@ -47,38 +47,12 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
 
 
 @cli.group('deploy')
-@click.pass_context
-@click.option(
-    '-p',
-    '--generation-provider',
-    help='provider for output generation',
-    default=['aws'],
-    multiple=True,
-    show_default=True
-)
-@click.option(
-    '-f',
-    '--generation-framework',
-    help='output framework to use for output generation',
-    default='cf',
-    show_default=True
-)
-@click.option(
-    '-i',
-    '--generation-input-source',
-    help='source of input data to use when generating the output',
-    default='composite',
-    show_default=True
-)
-def group(ctx, generation_provider, generation_framework, generation_input_source):
+@generation_config
+def group():
     """
     Deploys infrastructure based on the hamlet cmdb
     """
-    ctx.obj = Generation(
-        generation_provider=generation_provider,
-        generation_framework=generation_framework,
-        generation_input_source=generation_input_source
-    )
+    pass
 
 
 LIST_DEPLOYMENTS_QUERY = (
@@ -116,7 +90,6 @@ def deployments_table(data):
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-m',
     '--deployment-mode',
@@ -139,6 +112,7 @@ def deployments_table(data):
     help='The deployment unit pattern to match'
 )
 @json_or_table_option(deployments_table)
+@pass_generation
 def list_deployments(generation, deployment_mode, deployment_group, deployment_unit):
     """
     List available deployments
@@ -154,7 +128,6 @@ def list_deployments(generation, deployment_mode, deployment_group, deployment_u
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-m',
     '--deployment-mode',
@@ -197,6 +170,7 @@ def list_deployments(generation, deployment_mode, deployment_group, deployment_u
     default=False,
     help='Confirm before executing each deployment'
 )
+@pass_generation
 def run_deployments(
         generation,
         deployment_mode,
@@ -284,7 +258,6 @@ def run_deployments(
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-m',
     '--deployment-mode',
@@ -317,6 +290,7 @@ def run_deployments(
     ),
     help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
 )
+@pass_generation
 def create_deployments(generation, deployment_mode, deployment_group, deployment_unit, output_dir, **kwargs):
     """
     Create deployment outputs
