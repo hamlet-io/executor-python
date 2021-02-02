@@ -18,7 +18,7 @@ def run(
     generation_provider=None,
     generation_framework=None,
     output_filename=None,
-    refresh_output=None,
+    use_cache=None,
     query_text=None,
     query_name=None,
     query_params=None,
@@ -33,7 +33,7 @@ def run(
         generation_provider=generation_provider,
         generation_framework=generation_framework,
         output_filename=output_filename,
-        refresh_output=refresh_output,
+        use_cache=use_cache,
     )
     if query_name is not None:
         result = query.query_by_name(query_name, query_params or {})
@@ -132,7 +132,7 @@ class Query:
         generation_provider=None,
         generation_framework=None,
         output_filename=None,
-        refresh_output=None
+        use_cache=None
     ):
         # mocked blueprint doesn't need the valid context
         if generation_input_source == 'mock':
@@ -143,7 +143,7 @@ class Query:
             ctx = context.Context(cwd)
             output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
-        if not os.path.isfile(output_filepath) or refresh_output:
+        if not os.path.isfile(output_filepath) or not use_cache:
             template.run(
                 output_dir=output_dir,
                 deployment_mode=deployment_mode,
