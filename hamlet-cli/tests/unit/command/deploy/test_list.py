@@ -4,8 +4,7 @@ import json
 import tempfile
 from unittest import mock
 from click.testing import CliRunner
-from hamlet.command.deploy import list_deployments as list_deployments
-from hamlet.command.deploy import Generation as Generation
+from hamlet.command.deploy import list_deployments
 
 
 def template_backend_run_mock(data):
@@ -97,15 +96,13 @@ def mock_backend(unitlist=None):
     }
 )
 def test_query_list_deployments(blueprint_mock, ContextClassMock):
-    obj = Generation()
 
     cli = CliRunner()
     result = cli.invoke(
         list_deployments,
         [
             '--output-format', 'json'
-        ],
-        obj=obj
+        ]
     )
     print(result.output)
     assert result.exit_code == 0
