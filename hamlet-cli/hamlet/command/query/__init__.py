@@ -3,26 +3,35 @@ import json
 import click
 from tabulate import tabulate
 from hamlet.backend.common import exceptions
-from hamlet.command.common.context import pass_generation, generation_config, Generation
+from hamlet.command.common.context import generation_config, Generation
 from hamlet.backend import query as query_backend
 from hamlet.command import root
 from hamlet.command.common.display import json_or_table_option, wrap_text
 
+
 class BlueprintContext(Generation):
     '''Query Blueprint context'''
-    def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None, use_cache=False, query_params=None):
+    def __init__(
+            self,
+            generation_provider=None,
+            generation_framework=None,
+            generation_input_source=None,
+            use_cache=False,
+            query_params=None):
         super().__init__(generation_provider, generation_framework, generation_input_source)
         self.backend = {
             'generation_entrance': 'blueprint',
             'output_filename': 'blueprint-config.json',
             'use_cache': use_cache,
-            'generation_input_source' : self.generation_input_source,
+            'generation_input_source': self.generation_input_source,
             'generation_framework': self.generation_framework,
-            'generation_provider' : self.generation_provider
+            'generation_provider': self.generation_provider
         }
         self.query_params = query_params
 
+
 pass_blueprint = click.make_pass_decorator(BlueprintContext, ensure=True)
+
 
 def tiers_table(data):
     tablerows = []
@@ -114,10 +123,10 @@ def query_group(ctx, use_cache):
     Base command used to set blueprint generation options
     """
     ctx.obj = BlueprintContext(
-                    ctx.obj.generation_provider,
-                    ctx.obj.generation_framework,
-                    ctx.obj.generation_input_source,
-                    use_cache=use_cache )
+        ctx.obj.generation_provider,
+        ctx.obj.generation_framework,
+        ctx.obj.generation_input_source,
+        use_cache=use_cache)
 
 
 @query_group.command('get')

@@ -12,6 +12,7 @@ class Generation():
 
 pass_generation = click.make_pass_decorator(Generation, ensure=True)
 
+
 def generation_config(func):
     @functools.wraps(func)
     @click.option(
@@ -39,9 +40,15 @@ def generation_config(func):
     @click.pass_context
     def decorator(ctx, generation_provider, generation_framework, generation_input_source, *args, **kwargs):
         ctx.obj = Generation(
-            generation_provider=generation_provider if generation_provider else ctx.obj.generation_provider,
-            generation_framework=generation_framework if generation_framework else ctx.obj.generation_framework,
-            generation_input_source=generation_input_source if generation_input_source else ctx.obj.generation_input_source,
+            generation_provider=(
+                generation_provider if generation_provider else ctx.obj.generation_provider
+            ),
+            generation_framework=(
+                generation_framework if generation_framework else ctx.obj.generation_framework
+            ),
+            generation_input_source=(
+                generation_input_source if generation_input_source else ctx.obj.generation_input_source
+            ),
         )
         return func(*args, **kwargs)
     return decorator
