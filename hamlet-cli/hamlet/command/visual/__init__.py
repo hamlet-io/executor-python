@@ -13,16 +13,6 @@ from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
-class Generation(object):
-    def __init__(self, generation_provider=None, generation_framework=None, generation_input_source=None):
-        self.generation_provider = generation_provider
-        self.generation_framework = generation_framework
-        self.generation_input_source = generation_input_source
-
-
-pass_generation = click.make_pass_decorator(Generation, ensure=True)
-
-
 @cli.group('visual')
 @generation_config
 def group():
