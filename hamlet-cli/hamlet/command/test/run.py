@@ -1,6 +1,7 @@
 import os
 import click
 from hamlet.backend.test import run as test_run_backend
+from hamlet.command.common.exceptions import CommandError
 
 
 @click.command(
@@ -42,8 +43,12 @@ def run(tests, pytest_args, silent):
     """
     if not tests:
         tests = (os.getcwd(),)
-    test_run_backend.run(
-        testpaths=tests,
-        pytest_args=pytest_args,
-        silent=silent,
-    )
+
+    try:
+        test_run_backend.run(
+            testpaths=tests,
+            pytest_args=pytest_args,
+            silent=silent,
+        )
+    except Exception as e:
+        raise CommandError(str(e))

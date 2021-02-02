@@ -7,7 +7,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, Generation
+from hamlet.command.common.context import pass_generation, generation_config
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.common.exceptions import BackendException
@@ -21,7 +21,7 @@ def find_schemas_from_options(generation, schema_type, schema_instances):
         'generation_provider': generation.generation_provider,
         'generation_framework': generation.generation_framework,
         'output_filename': 'schemaset-schemacontract.json',
-        'refresh_output': True
+        'use_cache': False
     }
     try:
         available_schemas = query_backend.run(
@@ -44,38 +44,12 @@ def find_schemas_from_options(generation, schema_type, schema_instances):
 
 
 @cli.group('schema')
-@click.pass_context
-@click.option(
-    '-p',
-    '--generation-provider',
-    help='provider for output generation',
-    default=['aws'],
-    multiple=True,
-    show_default=True
-)
-@click.option(
-    '-f',
-    '--generation-framework',
-    help='output framework to use for output generation',
-    default='cf',
-    show_default=True
-)
-@click.option(
-    '-i',
-    '--generation-input-source',
-    help='source of input data to use when generating the output',
-    default='composite',
-    show_default=True
-)
-def group(ctx, generation_provider, generation_framework, generation_input_source):
+@generation_config
+def group():
     """
     Generates JSONSchema files for Hamlet data types
     """
-    ctx.obj = Generation(
-        generation_provider=generation_provider,
-        generation_framework=generation_framework,
-        generation_input_source=generation_input_source
-    )
+    pass
 
 
 LIST_SCHEMAS_QUERY = (

@@ -63,7 +63,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
             'test.blueprint.data'
         ]
     )
-    print(result.exception)
+    print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == "test data"
 
@@ -73,6 +73,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         query,
         [
+            '--use-cache',
             'get',
             'test.blueprint.data'
         ]
@@ -87,7 +88,7 @@ def test_query_get(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         query,
         [
-            '--refresh-output',
+            '--no-use-cache',
             'get',
             'test.blueprint.data'
         ]

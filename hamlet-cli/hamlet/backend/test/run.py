@@ -12,7 +12,7 @@ def run(
     try:
         args = [
             'pytest',
-            '-xvvs' if not silent else '-x',
+            '-vvs' if not silent else '',
             '--cache-clear',
         ]
 
@@ -40,8 +40,8 @@ def run(
         if process.returncode in [ec.OK, ec.NO_TESTS_COLLECTED]:
             return True
         if process.returncode == ec.TESTS_FAILED:
-            return False
-        elif process.returncode in [ec.INTERNAL_ERROR, ec.USAGE_ERROR]:
+            raise Exception('Tests Failed')
+        if process.returncode in [ec.INTERNAL_ERROR, ec.USAGE_ERROR, ec.TESTS_FAILED]:
             raise Exception(process.stderr)
         else:
             raise Exception("Unknown exit code: %s" % process.returncode)
