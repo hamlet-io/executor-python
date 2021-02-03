@@ -9,6 +9,7 @@ from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.context import pass_generation, generation_config
 from hamlet.backend.create import template as create_template_backend
+from hamlet.backend.draw import diagram as create_diagram_backend
 from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
 
@@ -27,7 +28,6 @@ LIST_DIAGRAMS_QUERY = (
     '.{'
     'Name:Name,'
     'Type:Type,'
-    'DeploymentGroup:DeploymentGroup,'
     'Description:Description'
     '}'
 )
@@ -40,13 +40,12 @@ def diagrams_table(data):
             [
                 wrap_text(row['Name']),
                 wrap_text(row['Type']),
-                wrap_text(row['DeploymentGroup']),
                 wrap_text(row['Description']),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Name', 'Type', 'DeploymentGroup', 'Description'],
+        headers=['Name', 'Type', 'Description'],
         showindex=True,
         tablefmt="fancy_grid"
     )
@@ -89,30 +88,31 @@ def list_diagrams(generation):
     )
 )
 @click.option(
-    '-l',
-    '--deployment-group',
-    required=True,
-    help='output level',
+    '-x',
+    '--disable-output-cleanup',
+    is_flag=True,
+    help='disable the cleanup of the output directory before generation',
 )
 @click.option(
     '-o',
     '--output-dir',
+    required=True,
     type=click.Path(
         file_okay=False,
         dir_okay=True,
         writable=True,
         readable=True,
     ),
-    help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
+    help='the directory where the outputs will be saved'
+)
+@click.option(
+    '-t',
+    '--type',
+    required=True,
+    help='the type of diagram to generate',
 )
 @pass_generation
-@click.option(
-    '-x',
-    '--disable-output-cleanup',
-    is_flag=True,
-    help='disable the cleanup of the output directory before generation',
-)
-def draw_diagram(generation, **kwargs):
+def draw_diagram(generation, type, output_dir, disable_output_cleanup):
     """
     Invoke a Hamlet Entrance
     """
@@ -121,9 +121,17 @@ def draw_diagram(generation, **kwargs):
         "generation_framework": generation.generation_framework,
         "generation_input_source": generation.generation_input_source,
         "entrance": 'diagram',
-        **kwargs
+        'deployment_group': type,
+        'output_dir': output_dir,
+        'disable_output_cleanup': disable_output_cleanup
     }
     try:
-        create_template_backend.run(**args, _is_cli=True)
+        create_template_backend.run(**args, _is_cli=False)
+    except BackendException as e:
+        raise CommandError(str(e))
+
+    try:
+        create_diagram_backend.run(directory=output_dir, output_dir=output_dir, type=type)
+        click.echo(f'Diagram {type} created in {output_dir}')
     except BackendException as e:
         raise CommandError(str(e))
