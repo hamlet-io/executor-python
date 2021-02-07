@@ -49,13 +49,11 @@ def mock_backend(info=None):
             {
                 'Name': 'DiagramName[1]',
                 'Type': 'DiagramType[1]',
-                'DeploymentGroup': 'DiagramDeploymentGroup[1]',
                 'Description': 'DiagramDescription[1]',
             },
             {
                 'Name': 'DiagramName[2]',
                 'Type': 'DiagramType[2]',
-                'DeploymentGroup': 'DiagramDeploymentGroup[2]',
                 'Description': 'DiagramDescription[2]',
             },
         ]
@@ -76,12 +74,10 @@ def test_query_list_entrances(blueprint_mock, ContextClassMock):
     assert {
         'Name': 'DiagramName[1]',
         'Type': 'DiagramType[1]',
-        'DeploymentGroup': 'DiagramDeploymentGroup[1]',
         'Description': 'DiagramDescription[1]'
     } in result
     assert {
         'Name': 'DiagramName[2]',
         'Type': 'DiagramType[2]',
-        'DeploymentGroup': 'DiagramDeploymentGroup[2]',
         'Description': 'DiagramDescription[2]'
     } in result
