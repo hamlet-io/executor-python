@@ -170,13 +170,13 @@ def describe_group(blueprint_ctx):
     '-i',
     '--instance-id',
     'instance_id',
-    default=''
+    default='default'
 )
 @click.option(
     '-v',
     '--version-id',
     'version_id',
-    default=''
+    default='default'
 )
 @exceptions.handler()
 @click.pass_context

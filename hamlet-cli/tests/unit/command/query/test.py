@@ -246,10 +246,10 @@ def test_query_list_components(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 },
                                 'FullName': 'FullName[1]'
                             },
@@ -276,10 +276,10 @@ def test_query_list_components(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[2]'
+                                    'RawId': 'InstanceRawId[2]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[2]'
+                                    'RawId': 'VersionRawId[2]'
                                 },
                                 'FullName': 'FullName[2]'
                             },
@@ -300,10 +300,10 @@ def test_query_list_components(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[3]'
+                                    'RawId': 'InstanceRawId[3]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[3]'
+                                    'RawId': 'VersionRawId[3]'
                                 },
                                 'FullName': 'FullName[3]'
                             },
@@ -320,10 +320,10 @@ def test_query_list_components(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[4]'
+                                    'RawId': 'InstanceRawId[4]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[4]'
+                                    'RawId': 'VersionRawId[4]'
                                 },
                                 'FullName': 'FullName[4]'
                             },
@@ -358,15 +358,15 @@ def test_query_list_occurrences(blueprint_mock, ContextClassMock):
     result = json.loads(result.output)
     assert len(result) == 2
     assert {
-        'InstanceId': 'InstanceId[4]',
-        'VersionId': 'VersionId[4]',
+        'InstanceId': 'InstanceRawId[4]',
+        'VersionId': 'VersionRawId[4]',
         'FullName': 'FullName[4]',
         'DeploymentUnits': ['DeploymentUnit[4][1]'],
         'Enabled': True
     } in result
     assert {
-        'InstanceId': 'InstanceId[3]',
-        'VersionId': 'VersionId[3]',
+        'InstanceId': 'InstanceRawId[3]',
+        'VersionId': 'VersionRawId[3]',
         'FullName': 'FullName[3]',
         'DeploymentUnits': ['DeploymentUnit[3][1]', 'DeploymentUnit[3][2]'],
         'Enabled': False
@@ -384,10 +384,10 @@ def test_query_list_occurrences(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawIdd': 'VersionRawId[1]'
                                 }
                             }
                         }
@@ -404,20 +404,20 @@ def test_query_list_occurrences(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[2]'
+                                    'RawId': 'InstanceRawId[2]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[2]'
+                                    'RawId': 'VersionRawId[2]'
                                 }
                             }
                         },
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[3]'
+                                    'RawId': 'InstanceRawId[3]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[3]'
+                                    'RawId': 'VersionRawId[3]'
                                 }
                             }
                         }
@@ -435,20 +435,20 @@ def test_query_describe_occurence(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[2]',
             '-c', 'ComponentId[2]',
-            '-i', 'InstanceId[2]',
-            '-v', 'VersionId[2]'
+            '-i', 'InstanceRawId[2]',
+            '-v', 'VersionRawId[2]'
         ]
     )
-    print(result.exception)
+    print(result.exc_info)
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
         "Core": {
             "Instance": {
-                "Id": "InstanceId[2]"
+                "RawId": "InstanceRawId[2]"
             },
             "Version": {
-                "Id": "VersionId[2]"
+                "RawId": "VersionRawId[2]"
             }
         }
     } in result
@@ -465,10 +465,10 @@ def test_query_describe_occurence(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 }
                             }
                         }
@@ -486,16 +486,16 @@ def test_query_describe_occurence_get(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[1]',
             '-c', 'ComponentId[1]',
-            '-i', 'InstanceId[1]',
-            '-v', 'VersionId[1]',
+            '-i', 'InstanceRawId[1]',
+            '-v', 'VersionRawId[1]',
             'get',
-            '[*].Core.Instance.Id'
+            '[*].Core.Instance.RawId'
         ]
     )
-    print(result.exception)
+    print(result.exc_info)
     result = json.loads(result.output)
     assert len(result) == 1
-    assert "InstanceId[1]" in result
+    assert "InstanceRawId[1]" in result
 
 
 @mock_backend(Tiers(
@@ -509,10 +509,10 @@ def test_query_describe_occurence_get(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 }
                             },
                             'State': {
@@ -556,8 +556,8 @@ def test_query_describe_occurence_attributes(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[1]',
             '-c', 'ComponentId[1]',
-            '-i', 'InstanceId[1]',
-            '-v', 'VersionId[1]',
+            '-i', 'InstanceRawId[1]',
+            '-v', 'VersionRawId[1]',
             'attributes',
             '--output-format', 'json'
         ]
@@ -598,10 +598,10 @@ def test_query_describe_occurence_attributes(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 }
                             },
                             'Configuration': {
@@ -625,8 +625,8 @@ def test_query_describe_occurence_solution(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[1]',
             '-c', 'ComponentId[1]',
-            '-i', 'InstanceId[1]',
-            '-v', 'VersionId[1]',
+            '-i', 'InstanceRawId[1]',
+            '-v', 'VersionRawId[1]',
             'solution'
         ]
     )
@@ -650,10 +650,10 @@ def test_query_describe_occurence_solution(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 }
                             },
                             'Configuration': {
@@ -677,8 +677,8 @@ def test_query_describe_occurence_settings(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[1]',
             '-c', 'ComponentId[1]',
-            '-i', 'InstanceId[1]',
-            '-v', 'VersionId[1]',
+            '-i', 'InstanceRawId[1]',
+            '-v', 'VersionRawId[1]',
             'settings'
         ]
     )
@@ -702,10 +702,10 @@ def test_query_describe_occurence_settings(blueprint_mock, ContextClassMock):
                         {
                             'Core': {
                                 'Instance': {
-                                    'Id': 'InstanceId[1]'
+                                    'RawId': 'InstanceRawId[1]'
                                 },
                                 'Version': {
-                                    'Id': 'VersionId[1]'
+                                    'RawId': 'VersionRawId[1]'
                                 }
                             },
                             'State': {
@@ -729,8 +729,8 @@ def test_query_describe_occurence_resources(blueprint_mock, ContextClassMock):
             'describe', 'occurrence',
             '-t', 'TierId[1]',
             '-c', 'ComponentId[1]',
-            '-i', 'InstanceId[1]',
-            '-v', 'VersionId[1]',
+            '-i', 'InstanceRawId[1]',
+            '-v', 'VersionRawId[1]',
             'resources'
         ]
     )
