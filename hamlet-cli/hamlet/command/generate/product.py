@@ -31,7 +31,7 @@ def generate_base(
     **kwargs
 ):
     """
-    This template is for the creation of a codeontap product.
+    This template is for the creation of a Hamlet product.
     This creates a base product with no deployed components.
     This template should be run from the root of an empty product directory.
     """
@@ -113,9 +113,9 @@ def generate_app_lifecycle_mgmt(
     **kwargs
 ):
     """
-    This template is for the creation of a codeontap product.
+    This template is for the creation of a Hamlet product.
     This product provisions a container based application lifecycle management service used
-    to build and deploy codeontap managed applications.
+    to build and deploy Hamlet managed applications.
     """
     if not prompt or utils.confirm(kwargs):
         generate_app_lifecycle_mgmt_backend.run(**kwargs)
