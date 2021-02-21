@@ -79,6 +79,10 @@ class Context():
     def root_dir(self):
         return self.__root_dir
 
+    @root_dir.setter
+    def root_dir(self, value):
+        self.__root_dir = value
+
     # Cache dir path
     @property
     def cache_dir(self):
@@ -119,7 +123,11 @@ class Context():
         self._product_dir = None
         self._account_dir = None
         self._tenant_dir = None
-        self.__try_to_find_root()
+        if os.environ.get('ROOT_DIR'):
+            self.__root_dir = os.environ.get('ROOT_DIR')
+        else:
+            self.__try_to_find_root()
+
         if self.ACCOUNT_REQUIRED or self.TENANT_REQUIRED:
             self.__try_to_set_tenant()
             if self.ACCOUNT_REQUIRED:
@@ -129,6 +137,8 @@ class Context():
         self.setup()
 
     def __try_to_find_root(self):
+        if RootLevel.level_file_directory:
+            found = self.search.downwards(RootLevel.level_file_directory, RootLevel.level_file)
         found = self.search.upwards(RootLevel.level_file)
         if not found:
             raise NoRootFileError(f"Can't find {RootLevel.level_file} file.")
@@ -229,7 +239,6 @@ class RootLevel(Context):
     level_name = 'root'
     level_file = 'root.json'
     level_file_directory = None
-
 
 class TenantLevel(Context):
     level_name = 'tenant'

@@ -140,7 +140,7 @@ class Query:
             tempdir = tempfile.gettempdir()
             output_dir = os.path.join(tempdir, 'hamlet', 'query', 'mock')
         else:
-            ctx = context.Context(cwd)
+            ctx = context.Context(directory=cwd)
             output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
         if not os.path.isfile(output_filepath) or not use_cache:
