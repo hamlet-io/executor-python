@@ -12,6 +12,7 @@ def run(
     deployment_unit=None,
     deployment_wait=None,
     deployment_unit_subset=None,
+    output_dir=None,
     _is_cli=False
 ):
     options = {
@@ -24,6 +25,7 @@ def run(
         '-s': deployment_scope,
         '-u': deployment_unit,
         '-w': deployment_wait,
-        '-z': deployment_unit_subset
+        '-z': deployment_unit_subset,
+        '-o': output_dir
     }
     runner.run('manageDeployment.sh', [], options, _is_cli)
