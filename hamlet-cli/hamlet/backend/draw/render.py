@@ -195,7 +195,11 @@ def create_script(diagram, image_filename, temp_path):
                     import_libray = 'from {} import *\n'.format(library)
                     import_diagrams = import_diagrams + import_libray
 
-        exe_temp = import_diagrams + f'\nwith Diagram("{diagramName}", show=False, outformat="png", filename="{image_filename}", direction="TB"):\n'
+        exe_temp = (
+            import_diagrams
+            + f'\nwith Diagram("{diagramName}", show=False, outformat="png",'
+            + f'filename="{image_filename}", direction="TB"):\n'
+        )
         space = '    '  # indent
         rank = 0
         for i in range(len(lines)):
