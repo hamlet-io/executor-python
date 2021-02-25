@@ -2,9 +2,12 @@ import os
 import hashlib
 import json
 import tempfile
+
 from unittest import mock
+
 from click.testing import CliRunner
 from hamlet.command.visual import list_diagrams as list_diagrams
+from hamlet.command.visual import list_diagram_types as list_diagram_types
 
 
 def template_backend_run_mock(data):
@@ -47,19 +50,19 @@ def mock_backend(info=None):
     {
         'Diagrams': [
             {
-                'Name': 'DiagramName[1]',
+                'Id': 'DiagramId[1]',
                 'Type': 'DiagramType[1]',
                 'Description': 'DiagramDescription[1]',
             },
             {
-                'Name': 'DiagramName[2]',
+                'Id': 'DiagramId[2]',
                 'Type': 'DiagramType[2]',
                 'Description': 'DiagramDescription[2]',
             },
         ]
     }
 )
-def test_query_list_entrances(blueprint_mock, ContextClassMock):
+def test_query_list_diagrams(blueprint_mock, ContextClassMock):
     cli = CliRunner()
     result = cli.invoke(
         list_diagrams,
@@ -72,12 +75,48 @@ def test_query_list_entrances(blueprint_mock, ContextClassMock):
     result = json.loads(result.output)
     assert len(result) == 2
     assert {
-        'Name': 'DiagramName[1]',
+        'Id': 'DiagramId[1]',
         'Type': 'DiagramType[1]',
         'Description': 'DiagramDescription[1]'
     } in result
     assert {
-        'Name': 'DiagramName[2]',
+        'Id': 'DiagramId[2]',
+        'Type': 'DiagramType[2]',
+        'Description': 'DiagramDescription[2]'
+    } in result
+
+
+@mock_backend(
+    {
+        'DiagramTypes': [
+            {
+                'Type': 'DiagramType[1]',
+                'Description': 'DiagramDescription[1]',
+            },
+            {
+                'Type': 'DiagramType[2]',
+                'Description': 'DiagramDescription[2]',
+            },
+        ]
+    }
+)
+def test_query_list_diagram_types(blueprint_mock, ContextClassMock):
+    cli = CliRunner()
+    result = cli.invoke(
+        list_diagram_types,
+        [
+            '--output-format', 'json'
+        ]
+    )
+    print(result.exception)
+    assert result.exit_code == 0
+    result = json.loads(result.output)
+    assert len(result) == 2
+    assert {
+        'Type': 'DiagramType[1]',
+        'Description': 'DiagramDescription[1]'
+    } in result
+    assert {
         'Type': 'DiagramType[2]',
         'Description': 'DiagramDescription[2]'
     } in result

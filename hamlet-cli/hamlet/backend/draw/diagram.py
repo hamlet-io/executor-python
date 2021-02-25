@@ -9,39 +9,34 @@ from .diagram_schema import Diagram as DiagramSchema
 DIAGRAM_OUTPUT_PREFIX = 'diagram'
 DIAGRAM_CONFIG_OUTPUT_SUFFIX = '-config.json'
 DIAGRAM_SCRIPT_OUTPUT_SUFFIX = '-script.py'
-DIAGRAM_IMAGE_OUTPUT_SUFFIX = '-digaram.png'
+DIAGRAM_IMAGE_OUTPUT_SUFFIX = '.png'
 
 
 def run(
-    filename=None,
-    directory=None,
-    output_dir=None,
-    type=None
+    diagram_id,
+    src_dir,
+    output_dir,
 ):
-    filename = ''
-    diagram_prefix = f'{DIAGRAM_OUTPUT_PREFIX}-{type}-'
+    file_path = ''
+    diagram_prefix = f'{DIAGRAM_OUTPUT_PREFIX}-{diagram_id}-'
 
-    # searching testcase files in given directory if no files provided
-    if not filename and directory:
-        if not type:
-            raise UserFriendlyBackendException('Diagram type required if using directory search')
+    for name in os.listdir(src_dir):
+        if name.startswith(diagram_prefix) and name.endswith(DIAGRAM_CONFIG_OUTPUT_SUFFIX):
+            file_path = os.path.join(src_dir, name)
 
-        for name in os.listdir(directory):
-            if name.startswith(diagram_prefix) and name.endswith(DIAGRAM_CONFIG_OUTPUT_SUFFIX):
-                filename = os.path.join(directory, name)
     # if after all no files found raise an error
-    if not filename:
+    if not file_path:
         raise UserFriendlyBackendException('No diagram file found')
 
     diagram = dict()
-    with open(filename, 'rt') as f:
+    with open(file_path, 'rt') as f:
         diagram_file_data = json.load(f)
         try:
             DiagramSchema().load(diagram_file_data)
         except ValidationError as e:
             message = json.dumps(e.messages, indent=4)
             raise UserFriendlyBackendException(
-                f"Invalid diagram schema in {filename}\n\nErrors: \n{message}"
+                f"Invalid diagram schema in {file_path}\n\nErrors: \n{message}"
             ) from e
         diagram.update(**diagram_file_data)
 
@@ -50,10 +45,13 @@ def run(
         raise UserFriendlyBackendException('No diagram found!')
 
     # Create outputs
-    script_file_path = os.path.join(output_dir, filename.replace(DIAGRAM_CONFIG_OUTPUT_SUFFIX, DIAGRAM_SCRIPT_OUTPUT_SUFFIX))
-    image_file_path = os.path.join(output_dir, filename.replace(DIAGRAM_CONFIG_OUTPUT_SUFFIX, DIAGRAM_IMAGE_OUTPUT_SUFFIX))
+    script_file_path = file_path.replace(DIAGRAM_CONFIG_OUTPUT_SUFFIX, DIAGRAM_SCRIPT_OUTPUT_SUFFIX)
+    image_file_path = os.path.join(
+        output_dir,
+        os.path.basename(file_path).replace(DIAGRAM_CONFIG_OUTPUT_SUFFIX, DIAGRAM_IMAGE_OUTPUT_SUFFIX)
+    )
 
-    text = create_script(diagram, image_file_path, script_file_path)
+    text = create_script(diagram=diagram, temp_path=script_file_path, image_filename=image_file_path)
     if text is not None:
         with open(script_file_path, 'w+t') as f:
             f.write(str(text))
