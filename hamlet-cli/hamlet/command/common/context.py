@@ -39,16 +39,17 @@ def generation_config(func):
     )
     @click.pass_context
     def decorator(ctx, generation_provider, generation_framework, generation_input_source, *args, **kwargs):
+
+        existing_context = ctx.find_object(type(Generation))
+        if existing_context:
+            generation_provider = generation_provider if generation_provider else existing_context.generation_provider
+            generation_framework = generation_framework if generation_framework else existing_context.generation_framework
+            generation_input_source = generation_input_source if generation_input_source else existing_context.generation_input_source
+
         ctx.obj = Generation(
-            generation_provider=(
-                generation_provider if generation_provider else ctx.obj.generation_provider
-            ),
-            generation_framework=(
-                generation_framework if generation_framework else ctx.obj.generation_framework
-            ),
-            generation_input_source=(
-                generation_input_source if generation_input_source else ctx.obj.generation_input_source
-            ),
+            generation_provider=generation_provider,
+            generation_framework=generation_framework,
+            generation_input_source=generation_input_source,
         )
         return func(*args, **kwargs)
     return decorator
