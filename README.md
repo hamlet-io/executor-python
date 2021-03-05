@@ -1,4 +1,4 @@
-# Hamlet Depoy - Executor Python
+# Hamlet Deploy - Executor Python
 
 This is a python-based CLI for the Hamlet Deploy application. It acts as the primary interface to Hamlet Deploy, its Plugins and Extensions.
 
