@@ -7,13 +7,13 @@ from .conftest import conf
 
 def run(cmdb, clear_cmdb):
     clear_cmdb()
-    with cmdb():
+    with cmdb() as path:
         os.mknod('root.json')
-        tenant.run(**conf['cmdb']['tenant'])
-    with cmdb('accounts'):
-        account.run(**conf['cmdb']['account'])
-    with cmdb():
-        app_lifecycle_mgmt.run(**conf['cmdb']['product'])
+        tenant.run(**conf['cmdb']['tenant'], output_dir=path())
+    with cmdb('accounts') as path:
+        account.run(**conf['cmdb']['account'], output_dir=path())
+    with cmdb() as path:
+        app_lifecycle_mgmt.run(**conf['cmdb']['product'], output_dir=path())
     with cmdb('accounts', 'tenant'):
         with open('domains.json', 'rb') as domains_file:
             domains_json = json.load(domains_file)

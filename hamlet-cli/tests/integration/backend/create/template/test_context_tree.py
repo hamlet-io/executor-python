@@ -21,11 +21,11 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
 
     with cmdb() as path:
         os.mknod('root.json')
-        tenant.run(**conf['cmdb']['tenant'])
-    with cmdb('accounts'):
-        account.run(**conf['cmdb']['account'])
-    with cmdb():
-        base.run(**conf['cmdb']['product'])
+        tenant.run(**conf['cmdb']['tenant'], output_dir=path())
+    with cmdb('accounts') as path:
+        account.run(**conf['cmdb']['account'], output_dir=path())
+    with cmdb() as path:
+        base.run(**conf['cmdb']['product'], output_dir=path())
     with cmdb('accounts', tenant_name):
         with open('domains.json', 'rb') as domains_file:
             domains_json = json.load(domains_file)

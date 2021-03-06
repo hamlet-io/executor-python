@@ -6,7 +6,7 @@ from .product import group as product_generation_group
 @cli.group('generate')
 def group():
     """
-    Generate various cmdb components
+    Generates base CMDB file system structures
     """
     pass
 

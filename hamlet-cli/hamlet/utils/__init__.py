@@ -42,12 +42,12 @@ class DynamicOption(click.Option):
     @property
     def prompt(self):
         try:
-            if self.ctx.params.get('prompt'):
+            if not self.ctx.params.get('no_prompt'):
                 if self.ctx.params.get('use_default') and self.default is not None:
                     return None
                 if callable(self.__prompt) and not self.__prompt(self.ContextValuesGetter(self.ctx)):
                     return None
-                return 'Enter %s' % self.human_readable_name.replace('_', ' ')
+                return '[?] %s' % self.human_readable_name.replace('_', ' ')
             else:
                 return None
         except (AttributeError, KeyError):

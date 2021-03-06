@@ -7,7 +7,6 @@ from tests.unit.command.generate.test_generate_command import run_generate_comma
 OPTIONS = collections.OrderedDict()
 OPTIONS['!--tenant-id,tenant_id'] = 'test-tenant-id'
 OPTIONS['--tenant-name,tenant_name'] = ('test-tenant-name', 'test-tenant-id')
-OPTIONS['--domain-stem,domain_stem'] = ('codeontap.io', '')
 OPTIONS['--default-region,default_region'] = ('ap-southwest-1', 'ap-southeast-2')
 OPTIONS['--audit-log-expiry-days,audit_log_expiry_days'] = (10, 2555)
 OPTIONS['--audit-log-offline-days,audit_log_offline_days'] = (11, 90)

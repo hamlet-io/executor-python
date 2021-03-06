@@ -1,5 +1,8 @@
-from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
 import click
+import os
+
+from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
+
 
 class ConfigParam(Param):
     # For compatibility with click>=7.0
@@ -42,10 +45,10 @@ class ConfigSchema(object):
         environment = ConfigParam(name='environment', type=str)
         segment = ConfigParam(name='segment', type=str)
 
-
     @matches_section("profile:*")
     class Profile(Default):
         """Profile-specific configuration schema."""
+
 
 def get_default_config_path():
     """Get the default path to config files."""
@@ -204,8 +207,8 @@ class Options(object):
         self._set_option("segment", value)
 
     def to_env_dict(self):
-        env={}
-        for k,v in self.opts.items():
+        env = {}
+        for k, v in self.opts.items():
             if v is not None:
                 env[k.upper()] = v
         return env
