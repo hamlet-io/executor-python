@@ -41,6 +41,11 @@ def common_district_options(f):
     """Common options for district config"""
 
     @click.option(
+        "--root-dir",
+        envvar="ROOT_DIR",
+        help="The root CMDB directory",
+    )
+    @click.option(
         "--tenant",
         envvar="TENANT",
         help="The tenant id to use",
@@ -72,6 +77,7 @@ def common_district_options(f):
         District options from cmd line or file
         '''
         opts = ctx.ensure_object(Options)
+        opts.root_dir = kwargs.pop("root_dir")
         opts.tenant = kwargs.pop("tenant")
         opts.account = kwargs.pop("account")
         opts.product = kwargs.pop("product")
