@@ -1,9 +1,8 @@
-import click
-
 from hamlet.command import root as cli
 from hamlet.command.common.exceptions import CommandError
 from hamlet.backend import setup as setup_backend
 from hamlet.backend.common.exceptions import BackendException
+
 
 @cli.command(
     'setup',
