@@ -26,12 +26,6 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
         account.run(**conf['cmdb']['account'], output_dir=path())
     with cmdb() as path:
         base.run(**conf['cmdb']['product'], output_dir=path())
-    with cmdb('accounts', tenant_name):
-        with open('domains.json', 'rb') as domains_file:
-            domains_json = json.load(domains_file)
-        domains_json['Certificates'][product_name] = {'Domain': tenant_name}
-        with open('domains.json', 'wt') as domains_file:
-            json.dump(domains_json, domains_file, indent=4)
 
     with cmdb() as path:
         root_dir = path()
