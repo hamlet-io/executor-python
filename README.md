@@ -4,7 +4,7 @@ This is a python-based CLI for the Hamlet Deploy application. It acts as the pri
 
 See https://docs.hamlet.io for more info on Hamlet Deploy
 
-### Installation
+## Installation
 
 ```bash
 # Clone repository
@@ -24,13 +24,13 @@ Hamlet Deploy CLI is now installed.
 hamlet --help
 ```
 
-### Configuration
+## Configuration
 
 The Hamlet Deploy - Executor Python does not require specific configuration, however as it functions as a wrapper around other Hamlet Deploy parts, those must each be configured before using the CLI.
 
 See the [Hamlet Deploy docs](https://docs.hamlet.io/docs/hamletdeploy/software/cli) site for more information.
 
-### Update
+## Update
 
 ```bash
 # pull down changes
@@ -39,9 +39,10 @@ git pull
 ```
 
 With the latest files, re-run the installation steps to complete the update.
-### Usage
 
-Usage of this provider requires the other parts of the Hamlet Deploy application. 
+## Usage
+
+Usage of this provider requires the other parts of the Hamlet Deploy application.
 
 It is recommended that you use the Hamlet Deploy container for this.
 
@@ -51,21 +52,30 @@ See https://docs.hamlet.io for more
 
 ## Development
 
-The follow sections outline how to create a local development environment for the Executor Python.
-### Requirements
+There are two development approaches for working in this repo
+
+- Isolated: creates a complete isolated dev environment using a local docker image
+- Integrated: uses an existing hamlet workspace ( this is useful for working on your own CMDBS )
+
+### Isolated Process
+
+#### Requirements
+
 You just need to install requirements:
+
 - ```docker```
 - ```docker-compose```
 - ```make```
 
-### Build
+#### Build
 
 Build the Python Executor into a docker container
 
 ```bash
 make build
 ```
-### Run
+
+#### Run
 
 Build and then run the Executor Python in a docker container
 
@@ -82,14 +92,57 @@ make run-fg
 make shell
 ```
 
-### Develop
+#### Install
 
-Inside of the container, the following commands are available to help development
+Once you are inside the built container
 
 ```bash
 # install common tooling & Hamlet Deploy
 make install
+```
 
+#### Clean Up
+
+Clear the local development environment build data
+
+```bash
+make clean
+```
+
+### Integrated Process
+
+You will need an existing hamlet workspace with `python` and `make` available ( the hamletio/hamlet docker container comes with these )
+
+1. Clone this repo into your workspace ( feel free to change the directory to what you need )
+
+    ```bash
+    git clone https://github.com/hamlet-io/executor-python hamlet/executor/python
+    ```
+
+2. Hop into the executor clone location and setup a python venv
+
+    ```bash
+    cd hamlet/executor/python/hamlet-cli
+    python -m venv .venv
+    . .venv/bin/activate
+
+    # install requirements
+    pip install -r requirements/dev.txt -r requirements/prod.txt
+    ```
+
+3. Install the hamlet-cli into the venv
+
+    ```bash
+    pip install -e hamlet-cli
+    ```
+
+4. The local version of the hamlet cli should now be available and ready to use
+
+### Development tasks
+
+Once you have setup the hamlet-cli the following make commands are available from the hamlet-cli directory in this repo
+
+```bash
 # create test coverage report
 make coverage
 
@@ -98,12 +151,4 @@ make tests
 
 # python linter
 make link
-```
-
-### Clean Up
-
-Clear the local development environment build data
-
-```bash
-make clean
 ```
