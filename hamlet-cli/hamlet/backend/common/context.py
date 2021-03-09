@@ -112,7 +112,7 @@ class Context():
         hash_str = f"{self.level_name}:{self.level_file}:{self.directory}:{json.dumps(self.config)}"
         return hashlib.md5(hash_str.encode()).hexdigest()
 
-    def __init__(self, directory: str, config: dict = None):
+    def __init__(self, directory: str, root_dir: str = None, config: dict = None):
         config = config or {}
         self.config = config
         self.props = {}
@@ -123,8 +123,8 @@ class Context():
         self._product_dir = None
         self._account_dir = None
         self._tenant_dir = None
-        if os.environ.get('ROOT_DIR'):
-            self.__root_dir = os.environ.get('ROOT_DIR')
+        if root_dir is not None:
+            self.__root_dir = root_dir
         else:
             self.__try_to_find_root()
 

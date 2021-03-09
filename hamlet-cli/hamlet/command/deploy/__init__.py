@@ -7,7 +7,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, generation_config
+from hamlet.command.common.config import pass_options
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.manage import stack as manage_stack_backend
@@ -15,15 +15,13 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
-def find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_units):
+def find_deployments_from_options(options, deployment_mode, deployment_group, deployment_units):
     query_args = {
+        **options.opts,
         'deployment_mode': deployment_mode,
-        'generation_provider': generation.generation_provider,
-        'generation_framework': generation.generation_framework,
-        'generation_input_source': generation.generation_input_source,
         'generation_entrance': 'unitlist',
         'output_filename': 'unitlist-managementcontract.json',
-        'use_cache': False
+        'use_cache': False,
     }
     try:
         available_deployments = query_backend.run(
@@ -47,7 +45,6 @@ def find_deployments_from_options(generation, deployment_mode, deployment_group,
 
 
 @cli.group('deploy')
-@generation_config
 def group():
     """
     Deploys infrastructure based on the hamlet cmdb
@@ -112,13 +109,12 @@ def deployments_table(data):
     help='The deployment unit pattern to match'
 )
 @json_or_table_option(deployments_table)
-@pass_generation
-def list_deployments(generation, deployment_mode, deployment_group, deployment_unit):
+@pass_options
+def list_deployments(options, deployment_mode, deployment_group, deployment_unit):
     """
     List available deployments
     """
-
-    return find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    return find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
 
 
 @group.command(
@@ -170,9 +166,9 @@ def list_deployments(generation, deployment_mode, deployment_group, deployment_u
     default=False,
     help='Confirm before executing each deployment'
 )
-@pass_generation
+@pass_options
 def run_deployments(
-        generation,
+        options,
         deployment_mode,
         deployment_group,
         deployment_unit,
@@ -183,7 +179,7 @@ def run_deployments(
     """
     Create and run deployments
     """
-    deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
         raise CommandError('No deployments found that match pattern')
@@ -198,9 +194,7 @@ def run_deployments(
 
         if refresh_outputs:
             generate_args = {
-                'generation_provider': generation.generation_provider,
-                'generation_framework': generation.generation_framework,
-                'generation_input_source': generation.generation_input_source,
+                **options.opts,
                 'entrance': 'deployment',
                 'deployment_group': deployment_group,
                 'deployment_unit': deployment_unit,
@@ -290,13 +284,13 @@ def run_deployments(
     ),
     help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
 )
-@pass_generation
-def create_deployments(generation, deployment_mode, deployment_group, deployment_unit, output_dir, **kwargs):
+@pass_options
+def create_deployments(options, deployment_mode, deployment_group, deployment_unit, output_dir, **kwargs):
     """
     Create deployment outputs
     """
 
-    deployments = find_deployments_from_options(generation, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
 
     if len(deployments) == 0:
         raise CommandError('No deployments found that match pattern')
@@ -308,9 +302,7 @@ def create_deployments(generation, deployment_mode, deployment_group, deployment
         click.echo(f'[*] {deployment_group}/{deployment_unit}')
 
         generate_args = {
-            'generation_provider': generation.generation_provider,
-            'generation_framework': generation.generation_framework,
-            'generation_input_source': generation.generation_input_source,
+            **options.opts,
             'entrance': 'deployment',
             'deployment_group': deployment_group,
             'deployment_unit': deployment_unit,

@@ -13,6 +13,13 @@ def run(
     task=None,
     instance=None,
     version=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -28,4 +35,13 @@ def run(
         '-x': instance,
         '-y': version
     }
-    runner.run('runTask.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('runTask.sh', [], options, env, _is_cli)

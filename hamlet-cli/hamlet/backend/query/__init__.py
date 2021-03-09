@@ -23,6 +23,13 @@ def run(
     query_name=None,
     query_params=None,
     sub_query_text=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     query = Query(
@@ -34,6 +41,13 @@ def run(
         generation_framework=generation_framework,
         output_filename=output_filename,
         use_cache=use_cache,
+        log_level=log_level,
+        root_dir=root_dir,
+        tenant=tenant,
+        account=account,
+        product=product,
+        environment=environment,
+        segment=segment
     )
     if query_name is not None:
         result = query.query_by_name(query_name, query_params or {})
@@ -132,7 +146,14 @@ class Query:
         generation_provider=None,
         generation_framework=None,
         output_filename=None,
-        use_cache=None
+        use_cache=None,
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         # mocked blueprint doesn't need the valid context
         if generation_input_source == 'mock':
@@ -140,7 +161,7 @@ class Query:
             tempdir = tempfile.gettempdir()
             output_dir = os.path.join(tempdir, 'hamlet', 'query', 'mock')
         else:
-            ctx = context.Context(directory=cwd)
+            ctx = context.Context(directory=cwd, root_dir=root_dir)
             output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
         if not os.path.isfile(output_filepath) or not use_cache:
@@ -151,6 +172,13 @@ class Query:
                 generation_input_source=generation_input_source,
                 generation_provider=generation_provider,
                 generation_framework=generation_framework,
+                log_level=log_level,
+                root_dir=root_dir,
+                tenant=tenant,
+                account=account,
+                product=product,
+                environment=environment,
+                segment=segment,
             )
         with open(output_filepath, 'rt') as f:
             self.blueprint_data = json.load(f)

@@ -3,42 +3,66 @@ import functools
 
 from hamlet.command.common.config import Options
 
-
-def common_cli_config_options(f):
-    """Add common CLI config options to commands."""
+def common_cli_config_options(func):
+    '''Add common CLI config options to commands'''
 
     @click.option(
-        "-c",
-        "--config-file",
-        envvar="HAMLET_CONFIG_FILE",
+        '-c',
+        '--config-file',
+        envvar='HAMLET_CONFIG_FILE',
         type=click.Path(dir_okay=True, exists=True, writable=False, resolve_path=True),
-        help="The path to your config file.",
+        help='The path to your config file',
     )
     @click.option(
-        "-p",
-        "--profile",
+        '-p',
+        '--profile',
         default=None,
-        envvar="HAMLET_PROFILE",
-        help="The name of the profile to use for configuration.",
+        envvar='HAMLET_PROFILE',
+        help='The name of the profile to use for configuration',
     )
     @click.pass_context
-    @functools.wraps(f)
+    @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
         '''
         Config file handling
         '''
         opts = ctx.ensure_object(Options)
-        profile = kwargs.pop("profile")
-        config_file = kwargs.pop("config_file")
+        profile = kwargs.pop('profile')
+        config_file = kwargs.pop('config_file')
         opts.load_config_file(path=config_file, profile=profile)
-        kwargs["opts"] = opts
-        return ctx.invoke(f, *args, **kwargs)
+        kwargs['opts'] = opts
+        return ctx.invoke(func, *args, **kwargs)
+
+    return wrapper
+
+def common_logging_options(func):
+    '''Add commmon options for logging'''
+    @click.option(
+        '--log-level',
+        envvar='GENERATION_LOG_LEVEL',
+        type=click.Choice(
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
+            case_sensitive=False
+        ),
+        default='info',
+        help='The log level',
+    )
+    @click.pass_context
+    @functools.wraps(func)
+    def wrapper(ctx, *args, **kwargs):
+        '''
+        Logging Options for the command line
+        '''
+        opts = ctx.ensure_object(Options)
+        opts.log_level = kwargs.pop('log_level')
+        kwargs['opts'] = opts
+        return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
 
 
-def common_district_options(f):
-    """Common options for district config"""
+def common_district_options(func):
+    '''Add Common options for district config'''
 
     @click.option(
         "--root-dir",
@@ -71,7 +95,7 @@ def common_district_options(f):
         help="The segment name to use (default: CMDB current location)"
     )
     @click.pass_context
-    @functools.wraps(f)
+    @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
         '''
         District options from cmd line or file

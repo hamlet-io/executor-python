@@ -4,6 +4,8 @@ import os
 from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
 
 
+from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
+
 class ConfigParam(Param):
     # For compatibility with click>=7.0
     def __init__(self, *args, **kwargs):
@@ -13,7 +15,7 @@ class ConfigParam(Param):
     def parse(self, text):
         if text:
             text = text.strip()
-        if self.type.name == "boolean":
+        if self.type.name == 'boolean':
             if not text:
                 return None
         return super(ConfigParam, self).parse(text)
@@ -24,42 +26,42 @@ class ConfigParam(Param):
             for path in self.ctx.config_searchpath:
                 for filename in self.ctx.config_files:
                     files.append(os.path.join(path, filename))
-            files = " or ".join(files)
-            msg = "%s in %s" % (self.name, files)
+            files = ' or '.join(files)
+            msg = f'{self.name} in {files}'
         else:
-            msg = "%s in a config file" % (self.name,)
+            msg = f'{self.name} in a config file'
         return msg
 
 
 class ConfigSchema(object):
-    """Schema for standard configuration."""
+    '''Schema for standard configuration.'''
 
-    @matches_section("default")
+    @matches_section('default')
     class Default(SectionSchema):
-        """Default configuration schema."""
+        '''Default configuration schema.'''
 
-        root_dir = ConfigParam(name="root_dir", type=click.Path())
-        tenant = ConfigParam(name="tenant", type=str)
-        account = ConfigParam(name="account", type=str)
+        root_dir = ConfigParam(name='root_dir', type=click.Path())
+        tenant = ConfigParam(name='tenant', type=str)
+        account = ConfigParam(name='account', type=str)
         product = ConfigParam(name='product', type=str)
         environment = ConfigParam(name='environment', type=str)
         segment = ConfigParam(name='segment', type=str)
 
     @matches_section("profile:*")
     class Profile(Default):
-        """Profile-specific configuration schema."""
+        '''Profile-specific configuration schema.'''
 
 
 def get_default_config_path():
-    """Get the default path to config files."""
-    return click.get_app_dir(app_name="hamlet", force_posix=True)
+    '''Get the default path to config files.'''
+    return click.get_app_dir(app_name='hamlet', force_posix=True)
 
 
 class ConfigReader(ConfigFileReader):
-    """Reader for standard configuration."""
+    '''Reader for standard configuration.'''
 
-    config_files = ["config"]
-    config_name = "standard"
+    config_files = ['config']
+    config_name = 'standard'
     config_searchpath = [get_default_config_path()]
     config_section_schemas = [ConfigSchema.Default, ConfigSchema.Profile]
 
@@ -73,14 +75,14 @@ class ConfigReader(ConfigFileReader):
 
     @classmethod
     def get_storage_name_for(cls, section_name):
-        """Get storage name for a configuration section."""
-        if not section_name or section_name == "default":
-            return "default"
+        '''Get storage name for a configuration section.'''
+        if not section_name or section_name == 'default':
+            return 'default'
         return section_name
 
     @classmethod
     def get_default_filepath(cls):
-        """Get the default filepath for the configuratin file."""
+        '''Get the default filepath for the configuratin file.'''
         if not cls.config_files:
             return None
         if not cls.config_searchpath:
@@ -91,7 +93,7 @@ class ConfigReader(ConfigFileReader):
 
     @classmethod
     def load_config(cls, opts, path=None, profile=None):
-        """Load a configuration file into an options object."""
+        '''Load a configuration file into an options object.'''
         if path and os.path.exists(path):
             if os.path.isdir(path):
                 cls.config_searchpath.insert(0, path)
@@ -99,11 +101,11 @@ class ConfigReader(ConfigFileReader):
                 cls.config_files.insert(0, path)
 
         config = cls.read_config()
-        values = config.get("default", {})
+        values = config.get('default', {})
         cls._load_values_into_opts(opts, values)
 
-        if profile and profile != "default":
-            values = config.get("profile:%s" % profile, {})
+        if profile and profile != 'default':
+            values = config.get(f'profile:{profile}', {})
             cls._load_values_into_opts(opts, values)
 
         return values
@@ -126,11 +128,11 @@ class ConfigReader(ConfigFileReader):
             setattr(opts, k, v)
 
 
-class Options(object):
-    """Options object that holds config for the application."""
+class Options:
+    '''Options object that holds config for the application.'''
 
     def __init__(self, *args, **kwargs):
-        """Initialise a new Options object."""
+        '''Initialise a new Options object.'''
         super(Options, self).__init__(*args, **kwargs)
         self.opts = {}
         for k, v in kwargs:
@@ -138,90 +140,123 @@ class Options(object):
 
     @staticmethod
     def get_config_reader():
-        """Get the config reader class."""
+        '''Get the config reader class.'''
         return ConfigReader
 
     def load_config_file(self, path, profile=None):
-        """Load the config file."""
+        '''Load the config file.'''
         config_cls = self.get_config_reader()
         return config_cls.load_config(self, path, profile=profile)
 
     @property
+    def log_level(self):
+        '''Get the log_level setting'''
+        return self._get_option('log_level')
+
+    @log_level.setter
+    def log_level(self, value):
+        '''Set the log_level setting'''
+        self._set_option('log_level', value)
+
+    @property
     def root_dir(self):
-        """Get the root dir setting"""
-        return self._get_option("root_dir")
+        '''Get the root dir setting'''
+        return self._get_option('root_dir')
 
     @root_dir.setter
     def root_dir(self, value):
-        """Set the tenant setting"""
-        self._set_option("root_dir", value)
+        '''Set the root_dir setting'''
+        self._set_option('root_dir', value)
 
     @property
     def tenant(self):
-        """Get the tenant setting"""
-        return self._get_option("tenant")
+        '''Get the tenant setting'''
+        return self._get_option('tenant')
 
     @tenant.setter
     def tenant(self, value):
-        """Set the tenant setting"""
-        self._set_option("tenant", value)
+        '''Set the tenant setting'''
+        self._set_option('tenant', value)
 
     @property
     def account(self):
-        """Get the account setting"""
-        return self._get_option("account")
+        '''Get the account setting'''
+        return self._get_option('account')
 
     @account.setter
     def account(self, value):
-        """Set the account setting"""
-        self._set_option("account", value)
+        '''Set the account setting'''
+        self._set_option('account', value)
 
     @property
     def product(self):
-        """Get the product setting"""
-        return self._get_option("product")
+        '''Get the product setting'''
+        return self._get_option('product')
 
     @product.setter
     def product(self, value):
-        """Set the product setting"""
-        self._set_option("product", value)
+        '''Set the product setting'''
+        self._set_option('product', value)
 
     @property
     def environment(self):
-        """Get the environment setting"""
-        return self._get_option("environment")
+        '''Get the environment setting'''
+        return self._get_option('environment')
 
     @environment.setter
     def environment(self, value):
-        """Set the environment setting"""
-        self._set_option("environment", value)
+        '''Set the environment setting'''
+        self._set_option('environment', value)
 
     @property
     def segment(self):
-        """Get the segment setting"""
-        return self._get_option("segment")
+        '''Get the segment setting'''
+        return self._get_option('segment')
 
     @segment.setter
     def segment(self, value):
-        """Set the segment setting"""
-        self._set_option("segment", value)
+        '''Set the segment setting'''
+        self._set_option('segment', value)
 
-    def to_env_dict(self):
-        env = {}
-        for k, v in self.opts.items():
-            if v is not None:
-                env[k.upper()] = v
-        return env
+    @property
+    def generation_framework(self):
+        '''Get the generation_framework setting'''
+        return self._get_option('generation_framework')
+
+    @generation_framework.setter
+    def generation_framework(self, value):
+        '''Set the generation_framework setting'''
+        self._set_option('generation_framework', value)
+
+    @property
+    def generation_provider(self):
+        '''Get the generation_provider setting'''
+        return self._get_option('generation_provider')
+
+    @generation_provider.setter
+    def generation_provider(self, value):
+        '''Set the generation_provider setting'''
+        self._set_option('generation_provider', value)
+
+    @property
+    def generation_input_source(self):
+        '''Get the generation_input_source setting'''
+        return self._get_option('generation_input_source')
+
+    @generation_input_source.setter
+    def generation_input_source(self, value):
+        '''Set the generation_input_source setting'''
+        self._set_option('generation_input_source', value)
 
     def _get_option(self, name, default=None):
-        """Get value for an option."""
+        '''Get value for an option.'''
         value = self.opts.get(name)
         if value is None:
             return default
         return value
 
     def _set_option(self, name, value, allow_clear=False):
-        """Set value for an option."""
+        '''Set value for an option.'''
         if not allow_clear:
             # Prevent clears if value was set
             try:
@@ -230,5 +265,6 @@ class Options(object):
                     return
             except AttributeError:
                 pass
-
         self.opts[name] = value
+
+pass_options = click.make_pass_decorator(Options, ensure=True)

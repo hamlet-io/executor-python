@@ -8,7 +8,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, generation_config
+from hamlet.command.common.config import pass_options
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.draw import diagram as create_diagram_backend
 from hamlet.backend import query as query_backend
@@ -55,7 +55,6 @@ def find_diagrams_from_options(generation, ids):
 
 
 @cli.group('visual')
-@generation_config
 def group():
     """
     Generates visual representations of your hamlet
@@ -97,12 +96,12 @@ def diagrams_table(data):
     help='The deployment id pattern to match'
 )
 @json_or_table_option(diagrams_table)
-@pass_generation
-def list_diagrams(generation, diagram_id):
+@pass_options
+def list_diagrams(options, diagram_id):
     """
     Lists the diagrams available to create
     """
-    return find_diagrams_from_options(generation, diagram_id)
+    return find_diagrams_from_options(options, diagram_id)
 
 
 @group.command(
@@ -145,8 +144,8 @@ def list_diagrams(generation, diagram_id):
     multiple=True,
     help='The diagram id pattern to match'
 )
-@pass_generation
-def draw_diagrams(generation, diagram_id, src_dir, asset_dir):
+@pass_options
+def draw_diagrams(options, diagram_id, src_dir, asset_dir):
     """
     Draw a collection of digrams based on your solution
     """
@@ -156,7 +155,7 @@ def draw_diagrams(generation, diagram_id, src_dir, asset_dir):
         temp_dir = tempfile.TemporaryDirectory()
         src_dir = temp_dir.name
 
-    diagrams = find_diagrams_from_options(generation, diagram_id)
+    diagrams = find_diagrams_from_options(options, diagram_id)
 
     if len(diagrams) == 0:
         raise CommandError('No diagrams found that match pattern')
@@ -167,9 +166,7 @@ def draw_diagrams(generation, diagram_id, src_dir, asset_dir):
 
         click.echo((click.style(f'[*] {diagram_id}', bold=True, fg='green')))
         args = {
-            "generation_provider": generation.generation_provider,
-            "generation_framework": generation.generation_framework,
-            "generation_input_source": generation.generation_input_source,
+            **options.opts,
             "entrance": 'diagram',
             'deployment_unit': diagram_id,
             'output_dir': src_dir
@@ -222,14 +219,13 @@ def diagram_types_table(data):
     )
 )
 @json_or_table_option(diagram_types_table)
-@pass_generation
-def list_diagram_types(generation):
+@pass_options
+def list_diagram_types(options):
     """
     Lists the types of diagrams available
     """
     args = {
-        'generation_provider': generation.generation_provider,
-        'generation_framework': generation.generation_framework,
+        **options.opts,
         'generation_input_source': 'mock',
         'generation_entrance': 'diagraminfo',
         'output_filename': 'diagraminfo.json',

@@ -6,18 +6,25 @@ import tempfile
 from unittest import mock
 from click.testing import CliRunner
 from hamlet.command.schema import list_schemas
-from hamlet.command.common.context import Generation
+from hamlet.command.common.config import Options
 
 
 def template_backend_run_mock(data):
     def run(
         entrance='schemaset',
+        output_filename='schemaset-schemacontract.json',
         deployment_mode=None,
         output_dir=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
-        output_filename='schemaset-schemacontract.json'
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         unitlist_filename = os.path.join(output_dir, output_filename)
@@ -90,7 +97,7 @@ def mock_backend(schemaset=None):
     }
 )
 def test_query_list_schemas(blueprint_mock, ContextClassMock):
-    obj = Generation()
+    obj = Options()
 
     cli = CliRunner()
     result = cli.invoke(

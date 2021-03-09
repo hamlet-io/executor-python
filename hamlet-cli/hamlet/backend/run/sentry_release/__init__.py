@@ -6,6 +6,13 @@ def run(
     sentry_url_prefix=None,
     sentry_release_name=None,
     run_setup=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -14,4 +21,13 @@ def run(
         '-r': sentry_release_name,
         '-s': run_setup
     }
-    runner.run('runSentryRelease.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('runSentryRelease.sh', [], options, env, _is_cli)

@@ -11,11 +11,18 @@ def template_backend_run_mock(data):
     def run(
         entrance='unitlist',
         deployment_mode='update',
+        output_filename='unitlist-managementcontract.json',
         output_dir=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
-        output_filename='unitlist-managementcontract.json'
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         unitlist_filename = os.path.join(output_dir, output_filename)

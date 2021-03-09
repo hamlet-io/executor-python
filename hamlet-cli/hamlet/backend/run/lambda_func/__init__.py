@@ -6,6 +6,13 @@ def run(
     deployment_unit=None,
     input_payload=None,
     include_log_tail=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -14,4 +21,13 @@ def run(
         '-i': input_payload,
         '-l': include_log_tail
     }
-    runner.run('runLambda.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('runLambda.sh', [], options, env, _is_cli)
