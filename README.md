@@ -128,15 +128,18 @@ You will need an existing hamlet workspace with `python` and `make` available ( 
 
     # install requirements
     pip install -r requirements/dev.txt -r requirements/prod.txt
-    ```
 
-3. Install the hamlet-cli into the venv
-
-    ```bash
+    # Install the hamlet-cli into the venv in edit mode
     pip install -e hamlet-cli
     ```
 
-4. The local version of the hamlet cli should now be available and ready to use
+When calling hamlet from within the venv the development installation will be used instead of the workspace installation
+
+To use the workspace installation again deactivate the venv
+
+```bash
+deactivate
+```
 
 ### Development tasks
 
