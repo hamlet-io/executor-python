@@ -1,4 +1,3 @@
-import os
 import click
 from hamlet.command.common import decorators
 

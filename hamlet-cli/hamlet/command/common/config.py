@@ -4,8 +4,6 @@ import os
 from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
 
 
-from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
-
 class ConfigParam(Param):
     # For compatibility with click>=7.0
     def __init__(self, *args, **kwargs):
@@ -266,5 +264,6 @@ class Options:
             except AttributeError:
                 pass
         self.opts[name] = value
+
 
 pass_options = click.make_pass_decorator(Options, ensure=True)

@@ -3,6 +3,7 @@ import functools
 
 from hamlet.command.common.config import Options
 
+
 def common_cli_config_options(func):
     '''Add common CLI config options to commands'''
 
@@ -34,6 +35,7 @@ def common_cli_config_options(func):
         return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
+
 
 def common_logging_options(func):
     '''Add commmon options for logging'''

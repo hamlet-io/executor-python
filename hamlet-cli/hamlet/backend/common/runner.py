@@ -1,5 +1,4 @@
 import os
-import json
 import subprocess
 from hamlet import env as global_env
 from .exceptions import BackendException
@@ -35,6 +34,7 @@ def __cli_params_to_script_call(
         [script_fullpath] + options_list + args
     )
 
+
 def __env_params_to_envvars(env=None):
     cmd_env = {}
     for key, value in env.items():
@@ -48,7 +48,7 @@ def __env_params_to_envvars(env=None):
     return cmd_env
 
 
-def run(script_name, args, options, env, _is_cli ):
+def run(script_name, args, options, env, _is_cli):
     try:
         script_call_line = __cli_params_to_script_call(
             global_env.GENERATION_DIR,
