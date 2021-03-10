@@ -43,32 +43,33 @@ def common_district_options(f):
     @click.option(
         "--root-dir",
         envvar="ROOT_DIR",
-        help="The root CMDB directory",
+        help="The root CMDB directory (default: CMDB current location)",
     )
     @click.option(
         "--tenant",
         envvar="TENANT",
-        help="The tenant id to use",
+        help="The tenant name to use (default: CMDB current location)",
     )
     @click.option(
         "--account",
         envvar="ACCOUNT",
-        help="The account id to use",
+        help="The account name to use",
+        required=True,
     )
     @click.option(
         "--product",
         envvar="PRODUCT",
-        help="The product id to use",
+        help="The product name to use (default: CMDB current location)",
     )
     @click.option(
         "--environment",
         envvar="ENVIRONMENT",
-        help="The environment id to use",
+        help="The environment name to use (default: CMDB current location)",
     )
     @click.option(
         "--segment",
         envvar="SEGMENT",
-        help="The segment id to use",
+        help="The segment name to use (default: CMDB current location)"
     )
     @click.pass_context
     @functools.wraps(f)
