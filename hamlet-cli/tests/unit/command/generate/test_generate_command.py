@@ -48,8 +48,8 @@ def __get_default(values):
 
 def __generate_prompt_options_testcase(template):
     for required_only in [True, False]:
-        options = ['--prompt']
-        options_str = [options[0]]
+        options = []
+        options_str = []
         if required_only:
             options.append('--use-default')
             options_str.append(options[-1])

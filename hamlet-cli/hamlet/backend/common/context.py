@@ -240,6 +240,7 @@ class RootLevel(Context):
     level_file = 'root.json'
     level_file_directory = None
 
+
 class TenantLevel(Context):
     level_name = 'tenant'
     level_file = 'tenant.json'

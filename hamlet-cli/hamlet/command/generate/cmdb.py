@@ -1,8 +1,13 @@
 import click
+
+from cookiecutter.exceptions import OutputDirExistsException
+
 from hamlet.backend.generate.cmdb import account as generate_account_backend
 from hamlet.backend.generate.cmdb import tenant as generate_tenant_backend
 from hamlet.utils import dynamic_option, DynamicCommand
 from hamlet.command.generate import utils
+from hamlet.command.generate import decorators
+from hamlet.command.common.exceptions import CommandError
 
 
 @click.group('cmdb')
@@ -11,13 +16,38 @@ def group():  # pragma: no cover
 
 
 @group.command('account', cls=DynamicCommand)
-@dynamic_option('--account-id', required=True)
-@dynamic_option('--account-name', default=lambda p: p.account_id)
-@dynamic_option('--account-seed', default=lambda p: generate_account_backend.generate_account_seed())
-@dynamic_option('--provider-type', default='aws')
-@dynamic_option('--provider-id', required=True)
-@click.option('--prompt', is_flag=True)
-@click.option('--use-default', is_flag=True)
+@dynamic_option(
+    '--account-id',
+    help='The unique id for the account',
+    required=True,
+)
+@dynamic_option(
+    '--account-name',
+    help='A more descriptive name for the account',
+    default=lambda p: p.account_id,
+)
+@dynamic_option(
+    '--account-seed',
+    help='A random seed to ensure unique deployments',
+    default=lambda p: generate_account_backend.generate_account_seed(),
+)
+@dynamic_option(
+    '--provider-type',
+    help='The cloud provider the account represents',
+    type=click.Choice(
+        [
+            'aws',
+            'azure',
+        ]
+    ),
+    default='aws'
+)
+@dynamic_option(
+    '--provider-id',
+    help='The cloud provider Id for for the account (AWS Account Id or Azure Subscription)',
+    required=True
+)
+@decorators.common_generate_options
 @click.pass_context
 def generate_account(
     ctx,
@@ -32,18 +62,42 @@ def generate_account(
     This template should be run from a tenant directory
     """
     if not prompt or utils.confirm(kwargs):
-        generate_account_backend.run(**kwargs)
+        try:
+            generate_account_backend.run(**kwargs)
+
+        except OutputDirExistsException as e:
+            raise CommandError(e)
 
 
 @group.command('tenant', cls=DynamicCommand)
-@dynamic_option('--tenant-id', required=True)
-@dynamic_option('--tenant-name', default=lambda p: p.tenant_id)
-@dynamic_option('--domain-stem', default='')
-@dynamic_option('--default-region', default='ap-southeast-2')
-@dynamic_option('--audit-log-expiry-days', type=click.INT, default=2555)
-@dynamic_option('--audit-log-offline-days', type=click.INT, default=90)
-@click.option('--prompt', is_flag=True)
-@click.option('--use-default', is_flag=True)
+@dynamic_option(
+    '--tenant-id',
+    help='The unique Id for the tenant',
+    required=True,
+)
+@dynamic_option(
+    '--tenant-name',
+    help='A more descriptive name for the tenant',
+    default=lambda p: p.tenant_id,
+)
+@dynamic_option(
+    '--default-region',
+    help='The id of the default region to use for deployments in this tenant',
+    default='ap-southeast-2',
+)
+@dynamic_option(
+    '--audit-log-expiry-days',
+    help='How long to keep account audit logs for',
+    type=click.INT,
+    default=2555
+)
+@dynamic_option(
+    '--audit-log-offline-days',
+    help='How log until audit logs are sent to archive storage',
+    type=click.INT,
+    default=90
+)
+@decorators.common_generate_options
 @click.pass_context
 def generate_tenant(
     ctx,
@@ -56,4 +110,8 @@ def generate_tenant(
     This should be run from the root of an accounts repository.
     """
     if not prompt or utils.confirm(kwargs):
-        generate_tenant_backend.run(**kwargs)
+        try:
+            generate_tenant_backend.run(**kwargs)
+
+        except OutputDirExistsException as e:
+            raise CommandError(e)

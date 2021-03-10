@@ -11,7 +11,7 @@ def replace_parameters_values(kwargs, replacers=None):
                 break
 
 
-def cookiecutter(*template_path, **kwargs):
+def cookiecutter(*template_path, output_dir, **kwargs):
     replace_parameters_values(
         kwargs,
         [
@@ -24,5 +24,6 @@ def cookiecutter(*template_path, **kwargs):
     cookiecutter_main(
         template_path,
         no_input=True,
+        output_dir=output_dir,
         extra_context=kwargs
     )

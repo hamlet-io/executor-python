@@ -1,6 +1,11 @@
 import click
+
+from cookiecutter.exceptions import OutputDirExistsException
+
 from hamlet.utils import dynamic_option, DynamicCommand
+from hamlet.command.common.exceptions import CommandError
 from hamlet.command.generate import utils
+from hamlet.command.generate import decorators
 from hamlet.backend.generate.product import django as generate_django_backend
 from hamlet.backend.generate.product import base as generate_base_backend
 from hamlet.backend.generate.product import app_lifecycle_mgmt as generate_app_lifecycle_mgmt_backend
@@ -12,20 +17,46 @@ def group():  # pragma: no cover
 
 
 @group.command('base', cls=DynamicCommand)
-@dynamic_option('--product-id', required=True)
-@dynamic_option('--product-name', default=lambda p: p.product_id)
-@dynamic_option('--domain-id', default='')
-@dynamic_option('--solution-id', required=True)
-@dynamic_option('--solution-name', default=lambda p: p.solution_id)
-@dynamic_option('--environment-id', required=True)
-@dynamic_option('--environment-name', default=lambda p: p.environment_id)
-@dynamic_option('--segment-id', default='default')
-@dynamic_option('--segment-name', default=lambda p: p.segment_id)
-@click.option('--use-default', is_flag=True)
-@click.option('--prompt', is_flag=True)
+@dynamic_option(
+    '--product-id',
+    help='The Id of your product',
+    required=True,
+)
+@dynamic_option(
+    '--dns-zone',
+    help='A DNS zone name which will act as a base domain for public component hostnames',
+    default='',
+)
+@dynamic_option(
+    '--product-name',
+    help='A more descriptive name of your product',
+    default=lambda p: p.product_id,
+)
+@dynamic_option(
+    '--environment-id',
+    help='The id of your first deployed environment',
+    default='int',
+)
+@dynamic_option(
+    '--environment-name',
+    help='A more descriptive name of your environment',
+    default='integration',
+)
+@dynamic_option(
+    '--segment-id',
+    help='The id of the first segment in your environments',
+    default='default',
+)
+@dynamic_option(
+    '--segment-name',
+    help='A more descriptive name of your segment',
+    default=lambda p: p.segment_id,
+)
+@decorators.common_generate_options
 @click.pass_context
 def generate_base(
     ctx,
+    output_dir=None,
     prompt=None,
     use_default=None,
     **kwargs
@@ -36,7 +67,10 @@ def generate_base(
     This template should be run from the root of an empty product directory.
     """
     if not prompt or utils.confirm(kwargs):
-        generate_base_backend.run(**kwargs)
+        try:
+            generate_base_backend.run(**kwargs)
+        except OutputDirExistsException as e:
+            raise CommandError(e)
 
 
 @group.command('app-lifecycle-mgmt', cls=DynamicCommand)
@@ -103,11 +137,11 @@ def generate_base(
 )
 @dynamic_option('--github-repo-user', default='')
 @dynamic_option('--github-repo-path', default='')
-@click.option('--use-default', is_flag=True)
-@click.option('--prompt', is_flag=True)
+@decorators.common_generate_options
 @click.pass_context
 def generate_app_lifecycle_mgmt(
     ctx,
+    output_dir=None,
     prompt=None,
     use_default=None,
     **kwargs
@@ -118,7 +152,11 @@ def generate_app_lifecycle_mgmt(
     to build and deploy Hamlet managed applications.
     """
     if not prompt or utils.confirm(kwargs):
-        generate_app_lifecycle_mgmt_backend.run(**kwargs)
+        try:
+            generate_app_lifecycle_mgmt_backend.run(**kwargs)
+
+        except OutputDirExistsException as e:
+            raise CommandError(e)
 
 
 @group.command('django', cls=DynamicCommand)
@@ -164,8 +202,7 @@ def generate_app_lifecycle_mgmt(
 @dynamic_option('--alerts-ktlg-hex-colorcode', default='DC143C', prompt=lambda p: p.alerts_use_ktlg)
 @dynamic_option('--alerts-use-email', is_flag=True, prompt=lambda p: p.alerts_use_ktlg)
 @dynamic_option('--alerts-email-address', default='', prompt=lambda p: p.alerts_use_email)
-@click.option('--use-default', is_flag=True)
-@click.option('--prompt', is_flag=True)
+@decorators.common_generate_options
 @click.pass_context
 def generate_django(
     ctx,
@@ -175,7 +212,7 @@ def generate_django(
 ):
     """
     This template is for the creation of an AWS based Django deployment. It includes all of the components
-    required for a produciton level deployment of Django:
+    required for a production level deployment of Django:
 
     - Web ECS Service for front end
     - Worker ECS Service for celery processing
@@ -189,4 +226,8 @@ def generate_django(
     """
 
     if not prompt or utils.confirm(kwargs):
-        generate_django_backend.run(**kwargs)
+        try:
+            generate_django_backend.run(**kwargs)
+
+        except OutputDirExistsException as e:
+            raise CommandError(e)

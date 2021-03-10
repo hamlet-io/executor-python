@@ -1,8 +1,8 @@
 import click
 import functools
 
-from hamlet.command.common import config as config
 from hamlet.command.common.config import Options
+
 
 def common_cli_config_options(f):
     """Add common CLI config options to commands."""

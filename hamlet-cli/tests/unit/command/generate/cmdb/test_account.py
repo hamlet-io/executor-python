@@ -9,7 +9,7 @@ OPTIONS['!--account-id,account_id'] = 'test-account-id'
 OPTIONS['!--provider-id,provider_id'] = 'test-provider-id'
 OPTIONS['--account-name,account_name'] = ('test-account-name', 'test-account-id')
 OPTIONS['--account-seed,account_seed'] = ('not-random-seed', 'random-seed')
-OPTIONS['--provider-type,provider_type'] = ('not-test-provider-type', 'test-provider-type')
+OPTIONS['--provider-type,provider_type'] = ('aws', 'azure')
 
 
 @mock.patch('hamlet.command.generate.cmdb.generate_account_backend')

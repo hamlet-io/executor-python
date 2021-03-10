@@ -1,5 +1,5 @@
 import os
-import json
+
 from hamlet.backend.generate.cmdb import account, tenant
 from hamlet.backend.generate.product import base
 from hamlet.backend.create.template.environment import Environment
@@ -17,20 +17,13 @@ def test(cmdb, clear_cmdb):
     product_id = conf['cmdb']['product']['product_id']
     product_name = conf['cmdb']['product']['product_name']
 
-    with cmdb():
+    with cmdb() as path:
         os.mknod('root.json')
-        tenant.run(**conf['cmdb']['tenant'])
-    with cmdb('accounts'):
-        account.run(**conf['cmdb']['account'])
-    with cmdb():
-        base.run(**conf['cmdb']['product'])
-    with cmdb('accounts', tenant_name):
-        with open('domains.json', 'rb') as domains_file:
-            domains_json = json.load(domains_file)
-        domains_json['Certificates'][product_name] = {'Domain': tenant_name}
-        with open('domains.json', 'wt') as domains_file:
-            json.dump(domains_json, domains_file, indent=4)
-
+        tenant.run(**conf['cmdb']['tenant'], output_dir=path())
+    with cmdb('accounts') as path:
+        account.run(**conf['cmdb']['account'], output_dir=path())
+    with cmdb() as path:
+        base.run(**conf['cmdb']['product'], output_dir=path())
     with cmdb(product_name, 'config') as path:
         e = Environment({'ACCOUNT': account_name})
         set_context(cwd=path(), environment_obj=e)

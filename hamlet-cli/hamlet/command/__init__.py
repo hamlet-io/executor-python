@@ -15,6 +15,5 @@ def root(ctx, opts):
 
     # set global environment variables for template generation
     options = ctx.find_object(Options)
-    options_env = options.to_env_dict()
     for k, v in options.to_env_dict().items():
         os.environ[k] = v

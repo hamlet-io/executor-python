@@ -3,6 +3,7 @@ import functools
 import json
 import textwrap
 
+
 MAX_TABLE_TEXT_CONTENT_WIDTH = 128
 
 
