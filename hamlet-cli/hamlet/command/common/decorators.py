@@ -54,7 +54,6 @@ def common_district_options(f):
         "--account",
         envvar="ACCOUNT",
         help="The account name to use",
-        required=True,
     )
     @click.option(
         "--product",
