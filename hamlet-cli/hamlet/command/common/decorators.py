@@ -50,11 +50,12 @@ def common_logging_options(func):
         '--log-level',
         envvar='GENERATION_LOG_LEVEL',
         type=click.Choice(
-            ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
+            ['fatal', 'error', 'warn', 'info', 'debug', 'trace' ],
             case_sensitive=False
         ),
         default='info',
-        help='The log level',
+        help='The minimum log event level',
+        show_default=True
     )
     @click.pass_context
     @functools.wraps(func)
@@ -102,8 +103,6 @@ def common_generation_options(func):
         '''
         Logging Options for the command line
         '''
-        click.echo(kwargs['generation_provider'])
-
         opts = ctx.ensure_object(Options)
         opts.generation_provider = kwargs.pop('generation_provider')
         opts.generation_framework = kwargs.pop('generation_framework')
