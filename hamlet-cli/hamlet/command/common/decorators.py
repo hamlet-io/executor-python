@@ -1,7 +1,14 @@
 import click
+from click.types import StringParamType
 import functools
 
 from hamlet.command.common.config import Options
+
+class CommaSplitParamType(StringParamType):
+    envvar_list_splitter = ','
+
+    def __repr__(self):
+        return "STRING"
 
 
 def common_cli_config_options(func):
@@ -62,6 +69,49 @@ def common_logging_options(func):
 
     return wrapper
 
+def common_generation_options(func):
+    '''Add commmon options for generation'''
+
+    @click.option(
+        '-p',
+        '--generation-provider',
+        envvar='GENERATION_PROVIDERS',
+        help='plugins to load for output generation',
+        default=['aws'],
+        type=CommaSplitParamType(),
+        multiple=True,
+        show_default=True
+    )
+    @click.option(
+        '-f',
+        '--generation-framework',
+        help='output framework to use for output generation',
+        default='cf',
+        show_default=True
+    )
+    @click.option(
+        '-i',
+        '--generation-input-source',
+        help='source of input data to use when generating the output',
+        default='composite',
+        show_default=True
+    )
+    @click.pass_context
+    @functools.wraps(func)
+    def wrapper(ctx, *args, **kwargs):
+        '''
+        Logging Options for the command line
+        '''
+        click.echo(kwargs['generation_provider'])
+
+        opts = ctx.ensure_object(Options)
+        opts.generation_provider = kwargs.pop('generation_provider')
+        opts.generation_framework = kwargs.pop('generation_framework')
+        opts.generation_input_source = kwargs.pop('generation_input_source')
+        kwargs['opts'] = opts
+        return ctx.invoke(func, *args, **kwargs)
+
+    return wrapper
 
 def common_district_options(func):
     '''Add Common options for district config'''
@@ -110,6 +160,6 @@ def common_district_options(func):
         opts.environment = kwargs.pop("environment")
         opts.segment = kwargs.pop("segment")
         kwargs["opts"] = opts
-        return ctx.invoke(f, *args, **kwargs)
+        return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
