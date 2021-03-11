@@ -2,7 +2,7 @@ import click
 from hamlet.backend.run import task as run_task_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
-
+from hamlet.command.common.config import pass_options
 
 @click.command(
     'task',
@@ -73,7 +73,8 @@ from hamlet.command.common.exceptions import CommandError
     '--version',
     help='version of the task to be run'
 )
-def task(**kwargs):
+@pass_options
+def task(options, **kwargs):
     """
     Run an ECS task
 
@@ -82,7 +83,13 @@ def task(**kwargs):
     1. The ECS cluster is found using the provided tier and component combined with the product and segment
     2. ENV and VALUE should always appear in pairs
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        run_task_backend.run(**kwargs, _is_cli=True)
+        run_task_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))

@@ -2,7 +2,7 @@ import click
 from hamlet.backend.run import lambda_func as run_lambda_func_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
-
+from hamlet.command.common.config import pass_options
 
 @click.command(
     'lambda',
@@ -34,11 +34,18 @@ from hamlet.command.common.exceptions import CommandError
     help='include the last 4kb of the execution log',
     is_flag=True
 )
-def lambda_func(**kwargs):
+@pass_options
+def lambda_func(options, **kwargs):
     """
     Run an AWS Lambda Function
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        run_lambda_func_backend.run(**kwargs, _is_cli=True)
+        run_lambda_func_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))

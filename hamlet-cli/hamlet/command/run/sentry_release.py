@@ -2,7 +2,7 @@ import click
 from hamlet.backend.run import sentry_release as run_sentry_release_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
-
+from hamlet.command.common.config import pass_options
 
 @click.command(
     'sentry-release',
@@ -34,11 +34,18 @@ from hamlet.command.common.exceptions import CommandError
     help='run setup installation to prepare',
     is_flag=True
 )
-def sentry_release(**kwargs):
+@pass_options
+def sentry_release(options, **kwargs):
     """
     Upload sourcemap files to sentry for a specific release
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        run_sentry_release_backend.run(**kwargs, _is_cli=True)
+        run_sentry_release_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))
