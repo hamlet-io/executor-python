@@ -1,7 +1,7 @@
 from hamlet.command import root as cli
 from hamlet.command.common.exceptions import CommandError
 from hamlet.backend import setup as setup_backend
-from hamlet.backend.common.exceptions import BackendException
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
 @cli.command(
@@ -11,6 +11,7 @@ from hamlet.command.common.config import pass_options
         max_content_width=240
     )
 )
+@exceptions.backend_handler()
 @pass_options
 def setup(options, **kwargs):
     '''
@@ -20,8 +21,4 @@ def setup(options, **kwargs):
         **options.opts,
         **kwargs
     }
-    try:
-        setup_backend.run(**args, _is_cli=True)
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    setup_backend.run(**args, _is_cli=True)

@@ -54,7 +54,7 @@ def run(
     elif query_text is not None:
         result = query.query(query_text)
     else:
-        raise exceptions.UserFriendlyBackendException("Query unspecified")
+        raise exceptions.BackendException("Query unspecified")
     if sub_query_text:
         result = query.perform_query(sub_query_text, result)
     return result
@@ -286,7 +286,7 @@ class Query:
                 try:
                     params[key]
                 except KeyError as e:
-                    raise exceptions.UserFriendlyBackendException(f"Missing required query param:\"{key}\".") from e
+                    raise exceptions.BackendException(f"Missing required query param:\"{key}\".") from e
         if params:
             # jsonify every param
             for key, value in params.items():
@@ -302,11 +302,11 @@ class Query:
 
     def perform_query(self, query, data):
         if not query:
-            raise exceptions.UserFriendlyBackendException('Query can not be empty')
+            raise exceptions.BackendException('Query can not be empty')
         try:
             return jmespath.search(query, data)
         except JMESPathError as e:
-            raise exceptions.UserFriendlyBackendException(f"JMESPath query error: {str(e)}") from e
+            raise exceptions.BackendException(f"JMESPath query error: {str(e)}") from e
 
     def query_by_name(self, name, params):
         try:
@@ -314,4 +314,4 @@ class Query:
             query.query_mark
             return query(**params)
         except AttributeError:
-            raise exceptions.UserFriendlyBackendException(f'Query:"{name}" does not exist')
+            raise exceptions.BackendException(f'Query:"{name}" does not exist')

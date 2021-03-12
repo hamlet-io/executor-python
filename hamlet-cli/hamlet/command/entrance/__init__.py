@@ -6,11 +6,10 @@ from tabulate import tabulate
 
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
-from hamlet.backend.common.exceptions import BackendException
 
 
 @cli.group('entrance')
@@ -55,6 +54,7 @@ def entrances_table(data):
     )
 )
 @json_or_table_option(entrances_table)
+@exceptions.backend_handler()
 @pass_options
 def list_entrances(options):
     """
@@ -141,6 +141,7 @@ def list_entrances(options):
     default='unassigned',
     show_default=True
 )
+@exceptions.backend_handler()
 @pass_options
 def invoke_entrance(options, **kwargs):
     """
@@ -151,8 +152,4 @@ def invoke_entrance(options, **kwargs):
         **kwargs
     }
 
-    try:
-        create_template_backend.run(**args, _is_cli=True)
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    create_template_backend.run(**args, _is_cli=True)

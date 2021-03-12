@@ -1,7 +1,6 @@
 import click
 from hamlet.backend.run import sentry_release as run_sentry_release_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
 @click.command(
@@ -45,7 +44,4 @@ def sentry_release(options, **kwargs):
         **kwargs
     }
 
-    try:
-        run_sentry_release_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    run_sentry_release_backend.run(**args, _is_cli=True)

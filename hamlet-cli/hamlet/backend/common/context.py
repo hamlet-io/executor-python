@@ -1,14 +1,14 @@
 import os
 import json
 import hashlib
-from .exceptions import UserFriendlyBackendException
+from .exceptions import BackendException
 from .fsutils import ContextSearch, Search, File
 
 
 # This is a legacy module that soon must be replaced by a new class based on results of direct shell scrips rewrite
 
 
-class ContextError(UserFriendlyBackendException):
+class ContextError(BackendException):
     def __init__(self, msg="Context error"):
         super().__init__(msg)
 

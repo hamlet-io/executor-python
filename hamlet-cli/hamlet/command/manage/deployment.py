@@ -1,8 +1,7 @@
 import click
 from hamlet.backend.manage import deployment as manage_deployment_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
 
 
 @click.command(
@@ -79,6 +78,7 @@ from hamlet.command.common.config import pass_options
     '--deployment-unit-subset',
     help='subset of the deployment unit required'
 )
+@exceptions.backend_handler()
 @pass_options
 def deployment(options, **kwargs):
     """
@@ -90,7 +90,4 @@ def deployment(options, **kwargs):
         **kwargs
     }
 
-    try:
-        manage_deployment_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    manage_deployment_backend.run(**args, _is_cli=True)

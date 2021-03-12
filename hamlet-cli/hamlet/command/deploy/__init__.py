@@ -5,8 +5,8 @@ import click
 from tabulate import tabulate
 
 from hamlet.command import root as cli
+from hamlet.command.common import exceptions
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
@@ -23,15 +23,11 @@ def find_deployments_from_options(options, deployment_mode, deployment_group, de
         'output_filename': 'unitlist-managementcontract.json',
         'use_cache': False,
     }
-    try:
-        available_deployments = query_backend.run(
-            **query_args,
-            cwd=os.getcwd(),
-            query_text=LIST_DEPLOYMENTS_QUERY
-        )
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    available_deployments = query_backend.run(
+        **query_args,
+        cwd=os.getcwd(),
+        query_text=LIST_DEPLOYMENTS_QUERY
+    )
 
     deployments = []
 
@@ -123,6 +119,7 @@ def deployments_table(data):
     help='The states of deployments to include'
 )
 @json_or_table_option(deployments_table)
+@exceptions.backend_handler()
 @pass_options
 def list_deployments(options, deployment_mode, deployment_group, deployment_unit, deployment_state):
     """
@@ -197,6 +194,7 @@ def list_deployments(options, deployment_mode, deployment_group, deployment_unit
     default=False,
     help='Confirm before executing each deployment'
 )
+@exceptions.backend_handler()
 @pass_options
 def run_deployments(
         options,
@@ -244,12 +242,8 @@ def run_deployments(
                 'deployment_unit': deployment_unit,
                 'output_dir': output_dir
             }
+            create_template_backend.run(**generate_args, _is_cli=True)
 
-            try:
-                create_template_backend.run(**generate_args, _is_cli=True)
-
-            except BackendException:
-                raise CommandError('Template generation failed')
 
         for operation in deployment['Operations']:
 
@@ -271,19 +265,11 @@ def run_deployments(
                 supported_deployment_provider = False
                 if deployment['DeploymentProvider'] == 'aws':
                     supported_deployment_provider = True
-                    try:
-                        manage_stack_backend.run(**manage_args, _is_cli=True)
-
-                    except BackendException:
-                        raise CommandError('AWS deployment failed')
+                    manage_stack_backend.run(**manage_args, _is_cli=True)
 
                 if deployment['DeploymentProvider'] == 'azure':
                     supported_deployment_provider = True
-                    try:
-                        manage_deployment_backend.run(**manage_args, _is_cli=True)
-
-                    except BackendException:
-                        raise CommandError('Azure deployment failed')
+                    manage_deployment_backend.run(**manage_args, _is_cli=True)
 
                 if not supported_deployment_provider:
                     deployment_provider = deployment.get('DeploymentProvider', None)
@@ -340,6 +326,7 @@ def run_deployments(
     ),
     help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
 )
+@exceptions.backend_handler()
 @pass_options
 def create_deployments(options, deployment_mode, deployment_group, deployment_unit, deployment_state, output_dir, **kwargs):
     """
@@ -370,8 +357,4 @@ def create_deployments(options, deployment_mode, deployment_group, deployment_un
             'deployment_unit': deployment_unit,
             'output_dir': output_dir
         }
-        try:
-            create_template_backend.run(**generate_args, _is_cli=True)
-
-        except BackendException:
-            raise CommandError('Output generation failed')
+        create_template_backend.run(**generate_args, _is_cli=True)

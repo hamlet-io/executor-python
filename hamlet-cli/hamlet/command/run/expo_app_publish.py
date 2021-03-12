@@ -1,7 +1,6 @@
 import click
 from hamlet.backend.run import expo_app_publish as run_expo_app_publish_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
 @click.command(
@@ -63,6 +62,7 @@ from hamlet.command.common.config import pass_options
     default='ios,android',
     show_default=True
 )
+@exceptions.backend_handler()
 @pass_options
 def expo_app_publish(options, **kwargs):
     """
@@ -78,7 +78,4 @@ def expo_app_publish(options, **kwargs):
         **kwargs
     }
 
-    try:
-        run_expo_app_publish_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    run_expo_app_publish_backend.run(**args, _is_cli=True)

@@ -2,8 +2,9 @@ import os
 import json
 import click
 from tabulate import tabulate
-from hamlet.backend.common import exceptions
+
 from hamlet.command.common.config import pass_options, Options
+from hamlet.command.common import exceptions
 from hamlet.backend import query as query_backend
 from hamlet.command import root
 from hamlet.command.common.display import json_or_table_option, wrap_text
@@ -121,7 +122,7 @@ def query_group(ctx, use_cache):
 
 @query_group.command('get')
 @click.argument('query_text')
-@exceptions.handler()
+@exceptions.backend_handler()
 @pass_options
 @pass_blueprint
 def get(blueprint_ctx, options, query_text):
@@ -170,7 +171,7 @@ def describe_group(blueprint_ctx):
     'version_id',
     default='default'
 )
-@exceptions.handler()
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence(ctx, **query_params):
     """
@@ -195,7 +196,7 @@ def describe_occurrence(ctx, **query_params):
 
 @describe_occurrence.command('get')
 @click.argument('query_text')
-@exceptions.handler()
+@exceptions.backend_handler()
 @pass_options
 @pass_blueprint
 def describe_occurrence_get(blueprint_ctx, options, query_text):
@@ -214,7 +215,7 @@ def describe_occurrence_get(blueprint_ctx, options, query_text):
 
 
 @describe_occurrence.command('attributes')
-@exceptions.handler()
+@exceptions.backend_handler()
 @json_or_table_option(key_value_table)
 @pass_options
 @pass_blueprint
@@ -222,18 +223,17 @@ def describe_occurrence_attributes(blueprint_ctx, options):
     """
     Describes occurrence attributes
     """
-    result = query_backend.run(
+    return query_backend.run(
         **blueprint_ctx.backend,
         **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence_attributes',
         query_params=blueprint_ctx.query_params
     )
-    return result
 
 
 @describe_occurrence.command('solution')
-@exceptions.handler()
+@exceptions.backend_handler()
 @pass_options
 @pass_blueprint
 def describe_occurrence_solution(blueprint_ctx, options):
@@ -251,7 +251,7 @@ def describe_occurrence_solution(blueprint_ctx, options):
 
 
 @describe_occurrence.command('settings')
-@exceptions.handler()
+@exceptions.backend_handler()
 @pass_options
 @pass_blueprint
 def describe_occurrence_settings(blueprint_ctx, options):
@@ -269,7 +269,7 @@ def describe_occurrence_settings(blueprint_ctx, options):
 
 
 @describe_occurrence.command('resources')
-@exceptions.handler()
+@exceptions.backend_handler()
 @pass_options
 @pass_blueprint
 def describe_occurrence_resources(blueprint_ctx, options):
@@ -295,7 +295,7 @@ def list_group(ctx):
 
 
 @list_group.command('tiers')
-@exceptions.handler()
+@exceptions.backend_handler()
 @json_or_table_option(tiers_table)
 @pass_options
 @pass_blueprint
@@ -312,7 +312,7 @@ def list_tiers(blueprint_ctx, options):
 
 
 @list_group.command('components')
-@exceptions.handler()
+@exceptions.backend_handler()
 @json_or_table_option(components_table)
 @pass_options
 @pass_blueprint
@@ -341,7 +341,7 @@ def list_components(blueprint_ctx, options):
     'component_id',
     required=True
 )
-@exceptions.handler()
+@exceptions.backend_handler()
 @json_or_table_option(occurrences_table)
 @pass_options
 @pass_blueprint
