@@ -14,6 +14,7 @@ ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
 ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'DeploymentUnit1'
 ALL_VALID_OPTIONS['-l,--deployment-group'] = 'DeploymentGroup1'
 ALL_VALID_OPTIONS['-m,--deployment-mode'] = 'deployment_mode'
+ALL_VALID_OPTIONS['-s,--deployment-state'] = 'deployed'
 ALL_VALID_OPTIONS['--refresh-outputs'] = True
 ALL_VALID_OPTIONS['--confirm'] = True
 
@@ -74,7 +75,8 @@ unit_list = {
                         'DeploymentUnit': 'DeploymentUnit1',
                         'DeploymentGroup': 'DeploymentGroup1',
                         'DeploymentProvider': 'aws',
-                        'Operations': ['Operation11']
+                        'Operations': ['Operation11'],
+                        'CurrentState' : 'deployed'
                     }
                 },
                 {
@@ -83,7 +85,8 @@ unit_list = {
                         'DeploymentUnit': 'DeploymentUnit2',
                         'DeploymentGroup': 'DeploymentGroup2',
                         'DeploymentProvider': 'aws',
-                        'Operations': ['Operation21']
+                        'Operations': ['Operation21'],
+                        'CurrentState' : 'deployed'
                     }
                 }
             ]
@@ -108,6 +111,7 @@ def test_input_validation(blueprint_mock, ContextClassMock, create_template_back
             '-m': 'DeploymentMode1',
             '-l': 'DeploymentGroup1',
             '-u': 'DeploymentUnit1',
+            '-s': 'deployed',
         },
         []
     )

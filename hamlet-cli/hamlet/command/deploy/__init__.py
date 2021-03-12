@@ -15,7 +15,7 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
-def find_deployments_from_options(options, deployment_mode, deployment_group, deployment_units):
+def find_deployments_from_options(options, deployment_mode, deployment_group, deployment_units, deployment_states):
     query_args = {
         **options.opts,
         'deployment_mode': deployment_mode,
@@ -39,7 +39,8 @@ def find_deployments_from_options(options, deployment_mode, deployment_group, de
         if re.fullmatch(deployment_group, deployment['DeploymentGroup']):
             for deployment_unit in deployment_units:
                 if re.fullmatch(deployment_unit, deployment['DeploymentUnit']):
-                    deployments.append(deployment)
+                    if deployment['CurrentState'] in deployment_states:
+                        deployments.append(deployment)
 
     return deployments
 
@@ -58,7 +59,8 @@ LIST_DEPLOYMENTS_QUERY = (
     'DeploymentGroup:Parameters.DeploymentGroup,'
     'DeploymentUnit:Parameters.DeploymentUnit,'
     'DeploymentProvider:Parameters.DeploymentProvider,'
-    'Operations:Parameters.Operations'
+    'Operations:Parameters.Operations,'
+    'CurrentState:Parameters.CurrentState'
     '}'
 )
 
@@ -71,11 +73,12 @@ def deployments_table(data):
                 wrap_text(row['DeploymentGroup']),
                 wrap_text(row['DeploymentUnit']),
                 wrap_text(row['DeploymentProvider']),
+                wrap_text(row['CurrentState'])
             ]
         )
     return tabulate(
         tablerows,
-        headers=['DeploymentGroup', 'DeploymentUnit', 'DeploymentProvider'],
+        headers=['DeploymentGroup', 'DeploymentUnit', 'DeploymentProvider', 'CurrentState'],
         tablefmt='github'
     )
 
@@ -108,13 +111,30 @@ def deployments_table(data):
     multiple=True,
     help='The deployment unit pattern to match'
 )
+@click.option(
+    '-s',
+    '--deployment-state',
+    type=click.Choice(
+        ['deployed', 'notdeployed', 'orphaned', ],
+        case_sensitive=False,
+    ),
+    default=['deployed', 'notdeployed'],
+    multiple=True,
+    help='The states of deployments to include'
+)
 @json_or_table_option(deployments_table)
 @pass_options
-def list_deployments(options, deployment_mode, deployment_group, deployment_unit):
+def list_deployments(options, deployment_mode, deployment_group, deployment_unit, deployment_state):
     """
     List available deployments
     """
-    return find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
+    return find_deployments_from_options(
+            options=options,
+            deployment_mode=deployment_mode,
+            deployment_group=deployment_group,
+            deployment_units=deployment_unit,
+            deployment_states=deployment_state
+        )
 
 
 @group.command(
@@ -146,6 +166,17 @@ def list_deployments(options, deployment_mode, deployment_group, deployment_unit
     help='The deployment unit pattern to match'
 )
 @click.option(
+    '-s',
+    '--deployment-state',
+    type=click.Choice(
+        ['deployed', 'notdeployed', 'orphaned', ],
+        case_sensitive=False,
+    ),
+    default=['deployed', 'notdeployed'],
+    multiple=True,
+    help='The states of deployments to include'
+)
+@click.option(
     '-o',
     '--output-dir',
     type=click.Path(
@@ -172,6 +203,7 @@ def run_deployments(
         deployment_mode,
         deployment_group,
         deployment_unit,
+        deployment_state,
         output_dir,
         refresh_outputs,
         confirm,
@@ -179,7 +211,13 @@ def run_deployments(
     """
     Create and run deployments
     """
-    deployments = find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(
+                    options=options,
+                    deployment_mode=deployment_mode,
+                    deployment_group=deployment_group,
+                    deployment_units=deployment_unit,
+                    deployment_states=deployment_state
+                )
 
     if len(deployments) == 0:
         raise CommandError('No deployments found that match pattern')
@@ -188,11 +226,17 @@ def run_deployments(
 
         deployment_group = deployment['DeploymentGroup']
         deployment_unit = deployment['DeploymentUnit']
+        deployment_state = deployment['CurrentState']
+
         click.echo('')
         click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')))
+
+        if deployment_state == 'orphaned':
+            click.echo((click.style(f'[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow')))
+
         click.echo('')
 
-        if refresh_outputs:
+        if refresh_outputs or deployment_state != 'orphaned' :
             generate_args = {
                 **options.opts,
                 'entrance': 'deployment',
@@ -215,6 +259,7 @@ def run_deployments(
             ):
 
                 manage_args = {
+                    **options.opts,
                     'deployment_group': deployment_group,
                     'deployment_unit': deployment_unit,
                     'output_dir': output_dir
@@ -274,6 +319,17 @@ def run_deployments(
     help='The deployment unit pattern to match'
 )
 @click.option(
+    '-s',
+    '--deployment-state',
+    type=click.Choice(
+        ['deployed', 'notdeployed',],
+        case_sensitive=False,
+    ),
+    default=['deployed', 'notdeployed'],
+    multiple=True,
+    help='The states of deployments to include'
+)
+@click.option(
     '-o',
     '--output-dir',
     type=click.Path(
@@ -285,12 +341,18 @@ def run_deployments(
     help='the directory where the outputs will be saved. Mandatory when input source is set to mock'
 )
 @pass_options
-def create_deployments(options, deployment_mode, deployment_group, deployment_unit, output_dir, **kwargs):
+def create_deployments(options, deployment_mode, deployment_group, deployment_unit, deployment_state, output_dir, **kwargs):
     """
     Create deployment outputs
     """
 
-    deployments = find_deployments_from_options(options, deployment_mode, deployment_group, deployment_unit)
+    deployments = find_deployments_from_options(
+        options=options,
+        deployment_mode=deployment_mode,
+        deployment_group=deployment_group,
+        deployment_units=deployment_unit,
+        deployment_states=deployment_state
+    )
 
     if len(deployments) == 0:
         raise CommandError('No deployments found that match pattern')
