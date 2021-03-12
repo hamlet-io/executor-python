@@ -56,7 +56,6 @@ def group():  # pragma: no cover
 @click.pass_context
 def generate_base(
     ctx,
-    output_dir=None,
     prompt=None,
     use_default=None,
     **kwargs
@@ -141,7 +140,6 @@ def generate_base(
 @click.pass_context
 def generate_app_lifecycle_mgmt(
     ctx,
-    output_dir=None,
     prompt=None,
     use_default=None,
     **kwargs
