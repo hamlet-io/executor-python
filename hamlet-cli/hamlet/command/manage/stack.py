@@ -2,6 +2,7 @@ import click
 from hamlet.backend.manage import stack as manage_stack_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common.config import pass_options
 
 
 @click.command(
@@ -65,7 +66,8 @@ from hamlet.command.common.exceptions import CommandError
     is_flag=True,
     help='show what will happen without actually updating the stack'
 )
-def stack(**kwargs):
+@pass_options
+def stack(options, **kwargs):
     """
     Manage a CloudFormation stack
 
@@ -79,8 +81,14 @@ def stack(**kwargs):
     6. A dryrun creates a change set, then displays it. It only applies when
        the STACK_OPERATION=update
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        manage_stack_backend.run(**kwargs, _is_cli=True)
+        manage_stack_backend.run(**args, _is_cli=True)
 
     except BackendException as e:
         raise CommandError(str(e))
