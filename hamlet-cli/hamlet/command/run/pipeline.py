@@ -2,7 +2,7 @@ import click
 from hamlet.backend.run import pipeline as run_pipeline_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
-
+from hamlet.command.common.config import pass_options
 
 @click.command(
     'pipeline',
@@ -45,7 +45,8 @@ from hamlet.command.common.exceptions import CommandError
     help='activate the pipeline if another one is running',
     is_flag=True
 )
-def pipeline(**kwargs):
+@pass_options
+def pipeline(options, **kwargs):
     """
     Run an AWS Data pipeline
 
@@ -54,7 +55,13 @@ def pipeline(**kwargs):
     1. This will activate the pipeline and leave it running
     2. Pipelines take a long time so it is better to provide status via other means
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        run_pipeline_backend.run(**kwargs, _is_cli=True)
+        run_pipeline_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))

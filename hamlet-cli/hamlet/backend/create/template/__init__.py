@@ -16,6 +16,13 @@ def run(
     generation_input_source=None,
     output_dir=None,
     disable_output_cleanup=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -34,4 +41,13 @@ def run(
         '-o': output_dir,
         '-x': disable_output_cleanup
     }
-    runner.run('createTemplate.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('createTemplate.sh', [], options, env, _is_cli)

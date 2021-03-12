@@ -2,7 +2,7 @@ import click
 from hamlet.backend.run import expo_app_publish as run_expo_app_publish_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
-
+from hamlet.command.common.config import pass_options
 
 @click.command(
     'expo-app-publish',
@@ -63,7 +63,8 @@ from hamlet.command.common.exceptions import CommandError
     default='ios,android',
     show_default=True
 )
-def expo_app_publish(**kwargs):
+@pass_options
+def expo_app_publish(options, **kwargs):
     """
     Run a task based build of an Expo app binary
 
@@ -71,7 +72,13 @@ def expo_app_publish(**kwargs):
     NOTES:
     RELEASE_CHANNEL default is environment
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        run_expo_app_publish_backend.run(**kwargs, _is_cli=True)
+        run_expo_app_publish_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))

@@ -10,12 +10,19 @@ from hamlet.command.query import query_group as query
 def template_backend_run_mock(data):
     def run(
         entrance='blueprint',
+        output_filename='blueprint-config.json',
         output_dir=None,
         deployment_mode=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
-        output_filename='blueprint-config.json'
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         blueprint_filename = os.path.join(output_dir, output_filename)
@@ -492,7 +499,7 @@ def test_query_describe_occurence_get(blueprint_mock, ContextClassMock):
             '[*].Core.Instance.RawId'
         ]
     )
-    print(result.exc_info)
+    print(result.output)
     result = json.loads(result.output)
     assert len(result) == 1
     assert "InstanceRawId[1]" in result

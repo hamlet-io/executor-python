@@ -13,12 +13,19 @@ from hamlet.command.visual import list_diagram_types as list_diagram_types
 def template_backend_run_mock(data):
     def run(
         entrance='diagraminfo',
+        output_filename='diagraminfo.json',
         output_dir=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
         deployment_mode=None,
-        output_filename='diagraminfo.json'
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         info_filename = os.path.join(output_dir, output_filename)

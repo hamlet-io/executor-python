@@ -10,6 +10,13 @@ def run(
     disable_ota=None,
     binary_build_process=None,
     qr_build_formats=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -22,4 +29,13 @@ def run(
         '-b': binary_build_process,
         '-q': qr_build_formats
     }
-    runner.run('runExpoAppPublish.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('runExpoAppPublish.sh', [], options, env, _is_cli)

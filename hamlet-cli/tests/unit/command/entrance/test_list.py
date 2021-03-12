@@ -10,12 +10,19 @@ from hamlet.command.entrance import list_entrances as list_entrances
 def template_backend_run_mock(data):
     def run(
         entrance='info',
+        output_filename='info.json',
         output_dir=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
         deployment_mode=None,
-        output_filename='info.json'
+        log_level=None,
+        root_dir=None,
+        tenant=None,
+        account=None,
+        product=None,
+        environment=None,
+        segment=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         info_filename = os.path.join(output_dir, output_filename)

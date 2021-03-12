@@ -9,6 +9,13 @@ def run(
     credential_secret=None,
     visible=None,
     credential_type=None,
+    log_level=None,
+    root_dir=None,
+    tenant=None,
+    account=None,
+    product=None,
+    environment=None,
+    segment=None,
     _is_cli=False
 ):
     options = {
@@ -20,4 +27,13 @@ def run(
         '-y': credential_type,
         '-s': credential_secret
     }
-    runner.run('manageCredentialCrypto.sh', [], options, _is_cli)
+    env = {
+        'GENERATION_LOG_LEVEL': log_level,
+        'ROOT_DIR': root_dir,
+        'TENANT': tenant,
+        'ACCOUNT': account,
+        'PRODUCT': product,
+        'ENVIRONMENT': environment,
+        'SEGMENT': segment,
+    }
+    runner.run('manageCredentialCrypto.sh', [], options, env, _is_cli)

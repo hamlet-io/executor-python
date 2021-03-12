@@ -7,14 +7,13 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, generation_config
+from hamlet.command.common.config import pass_options
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
 @cli.group('entrance')
-@generation_config
 def group():
     """
     Hamlet entrances provide access to the hamlet cmdb to perform different tasks
@@ -56,14 +55,13 @@ def entrances_table(data):
     )
 )
 @json_or_table_option(entrances_table)
-@pass_generation
-def list_entrances(generation):
+@pass_options
+def list_entrances(options):
     """
     List available entrances
     """
     args = {
-        "generation_provider": generation.generation_provider,
-        "generation_framework": generation.generation_framework,
+        **options.opts,
         "generation_input_source": 'mock',
         "generation_entrance": 'info',
         'output_filename': 'info.json',
@@ -143,15 +141,13 @@ def list_entrances(generation):
     default='unassigned',
     show_default=True
 )
-@pass_generation
-def invoke_entrance(generation, **kwargs):
+@pass_options
+def invoke_entrance(options, **kwargs):
     """
     Invoke a Hamlet Entrance
     """
     args = {
-        "generation_provider": generation.generation_provider,
-        "generation_framework": generation.generation_framework,
-        "generation_input_source": generation.generation_input_source,
+        **options.opts,
         **kwargs
     }
 

@@ -7,19 +7,17 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.exceptions import CommandError
-from hamlet.command.common.context import pass_generation, generation_config
+from hamlet.command.common.config import pass_options
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.common.exceptions import BackendException
 
 
-def find_schemas_from_options(generation, schema_type, schema_instances):
+def find_schemas_from_options(options, schema_type, schema_instances):
     query_args = {
+        **options.opts,
         'deployment_mode': None,
         'generation_entrance': 'schemaset',
-        'generation_input_source': generation.generation_input_source,
-        'generation_provider': generation.generation_provider,
-        'generation_framework': generation.generation_framework,
         'output_filename': 'schemaset-schemacontract.json',
         'use_cache': False
     }
@@ -44,7 +42,6 @@ def find_schemas_from_options(generation, schema_type, schema_instances):
 
 
 @cli.group('schema')
-@generation_config
 def group():
     """
     Generates JSONSchema files for Hamlet data types
@@ -84,7 +81,6 @@ def schema_table(data):
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-t',
     '--schema-type',
@@ -101,12 +97,13 @@ def schema_table(data):
     help='A schema instance name pattern to filter results',
 )
 @json_or_table_option(schema_table)
-def list_schemas(generation, schema_type, schema_instance):
+@pass_options
+def list_schemas(options, schema_type, schema_instance):
     """
     List the available JSON schemas by data type
     """
 
-    return find_schemas_from_options(generation, schema_type, schema_instance)
+    return find_schemas_from_options(options, schema_type, schema_instance)
 
 
 @group.command(
@@ -116,7 +113,6 @@ def list_schemas(generation, schema_type, schema_instance):
         max_content_width=240
     )
 )
-@pass_generation
 @click.option(
     '-t',
     '--schema-type',
@@ -144,8 +140,9 @@ def list_schemas(generation, schema_type, schema_instance):
     required=True,
     help='the directory where the outputs will be saved'
 )
+@pass_options
 def create_schemas(
-        generation,
+        options,
         schema_type,
         schema_instance,
         output_dir,
@@ -154,7 +151,7 @@ def create_schemas(
     Create Hamlet data type schemas
     """
 
-    schemas = find_schemas_from_options(generation, schema_type, schema_instance)
+    schemas = find_schemas_from_options(options, schema_type, schema_instance)
 
     if len(schemas) == 0:
         raise CommandError('No schemas found')
@@ -167,12 +164,10 @@ def create_schemas(
         click.echo('')
 
         template_args = {
+            **options.opts,
             'entrance': 'schema',
             'deployment_group': schema_type,
             'deployment_unit': schema_instance,
-            'generation_provider': generation.generation_provider,
-            'generation_framework': generation.generation_framework,
-            'generation_input_source': generation.generation_input_source,
             'output_dir': output_dir
         }
 

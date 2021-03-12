@@ -3,29 +3,22 @@ import json
 import click
 from tabulate import tabulate
 from hamlet.backend.common import exceptions
-from hamlet.command.common.context import generation_config, Generation
+from hamlet.command.common.config import pass_options, Options
 from hamlet.backend import query as query_backend
 from hamlet.command import root
 from hamlet.command.common.display import json_or_table_option, wrap_text
 
 
-class BlueprintContext(Generation):
+class BlueprintContext():
     '''Query Blueprint context'''
     def __init__(
             self,
-            generation_provider=None,
-            generation_framework=None,
-            generation_input_source=None,
             use_cache=False,
             query_params=None):
-        super().__init__(generation_provider, generation_framework, generation_input_source)
         self.backend = {
             'generation_entrance': 'blueprint',
             'output_filename': 'blueprint-config.json',
             'use_cache': use_cache,
-            'generation_input_source': self.generation_input_source,
-            'generation_framework': self.generation_framework,
-            'generation_provider': self.generation_provider
         }
         self.query_params = query_params
 
@@ -116,29 +109,28 @@ def occurrences_table(data):
     is_flag=True,
     help='force refresh blueprint'
 )
-@generation_config
 @click.pass_context
 def query_group(ctx, use_cache):
     """
     Base command used to set blueprint generation options
     """
     ctx.obj = BlueprintContext(
-        ctx.obj.generation_provider,
-        ctx.obj.generation_framework,
-        ctx.obj.generation_input_source,
-        use_cache=use_cache)
+        use_cache=use_cache
+    )
 
 
 @query_group.command('get')
 @click.argument('query_text')
 @exceptions.handler()
+@pass_options
 @pass_blueprint
-def get(blueprint_ctx, query_text):
+def get(blueprint_ctx, options, query_text):
     """
     JMESPath query
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_text=query_text
     )
@@ -187,8 +179,13 @@ def describe_occurrence(ctx, **query_params):
     if ctx.invoked_subcommand is not None:
         ctx.obj.query_params = query_params
         return
+
+    blueprint_ctx = ctx.ensure_object(BlueprintContext)
+    options = ctx.ensure_object(Options)
+
     result = query_backend.run(
-        **ctx.obj.backend,
+        **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence',
         query_params=query_params
@@ -199,13 +196,15 @@ def describe_occurrence(ctx, **query_params):
 @describe_occurrence.command('get')
 @click.argument('query_text')
 @exceptions.handler()
+@pass_options
 @pass_blueprint
-def describe_occurrence_get(blueprint_ctx, query_text):
+def describe_occurrence_get(blueprint_ctx, options, query_text):
     """
     JMESPath subquery on the described occurrence data
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence',
         query_params=blueprint_ctx.query_params,
@@ -217,13 +216,15 @@ def describe_occurrence_get(blueprint_ctx, query_text):
 @describe_occurrence.command('attributes')
 @exceptions.handler()
 @json_or_table_option(key_value_table)
+@pass_options
 @pass_blueprint
-def describe_occurrence_attributes(blueprint_ctx):
+def describe_occurrence_attributes(blueprint_ctx, options):
     """
     Describes occurrence attributes
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence_attributes',
         query_params=blueprint_ctx.query_params
@@ -233,13 +234,15 @@ def describe_occurrence_attributes(blueprint_ctx):
 
 @describe_occurrence.command('solution')
 @exceptions.handler()
+@pass_options
 @pass_blueprint
-def describe_occurrence_solution(blueprint_ctx):
+def describe_occurrence_solution(blueprint_ctx, options):
     """
     Describes occurrence solution
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence_solution',
         query_params=blueprint_ctx.query_params
@@ -249,13 +252,15 @@ def describe_occurrence_solution(blueprint_ctx):
 
 @describe_occurrence.command('settings')
 @exceptions.handler()
+@pass_options
 @pass_blueprint
-def describe_occurrence_settings(blueprint_ctx):
+def describe_occurrence_settings(blueprint_ctx, options):
     """
     Describes occurrence settings
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence_settings',
         query_params=blueprint_ctx.query_params
@@ -265,13 +270,15 @@ def describe_occurrence_settings(blueprint_ctx):
 
 @describe_occurrence.command('resources')
 @exceptions.handler()
+@pass_options
 @pass_blueprint
-def describe_occurrence_resources(blueprint_ctx):
+def describe_occurrence_resources(blueprint_ctx, options):
     """
     Describes occurrence resources
     """
     result = query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='describe_occurrence_resources',
         query_params=blueprint_ctx.query_params
@@ -290,28 +297,32 @@ def list_group(ctx):
 @list_group.command('tiers')
 @exceptions.handler()
 @json_or_table_option(tiers_table)
+@pass_options
 @pass_blueprint
-def list_tiers(blueprint_ctx):
+def list_tiers(blueprint_ctx, options):
     """
     List tiers
     """
     return query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='list_tiers'
     )
 
 
 @list_group.command('components')
-@pass_blueprint
 @exceptions.handler()
 @json_or_table_option(components_table)
-def list_components(blueprint_ctx):
+@pass_options
+@pass_blueprint
+def list_components(blueprint_ctx, options):
     """
     List components
     """
     return query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='list_components'
     )
@@ -332,13 +343,15 @@ def list_components(blueprint_ctx):
 )
 @exceptions.handler()
 @json_or_table_option(occurrences_table)
+@pass_options
 @pass_blueprint
-def list_occurrences(blueprint_ctx, **query_params):
+def list_occurrences(blueprint_ctx, options, **query_params):
     """
     List occurrences
     """
     return query_backend.run(
         **blueprint_ctx.backend,
+        **options.opts,
         cwd=os.getcwd(),
         query_name='list_occurrences',
         query_params=query_params
