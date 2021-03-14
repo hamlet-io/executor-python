@@ -52,10 +52,10 @@ def run(
     if query_name is not None:
         result = query.query_by_name(query_name, query_params or {})
     elif query_text is not None:
-        result = query.query(query_text)
+        result = query.query(query_text, query_params or {})
     else:
         raise exceptions.BackendException("Query unspecified")
-    if sub_query_text:
+    if sub_query_text is not None:
         result = query.perform_query(sub_query_text, result)
     return result
 
