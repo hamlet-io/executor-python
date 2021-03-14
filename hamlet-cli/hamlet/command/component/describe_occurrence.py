@@ -1,8 +1,8 @@
 import click
 import json
 
-from hamlet.command.common import exceptions, config
-from hamlet.command.common.display import json_or_table_option, table_from_list_dict
+from hamlet.command.common import config
+from hamlet.command.common.display import json_or_table_option, table_from_dict
 
 from .common import query_occurrences_state, DescribeContext
 
@@ -50,7 +50,6 @@ def query_occurrence_state(ctx, query=None):
     '--query',
     help='A JMESPath query to apply to the results',
 )
-@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence(ctx, name, query):
     """
@@ -123,12 +122,12 @@ def describe_occurrence_setting_namespaces(ctx):
         max_content_width=240
     )
 )
-@json_or_table_option(table_from_list_dict)
+@json_or_table_option(table_from_dict)
 @click.pass_context
 def describe_occurrence_attributes(ctx):
     '''
     Predefined query:
     The attributes for the occurrence
     '''
-    result = query_occurrence_state(ctx, 'State.ResourceGroups.*[].Attributes[]')
+    result = query_occurrence_state(ctx, 'State.Attributes')
     return result

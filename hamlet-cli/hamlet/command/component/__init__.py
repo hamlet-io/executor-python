@@ -5,12 +5,12 @@ from hamlet.command.component.list_occurrences import list_occurrences as list_o
 
 
 @cli.group('component')
-def group():
+def component_group():
     """
     Provides information on the components used in a hamlet
     """
     pass
 
 
-group.add_command(describe_occurrence_group)
-group.add_command(list_occurrences_command)
+component_group.add_command(describe_occurrence_group)
+component_group.add_command(list_occurrences_command)

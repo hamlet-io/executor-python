@@ -16,14 +16,13 @@ def wrap_text(text):
     return "\n".join(textwrap.wrap(text, MAX_TABLE_TEXT_CONTENT_WIDTH))
 
 
-def table_from_list_dict(data):
+def table_from_dict(data):
     '''
     createas a table of k,v pairs from a list of dicts
     '''
     tablerows = []
-    for result in data:
-        for k,v in result.items():
-            tablerows.append([wrap_text(k), wrap_text(v)])
+    for k, v in data.items():
+        tablerows.append([wrap_text(k), wrap_text(v)])
     return tabulate(
         tablerows,
         headers=['Key', 'Value'],
