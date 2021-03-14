@@ -155,7 +155,7 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
     diagrams = find_diagrams_from_options(options, diagram_id)
 
     if len(diagrams) == 0:
-        raise CommandError('No diagrams found that match pattern')
+        raise exceptions.CommandError('No diagrams found that match pattern')
 
     for diagram in diagrams:
 

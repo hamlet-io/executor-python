@@ -4,6 +4,7 @@ import functools
 
 from hamlet.command.common.config import Options
 
+
 class CommaSplitParamType(StringParamType):
     envvar_list_splitter = ','
 
@@ -50,7 +51,7 @@ def common_logging_options(func):
         '--log-level',
         envvar='GENERATION_LOG_LEVEL',
         type=click.Choice(
-            ['fatal', 'error', 'warn', 'info', 'debug', 'trace' ],
+            ['fatal', 'error', 'warn', 'info', 'debug', 'trace'],
             case_sensitive=False
         ),
         default='info',
@@ -69,6 +70,7 @@ def common_logging_options(func):
         return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
+
 
 def common_generation_options(func):
     '''Add commmon options for generation'''
@@ -111,6 +113,7 @@ def common_generation_options(func):
         return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
+
 
 def common_district_options(func):
     '''Add Common options for district config'''

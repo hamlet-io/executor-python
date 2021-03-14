@@ -3,6 +3,7 @@ from hamlet.backend.run import expo_app_publish as run_expo_app_publish_backend
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
+
 @click.command(
     'expo-app-publish',
     short_help='Run a task based build of an Expo app binary',

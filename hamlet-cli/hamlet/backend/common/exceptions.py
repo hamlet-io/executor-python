@@ -1,7 +1,3 @@
-import functools
-import click
-
-
 class BackendException(Exception):
     def __init__(self, msg):
         super().__init__()

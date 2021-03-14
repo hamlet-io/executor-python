@@ -1,8 +1,8 @@
 from hamlet.command import root as cli
-from hamlet.command.common.exceptions import CommandError
 from hamlet.backend import setup as setup_backend
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
+
 
 @cli.command(
     'setup',

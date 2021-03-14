@@ -20,15 +20,11 @@ def find_schemas_from_options(options, schema_type, schema_instances):
         'output_filename': 'schemaset-schemacontract.json',
         'use_cache': False
     }
-    try:
-        available_schemas = query_backend.run(
-            **query_args,
-            cwd=os.getcwd(),
-            query_text=LIST_SCHEMAS_QUERY
-        )
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    available_schemas = query_backend.run(
+        **query_args,
+        cwd=os.getcwd(),
+        query_text=LIST_SCHEMAS_QUERY
+    )
 
     schemas = []
 
@@ -155,7 +151,7 @@ def create_schemas(
     schemas = find_schemas_from_options(options, schema_type, schema_instance)
 
     if len(schemas) == 0:
-        raise CommandError('No schemas found')
+        raise exceptions.CommandError('No schemas found')
 
     for schema in schemas:
         schema_type = schema['SchemaType']

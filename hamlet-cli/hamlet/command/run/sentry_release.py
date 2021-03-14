@@ -3,6 +3,7 @@ from hamlet.backend.run import sentry_release as run_sentry_release_backend
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
+
 @click.command(
     'sentry-release',
     short_help='Upload sourcemap files to sentry for a specific release',
@@ -33,6 +34,7 @@ from hamlet.command.common.config import pass_options
     help='run setup installation to prepare',
     is_flag=True
 )
+@exceptions.backend_handler()
 @pass_options
 def sentry_release(options, **kwargs):
     """

@@ -4,7 +4,8 @@ from click._compat import get_text_stderr
 
 from click.exceptions import ClickException
 
-from hamlet.backend.common.exceptions import BackendException, BackendException
+from hamlet.backend.common.exceptions import BackendException
+
 
 class CommandError(ClickException):
     """An exception occurred during processing"""

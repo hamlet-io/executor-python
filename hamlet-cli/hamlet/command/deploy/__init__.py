@@ -12,7 +12,6 @@ from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.manage import stack as manage_stack_backend
 from hamlet.backend.manage import deployment as manage_deployment_backend
-from hamlet.backend.common.exceptions import BackendException
 
 
 def find_deployments_from_options(options, deployment_mode, deployment_group, deployment_units, deployment_states):
@@ -218,7 +217,7 @@ def run_deployments(
                 )
 
     if len(deployments) == 0:
-        raise CommandError('No deployments found that match pattern')
+        raise exceptions.CommandError('No deployments found that match pattern')
 
     for deployment in deployments:
 
@@ -243,7 +242,6 @@ def run_deployments(
                 'output_dir': output_dir
             }
             create_template_backend.run(**generate_args, _is_cli=True)
-
 
         for operation in deployment['Operations']:
 
@@ -273,7 +271,7 @@ def run_deployments(
 
                 if not supported_deployment_provider:
                     deployment_provider = deployment.get('DeploymentProvider', None)
-                    raise CommandError(f'Deployment provider {deployment_provider} is not supported')
+                    raise exceptions.CommandError(f'Deployment provider {deployment_provider} is not supported')
 
 
 @group.command(
@@ -342,7 +340,7 @@ def create_deployments(options, deployment_mode, deployment_group, deployment_un
     )
 
     if len(deployments) == 0:
-        raise CommandError('No deployments found that match pattern')
+        raise exceptions.CommandError('No deployments found that match pattern')
 
     for deployment in deployments:
 

@@ -3,6 +3,7 @@ from hamlet.backend.run import pipeline as run_pipeline_backend
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
+
 @click.command(
     'pipeline',
     short_help='Run an AWS Data pipeline',
