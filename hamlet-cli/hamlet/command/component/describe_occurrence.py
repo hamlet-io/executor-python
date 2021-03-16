@@ -1,7 +1,7 @@
 import click
 import json
 
-from hamlet.command.common import config
+from hamlet.command.common import config, exceptions
 from hamlet.command.common.display import json_or_table_option, table_from_dict
 
 from .common import query_occurrences_state, DescribeContext
@@ -50,6 +50,7 @@ def query_occurrence_state(ctx, query=None):
     '--query',
     help='A JMESPath query to apply to the results',
 )
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence(ctx, name, query):
     """
@@ -71,6 +72,7 @@ def describe_occurrence(ctx, name, query):
         max_content_width=240
     )
 )
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence_solution(ctx):
     '''
@@ -88,6 +90,7 @@ def describe_occurrence_solution(ctx):
         max_content_width=240
     )
 )
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence_resources(ctx):
     '''
@@ -105,6 +108,7 @@ def describe_occurrence_resources(ctx):
         max_content_width=240
     )
 )
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence_setting_namespaces(ctx):
     '''
@@ -123,6 +127,7 @@ def describe_occurrence_setting_namespaces(ctx):
     )
 )
 @json_or_table_option(table_from_dict)
+@exceptions.backend_handler()
 @click.pass_context
 def describe_occurrence_attributes(ctx):
     '''

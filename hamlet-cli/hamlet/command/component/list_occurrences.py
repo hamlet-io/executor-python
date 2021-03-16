@@ -4,6 +4,7 @@ from tabulate import tabulate
 
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
 
 from .common import query_occurrences_state
 
@@ -49,6 +50,7 @@ def list_occurrences_table(data):
     help='A JMESPath query to apply to the results',
 )
 @json_or_table_option(list_occurrences_table)
+@exceptions.backend_handler()
 @pass_options
 def list_occurrences(options, query):
     """
