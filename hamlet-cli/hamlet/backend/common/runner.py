@@ -1,5 +1,7 @@
 import os
 import subprocess
+import shutil
+
 from hamlet import env as global_env
 from .exceptions import BackendException
 
@@ -49,6 +51,15 @@ def __env_params_to_envvars(env=None):
 
 
 def run(script_name, args, options, env, _is_cli):
+
+    try:
+        os.path.isdir(global_env.GENERATION_DIR)
+    except TypeError as e:
+        raise BackendException(f'Could not find hamlet bash script dir at GENERATION_DIR: {global_env.GENERATION_DIR}')
+
+    if shutil.which('bash') is None:
+        raise BackendException(f'Could not find bash installation')
+
     try:
         script_call_line = __cli_params_to_script_call(
             global_env.GENERATION_DIR,
@@ -58,15 +69,19 @@ def run(script_name, args, options, env, _is_cli):
         )
         env_overrides = {**__env_params_to_envvars(env), **os.environ}
         process = subprocess.Popen(
-            ['/bin/bash', '-c', script_call_line],
+            [
+                shutil.which('bash'),
+                '-c',
+                script_call_line
+            ],
             stdout=None if _is_cli else subprocess.PIPE,
             stderr=None if _is_cli else subprocess.PIPE,
             encoding='utf-8',
             env=env_overrides
         )
-        process.wait()
+        process_result = process.communicate()
         if not _is_cli and process.returncode != 0:
-            raise BackendException(process.stderr.read())
+            raise BackendException(process_result[1])
         if _is_cli and process.returncode != 0:
             raise BackendException(f'{script_name} failed to run')
     finally:
