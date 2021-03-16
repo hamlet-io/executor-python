@@ -2,6 +2,7 @@ import click
 from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common.config import pass_options
 
 
 @click.command(
@@ -78,11 +79,18 @@ from hamlet.command.common.exceptions import CommandError
     '--deployment-unit-subset',
     help='subset of the deployment unit required'
 )
-def deployment(**kwargs):
+@pass_options
+def deployment(options, **kwargs):
     """
     Manage an Azure Resource Manager (ARM) deployment
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        manage_deployment_backend.run(**kwargs, _is_cli=True)
+        manage_deployment_backend.run(**args, _is_cli=True)
     except BackendException as e:
         raise CommandError(str(e))

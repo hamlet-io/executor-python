@@ -62,7 +62,8 @@ def mock_backend(unitlist=None):
                             'DeploymentUnit': 'DeploymentUnit[1]',
                             'DeploymentGroup': 'DeploymentGroup[1]',
                             'DeploymentProvider': 'DeploymentProvider[1]',
-                            'Operations': ['Operation[1]']
+                            'Operations': ['Operation[1]'],
+                            'CurrentState' : 'deployed'
                         }
                     },
                     {
@@ -71,7 +72,8 @@ def mock_backend(unitlist=None):
                             'DeploymentUnit': 'DeploymentUnit[2]',
                             'DeploymentGroup': 'DeploymentGroup[2]',
                             'DeploymentProvider': 'DeploymentProvider[2]',
-                            'Operations': ['Operation[2]']
+                            'Operations': ['Operation[2]'],
+                            'CurrentState' : 'deployed',
                         }
                     }
                 ]
@@ -85,7 +87,8 @@ def mock_backend(unitlist=None):
                             'DeploymentUnit': 'DeploymentUnit[3]',
                             'DeploymentGroup': 'DeploymentGroup[3]',
                             'DeploymentProvider': 'DeploymentProvider[3]',
-                            'Operations': ['Operation[3]']
+                            'Operations': ['Operation[3]'],
+                            'CurrentState' : 'deployed',
                         }
                     },
                     {
@@ -94,7 +97,8 @@ def mock_backend(unitlist=None):
                             'DeploymentUnit': 'DeploymentUnit[4]',
                             'DeploymentGroup': 'DeploymentGroup[4]',
                             'DeploymentProvider': 'DeploymentProvider[4]',
-                            'Operations': ['Operation[4]']
+                            'Operations': ['Operation[4]'],
+                            'CurrentState' : 'deployed',
                         }
                     }
                 ]
@@ -119,23 +123,27 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         'DeploymentUnit': 'DeploymentUnit[1]',
         'DeploymentGroup': 'DeploymentGroup[1]',
         'DeploymentProvider': 'DeploymentProvider[1]',
-        'Operations': ['Operation[1]']
+        'Operations': ['Operation[1]'],
+        'CurrentState' : 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[2]',
         'DeploymentGroup': 'DeploymentGroup[2]',
         'DeploymentProvider': 'DeploymentProvider[2]',
-        'Operations': ['Operation[2]']
+        'Operations': ['Operation[2]'],
+        'CurrentState' : 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[3]',
         'DeploymentGroup': 'DeploymentGroup[3]',
         'DeploymentProvider': 'DeploymentProvider[3]',
-        'Operations': ['Operation[3]']
+        'Operations': ['Operation[3]'],
+        'CurrentState' : 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[4]',
         'DeploymentGroup': 'DeploymentGroup[4]',
         'DeploymentProvider': 'DeploymentProvider[4]',
-        'Operations': ['Operation[4]']
+        'Operations': ['Operation[4]'],
+        'CurrentState' : 'deployed',
     } in result

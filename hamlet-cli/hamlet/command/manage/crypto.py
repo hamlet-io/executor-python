@@ -2,6 +2,7 @@ import click
 from hamlet.backend.manage import crypto as manage_crypto_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common.config import pass_options
 
 
 @click.command(
@@ -84,7 +85,8 @@ from hamlet.command.common.exceptions import CommandError
     help='result is base64 decoded (visible)',
     is_flag=True
 )
-def crypto(**kwargs):
+@pass_options
+def crypto(options, **kwargs):
     """
     Manage cryptographic operations using KMS
 
@@ -115,8 +117,14 @@ def crypto(**kwargs):
        visibility flag is set
     8. Decrypted files will have a ".decrypted" extension added so they can be ignored by git
     """
+
+    args = {
+        **options.opts,
+        **kwargs
+    }
+
     try:
-        manage_crypto_backend.run(**kwargs, _is_cli=True)
+        manage_crypto_backend.run(**args, _is_cli=True)
 
     except BackendException as e:
         raise CommandError(str(e))
