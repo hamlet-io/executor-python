@@ -3,7 +3,7 @@ import json
 import shutil
 import tempfile
 import pytest
-from hamlet.backend.common.exceptions import UserFriendlyBackendException
+from hamlet.backend.common.exceptions import BackendException
 from hamlet.backend.test.generate import run as generate_test_backend
 from .conftest import DATA_DIR
 
@@ -51,7 +51,7 @@ def test():
 
     # testing empty no testcase files error
     with tempfile.TemporaryDirectory() as temp_dir:
-        with pytest.raises(UserFriendlyBackendException) as einfo:
+        with pytest.raises(BackendException) as einfo:
             generate_test_backend(directory=temp_dir, output=None)
         assert str(einfo.value) == "No testcase files found!"
         empty_testcase_file_path = os.path.join(temp_dir, 'empty-testcase.json')
@@ -59,13 +59,13 @@ def test():
             json.dump({}, f)
 
         # testing empty testcase files error
-        with pytest.raises(UserFriendlyBackendException) as einfo:
+        with pytest.raises(BackendException) as einfo:
             generate_test_backend(directory=temp_dir, output=None)
         assert str(einfo.value) == "No testcases found!"
 
         # testing extension check
         invalid_extension_filepath = os.path.join(temp_dir, 'invalid.testcase.json')
         shutil.copy2(os.path.join(DATA_DIR, 'testcase', 'secure-testcase.json'), invalid_extension_filepath)
-        with pytest.raises(UserFriendlyBackendException) as einfo:
+        with pytest.raises(BackendException) as einfo:
             generate_test_backend(filenames=[invalid_extension_filepath], directory=None, output=None)
         assert str(einfo.value) == f'Invalid extension for {invalid_extension_filepath}. Must be -testcase.json'

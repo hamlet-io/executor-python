@@ -6,11 +6,10 @@ from tabulate import tabulate
 
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
-from hamlet.backend.common.exceptions import BackendException
 
 
 def find_schemas_from_options(options, schema_type, schema_instances):
@@ -21,15 +20,11 @@ def find_schemas_from_options(options, schema_type, schema_instances):
         'output_filename': 'schemaset-schemacontract.json',
         'use_cache': False
     }
-    try:
-        available_schemas = query_backend.run(
-            **query_args,
-            cwd=os.getcwd(),
-            query_text=LIST_SCHEMAS_QUERY
-        )
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    available_schemas = query_backend.run(
+        **query_args,
+        cwd=os.getcwd(),
+        query_text=LIST_SCHEMAS_QUERY
+    )
 
     schemas = []
 
@@ -97,6 +92,7 @@ def schema_table(data):
     help='A schema instance name pattern to filter results',
 )
 @json_or_table_option(schema_table)
+@exceptions.backend_handler()
 @pass_options
 def list_schemas(options, schema_type, schema_instance):
     """
@@ -140,6 +136,7 @@ def list_schemas(options, schema_type, schema_instance):
     required=True,
     help='the directory where the outputs will be saved'
 )
+@exceptions.backend_handler()
 @pass_options
 def create_schemas(
         options,
@@ -154,7 +151,7 @@ def create_schemas(
     schemas = find_schemas_from_options(options, schema_type, schema_instance)
 
     if len(schemas) == 0:
-        raise CommandError('No schemas found')
+        raise exceptions.CommandError('No schemas found')
 
     for schema in schemas:
         schema_type = schema['SchemaType']
@@ -171,8 +168,4 @@ def create_schemas(
             'output_dir': output_dir
         }
 
-        try:
-            create_template_backend.run(**template_args, _is_cli=True)
-
-        except BackendException as e:
-            raise CommandError(str(e))
+        create_template_backend.run(**template_args, _is_cli=True)

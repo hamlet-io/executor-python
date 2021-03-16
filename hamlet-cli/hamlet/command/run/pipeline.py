@@ -1,8 +1,8 @@
 import click
 from hamlet.backend.run import pipeline as run_pipeline_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
+
 
 @click.command(
     'pipeline',
@@ -45,6 +45,7 @@ from hamlet.command.common.config import pass_options
     help='activate the pipeline if another one is running',
     is_flag=True
 )
+@exceptions.backend_handler()
 @pass_options
 def pipeline(options, **kwargs):
     """
@@ -61,7 +62,4 @@ def pipeline(options, **kwargs):
         **kwargs
     }
 
-    try:
-        run_pipeline_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    run_pipeline_backend.run(**args, _is_cli=True)

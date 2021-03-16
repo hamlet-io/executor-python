@@ -1,8 +1,7 @@
 import click
 from hamlet.backend.manage import crypto as manage_crypto_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
 
 
 @click.command(
@@ -85,6 +84,7 @@ from hamlet.command.common.config import pass_options
     help='result is base64 decoded (visible)',
     is_flag=True
 )
+@exceptions.backend_handler()
 @pass_options
 def crypto(options, **kwargs):
     """
@@ -123,8 +123,4 @@ def crypto(options, **kwargs):
         **kwargs
     }
 
-    try:
-        manage_crypto_backend.run(**args, _is_cli=True)
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    manage_crypto_backend.run(**args, _is_cli=True)

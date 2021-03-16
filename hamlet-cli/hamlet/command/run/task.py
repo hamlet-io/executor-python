@@ -1,8 +1,8 @@
 import click
 from hamlet.backend.run import task as run_task_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
+
 
 @click.command(
     'task',
@@ -73,6 +73,7 @@ from hamlet.command.common.config import pass_options
     '--version',
     help='version of the task to be run'
 )
+@exceptions.backend_handler()
 @pass_options
 def task(options, **kwargs):
     """
@@ -89,7 +90,4 @@ def task(options, **kwargs):
         **kwargs
     }
 
-    try:
-        run_task_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    run_task_backend.run(**args, _is_cli=True)

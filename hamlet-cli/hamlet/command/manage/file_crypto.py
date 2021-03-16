@@ -1,8 +1,8 @@
 import click
 from hamlet.backend.manage import file_crypto as manage_file_crypto_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
+
 
 @click.command(
     'file-crypto',
@@ -40,6 +40,7 @@ from hamlet.command.common.config import pass_options
     is_flag=True,
     help='update the file'
 )
+@exceptions.backend_handler()
 @pass_options
 def file_crypto(options, **kwargs):
     """
@@ -55,7 +56,4 @@ def file_crypto(options, **kwargs):
         **kwargs
     }
 
-    try:
-        manage_file_crypto_backend.run(**args, _is_cli=True)
-    except BackendException as e:
-        raise CommandError(str(e))
+    manage_file_crypto_backend.run(**args, _is_cli=True)

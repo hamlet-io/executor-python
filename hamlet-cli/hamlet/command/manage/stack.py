@@ -1,8 +1,7 @@
 import click
 from hamlet.backend.manage import stack as manage_stack_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
 
 
 @click.command(
@@ -66,6 +65,7 @@ from hamlet.command.common.config import pass_options
     is_flag=True,
     help='show what will happen without actually updating the stack'
 )
+@exceptions.backend_handler()
 @pass_options
 def stack(options, **kwargs):
     """
@@ -87,8 +87,4 @@ def stack(options, **kwargs):
         **kwargs
     }
 
-    try:
-        manage_stack_backend.run(**args, _is_cli=True)
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    manage_stack_backend.run(**args, _is_cli=True)

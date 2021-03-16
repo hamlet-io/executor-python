@@ -1,7 +1,7 @@
 import os
 import click
 from hamlet.backend.test.generate import run as test_generate_backend
-from hamlet.backend.common import exceptions
+from hamlet.command.common import exceptions
 
 
 @click.command(
@@ -46,7 +46,7 @@ from hamlet.backend.common import exceptions
     ),
     help='output file path'
 )
-@exceptions.handler()
+@exceptions.backend_handler()
 def geneate(
     filenames,
     output,

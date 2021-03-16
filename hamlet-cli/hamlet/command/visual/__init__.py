@@ -7,12 +7,11 @@ from tabulate import tabulate
 
 from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.draw import diagram as create_diagram_backend
 from hamlet.backend import query as query_backend
-from hamlet.backend.common.exceptions import BackendException
 
 
 LIST_DIAGRAMS_QUERY = (
@@ -34,15 +33,11 @@ def find_diagrams_from_options(generation, ids):
         'output_filename': 'diagraminfo.json',
         'use_cache': False
     }
-    try:
-        available_diagrams = query_backend.run(
-            **query_args,
-            cwd=os.getcwd(),
-            query_text=LIST_DIAGRAMS_QUERY
-        )
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    available_diagrams = query_backend.run(
+        **query_args,
+        cwd=os.getcwd(),
+        query_text=LIST_DIAGRAMS_QUERY
+    )
 
     diagrams = []
 
@@ -96,6 +91,7 @@ def diagrams_table(data):
     help='The deployment id pattern to match'
 )
 @json_or_table_option(diagrams_table)
+@exceptions.backend_handler()
 @pass_options
 def list_diagrams(options, diagram_id):
     """
@@ -144,6 +140,7 @@ def list_diagrams(options, diagram_id):
     multiple=True,
     help='The diagram id pattern to match'
 )
+@exceptions.backend_handler()
 @pass_options
 def draw_diagrams(options, diagram_id, src_dir, asset_dir):
     """
@@ -158,7 +155,7 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
     diagrams = find_diagrams_from_options(options, diagram_id)
 
     if len(diagrams) == 0:
-        raise CommandError('No diagrams found that match pattern')
+        raise exceptions.CommandError('No diagrams found that match pattern')
 
     for diagram in diagrams:
 
@@ -171,15 +168,8 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
             'deployment_unit': diagram_id,
             'output_dir': src_dir
         }
-        try:
-            create_template_backend.run(**args, _is_cli=False)
-        except BackendException as e:
-            raise CommandError(str(e))
-
-        try:
-            create_diagram_backend.run(diagram_id=diagram_id, src_dir=src_dir, output_dir=asset_dir)
-        except BackendException as e:
-            raise CommandError(str(e))
+        create_template_backend.run(**args, _is_cli=False)
+        create_diagram_backend.run(diagram_id=diagram_id, src_dir=src_dir, output_dir=asset_dir)
 
     if temp_dir is not None:
         temp_dir.cleanup()
@@ -219,6 +209,7 @@ def diagram_types_table(data):
     )
 )
 @json_or_table_option(diagram_types_table)
+@exceptions.backend_handler()
 @pass_options
 def list_diagram_types(options):
     """

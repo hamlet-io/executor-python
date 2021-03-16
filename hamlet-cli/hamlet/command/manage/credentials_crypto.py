@@ -1,8 +1,7 @@
 import click
 from hamlet.backend.manage import credential_crypto as manage_credentials_crypto_backend
-from hamlet.backend.common.exceptions import BackendException
-from hamlet.command.common.exceptions import CommandError
 from hamlet.command.common.config import pass_options
+from hamlet.command.common import exceptions
 
 
 @click.command(
@@ -64,6 +63,8 @@ from hamlet.command.common.config import pass_options
         case_sensitive=False
     )
 )
+
+@exceptions.backend_handler()
 @pass_options
 def credentials_crypto(options, **kwargs):
     """
@@ -83,8 +84,4 @@ def credentials_crypto(options, **kwargs):
         **kwargs
     }
 
-    try:
-        manage_credentials_crypto_backend.run(**args, _is_cli=True)
-
-    except BackendException as e:
-        raise CommandError(str(e))
+    manage_credentials_crypto_backend.run(**args, _is_cli=True)
