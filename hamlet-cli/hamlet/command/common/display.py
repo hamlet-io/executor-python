@@ -3,6 +3,7 @@ import functools
 import json
 import textwrap
 
+from tabulate import tabulate
 
 MAX_TABLE_TEXT_CONTENT_WIDTH = 128
 
@@ -13,6 +14,20 @@ def wrap_text(text):
     if isinstance(text, int):
         return text
     return "\n".join(textwrap.wrap(text, MAX_TABLE_TEXT_CONTENT_WIDTH))
+
+
+def table_from_dict(data):
+    '''
+    creates a table of k,v pairs from a list of dicts
+    '''
+    tablerows = []
+    for k, v in data.items():
+        tablerows.append([wrap_text(k), wrap_text(v)])
+    return tabulate(
+        tablerows,
+        headers=['Key', 'Value'],
+        tablefmt="github"
+    )
 
 
 def json_or_table_option(tablefunc):
