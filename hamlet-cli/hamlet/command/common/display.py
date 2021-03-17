@@ -18,7 +18,7 @@ def wrap_text(text):
 
 def table_from_dict(data):
     '''
-    createas a table of k,v pairs from a list of dicts
+    creates a table of k,v pairs from a list of dicts
     '''
     tablerows = []
     for k, v in data.items():
