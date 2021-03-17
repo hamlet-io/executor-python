@@ -72,7 +72,8 @@ occurrence_state_data = {
                     'Id': 'TierId[1]'
                 },
                 'Component': {
-                    'Id': 'ComponentId[1]'
+                    'Id': 'ComponentId[1]',
+                    'RawId' : 'ComponentRawId[1]'
                 },
                 'Name': 'CoreName[1]',
                 'Type': 'CoreType[1]'
@@ -105,7 +106,8 @@ occurrence_state_data = {
                     'Id': 'TierId[2]'
                 },
                 'Component': {
-                    'Id': 'ComponentId[2]'
+                    'Id': 'ComponentId[2]',
+                    'RawId' : 'ComponentRawId[2]'
                 },
                 'Name': 'CoreName[2]',
                 'Type': 'CoreType[2]'
@@ -152,13 +154,13 @@ def test_list_occurrences(blueprint_mock, ContextClassMock):
     assert len(result) == 2
     assert {
         'TierId': 'TierId[1]',
-        'ComponentId': 'ComponentId[1]',
+        'ComponentId': 'ComponentRawId[1]',
         'Name': 'CoreName[1]',
         'Type': 'CoreType[1]',
     } in result
     assert {
         'TierId': 'TierId[2]',
-        'ComponentId': 'ComponentId[2]',
+        'ComponentId': 'ComponentRawId[2]',
         'Name': 'CoreName[2]',
         'Type': 'CoreType[2]',
     } in result

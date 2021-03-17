@@ -12,7 +12,7 @@ LIST_OCCURRENCES_QUERY = (
     'Occurrences[]'
     '.{'
     'TierId:Core.Tier.Id,'
-    'ComponentId:Core.Component.Id,'
+    'ComponentId:Core.Component.RawId,'
     'Name:Core.Name,'
     'Type:Core.Type'
     '}'
