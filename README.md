@@ -11,11 +11,13 @@ See https://docs.hamlet.io for more info on Hamlet Deploy
 git clone https://github.com/hamlet-io/executor-python
 
 # install dependencies
-cd ./executor-python/hamlet-cli
-pip install -r ./requirements/prod.txt -r ./requirements/dev.txt
+cd ./executor-python
 
-# install
-make install
+# optionally create a venv to isolate the package
+python -m venv hamlet-cli/.venv
+. hamlet-cli/.venv/bin/activate # If using windows see the venv activation process
+
+pip install -e hamlet-cli
 ```
 
 Hamlet Deploy CLI is now installed.
@@ -23,12 +25,6 @@ Hamlet Deploy CLI is now installed.
 ```bash
 hamlet --help
 ```
-
-## Configuration
-
-The Hamlet Deploy - Executor Python does not require specific configuration, however as it functions as a wrapper around other Hamlet Deploy parts, those must each be configured before using the CLI.
-
-See the [Hamlet Deploy docs](https://docs.hamlet.io/docs/hamletdeploy/software/cli) site for more information.
 
 ## Update
 
@@ -39,6 +35,12 @@ git pull
 ```
 
 With the latest files, re-run the installation steps to complete the update.
+
+## Configuration
+
+The Hamlet Deploy - Executor Python does not require specific configuration, however as it functions as a wrapper around other Hamlet Deploy parts, those must each be configured before using the CLI.
+
+See the [Hamlet Deploy docs](https://docs.hamlet.io/docs/hamletdeploy/software/cli) site for more information.
 
 ## Usage
 
