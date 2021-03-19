@@ -231,17 +231,17 @@ def run_deployments(
         if deployment_state == 'orphaned':
             click.echo((click.style(f'[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow')))
 
-        click.echo('')
-
-        if refresh_outputs or deployment_state != 'orphaned' :
-            generate_args = {
-                **options.opts,
-                'entrance': 'deployment',
-                'deployment_group': deployment_group,
-                'deployment_unit': deployment_unit,
-                'output_dir': output_dir
-            }
-            create_template_backend.run(**generate_args, _is_cli=True)
+        click.echo(f'Deploymentstate {deployment_state}')
+        if refresh_outputs:
+            if deployment_state != 'orphaned':
+                generate_args = {
+                    **options.opts,
+                    'entrance': 'deployment',
+                    'deployment_group': deployment_group,
+                    'deployment_unit': deployment_unit,
+                    'output_dir': output_dir
+                }
+                create_template_backend.run(**generate_args, _is_cli=True)
 
         for operation in deployment['Operations']:
 
