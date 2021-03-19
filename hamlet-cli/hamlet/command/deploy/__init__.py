@@ -231,7 +231,8 @@ def run_deployments(
         if deployment_state == 'orphaned':
             click.echo((click.style(f'[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow')))
 
-        click.echo(f'Deploymentstate {deployment_state}')
+        click.echo('')
+
         if refresh_outputs:
             if deployment_state != 'orphaned':
                 generate_args = {
