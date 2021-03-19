@@ -4,6 +4,7 @@
 **/.coverage
 **/htmlcov
 **/dist
+**/build
 test-report.xml
 
 .cmdb
