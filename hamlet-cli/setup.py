@@ -22,11 +22,9 @@ class InstallCommand(install):
         )
 
 
-print(packages)
-
 setup(
     name='hamlet-cli',
-    version='7.0.0',
+    version='7.0.2',
     author='Hamlet',
     url="https://github.com/hamlet-io/executor-python",
     long_description=long_description,
@@ -34,13 +32,16 @@ setup(
     packages=packages,
     install_requires=[
         'click>=7.0.0,<8.0.0',
-        'pytest>=5.3.5,<7.0.0',
-        'cookiecutter>=1.6.0,<2.0.0',
+        'click-configfile>=0.2.3,<1.0.0',
+        'pytest>=6.0.0,<7.0.0',
+        'cookiecutter>=1.7.0,<2.0.0',
         'tabulate>=0.8.0,<1.0.0',
-        'Jinja2>=2.10.0,<3.0.0',
+        'Jinja2>=2.11.0,<3.0.0',
         'cfn-lint>=0.25.0,<1.0.0',
         'cfn-flip>=1.2.0,<2.0.0',
-        'diagrams>=0.18.0,<1.0.0'
+        'diagrams>=0.18.0,<1.0.0',
+        'marshmallow>=3.7.0,<4.0.0',
+        'jmespath>=0.10.0<1.0.0'
     ],
     include_package_data=True,
     python_requires='>=3.6',
