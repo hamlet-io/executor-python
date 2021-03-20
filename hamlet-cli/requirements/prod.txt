@@ -3,7 +3,7 @@ click-configfile==0.2.3
 
 cookiecutter==1.7.2
 tabulate==0.8.7
-Jinja2==2.11.2
+Jinja2==2.11.3
 marshmallow==3.7.1
 jmespath==0.10.0
 
