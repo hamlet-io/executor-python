@@ -129,7 +129,7 @@ You will need an existing hamlet workspace with `python` and `make` available ( 
     . .venv/bin/activate
 
     # install requirements
-    pip install -r requirements/dev.txt -r requirements/prod.txt
+    pip install -r requirements/dev.txt
 
     # Install the hamlet-cli into the venv in edit mode
     pip install -e hamlet-cli
