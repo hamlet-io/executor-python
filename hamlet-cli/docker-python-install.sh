@@ -1,1 +1,2 @@
-pip install -r requirements/prod.txt -r requirements/dev.txt
+pip install -r requirements/dev.txt
+pip install -e ./
