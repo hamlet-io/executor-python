@@ -1,4 +1,35 @@
-# [0.0.0](https://github.com/hamlet-io/engine-plugin-aws/compare/v8.0.0...v0.0.0) (2021-01-11)
+# [0.0.0](https://github.com/hamlet-io/engine-plugin-aws/compare/v8.0.1...v0.0.0) (2021-03-30)
+
+
+
+## [8.0.1](https://github.com/hamlet-io/engine-plugin-aws/compare/v8.0.0...v8.0.1) (2021-03-20)
+
+
+### Bug Fixes
+
+* add output_dir to manage deployment ([5b107f2](https://github.com/hamlet-io/engine-plugin-aws/commit/5b107f244cfe095971c2fc30bbe2d8b9009acace))
+* handle large outputs in runner calls ([#95](https://github.com/hamlet-io/engine-plugin-aws/issues/95)) ([e4dd943](https://github.com/hamlet-io/engine-plugin-aws/commit/e4dd943796a0ae0d169c2bac7802770e101d381c))
+* output_dir paramter not required ([#92](https://github.com/hamlet-io/engine-plugin-aws/issues/92)) ([2d3f5ac](https://github.com/hamlet-io/engine-plugin-aws/commit/2d3f5acce2e0be9a5e17b21a9bafb827ff3d67bd))
+* recreate child readme as symlink ([7a19c70](https://github.com/hamlet-io/engine-plugin-aws/commit/7a19c70acab6d98f70022982143027188e70c882))
+* remove debug statement ([73263e6](https://github.com/hamlet-io/engine-plugin-aws/commit/73263e640174b662e1f1bf0f5e8009affe01633d))
+* skip refresh for orphaned deployments ([5141743](https://github.com/hamlet-io/engine-plugin-aws/commit/5141743b277019252a92d83bb38c8637d2a2bbbb))
+
+
+### Features
+
+* add different development processes ([#90](https://github.com/hamlet-io/engine-plugin-aws/issues/90)) ([34f51ec](https://github.com/hamlet-io/engine-plugin-aws/commit/34f51ec253956eb3c28344a7aa5ef93355634353))
+* add root_dir as common option ([#88](https://github.com/hamlet-io/engine-plugin-aws/issues/88)) ([2eefd21](https://github.com/hamlet-io/engine-plugin-aws/commit/2eefd21a02929ed96ec194e27a2fd032171c044f))
+* azure deploy and better exception handling ([4908dda](https://github.com/hamlet-io/engine-plugin-aws/commit/4908ddaea7dddddd26a52b83d5f1292ba0976c2d))
+* clean hanlding of script failures ([47b8ba0](https://github.com/hamlet-io/engine-plugin-aws/commit/47b8ba0601f793748546c13b94440702cd628f98))
+* Component command group ([#99](https://github.com/hamlet-io/engine-plugin-aws/issues/99)) ([7503146](https://github.com/hamlet-io/engine-plugin-aws/commit/7503146f7a94e1c81f0cc00b06beea399709a7ad))
+* **generate:** support provider types in account ([#72](https://github.com/hamlet-io/engine-plugin-aws/issues/72)) ([97b15fd](https://github.com/hamlet-io/engine-plugin-aws/commit/97b15fd682f3cb9db50d92d125481d564c682903))
+* Deployment state support ([#94](https://github.com/hamlet-io/engine-plugin-aws/issues/94)) ([742b1db](https://github.com/hamlet-io/engine-plugin-aws/commit/742b1dbee48a670f18b0d05aa1ed20e1066b47d8))
+* diagram generation from cli ([#75](https://github.com/hamlet-io/engine-plugin-aws/issues/75)) ([4bebf39](https://github.com/hamlet-io/engine-plugin-aws/commit/4bebf39c85a28b09db9a65b8ee3111c01d141233))
+* district config via profiles ([#79](https://github.com/hamlet-io/engine-plugin-aws/issues/79)) ([0b0434e](https://github.com/hamlet-io/engine-plugin-aws/commit/0b0434eb8bdaab8b889488121ccab008198d07f0))
+* generate command quality of life ([#86](https://github.com/hamlet-io/engine-plugin-aws/issues/86)) ([222a17d](https://github.com/hamlet-io/engine-plugin-aws/commit/222a17d2c72e3f42c0bf127af52c80dbf64972ea))
+* hamlet schema command set ([#73](https://github.com/hamlet-io/engine-plugin-aws/issues/73)) ([e31d570](https://github.com/hamlet-io/engine-plugin-aws/commit/e31d5703cdde2d0bed57fd57600ed8aa6256421e))
+* multiple diagram generation ([316e695](https://github.com/hamlet-io/engine-plugin-aws/commit/316e69500c1f8f326a35146104ec6446b10c0e1c))
+* setup command ([#87](https://github.com/hamlet-io/engine-plugin-aws/issues/87)) ([6a1d0c8](https://github.com/hamlet-io/engine-plugin-aws/commit/6a1d0c85a6fea7560236e38c6e5e524cec03644a))
 
 
 
