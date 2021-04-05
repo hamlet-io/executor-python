@@ -18,11 +18,8 @@ lint:
 .PHONY: install
 .ONESHELL:
 install:
-	rm -rf dist
 	pip uninstall hamlet-cli -y
-	python setup.py sdist clean --all
-	rm -rf hamlet_cli.egg-info
-	pip install --no-index --find-links=dist hamlet-cli
+	pip install -e /hamlet-cli
 
 .PHONY: uninstall
 .ONESHELL:

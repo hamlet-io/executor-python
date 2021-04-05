@@ -24,4 +24,6 @@ ENV GENERATION_PATTERNS_DIR=/hamlet/patterns
 
 COPY ./ /hamlet-cli
 
-ENTRYPOINT ["/bin/bash", "docker-entrypoint.sh"]
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/docker-entrypoint.sh"]
