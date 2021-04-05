@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Create CMDB testing dir
 mkdir -p "${TEST_ROOT_DIR}"
 
