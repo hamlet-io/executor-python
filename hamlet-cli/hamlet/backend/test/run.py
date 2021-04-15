@@ -6,6 +6,7 @@ from hamlet.backend.common.exceptions import BackendException
 
 def run(
     testpaths=None,
+    root_dir=None,
     pytest_args=None,
     silent=True
 ):
@@ -21,6 +22,9 @@ def run(
             '-vvs' if not silent else '',
             '--cache-clear',
         ]
+
+        if root_dir is not None:
+            args.append(f'--rootdir={root_dir}')
 
         if pytest_args is not None:
             args.append(pytest_args)
@@ -40,7 +44,8 @@ def run(
             ],
             stdin=stdin,
             stderr=stderr,
-            start_new_session=True
+            start_new_session=True,
+            cwd=root_dir
         )
         process.wait()
         if process.returncode in [ec.OK, ec.NO_TESTS_COLLECTED]:
