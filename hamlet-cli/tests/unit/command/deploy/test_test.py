@@ -6,18 +6,16 @@ import os
 
 from unittest import mock
 from click.testing import CliRunner
-from hamlet.command.deploy.run import run_deployments
+from hamlet.command.deploy.test import test_deployments
 from tests.unit.command.test_option_generation import run_options_test, run_validatable_option_test
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
-ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
-ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'DeploymentUnit1'
+ALL_VALID_OPTIONS['-m,--deployment-mode'] = 'DeploymentMode1'
 ALL_VALID_OPTIONS['-l,--deployment-group'] = 'DeploymentGroup1'
-ALL_VALID_OPTIONS['-m,--deployment-mode'] = 'deployment_mode'
-ALL_VALID_OPTIONS['-s,--deployment-state'] = 'deployed'
-ALL_VALID_OPTIONS['--refresh-outputs'] = True
-ALL_VALID_OPTIONS['--confirm'] = True
-
+ALL_VALID_OPTIONS['-u,--deployment-unit'] = 'DeploymentUnit1'
+ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
+ALL_VALID_OPTIONS['-p,--pytest-args'] = 'PyTestArg1'
+ALL_VALID_OPTIONS['-s,--silent'] = False
 
 def template_backend_run_mock(data):
     def run(
@@ -45,8 +43,9 @@ def template_backend_run_mock(data):
 
 def mock_backend(unitlist=None):
     def decorator(func):
-        @mock.patch('hamlet.command.deploy.run.manage_stack_backend')
-        @mock.patch('hamlet.command.deploy.run.create_template_backend')
+        @mock.patch('hamlet.command.deploy.test.test_run_backend')
+        @mock.patch('hamlet.command.deploy.test.test_generate_backend')
+        @mock.patch('hamlet.command.deploy.test.create_template_backend')
         @mock.patch('hamlet.backend.query.context.Context')
         @mock.patch('hamlet.backend.query.template')
         def wrapper(blueprint_mock, ContextClassMock, create_template_backend, *args, **kwargs):
@@ -96,22 +95,21 @@ unit_list = {
 
 
 @mock_backend(unit_list)
-def test_input_valid(blueprint_mock, ContextClassMock, create_template_backend, manage_stack_backend):
-    run_options_test(CliRunner(), run_deployments, ALL_VALID_OPTIONS, blueprint_mock.run)
+def test_input_valid(blueprint_mock, ContextClassMock, create_template_backend, test_generate_backend, test_run_backend):
+    run_options_test(CliRunner(), test_deployments, ALL_VALID_OPTIONS, blueprint_mock.run)
 
 
 @mock_backend(unit_list)
-def test_input_validation(blueprint_mock, ContextClassMock, create_template_backend, manage_stack_backend):
+def test_input_validation(blueprint_mock, ContextClassMock, create_template_backend, test_generate_backend, test_run_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
-        run_deployments,
+        test_deployments,
         create_template_backend.run,
         {
             '-m': 'DeploymentMode1',
             '-l': 'DeploymentGroup1',
             '-u': 'DeploymentUnit1',
-            '-s': 'deployed',
         },
         []
     )

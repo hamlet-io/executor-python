@@ -4,7 +4,7 @@ import json
 import tempfile
 from unittest import mock
 from click.testing import CliRunner
-from hamlet.command.deploy import list_deployments
+from hamlet.command.deploy.list import list_deployments
 
 
 def template_backend_run_mock(data):
