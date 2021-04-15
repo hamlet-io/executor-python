@@ -99,6 +99,7 @@ def test_deployments(
 
     click.echo('')
     click.echo(click.style(f'[*] Creating deployments:', bold=True, fg='green'))
+    click.echo('')
     for deployment in deployments:
 
         deployment_group = deployment['DeploymentGroup']
@@ -126,6 +127,7 @@ def test_deployments(
 
     click.echo('')
     click.echo(click.style('[*] Testing deployments:', bold=True, fg='green'))
+    click.echo('')
     test_script_filename = f'test_deployments.py'
     test_script = test_generate_backend(
         output=f'{output_dir}/{test_script_filename}',
