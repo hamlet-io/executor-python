@@ -64,10 +64,11 @@ jobs:
         password: ${{ secrets.PYPI_API_TOKEN }}
         packages_dir: hamlet-cli/dist
 
-    - name: save version bump
-      run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        git add .
-        git commit -m "chore: package release"
-        git push
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: "chore: release bump"
+        delete-branch: true
+        title: 'chore: update cli package version'
+        body: 'Updates the cli version details to align with pyi release'
+        labels: 'chore'
