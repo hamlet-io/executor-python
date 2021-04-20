@@ -43,9 +43,11 @@ jobs:
       run: |
         bump2version --new-version "${{ github.event.release.tag_name }}" major
 
-    - name: Run Tests
-      working-directory: ./hamlet-cli
-      run: make tests
+    - name: Run the compose network
+      run: make run
+
+    - name: Run the tests
+      run: docker-compose exec -T hamlet-cli /bin/bash -c 'source ~/.bashrc && make tests'
 
     - name: Create Release
       working-directory: ./hamlet-cli
