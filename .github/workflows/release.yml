@@ -48,6 +48,6 @@ jobs:
 
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
-      working-directory: ./hamlet-cli
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
+        packages_dir: hamlet-cli/dist
