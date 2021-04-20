@@ -29,6 +29,7 @@ jobs:
 
     - name: Bump Minor Version
       if: github.event_name == 'push'
+      working-directory: ./hamlet-cli
       run: |
         new_version="$(bump2version --dry-run --list patch | grep new_version | sed -r s,"^.*=",,)"
         echo "${new_version}"
@@ -36,6 +37,7 @@ jobs:
 
     - name: Bump Release Version
       if: github.event_name == 'release'
+      working-directory: ./hamlet-cli
       run: |
         bump2version --new-version "${{ github.event.release.tag_name }}" major
 
