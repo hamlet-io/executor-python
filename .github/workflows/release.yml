@@ -27,13 +27,13 @@ jobs:
 
     - name: Bump Minor Version
       if: github.event_name == 'push'
-      run: >-
+      run: |
         new_version="$(bump2version --dry-run --list patch | grep new_version | sed -r s,"^.*=",,)"
         bump2version --new-version "${new_version}" patch
 
     - name: Bump Release Version
       if: github.event_name == 'release'
-      run: >-
+      run: |
         new_patch=bump2version --new-version "${{ github.event.release.tag_name }}" major
 
     - name: Run Tests
