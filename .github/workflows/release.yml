@@ -28,19 +28,17 @@ jobs:
         pip install -r requirements/dev.txt
         pip install -e ./
 
-    - name: Bump Minor Version
-      if: github.event_name == 'push'
+    - name: Create Pre-release build
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       working-directory: ./hamlet-cli
       run: |
-        new_version="$(bump2version --dry-run --list patch | grep new_version | sed -r s,"^.*=",,)"
-        echo "${new_version}"
-        bump2version --new-version "${new_version}" patch
+        bump2version build
 
     - name: Bump Release Version
-      if: github.event_name == 'release'
+      if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
       working-directory: ./hamlet-cli
       run: |
-        bump2version --new-version "${{ github.event.release.tag_name }}" major
+        bump2version --new-version "${{ github.event.release.tag_name }}" release
 
     - name: Run the compose network
       run: make run
