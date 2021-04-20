@@ -1,0 +1,53 @@
+name: release
+
+on:
+  push:
+    branches:
+      - master
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    - name: Install reqs
+      working-directory: ./hamlet-cli
+      run: pip install -r requirements/dev.txt
+
+    - name: Bump Minor Version
+      if: github.event_name == "push"
+      run: bump2version minor
+
+    - name: Bump Release Version
+      if: github.event_name == "release"
+      run: bump2version --new-version ${{ github.event.release.tag_name }} major
+
+    - name: Run Tests
+      working-directory: ./hamlet-cli
+      run: make tests
+
+    - name: Create Release
+      working-directory: ./hamlet-cli
+      run: >-
+        python -m
+        build
+        --sdist
+        --wheel
+        --outdir dist/
+        .
+
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      working-directory: ./hamlet-cli
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
