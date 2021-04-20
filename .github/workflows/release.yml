@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - packaging-test
   release:
     types: [ created ]
 
@@ -25,11 +26,11 @@ jobs:
       run: pip install -r requirements/dev.txt
 
     - name: Bump Minor Version
-      if: github.event_name == "push"
+      if: github.event_name == 'push'
       run: bump2version minor
 
     - name: Bump Release Version
-      if: github.event_name == "release"
+      if: github.event_name == 'release'
       run: bump2version --new-version ${{ github.event.release.tag_name }} major
 
     - name: Run Tests
