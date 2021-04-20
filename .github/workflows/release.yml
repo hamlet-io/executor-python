@@ -5,8 +5,10 @@ on:
     branches:
       - master
       - packaging-test
+    tags:
+      - v*
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   build:
@@ -29,6 +31,7 @@ jobs:
       if: github.event_name == 'push'
       run: |
         new_version="$(bump2version --dry-run --list patch | grep new_version | sed -r s,"^.*=",,)"
+        echo "${new_version}"
         bump2version --new-version "${new_version}" patch
 
     - name: Bump Release Version
