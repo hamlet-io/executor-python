@@ -67,7 +67,7 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3
       with:
-        commit-message: "chore: release bump"
+        commit-message: "chore: release bump [skip actions]"
         delete-branch: true
         title: 'chore: update cli package version'
         body: 'Updates the cli version details to align with pyi release'
