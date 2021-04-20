@@ -4,6 +4,7 @@ setuptools
 flake8
 
 ## packaging
+build
 wheel
 twine
 bump2version
