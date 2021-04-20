@@ -4,8 +4,10 @@ on:
   push:
     branches:
       - master
+    tags:
+      - v*
   release:
-    types: [ created ]
+    types: [ published ]
 
 jobs:
   build:
@@ -13,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
 
     - name: Setup Python
       uses: actions/setup-python@v1
@@ -22,19 +24,29 @@ jobs:
 
     - name: Install reqs
       working-directory: ./hamlet-cli
-      run: pip install -r requirements/dev.txt
+      run: |
+        pip install -r requirements/dev.txt
+        pip install -e ./
 
     - name: Bump Minor Version
-      if: github.event_name == "push"
-      run: bump2version minor
+      if: github.event_name == 'push'
+      working-directory: ./hamlet-cli
+      run: |
+        new_version="$(bump2version --dry-run --list patch | grep new_version | sed -r s,"^.*=",,)"
+        echo "${new_version}"
+        bump2version --new-version "${new_version}" patch
 
     - name: Bump Release Version
-      if: github.event_name == "release"
-      run: bump2version --new-version ${{ github.event.release.tag_name }} major
-
-    - name: Run Tests
+      if: github.event_name == 'release'
       working-directory: ./hamlet-cli
-      run: make tests
+      run: |
+        bump2version --new-version "${{ github.event.release.tag_name }}" major
+
+    - name: Run the compose network
+      run: make run
+
+    - name: Run the tests
+      run: docker-compose exec -T hamlet-cli /bin/bash -c 'source ~/.bashrc && make tests'
 
     - name: Create Release
       working-directory: ./hamlet-cli
@@ -51,3 +63,11 @@ jobs:
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
         packages_dir: hamlet-cli/dist
+
+    - name: save version bump
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "chore: package release"
+        git push
