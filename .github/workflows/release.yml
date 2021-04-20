@@ -34,7 +34,7 @@ jobs:
     - name: Bump Release Version
       if: github.event_name == 'release'
       run: |
-        new_patch=bump2version --new-version "${{ github.event.release.tag_name }}" major
+        bump2version --new-version "${{ github.event.release.tag_name }}" major
 
     - name: Run Tests
       working-directory: ./hamlet-cli
