@@ -1,10 +1,11 @@
 import os
 import re
 import click
+from tabulate import tabulate
 
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
-from hamlet.command.common.display import json_or_table_option
+from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.config import pass_options
 from .util import find_deployments_from_options
 
