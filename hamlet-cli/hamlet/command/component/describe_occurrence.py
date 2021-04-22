@@ -8,7 +8,7 @@ from .common import query_occurrences_state, DescribeContext
 
 
 DESCRIBE_OCCURRENCE_QUERY = (
-    "Occurrences[?Core.Name=={name}] | [0]"
+    "Occurrences[?Core.RawName=={name}] | [0]"
 )
 
 
