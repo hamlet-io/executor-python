@@ -75,7 +75,7 @@ occurrence_state_data = {
                     'Id': 'ComponentId[1]',
                     'RawId' : 'ComponentRawId[1]'
                 },
-                'Name': 'CoreName[1]',
+                'RawName': 'CoreRawName[1]',
                 'Type': 'CoreType[1]'
             },
             'Configuration': {
@@ -109,7 +109,7 @@ occurrence_state_data = {
                     'Id': 'ComponentId[2]',
                     'RawId' : 'ComponentRawId[2]'
                 },
-                'Name': 'CoreName[2]',
+                'RawName': 'CoreRawName[2]',
                 'Type': 'CoreType[2]'
             },
             'Configuration': {
@@ -155,18 +155,18 @@ def test_list_occurrences(blueprint_mock, ContextClassMock):
     assert {
         'TierId': 'TierId[1]',
         'ComponentId': 'ComponentRawId[1]',
-        'Name': 'CoreName[1]',
+        'Name': 'CoreRawName[1]',
         'Type': 'CoreType[1]',
     } in result
     assert {
         'TierId': 'TierId[2]',
         'ComponentId': 'ComponentRawId[2]',
-        'Name': 'CoreName[2]',
+        'Name': 'CoreRawName[2]',
         'Type': 'CoreType[2]',
     } in result
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence(blueprint_mock, ContextClassMock):
 
@@ -174,7 +174,7 @@ def test_describe_occurrence(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]'
+            '--name', 'CoreRawName[1]'
         ]
     )
     print(result.exc_info)
@@ -182,7 +182,7 @@ def test_describe_occurrence(blueprint_mock, ContextClassMock):
     assert json.loads(result.output) == occurrence_state_data['Occurrences'][0]
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
 
@@ -190,7 +190,7 @@ def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]',
+            '--name', 'CoreRawName[1]',
             '--query', 'Configuration.Solution'
         ]
     )
@@ -199,7 +199,7 @@ def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
     assert json.loads(result.output) == {'deployment:Unit': 'DeploymentUnit[1]'}
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
 
@@ -207,7 +207,7 @@ def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]',
+            '--name', 'CoreRawName[1]',
             'solution'
         ]
     )
@@ -216,7 +216,7 @@ def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
     assert json.loads(result.output) == {'deployment:Unit': 'DeploymentUnit[1]'}
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
 
@@ -224,7 +224,7 @@ def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]',
+            '--name', 'CoreRawName[1]',
             'resources'
         ]
     )
@@ -233,7 +233,7 @@ def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
     assert json.loads(result.output) == {'Resource[1]': {'Id': 'ResourceId[1]', 'Name': 'ResourceName[1]'}}
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextClassMock):
 
@@ -241,7 +241,7 @@ def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextCla
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]',
+            '--name', 'CoreRawName[1]',
             'setting-namespaces'
         ]
     )
@@ -250,7 +250,7 @@ def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextCla
     assert json.loads(result.output) == [{'Key': 'SettingNamespace[1]'}]
 
 
-@mock_describe_context('CoreName[1]')
+@mock_describe_context('CoreRawName[1]')
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
 
@@ -258,7 +258,7 @@ def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
     result = cli.invoke(
         describe_occurrence,
         [
-            '--name', 'CoreName[1]',
+            '--name', 'CoreRawName[1]',
             'attributes',
             '--output-format', 'json',
         ]
