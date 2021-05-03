@@ -32,11 +32,16 @@ jobs:
       run: |
         bump2version build
 
+    - name: Get the tag name
+      if: startsWith(github.ref 'refs/tags/')
+      id: get_tag_name
+      run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
+
     - name: Bump Release Version
-      if: startsWith(github.ref, 'ref/tags/' )
+      if: startsWith(github.ref, 'refs/tags/' )
       working-directory: ./hamlet-cli
       run: |
-        bump2version --new-version "${{ github.event.release.tag_name }}" release
+        bump2version --new-version "${{ steps.get_tag_name.outputs.TAG_NAME }}" release
 
     - name: Run the compose network
       run: make run
