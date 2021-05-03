@@ -73,3 +73,4 @@ jobs:
         title: 'chore: update cli package version'
         body: 'Updates the cli version details to align with pyi release'
         labels: 'chore'
+        base: 'master'
