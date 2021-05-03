@@ -1,4 +1,32 @@
-# [0.0.0](https://github.com/hamlet-io/executor-python/compare/v8.0.1...v0.0.0) (2021-04-02)
+# [0.0.0](https://github.com/hamlet-io/executor-python/compare/8.1.0...0.0.0) (2021-05-03)
+
+
+
+# [8.1.0](https://github.com/hamlet-io/executor-python/compare/v8.0.1...8.1.0) (2021-05-03)
+
+
+### Bug Fixes
+
+* add readme for package ([#109](https://github.com/hamlet-io/executor-python/issues/109)) ([3a225d3](https://github.com/hamlet-io/executor-python/commit/3a225d307918ad03fda08a81476a31c6a6b8c158))
+* align releases for pypi ([0befba9](https://github.com/hamlet-io/executor-python/commit/0befba9f3d5e39f8f7239d19057a7f2f65cf6e15))
+* log engine fatal messages on failure ([fd6defe](https://github.com/hamlet-io/executor-python/commit/fd6defeb6d389fe914732a11ac4f35370f71ad8b))
+* package config ([01ca58c](https://github.com/hamlet-io/executor-python/commit/01ca58c49949441da7ddfb82a996901dbcdbe8a6))
+* packaging support for pypi ([#112](https://github.com/hamlet-io/executor-python/issues/112)) ([9f254cf](https://github.com/hamlet-io/executor-python/commit/9f254cfa9e75c88f94ecb933eed3b282af161dfd))
+* repo url in changelogs ([62b556e](https://github.com/hamlet-io/executor-python/commit/62b556e131d23cbca75d672fd66b9e45b2881e23))
+* test updates for raw name ([f468f08](https://github.com/hamlet-io/executor-python/commit/f468f084ad387881d28e1c21945a1302246a3b3c))
+* use pull release for version bump ([#113](https://github.com/hamlet-io/executor-python/issues/113)) ([5d962e1](https://github.com/hamlet-io/executor-python/commit/5d962e17f37cdea4b90c52a691defe03db3acf6c))
+
+
+### Features
+
+* add dryrun tasks to run deployment ([d714390](https://github.com/hamlet-io/executor-python/commit/d7143906a941b3bf90ad928e09f22f9ac1ad7b8f))
+* add packaging  support ([0c65f40](https://github.com/hamlet-io/executor-python/commit/0c65f4079ca732c8cb07da6cdcf0ab0d62a02d74))
+* add relesae support for cli ([#111](https://github.com/hamlet-io/executor-python/issues/111)) ([cce8e47](https://github.com/hamlet-io/executor-python/commit/cce8e4726cf651f3f524e94e66af35d718312e06))
+* add test deployments command ([#110](https://github.com/hamlet-io/executor-python/issues/110)) ([fe1058b](https://github.com/hamlet-io/executor-python/commit/fe1058be69610a2f88ccd8a840eba8d408be24c5))
+* update message ([d6223db](https://github.com/hamlet-io/executor-python/commit/d6223dbc42729131e8e57b5ff7cb275ebdb4b533))
+* update message ([bbd2a7a](https://github.com/hamlet-io/executor-python/commit/bbd2a7ac994dd3235fdfe8cbe6db70371fee7e3a))
+* update message ([ddd78e9](https://github.com/hamlet-io/executor-python/commit/ddd78e9d3e8227d335dd9a716e5bcfb786d1261b))
+* use raw name and id for occurrences ([7765f5c](https://github.com/hamlet-io/executor-python/commit/7765f5c2de371f9151e696b49d3a2dac3361cd72))
 
 
 
