@@ -4,11 +4,10 @@ on:
   push:
     branches:
       - master
-    tags:
-      - v*
   release:
-    types: [ published ]
-
+    types:
+      - created
+      - edited
 jobs:
   build:
 
@@ -29,13 +28,13 @@ jobs:
         pip install -e ./
 
     - name: Create Pre-release build
-      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master'
       working-directory: ./hamlet-cli
       run: |
         bump2version build
 
     - name: Bump Release Version
-      if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
+      if: github.event_name == 'release'
       working-directory: ./hamlet-cli
       run: |
         bump2version --new-version "${{ github.event.release.tag_name }}" release
