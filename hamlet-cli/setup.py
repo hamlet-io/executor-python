@@ -24,7 +24,7 @@ class InstallCommand(install):
 
 setup(
     name='hamlet-cli',
-    version='7.0.6-dev3',
+    version='7.0.6-dev4',
     author='Hamlet',
     url="https://github.com/hamlet-io/executor-python",
     long_description=long_description,
