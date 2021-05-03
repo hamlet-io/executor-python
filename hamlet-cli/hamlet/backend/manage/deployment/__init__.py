@@ -3,7 +3,6 @@ from hamlet.backend.common import runner
 
 def run(
     delete=None,
-    resource_group=None,
     deployment_initiate=None,
     deployment_group=None,
     deployment_monitor=None,
@@ -13,6 +12,7 @@ def run(
     deployment_wait=None,
     deployment_unit_subset=None,
     output_dir=None,
+    dryrun=None,
     log_level=None,
     root_dir=None,
     tenant=None,
@@ -25,7 +25,6 @@ def run(
 ):
     options = {
         '-d': delete,
-        '-g': resource_group,
         '-i': deployment_initiate,
         '-m': deployment_monitor,
         '-l': deployment_group,
@@ -33,8 +32,9 @@ def run(
         '-s': deployment_scope,
         '-u': deployment_unit,
         '-w': deployment_wait,
+        '-y': dryrun,
         '-z': deployment_unit_subset,
-        '-o': output_dir
+        '-o': output_dir,
     }
     env = {
         'GENERATION_LOG_LEVEL': log_level,

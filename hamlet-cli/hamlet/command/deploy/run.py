@@ -8,6 +8,21 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 
 from .util import find_deployments_from_options
 
+def run_provider_deployments(deployment_provider, manage_args):
+
+    supported_deployment_provider = False
+    if deployment_provider== 'aws':
+        supported_deployment_provider = True
+        manage_stack_backend.run(**manage_args, _is_cli=True)
+
+    if deployment_provider== 'azure':
+        supported_deployment_provider = True
+        manage_deployment_backend.run(**manage_args, _is_cli=True)
+
+    if not supported_deployment_provider:
+        raise exceptions.CommandError(f'Deployment provider {deployment_provider} is not supported')
+
+
 @click.command(
     'run-deployments',
     short_help='',
@@ -43,7 +58,7 @@ from .util import find_deployments_from_options
         ['deployed', 'notdeployed', 'orphaned', ],
         case_sensitive=False,
     ),
-    default=['deployed', 'notdeployed'],
+    default=['deployed', 'notdeployed',],
     multiple=True,
     help='The states of deployments to include'
 )
@@ -68,6 +83,11 @@ from .util import find_deployments_from_options
     default=False,
     help='Confirm before executing each deployment'
 )
+@click.option(
+    '--dryrun/--no-dryrun',
+    default=False,
+    help='Perform a dry run of the deployment before the run'
+)
 @exceptions.backend_handler()
 @pass_options
 def run_deployments(
@@ -79,6 +99,7 @@ def run_deployments(
         output_dir,
         refresh_outputs,
         confirm,
+        dryrun,
         **kwargs):
     """
     Create and run deployments
@@ -121,30 +142,30 @@ def run_deployments(
 
         for operation in deployment['Operations']:
 
+            manage_args = {
+                **options.opts,
+                'deployment_group': deployment_group,
+                'deployment_unit': deployment_unit,
+                'output_dir': output_dir
+            }
+
+            if dryrun:
+                if deployment_state == 'deployed':
+                    dryrun_args = {
+                        **manage_args,
+                        'dryrun' : True
+                    }
+                    run_provider_deployments(deployment.get('DeploymentProvider'), dryrun_args)
+                else:
+                    click.echo('[-] skipping dryrun - only possible for deployments that have been deployed')
+
+
             if (
                 (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))
                 or not confirm
             ):
 
-                manage_args = {
-                    **options.opts,
-                    'deployment_group': deployment_group,
-                    'deployment_unit': deployment_unit,
-                    'output_dir': output_dir
-                }
-
                 if operation == 'delete':
                     manage_args['delete'] = True
 
-                supported_deployment_provider = False
-                if deployment['DeploymentProvider'] == 'aws':
-                    supported_deployment_provider = True
-                    manage_stack_backend.run(**manage_args, _is_cli=True)
-
-                if deployment['DeploymentProvider'] == 'azure':
-                    supported_deployment_provider = True
-                    manage_deployment_backend.run(**manage_args, _is_cli=True)
-
-                if not supported_deployment_provider:
-                    deployment_provider = deployment.get('DeploymentProvider', None)
-                    raise exceptions.CommandError(f'Deployment provider {deployment_provider} is not supported')
+                run_provider_deployments(deployment.get('DeploymentProvider'), manage_args)

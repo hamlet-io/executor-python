@@ -38,7 +38,7 @@ from .util import find_deployments_from_options
     '-s',
     '--deployment-state',
     type=click.Choice(
-        ['deployed', 'notdeployed',],
+        ['deployed', 'notdeployed', ],
         case_sensitive=False,
     ),
     default=['deployed', 'notdeployed'],
