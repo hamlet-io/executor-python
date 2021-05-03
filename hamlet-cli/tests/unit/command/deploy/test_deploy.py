@@ -17,6 +17,7 @@ ALL_VALID_OPTIONS['-m,--deployment-mode'] = 'deployment_mode'
 ALL_VALID_OPTIONS['-s,--deployment-state'] = 'deployed'
 ALL_VALID_OPTIONS['--refresh-outputs'] = True
 ALL_VALID_OPTIONS['--confirm'] = True
+ALL_VALID_OPTIONS['--dryrun'] = True
 
 
 def template_backend_run_mock(data):

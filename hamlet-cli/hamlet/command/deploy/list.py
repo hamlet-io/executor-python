@@ -61,7 +61,7 @@ def deployments_table(data):
         ['deployed', 'notdeployed', 'orphaned', ],
         case_sensitive=False,
     ),
-    default=['deployed', 'notdeployed'],
+    default=['deployed', 'notdeployed', 'orphaned',],
     multiple=True,
     help='The states of deployments to include'
 )
