@@ -15,12 +15,12 @@ RUN pip install -r /hamlet-cli/requirements/dev.txt \
 RUN echo "Moving /opt/hamlet => /hamlet to prevent overriding by volume" \
         mv /opt/hamlet /hamlet
 
-ENV GENERATION_BASE_DIR=/hamlet/executor
-ENV GENERATION_DIR=/hamlet/executor/cli
-ENV GENERATION_ENGINE_DIR=/hamlet/engine/core
-ENV GENERATION_PLUGIN_DIRS=/hamlet/engine/plugins/aws;/hamlet/engine/plugins/azure
-ENV GENERATION_STARTUP_DIR=/hamlet/startup
-ENV GENERATION_PATTERNS_DIR=/hamlet/patterns
+ENV GENERATION_BASE_DIR=/hamlet/executor \
+        GENERATION_DIR=/hamlet/executor/cli \
+        GENERATION_ENGINE_DIR=/hamlet/engine/core \
+        GENERATION_PLUGIN_DIRS=/hamlet/engine/plugins/aws;/hamlet/engine/plugins/azure \
+        GENERATION_STARTUP_DIR=/hamlet/startup \
+        GENERATION_PATTERNS_DIR=/hamlet/patterns
 
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 
