@@ -1,6 +1,5 @@
 import os
-from hamlet.backend.generate.cmdb import account, tenant
-from hamlet.backend.generate.product import app_lifecycle_mgmt
+from hamlet.backend.generate.cmdb import account, tenant, product
 from .conftest import conf
 
 
@@ -12,4 +11,4 @@ def run(cmdb, clear_cmdb):
     with cmdb('accounts') as path:
         account.run(**conf['cmdb']['account'], output_dir=path())
     with cmdb() as path:
-        app_lifecycle_mgmt.run(**conf['cmdb']['product'], output_dir=path())
+        product.run(**conf['cmdb']['product'], output_dir=path())

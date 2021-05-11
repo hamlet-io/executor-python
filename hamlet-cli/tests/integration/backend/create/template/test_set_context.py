@@ -1,7 +1,6 @@
 import os
 
-from hamlet.backend.generate.cmdb import account, tenant
-from hamlet.backend.generate.product import base
+from hamlet.backend.generate.cmdb import account, tenant, product
 from hamlet.backend.create.template.environment import Environment
 from hamlet.backend.create.template.set_context import set_context
 from .conftest import conf
@@ -23,7 +22,7 @@ def test(cmdb, clear_cmdb):
     with cmdb('accounts') as path:
         account.run(**conf['cmdb']['account'], output_dir=path())
     with cmdb() as path:
-        base.run(**conf['cmdb']['product'], output_dir=path())
+        product.run(**conf['cmdb']['product'], output_dir=path())
     with cmdb(product_name, 'config') as path:
         e = Environment({'ACCOUNT': account_name})
         set_context(cwd=path(), environment_obj=e)
