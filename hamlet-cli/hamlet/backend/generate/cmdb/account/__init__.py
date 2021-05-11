@@ -1,6 +1,7 @@
 import random
 import string
 from hamlet.backend.generate import utils
+from . import template as account_cmdb_template
 
 
 def generate_account_seed():
@@ -10,4 +11,4 @@ def generate_account_seed():
 
 
 def run(**kwargs):
-    utils.cookiecutter('cmdb', 'account', **kwargs)
+    utils.cookiecutter(account_cmdb_template, **kwargs)

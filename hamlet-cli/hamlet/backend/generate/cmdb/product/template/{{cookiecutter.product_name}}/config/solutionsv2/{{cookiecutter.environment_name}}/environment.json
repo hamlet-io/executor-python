@@ -1,0 +1,6 @@
+{
+  "Environment" : {
+    "Id" : "{{cookiecutter.environment_id}}",
+    "Name" : "{{cookiecutter.environment_name}}"
+  }
+}

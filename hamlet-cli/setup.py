@@ -41,7 +41,7 @@ setup(
         'cfn-flip>=1.2.0,<2.0.0',
         'diagrams>=0.18.0,<1.0.0',
         'marshmallow>=3.7.0,<4.0.0',
-        'jmespath>=0.10.0<1.0.0'
+        'jmespath>=0.10.0<1.0.0',
     ],
     include_package_data=True,
     python_requires='>=3.6',

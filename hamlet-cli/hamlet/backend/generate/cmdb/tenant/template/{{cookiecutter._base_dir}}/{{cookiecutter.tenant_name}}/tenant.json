@@ -1,0 +1,16 @@
+{
+    "Tenant" : {
+        "Id" : "{{cookiecutter.tenant_id}}",
+        "Name" : "{{cookiecutter.tenant_name}}"
+    },
+    "Account" : {
+        "Region" : "{{cookiecutter.default_region}}",
+        "Audit" : {
+            "Offline" :  {{cookiecutter.audit_log_offline_days}},
+            "Expiration" :  {{cookiecutter.audit_log_expiry_days}}
+        }
+    },
+    "Product" : {
+        "Region" : "{{cookiecutter.default_region}}"
+    }
+}

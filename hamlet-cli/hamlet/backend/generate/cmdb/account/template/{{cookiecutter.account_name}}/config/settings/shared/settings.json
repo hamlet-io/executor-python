@@ -1,0 +1,41 @@
+{
+    "Registries" : {
+        {%- if cookiecutter.provider_type == "aws" -%}
+        "docker" : {
+            "EndPoint" : "{{cookiecutter.provider_id}}.dkr.ecr.ap-southeast-2.amazonaws.com"
+        },
+        "lambda" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "lambda/"
+        },
+        "openapi" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "openapi/"
+        },
+        "spa" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "spa/"
+        },
+        "scripts" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "scripts/"
+        },
+        "contentnode" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "contentnode/"
+        },
+        "dataset" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "dataset/"
+        },
+        "pipeline" : {
+            "EndPoint" : "account-registry-{{cookiecutter.account_seed}}",
+            "Prefix" : "pipeline/"
+        },
+        "rdssnapshot" : {
+            "EndPoint" : "rds",
+            "Prefix" : "registry"
+        }
+        {%- endif -%}
+    }
+}

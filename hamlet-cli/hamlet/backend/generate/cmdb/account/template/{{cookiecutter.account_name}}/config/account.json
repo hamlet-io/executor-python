@@ -1,0 +1,9 @@
+{
+    "Account" : {
+        "Id" : "{{cookiecutter.account_id}}",
+        "Name" : "{{cookiecutter.account_name}}",
+        "Seed" : "{{cookiecutter.account_seed}}",
+        "Provider" : "{{cookiecutter.provider_type}}",
+        "ProviderId" : "{{cookiecutter.provider_id}}"
+    }
+}
