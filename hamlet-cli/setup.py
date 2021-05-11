@@ -42,7 +42,7 @@ setup(
         'diagrams>=0.18.0,<1.0.0',
         'marshmallow>=3.7.0,<4.0.0',
         'jmespath>=0.10.0<1.0.0',
-        'importlib_resources>=5.1.2<6.0.0'
+        'importlib-resources>=5.1.2<6.0.0',
     ],
     include_package_data=True,
     python_requires='>=3.6',
