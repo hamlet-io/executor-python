@@ -1,13 +1,11 @@
-import os
-import re
 import click
 from tabulate import tabulate
 
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.config import pass_options
 from .util import find_deployments_from_options
+
 
 def deployments_table(data):
     tablerows = []
@@ -25,6 +23,7 @@ def deployments_table(data):
         headers=['DeploymentGroup', 'DeploymentUnit', 'DeploymentProvider', 'CurrentState'],
         tablefmt='github'
     )
+
 
 @click.command(
     'list-deployments',
@@ -58,10 +57,10 @@ def deployments_table(data):
     '-s',
     '--deployment-state',
     type=click.Choice(
-        ['deployed', 'notdeployed', 'orphaned', ],
+        ['deployed', 'notdeployed', 'orphaned'],
         case_sensitive=False,
     ),
-    default=['deployed', 'notdeployed', 'orphaned',],
+    default=['deployed', 'notdeployed', 'orphaned'],
     multiple=True,
     help='The states of deployments to include'
 )
@@ -73,9 +72,9 @@ def list_deployments(options, deployment_mode, deployment_group, deployment_unit
     List available deployments
     """
     return find_deployments_from_options(
-            options=options,
-            deployment_mode=deployment_mode,
-            deployment_group=deployment_group,
-            deployment_units=deployment_unit,
-            deployment_states=deployment_state
-        )
+        options=options,
+        deployment_mode=deployment_mode,
+        deployment_group=deployment_group,
+        deployment_units=deployment_unit,
+        deployment_states=deployment_state
+    )

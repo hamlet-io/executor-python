@@ -54,11 +54,11 @@ def run(script_name, args, options, env, _is_cli):
 
     try:
         os.path.isdir(global_env.GENERATION_DIR)
-    except TypeError as e:
+    except TypeError:
         raise BackendException(f'Could not find hamlet bash script dir at GENERATION_DIR: {global_env.GENERATION_DIR}')
 
     if shutil.which('bash') is None:
-        raise BackendException(f'Could not find bash installation')
+        raise BackendException('Could not find bash installation')
 
     try:
         script_call_line = __cli_params_to_script_call(

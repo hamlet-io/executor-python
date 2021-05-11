@@ -7,10 +7,11 @@ from .exceptions import BackendException
 
 SHELL_SCRIPT_FILENAME = os.path.join(os.path.dirname(__file__), 'shell_vars_to_json.sh')
 
+
 def shell_vars_to_json(filename=None, vars_mapping=None):
 
     if shutil.which('bash') is None:
-        raise BackendException(f'Could not find bash installation')
+        raise BackendException('Could not find bash installation')
 
     args = [SHELL_SCRIPT_FILENAME, filename]
     for variable_name, variable_type in vars_mapping.items():

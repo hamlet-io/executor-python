@@ -63,7 +63,7 @@ def mock_backend(unitlist=None):
                             'DeploymentGroup': 'DeploymentGroup[1]',
                             'DeploymentProvider': 'DeploymentProvider[1]',
                             'Operations': ['Operation[1]'],
-                            'CurrentState' : 'deployed'
+                            'CurrentState': 'deployed'
                         }
                     },
                     {
@@ -73,7 +73,7 @@ def mock_backend(unitlist=None):
                             'DeploymentGroup': 'DeploymentGroup[2]',
                             'DeploymentProvider': 'DeploymentProvider[2]',
                             'Operations': ['Operation[2]'],
-                            'CurrentState' : 'deployed',
+                            'CurrentState': 'deployed',
                         }
                     }
                 ]
@@ -88,7 +88,7 @@ def mock_backend(unitlist=None):
                             'DeploymentGroup': 'DeploymentGroup[3]',
                             'DeploymentProvider': 'DeploymentProvider[3]',
                             'Operations': ['Operation[3]'],
-                            'CurrentState' : 'deployed',
+                            'CurrentState': 'deployed',
                         }
                     },
                     {
@@ -98,7 +98,7 @@ def mock_backend(unitlist=None):
                             'DeploymentGroup': 'DeploymentGroup[4]',
                             'DeploymentProvider': 'DeploymentProvider[4]',
                             'Operations': ['Operation[4]'],
-                            'CurrentState' : 'deployed',
+                            'CurrentState': 'deployed',
                         }
                     }
                 ]
@@ -124,26 +124,26 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         'DeploymentGroup': 'DeploymentGroup[1]',
         'DeploymentProvider': 'DeploymentProvider[1]',
         'Operations': ['Operation[1]'],
-        'CurrentState' : 'deployed',
+        'CurrentState': 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[2]',
         'DeploymentGroup': 'DeploymentGroup[2]',
         'DeploymentProvider': 'DeploymentProvider[2]',
         'Operations': ['Operation[2]'],
-        'CurrentState' : 'deployed',
+        'CurrentState': 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[3]',
         'DeploymentGroup': 'DeploymentGroup[3]',
         'DeploymentProvider': 'DeploymentProvider[3]',
         'Operations': ['Operation[3]'],
-        'CurrentState' : 'deployed',
+        'CurrentState': 'deployed',
     } in result
     assert {
         'DeploymentUnit': 'DeploymentUnit[4]',
         'DeploymentGroup': 'DeploymentGroup[4]',
         'DeploymentProvider': 'DeploymentProvider[4]',
         'Operations': ['Operation[4]'],
-        'CurrentState' : 'deployed',
+        'CurrentState': 'deployed',
     } in result

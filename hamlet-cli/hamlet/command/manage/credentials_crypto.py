@@ -63,7 +63,6 @@ from hamlet.command.common import exceptions
         case_sensitive=False
     )
 )
-
 @exceptions.backend_handler()
 @pass_options
 def credentials_crypto(options, **kwargs):

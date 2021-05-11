@@ -4,6 +4,7 @@ from pytest import ExitCode as ec
 
 from hamlet.backend.common.exceptions import BackendException
 
+
 def run(
     testpaths=None,
     root_dir=None,
@@ -14,7 +15,7 @@ def run(
     # Do not use pytest.main because it can't correctly work with the files changed in runtime
 
     if shutil.which('bash') is None:
-        raise BackendException(f'Could not find bash installation')
+        raise BackendException('Could not find bash installation')
 
     try:
         args = [
