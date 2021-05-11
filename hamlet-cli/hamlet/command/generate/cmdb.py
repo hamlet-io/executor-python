@@ -11,11 +11,7 @@ from hamlet.command.generate import decorators
 from hamlet.command.common.exceptions import CommandError
 
 
-@click.group('cmdb')
-def group():  # pragma: no cover
-    pass
-
-@group.command('tenant', cls=DynamicCommand)
+@click.command('tenant-cmdb', cls=DynamicCommand)
 @dynamic_option(
     '--tenant-id',
     help='The unique Id for the tenant',
@@ -63,7 +59,7 @@ def generate_tenant(
             raise CommandError(e)
 
 
-@group.command('account', cls=DynamicCommand)
+@click.command('account-cmdb', cls=DynamicCommand)
 @dynamic_option(
     '--account-id',
     help='The unique id for the account',
@@ -117,7 +113,7 @@ def generate_account(
             raise CommandError(e)
 
 
-@group.command('product', cls=DynamicCommand)
+@click.command('product-cmdb', cls=DynamicCommand)
 @dynamic_option(
     '--product-id',
     help='The Id of your product',
