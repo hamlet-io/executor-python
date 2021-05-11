@@ -3,8 +3,7 @@ import json
 import tempfile
 from unittest import mock
 # import subprocess
-from hamlet.backend.generate.cmdb import account, tenant
-from hamlet.backend.generate.product import base
+from hamlet.backend.generate.cmdb import account, tenant, product
 from hamlet.backend.create.template.environment import Environment
 from hamlet.backend.create.template import context_tree as ct
 from .conftest import conf
@@ -25,7 +24,7 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
     with cmdb('accounts') as path:
         account.run(**conf['cmdb']['account'], output_dir=path())
     with cmdb() as path:
-        base.run(**conf['cmdb']['product'], output_dir=path())
+        product.run(**conf['cmdb']['product'], output_dir=path())
 
     with cmdb() as path:
         root_dir = path()

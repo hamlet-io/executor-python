@@ -19,16 +19,16 @@ LEVEL = 'account'
 def run(cmdb):
     with cmdb('accounts', ACCOUNT, 'config'):
         create_template_backend.run(
-            level=LEVEL,
+            deployment_group=LEVEL,
             deployment_unit='audit'
         )
         create_template_backend.run(
-            level=LEVEL,
+            deployment_group=LEVEL,
             deployment_unit='s3'
         )
 
     #  check that files were created
-    with cmdb('accounts', ACCOUNT, 'infrastructure', 'cf', 'shared') as filename:
+    with cmdb('accounts', ACCOUNT, 'infrastructure', 'cf', 'shared', 's3', 'default') as filename:
 
         def prefix(level):
             return [
@@ -46,21 +46,13 @@ def run(cmdb):
                 ext='sh'
             )
         )
-        assert os.path.exists(
-            filename(
-                *prefix('s3'),
-                'genplan',
-                sep='-',
-                ext='sh'
-            )
-        )
 
         assert os.path.exists(
             filename(
-                *prefix('audit'),
-                'genplan',
+                *prefix('s3'),
+                'generation-contract',
                 sep='-',
-                ext='sh'
+                ext='json'
             )
         )
 
@@ -71,6 +63,29 @@ def run(cmdb):
             ext='json'
         )
 
+        assert os.path.exists(cf_s3_template_filename)
+        with open(cf_s3_template_filename) as f:
+            json.load(f)
+
+    with cmdb('accounts', ACCOUNT, 'infrastructure', 'cf', 'shared', 'audit', 'default') as filename:
+
+        def prefix(level):
+            return [
+                LEVEL,
+                level,
+                ACCOUNT,
+                conf['cmdb']['tenant']['default_region'],
+            ]
+
+        assert os.path.exists(
+            filename(
+                *prefix('audit'),
+                'generation-contract',
+                sep='-',
+                ext='json'
+            )
+        )
+
         cf_audit_template_filename = filename(
             *prefix('audit'),
             'template',
@@ -78,9 +93,6 @@ def run(cmdb):
             ext='json'
         )
 
-        assert os.path.exists(cf_s3_template_filename)
         assert os.path.exists(cf_audit_template_filename)
-        with open(cf_s3_template_filename) as f:
-            json.load(f)
         with open(cf_audit_template_filename) as f:
             json.load(f)
