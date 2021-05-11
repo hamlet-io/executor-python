@@ -1,0 +1,8 @@
+{
+    "_base_dir" : "accounts",
+    "tenant_id" : "",
+    "tenant_name" : "{{cookiecutter.tenant_id}}",
+    "default_region" : "ap-southeast-2",
+    "audit_log_expiry_days" : 2555,
+    "audit_log_offline_days" : 90
+}

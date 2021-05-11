@@ -1,0 +1,17 @@
+{
+    "Product" : {
+        "Id" : "{{cookiecutter.product_id}}",
+        "Name" : "{{cookiecutter.product_name}}"{% if cookiecutter.domain_zone != "" %},
+        "Domain" : "{{cookiecutter.product_id}}"{% endif %}
+    }{% if cookiecutter.domain_zone != "" %},
+    "Domains" : {
+        "{{cookiecutter.product_id}}" : {
+            "Stem": "{{cookiecutter.domain_zone}}"
+        }
+    },
+    "Certificates" : {
+        "{{cookiecutter.product_id}}" : {
+            "Domain" : "{{cookiecutter.product_id}}"
+        }
+    }{% endif %}
+}
