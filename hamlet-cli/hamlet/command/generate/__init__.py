@@ -1,6 +1,7 @@
 from hamlet.command import root as cli
-from .cmdb import group as cmdb_generation_group
-
+from .cmdb import generate_tenant as generate_tenant_cmdb_cmd
+from .cmdb import generate_account as generate_account_cmdb_cmd
+from .cmdb import generate_product as generate_product_cmdb_cmd
 
 @cli.group('generate')
 def group():
@@ -10,4 +11,6 @@ def group():
     pass
 
 
-group.add_command(cmdb_generation_group)
+group.add_command(generate_tenant_cmdb_cmd)
+group.add_command(generate_account_cmdb_cmd)
+group.add_command(generate_product_cmdb_cmd)
