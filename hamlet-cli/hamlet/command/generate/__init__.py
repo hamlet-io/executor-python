@@ -3,6 +3,7 @@ from .cmdb import generate_tenant as generate_tenant_cmdb_cmd
 from .cmdb import generate_account as generate_account_cmdb_cmd
 from .cmdb import generate_product as generate_product_cmdb_cmd
 
+
 @cli.group('generate')
 def group():
     """

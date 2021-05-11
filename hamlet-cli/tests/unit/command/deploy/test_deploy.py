@@ -77,7 +77,7 @@ unit_list = {
                         'DeploymentGroup': 'DeploymentGroup1',
                         'DeploymentProvider': 'aws',
                         'Operations': ['Operation11'],
-                        'CurrentState' : 'deployed'
+                        'CurrentState': 'deployed'
                     }
                 },
                 {
@@ -87,7 +87,7 @@ unit_list = {
                         'DeploymentGroup': 'DeploymentGroup2',
                         'DeploymentProvider': 'aws',
                         'Operations': ['Operation21'],
-                        'CurrentState' : 'deployed'
+                        'CurrentState': 'deployed'
                     }
                 }
             ]

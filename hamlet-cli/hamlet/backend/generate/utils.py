@@ -4,12 +4,12 @@ import tempfile
 import importlib_resources
 
 from cookiecutter.main import cookiecutter as cookiecutter_main
-from hamlet import env
+from hamlet.backend.common.exceptions import BackendException
 
 
 def extract_package_to_temp(package, tmp_dir, root_dir, package_dir):
     for entry in importlib_resources.files(package).joinpath(package_dir).iterdir():
-        entry_path = os.path.commonprefix([ root_dir, entry ])
+        entry_path = os.path.commonprefix([root_dir, entry])
         entry_path = str(entry).replace(entry_path, '').lstrip('/')
 
         if entry.is_dir():
@@ -36,9 +36,11 @@ def cookiecutter(template_package, output_dir, **kwargs):
             cookiecutter_path = importlib_resources.path(template_package, 'cookiecutter.json')
             package_root_dir = os.path.dirname(cookiecutter_path)
 
-            extract_package_to_temp(template_package, template_dir, package_root_dir, '' )
+            extract_package_to_temp(template_package, template_dir, package_root_dir, '')
         else:
-            raise BackendException(f'Provided template package does not contain cookiecutter.json config: {template_package}')
+            raise BackendException(
+                f'Provided template package does not contain cookiecutter.json config: {template_package}'
+            )
 
         replace_parameters_values(
             kwargs,

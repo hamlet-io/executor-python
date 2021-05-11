@@ -17,6 +17,7 @@ ALL_VALID_OPTIONS['-o,--output-dir'] = 'output_dir'
 ALL_VALID_OPTIONS['-p,--pytest-args'] = 'PyTestArg1'
 ALL_VALID_OPTIONS['-s,--silent'] = False
 
+
 def template_backend_run_mock(data):
     def run(
         entrance='unitlist',
@@ -75,7 +76,7 @@ unit_list = {
                         'DeploymentGroup': 'DeploymentGroup1',
                         'DeploymentProvider': 'aws',
                         'Operations': ['Operation11'],
-                        'CurrentState' : 'deployed'
+                        'CurrentState': 'deployed'
                     }
                 },
                 {
@@ -85,7 +86,7 @@ unit_list = {
                         'DeploymentGroup': 'DeploymentGroup2',
                         'DeploymentProvider': 'aws',
                         'Operations': ['Operation21'],
-                        'CurrentState' : 'deployed'
+                        'CurrentState': 'deployed'
                     }
                 }
             ]
@@ -95,12 +96,24 @@ unit_list = {
 
 
 @mock_backend(unit_list)
-def test_input_valid(blueprint_mock, ContextClassMock, create_template_backend, test_generate_backend, test_run_backend):
+def test_input_valid(
+        blueprint_mock,
+        ContextClassMock,
+        create_template_backend,
+        test_generate_backend,
+        test_run_backend):
+
     run_options_test(CliRunner(), test_deployments, ALL_VALID_OPTIONS, blueprint_mock.run)
 
 
 @mock_backend(unit_list)
-def test_input_validation(blueprint_mock, ContextClassMock, create_template_backend, test_generate_backend, test_run_backend):
+def test_input_validation(
+        blueprint_mock,
+        ContextClassMock,
+        create_template_backend,
+        test_generate_backend,
+        test_run_backend):
+
     runner = CliRunner()
     run_validatable_option_test(
         runner,

@@ -8,14 +8,15 @@ from hamlet.backend.manage import deployment as manage_deployment_backend
 
 from .util import find_deployments_from_options
 
+
 def run_provider_deployments(deployment_provider, manage_args):
 
     supported_deployment_provider = False
-    if deployment_provider== 'aws':
+    if deployment_provider == 'aws':
         supported_deployment_provider = True
         manage_stack_backend.run(**manage_args, _is_cli=True)
 
-    if deployment_provider== 'azure':
+    if deployment_provider == 'azure':
         supported_deployment_provider = True
         manage_deployment_backend.run(**manage_args, _is_cli=True)
 
@@ -58,7 +59,7 @@ def run_provider_deployments(deployment_provider, manage_args):
         ['deployed', 'notdeployed', 'orphaned', ],
         case_sensitive=False,
     ),
-    default=['deployed', 'notdeployed',],
+    default=['deployed', 'notdeployed'],
     multiple=True,
     help='The states of deployments to include'
 )
@@ -105,12 +106,12 @@ def run_deployments(
     Create and run deployments
     """
     deployments = find_deployments_from_options(
-                    options=options,
-                    deployment_mode=deployment_mode,
-                    deployment_group=deployment_group,
-                    deployment_units=deployment_unit,
-                    deployment_states=deployment_state
-                )
+        options=options,
+        deployment_mode=deployment_mode,
+        deployment_group=deployment_group,
+        deployment_units=deployment_unit,
+        deployment_states=deployment_state
+    )
 
     if len(deployments) == 0:
         raise exceptions.CommandError('No deployments found that match pattern')
@@ -125,7 +126,9 @@ def run_deployments(
         click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')))
 
         if deployment_state == 'orphaned':
-            click.echo((click.style(f'[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow')))
+            click.echo(
+                (click.style('[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow'))
+            )
 
         click.echo('')
 
@@ -153,12 +156,11 @@ def run_deployments(
                 if deployment_state == 'deployed':
                     dryrun_args = {
                         **manage_args,
-                        'dryrun' : True
+                        'dryrun': True
                     }
                     run_provider_deployments(deployment.get('DeploymentProvider'), dryrun_args)
                 else:
                     click.echo('[-] skipping dryrun - only possible for deployments that have been deployed')
-
 
             if (
                 (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))

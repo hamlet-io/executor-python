@@ -6,6 +6,7 @@ from hamlet.backend.create import template as create_template_backend
 
 from .util import find_deployments_from_options
 
+
 @click.command(
     'create-deployments',
     short_help='',
@@ -58,7 +59,14 @@ from .util import find_deployments_from_options
 )
 @exceptions.backend_handler()
 @pass_options
-def create_deployments(options, deployment_mode, deployment_group, deployment_unit, deployment_state, output_dir, **kwargs):
+def create_deployments(
+        options,
+        deployment_mode,
+        deployment_group,
+        deployment_unit,
+        deployment_state,
+        output_dir,
+        **kwargs):
     """
     Create deployment outputs
     """

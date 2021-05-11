@@ -73,7 +73,7 @@ occurrence_state_data = {
                 },
                 'Component': {
                     'Id': 'ComponentId[1]',
-                    'RawId' : 'ComponentRawId[1]'
+                    'RawId': 'ComponentRawId[1]'
                 },
                 'RawName': 'CoreRawName[1]',
                 'Type': 'CoreType[1]'
@@ -107,7 +107,7 @@ occurrence_state_data = {
                 },
                 'Component': {
                     'Id': 'ComponentId[2]',
-                    'RawId' : 'ComponentRawId[2]'
+                    'RawId': 'ComponentRawId[2]'
                 },
                 'RawName': 'CoreRawName[2]',
                 'Type': 'CoreType[2]'

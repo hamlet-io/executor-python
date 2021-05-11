@@ -6,12 +6,11 @@ from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.command.common.exceptions import CommandError
 from hamlet.backend.create import template as create_template_backend
-from hamlet.backend.manage import stack as manage_stack_backend
-from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.test.generate import run as test_generate_backend
 from hamlet.backend.test import run as test_run_backend
 
 from .util import find_deployments_from_options
+
 
 @click.command(
     'test-deployments',
@@ -88,17 +87,17 @@ def test_deployments(
     output_dir = os.path.abspath(output_dir)
 
     deployments = find_deployments_from_options(
-                    options=options,
-                    deployment_mode=deployment_mode,
-                    deployment_group=deployment_group,
-                    deployment_units=deployment_unit
-                )
+        options=options,
+        deployment_mode=deployment_mode,
+        deployment_group=deployment_group,
+        deployment_units=deployment_unit
+    )
 
     if len(deployments) == 0:
         raise exceptions.CommandError('No deployments found that match pattern')
 
     click.echo('')
-    click.echo(click.style(f'[*] Creating deployments:', bold=True, fg='green'))
+    click.echo(click.style('[*] Creating deployments:', bold=True, fg='green'))
     click.echo('')
     for deployment in deployments:
 
@@ -128,15 +127,15 @@ def test_deployments(
     click.echo('')
     click.echo(click.style('[*] Testing deployments:', bold=True, fg='green'))
     click.echo('')
-    test_script_filename = f'test_deployments.py'
-    test_script = test_generate_backend(
+    test_script_filename = 'test_deployments.py'
+    test_generate_backend(
         output=f'{output_dir}/{test_script_filename}',
         directory=output_dir,
     )
 
     try:
         test_run_backend.run(
-            testpaths=[ test_script_filename ],
+            testpaths=[test_script_filename],
             pytest_args=pytest_args,
             silent=silent,
             root_dir=output_dir
