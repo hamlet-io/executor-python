@@ -5,15 +5,15 @@ ENV TEST_ROOT_DIR=/var/opt/hamlet
 WORKDIR /hamlet-cli
 USER root
 
-COPY requirements /hamlet-cli/requirements
-COPY docker-python-install.sh docker-python-install.sh
-RUN bash docker-python-install.sh
-
-COPY docker-postinstall.sh /hamlet-cli/
-RUN bash docker-postinstall.sh
-
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONPATH "$PYTHONPATH:/hamlet-cli"
+
+COPY ./ /hamlet-cli
+
+RUN pip install -r /hamlet-cli/requirements/dev.txt \
+        pip install -e /hamlet-cli
+
+RUN echo "Moving /opt/hamlet => /hamlet to prevent overriding by volume" \
+        mv /opt/hamlet /hamlet
 
 ENV GENERATION_BASE_DIR=/hamlet/executor
 ENV GENERATION_DIR=/hamlet/executor/cli
@@ -21,8 +21,6 @@ ENV GENERATION_ENGINE_DIR=/hamlet/engine/core
 ENV GENERATION_PLUGIN_DIRS=/hamlet/engine/plugins/aws;/hamlet/engine/plugins/azure
 ENV GENERATION_STARTUP_DIR=/hamlet/startup
 ENV GENERATION_PATTERNS_DIR=/hamlet/patterns
-
-COPY ./ /hamlet-cli
 
 COPY ./docker-entrypoint.sh /docker-entrypoint.sh
 
