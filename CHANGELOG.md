@@ -1,8 +1,22 @@
-# [0.0.0](https://github.com/hamlet-io/executor-python/compare/8.1.0...0.0.0) (2021-05-03)
+# [0.0.0](https://github.com/hamlet-io/executor-python/compare/8.1.2...0.0.0) (2021-05-13)
 
 
 
-# [8.1.0](https://github.com/hamlet-io/executor-python/compare/v8.0.1...8.1.0) (2021-05-03)
+## [8.1.2](https://github.com/hamlet-io/executor-python/compare/8.1.1...8.1.2) (2021-05-13)
+
+
+### Bug Fixes
+
+* bump release to next dev release ([#131](https://github.com/hamlet-io/executor-python/issues/131)) ([55666c7](https://github.com/hamlet-io/executor-python/commit/55666c75fa383a85bd6112a4f616ca5145e6d157))
+* importlib package name ([a3e6a57](https://github.com/hamlet-io/executor-python/commit/a3e6a571be6591ee05622cf4570178606bcc1c00))
+* include cookie cutter templates in packag ([#135](https://github.com/hamlet-io/executor-python/issues/135)) ([b51637c](https://github.com/hamlet-io/executor-python/commit/b51637c3bd8169f79c8c3a9deccc244b53885d37))
+* include importlib_resources in setup ([a33101e](https://github.com/hamlet-io/executor-python/commit/a33101e76b59ef29da18b5d1a4b89e01d44d812f))
+* include setup packages in test ([71f087f](https://github.com/hamlet-io/executor-python/commit/71f087f2a8ae561de8ec9b15abf7442adb3249fa))
+* revert testing for cmdb generate ([b54402c](https://github.com/hamlet-io/executor-python/commit/b54402c80fe037fc530ca9569f8c5579ecb4b59b))
+
+
+
+## [8.1.1](https://github.com/hamlet-io/executor-python/compare/8.1.0...8.1.1) (2021-05-03)
 
 
 ### Bug Fixes
@@ -13,6 +27,11 @@
 * package config ([01ca58c](https://github.com/hamlet-io/executor-python/commit/01ca58c49949441da7ddfb82a996901dbcdbe8a6))
 * packaging support for pypi ([#112](https://github.com/hamlet-io/executor-python/issues/112)) ([9f254cf](https://github.com/hamlet-io/executor-python/commit/9f254cfa9e75c88f94ecb933eed3b282af161dfd))
 * repo url in changelogs ([62b556e](https://github.com/hamlet-io/executor-python/commit/62b556e131d23cbca75d672fd66b9e45b2881e23))
+* run release versions based on created release ([#125](https://github.com/hamlet-io/executor-python/issues/125)) ([2fa5998](https://github.com/hamlet-io/executor-python/commit/2fa5998d0f257e8050a66dda3e0ed58c3536ecf5))
+* set base branch for release pr ([7fbf5d2](https://github.com/hamlet-io/executor-python/commit/7fbf5d2d26a1ac776dc0741077be52130a2b9525))
+* syntax error in github action ([f833fa5](https://github.com/hamlet-io/executor-python/commit/f833fa541d10db999957b3497c280922c3d78757))
+* tag name config for release ([eb82dfb](https://github.com/hamlet-io/executor-python/commit/eb82dfb8848cc4f13b353b897d6c63fed85ab3bf))
+* tag release handling ([f1d19c3](https://github.com/hamlet-io/executor-python/commit/f1d19c3ee75c8e3b8f3be6295f703500b136a2df))
 * test updates for raw name ([f468f08](https://github.com/hamlet-io/executor-python/commit/f468f084ad387881d28e1c21945a1302246a3b3c))
 * use pull release for version bump ([#113](https://github.com/hamlet-io/executor-python/issues/113)) ([5d962e1](https://github.com/hamlet-io/executor-python/commit/5d962e17f37cdea4b90c52a691defe03db3acf6c))
 
