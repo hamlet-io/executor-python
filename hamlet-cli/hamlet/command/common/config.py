@@ -2,7 +2,10 @@ import click
 import os
 
 from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
+from hamlet.env import HAMLET_HOME_DIR
 
+
+hamlet_config_dir = os.path.join(HAMLET_HOME_DIR, 'config')
 
 class ConfigParam(Param):
     # For compatibility with click>=7.0
@@ -30,7 +33,6 @@ class ConfigParam(Param):
             msg = f'{self.name} in a config file'
         return msg
 
-
 class ConfigSchema(object):
     '''Schema for standard configuration.'''
 
@@ -44,15 +46,11 @@ class ConfigSchema(object):
         product = ConfigParam(name='product', type=str)
         environment = ConfigParam(name='environment', type=str)
         segment = ConfigParam(name='segment', type=str)
+        engine = ConfigParam(name='engine', type=str)
 
     @matches_section("profile:*")
     class Profile(Default):
         '''Profile-specific configuration schema.'''
-
-
-def get_default_config_path():
-    '''Get the default path to config files.'''
-    return click.get_app_dir(app_name='hamlet', force_posix=True)
 
 
 class ConfigReader(ConfigFileReader):
@@ -60,7 +58,7 @@ class ConfigReader(ConfigFileReader):
 
     config_files = ['config']
     config_name = 'standard'
-    config_searchpath = [get_default_config_path()]
+    config_searchpath = [HAMLET_HOME_DIR, hamlet_config_dir]
     config_section_schemas = [ConfigSchema.Default, ConfigSchema.Profile]
 
     @classmethod
@@ -215,6 +213,16 @@ class Options:
     def segment(self, value):
         '''Set the segment setting'''
         self._set_option('segment', value)
+
+    @property
+    def engine(self):
+        '''Get the engine to use for the district'''
+        return self._get_option('engine')
+
+    @engine.setter
+    def engine(self, value):
+        '''Set the engine setting'''
+        self._set_option('engine', value)
 
     @property
     def generation_framework(self):
