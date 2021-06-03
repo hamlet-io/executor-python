@@ -71,6 +71,27 @@ def common_logging_options(func):
 
     return wrapper
 
+def common_engine_options(func):
+    '''Add common options for the engine'''
+
+    @click.option(
+        '--engine',
+        envvar='HAMLET_ENGINE',
+        default='unicycle',
+        help='The name of the engine to use',
+    )
+    @click.pass_context
+    @functools.wraps(func)
+    def wrapper(ctx, *args, **kwargs):
+        '''
+        Engine configuration options
+        '''
+        opts = ctx.ensure_object(Options)
+        opts.engine = kwargs.pop('engine')
+        kwargs['opts'] = opts
+        return ctx.invoke(func, *args, **kwargs)
+
+    return wrapper
 
 def common_generation_options(func):
     '''Add commmon options for generation'''

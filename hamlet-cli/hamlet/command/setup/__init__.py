@@ -15,7 +15,7 @@ from hamlet.command.common.config import pass_options
 @pass_options
 def setup(options, **kwargs):
     '''
-    Sets up the local hamlet workspace
+    Loads the plugins defined as part of the current district
     '''
     args = {
         **options.opts,
