@@ -43,6 +43,8 @@ setup(
         'marshmallow>=3.7.0,<4.0.0',
         'jmespath>=0.10.0<1.0.0',
         'importlib-resources>=5.1.2<6.0.0',
+        'www-authenticate>=0.9.2<1.0.0',
+        'requests>=2.25.1<3.0.0',
 
         # cfn-lint has issues with the latest networkx
         # Their requirements are installing the latest one
