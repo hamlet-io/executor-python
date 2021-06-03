@@ -2,8 +2,7 @@ import os
 import json
 import shutil
 import hashlib
-from abc import ABC, abstractmethod, abstractproperty
-from sys import path
+from abc import ABC, abstractmethod
 
 from hamlet.backend.common.exceptions import BackendException
 from .common import ENGINE_STORE_ENGINES_DIR, ENGINE_STORE_ENGINE_STATE_FILENAME
@@ -29,50 +28,50 @@ class EngineInterface(ABC):
         self._sources = {}
 
     _environment = {
-        'GENERATION_ENGINE_DIR' : [
+        'GENERATION_ENGINE_DIR': [
             {
-                'part_type' :  'core-engine',
-                'env_path' : ''
+                'part_type': 'core-engine',
+                'env_path': ''
             }
         ],
-        'GENERATION_PLUGIN_DIRS' : [
+        'GENERATION_PLUGIN_DIRS': [
             {
-                'part_type' :  'engine-plugin-aws',
-                'env_path' : ''
+                'part_type': 'engine-plugin-aws',
+                'env_path': ''
             },
             {
-                'part_type' :  'engine-plugin-azure',
-                'env_path' : ''
+                'part_type': 'engine-plugin-azure',
+                'env_path': ''
             }
         ],
-        'GENERATION_BIN_DIR' : [
+        'GENERATION_BIN_DIR': [
             {
-                'part_type' :  'engine-binary',
-                'env_path' : ''
+                'part_type': 'engine-binary',
+                'env_path': ''
             }
         ],
-        'GENERATION_BASE_DIR'   : [
+        'GENERATION_BASE_DIR': [
             {
-                'part_type' :  'executor-bash',
-                'env_path' : ''
+                'part_type': 'executor-bash',
+                'env_path': ''
             }
         ],
-        'GENERATION_DIR' : [
+        'GENERATION_DIR': [
             {
-                'part_type' :  'executor-bash',
-                'env_path' : 'cli'
+                'part_type': 'executor-bash',
+                'env_path': 'cli'
             }
         ],
-        'AUTOMATION_DIR' : [
+        'AUTOMATION_DIR': [
             {
-                'part_type' :  'executor-bash',
-                'env_path' : 'automation/jenkins/aws'
+                'part_type': 'executor-bash',
+                'env_path': 'automation/jenkins/aws'
             }
         ],
-        'AUTOMATION_BASE_DIR'  : [
+        'AUTOMATION_BASE_DIR': [
             {
-                'part_type' :  'executor-bash',
-                'env_path' : 'automation'
+                'part_type': 'executor-bash',
+                'env_path': 'automation'
             }
         ],
     }
@@ -147,13 +146,13 @@ class EngineInterface(ABC):
         try:
             source = self._sources[source_name]
         except KeyError:
-            raise  BackendException(f'source {source_name} not found in engine')
+            raise BackendException(f'source {source_name} not found in engine')
 
         return source
 
     def _get_engine_source_dir(self, source_name):
         source = self._get_source(source_name)
-        return os.path.join(self.install_path, source.name )
+        return os.path.join(self.install_path, source.name)
 
     def load_install_state(self):
         if os.path.isfile(self.install_state_file):
@@ -199,12 +198,12 @@ class GlobalEngine(EngineInterface):
             source.pull(source_dir)
 
         self.install_state = {
-            'name' : self.name,
-            'description' : self.description,
-            'hidden' : self.hidden,
-            'digest' : self.digest,
-            'part_paths' : self._set_part_paths(),
-            'source_digests' : {}
+            'name': self.name,
+            'description': self.description,
+            'hidden': self.hidden,
+            'digest': self.digest,
+            'part_paths': self._set_part_paths(),
+            'source_digests': {},
         }
         self.save_install_state()
 
@@ -225,11 +224,11 @@ class Engine(EngineInterface):
         self.digest = 'sha256:' + hashlib.sha256(':'.join(source_digests.values()).encode('utf-8')).hexdigest()
 
         self.install_state = {
-            'name' : self.name,
-            'description' : self.description,
-            'hidden' : self.hidden,
-            'digest' : self.digest,
-            'part_paths' : self._set_part_paths(),
-            'source_digests' : source_digests
+            'name': self.name,
+            'description': self.description,
+            'hidden': self.hidden,
+            'digest': self.digest,
+            'part_paths': self._set_part_paths(),
+            'source_digests': source_digests,
         }
         self.save_install_state()

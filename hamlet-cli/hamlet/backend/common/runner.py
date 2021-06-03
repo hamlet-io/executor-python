@@ -52,11 +52,13 @@ def __env_params_to_envvars(env=None):
 
 def run(script_name, args, options, env, _is_cli):
 
-    env_overrides = { **global_env.ENGINE_ENV, **__env_params_to_envvars(env), **os.environ}
+    env_overrides = {**global_env.ENGINE_ENV, **__env_params_to_envvars(env), **os.environ}
     try:
         os.path.isdir(env_overrides['GENERATION_DIR'])
     except TypeError:
-        raise BackendException(f'Could not find hamlet bash script dir at GENERATION_DIR: {env_overrides["GENERATION_DIR"]}')
+        raise BackendException(
+            f'Could not find hamlet bash script dir at GENERATION_DIR: {env_overrides["GENERATION_DIR"]}'
+        )
 
     if shutil.which('bash') is None:
         raise BackendException('Could not find bash installation')

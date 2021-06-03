@@ -10,7 +10,13 @@ import www_authenticate
 from urllib import parse
 
 
-def get_registry_login_token(registry_url, repository, actions=['pull'], username=None, password=None, authorization_header=None):
+def get_registry_login_token(
+        registry_url,
+        repository, actions=['pull'],
+        username=None,
+        password=None,
+        authorization_header=None
+):
     '''
     Uses the docker v2 registry api to get an auth token compliant with the registry
     '''
@@ -32,7 +38,7 @@ def get_registry_login_token(registry_url, repository, actions=['pull'], usernam
 
         elif authorization_header is not None:
             headers = {
-                'Authorization' : authorization_header
+                'Authorization': authorization_header
             }
         else:
             headers = {}
@@ -75,7 +81,7 @@ def get_registry_image_manifest(registry_url, repository, tag, auth_token):
     manifest_url = parse.urljoin(registry_url, f'v2/{repository}/manifests/{tag}')
     if auth_token is not None:
         headers = {
-            'Authorization' : f'Bearer {auth_token}',
+            'Authorization': f'Bearer {auth_token}',
             'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
         }
     else:
@@ -95,7 +101,7 @@ def pull_registry_image_to_dir(registry_url, repository, manifest, auth_token, d
     blob_base_url = parse.urljoin(registry_url, f'/v2/{repository}/blobs/')
     if auth_token is not None:
         headers = {
-            'Authorization' : f'Bearer {auth_token}'
+            'Authorization': f'Bearer {auth_token}'
         }
     else:
         headers = {}
@@ -113,7 +119,7 @@ def pull_registry_image_to_dir(registry_url, repository, manifest, auth_token, d
                 layer_content = requests.get(layer_response.url, stream=True, headers=headers)
                 layer_content.raise_for_status()
 
-                for chunk in layer_content.iter_content(chunk_size=( 1024 * 1024)):
+                for chunk in layer_content.iter_content(chunk_size=(1024 * 1024)):
                     if chunk:
                         layer_file.write(chunk)
 
@@ -123,8 +129,8 @@ def pull_registry_image_to_dir(registry_url, repository, manifest, auth_token, d
                 digest_hash = layer['digest'].split(':')[1]
 
                 file_hash = hashlib.new(digest_algorithm)
-                with open(layer_file.name,"rb") as f:
-                    for byte_block in iter(lambda: f.read(( 1024 * 1024)),b""):
+                with open(layer_file.name, "rb") as f:
+                    for byte_block in iter(lambda: f.read((1024 * 1024)), b""):
                         file_hash.update(byte_block)
 
                 if digest_hash != file_hash.hexdigest():

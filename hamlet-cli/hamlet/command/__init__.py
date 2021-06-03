@@ -5,6 +5,7 @@ from hamlet.command.common.exceptions import backend_handler
 from hamlet.backend.engine import engine_store
 from hamlet.env import set_engine_env
 
+
 @click.group('root')
 @decorators.common_engine_options
 @decorators.common_district_options

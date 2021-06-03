@@ -1,7 +1,11 @@
 import os
 from abc import ABC, abstractmethod
 
-from hamlet.backend.container_registry import get_registry_login_token, get_registry_image_manifest, pull_registry_image_to_dir
+from hamlet.backend.container_registry import (
+    get_registry_login_token,
+    get_registry_image_manifest,
+    pull_registry_image_to_dir
+)
 
 
 class EngineSourceInterface(ABC):

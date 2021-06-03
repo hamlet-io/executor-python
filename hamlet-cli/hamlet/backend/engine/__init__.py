@@ -52,10 +52,9 @@ class EngineStore():
         self._global_engine = engine.name
 
         self.store_state = {
-            'global_engine' : self.global_engine
+            'global_engine': self.global_engine
         }
         self.save_store_state()
-
 
     def get_engine(self, name, allow_missing=False):
         '''
@@ -76,7 +75,6 @@ class EngineStore():
         for loader in self.engine_loaders:
             for engine in loader.engines:
                 self._engines[engine.name] = engine
-
 
     def load_store_state(self):
         if os.path.isfile(self.store_state_file):

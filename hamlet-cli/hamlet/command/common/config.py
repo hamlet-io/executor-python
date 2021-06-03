@@ -7,6 +7,7 @@ from hamlet.env import HAMLET_HOME_DIR
 
 hamlet_config_dir = os.path.join(HAMLET_HOME_DIR, 'config')
 
+
 class ConfigParam(Param):
     # For compatibility with click>=7.0
     def __init__(self, *args, **kwargs):
@@ -32,6 +33,7 @@ class ConfigParam(Param):
         else:
             msg = f'{self.name} in a config file'
         return msg
+
 
 class ConfigSchema(object):
     '''Schema for standard configuration.'''
