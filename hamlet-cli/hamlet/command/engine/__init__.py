@@ -56,11 +56,11 @@ def list_engines():
     for engine in engine_store.engines:
         data.append(
             {
-                'name' : engine.name,
-                'description' : engine.description,
-                'installed' : engine.installed,
-                'digest' : engine.digest,
-                'global' : True if engine.name == engine_store.global_engine else False
+                'name': engine.name,
+                'description': engine.description,
+                'installed': engine.installed,
+                'digest': engine.digest,
+                'global': True if engine.name == engine_store.global_engine else False
             }
         )
     return data
@@ -155,7 +155,7 @@ def env(options, environment_variable, engine_name):
 
     if environment_variable is None:
         click.echo('# run eval $(hamlet engine env) to set variables')
-        for k,v in engine.environment.items():
+        for k, v in engine.environment.items():
             click.echo(f'export {k}="{v}"')
 
     else:

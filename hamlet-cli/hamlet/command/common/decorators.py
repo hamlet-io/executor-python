@@ -71,6 +71,7 @@ def common_logging_options(func):
 
     return wrapper
 
+
 def common_engine_options(func):
     '''Add common options for the engine'''
 
@@ -92,6 +93,7 @@ def common_engine_options(func):
         return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
+
 
 def common_generation_options(func):
     '''Add commmon options for generation'''

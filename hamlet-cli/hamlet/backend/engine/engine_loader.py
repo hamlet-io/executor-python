@@ -5,8 +5,20 @@ from abc import ABC
 
 from .engine import Engine, InstalledEngine, GlobalEngine
 from .engine_source import ContainerEngineSource, ShimPathEngineSource
-from .engine_part import CoreEnginePart, AWSEnginePluginPart, AzureEnginePluginPart, CMDBEnginePluginPart, BinaryEnginePart, BashExecutorEnginePart
-from .common import ENGINE_GLOBAL_NAME, ENGINE_STORE_ENGINES_DIR, ENGINE_STORE_ENGINE_STATE_FILENAME
+from .engine_part import (
+    CoreEnginePart,
+    AWSEnginePluginPart,
+    AzureEnginePluginPart,
+    CMDBEnginePluginPart,
+    BinaryEnginePart,
+    BashExecutorEnginePart
+)
+from .common import (
+    ENGINE_GLOBAL_NAME,
+    ENGINE_STORE_ENGINES_DIR,
+    ENGINE_STORE_ENGINE_STATE_FILENAME
+)
+
 
 class EngineLoader(ABC):
     def __init__(self):
@@ -68,7 +80,7 @@ class GlobalEngineLoader(EngineLoader):
     def __init__(self):
         super().__init__()
 
-        self._engines = [ self.engine ]
+        self._engines = [self.engine]
 
 
 class InstalledEngineLoader(EngineLoader):
@@ -168,4 +180,4 @@ class UnicycleEngineLoader(EngineLoader):
     def __init__(self):
         super().__init__()
 
-        self._engines = [ self.engine ]
+        self._engines = [self.engine]
