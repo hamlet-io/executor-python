@@ -23,7 +23,8 @@ def run(
     product=None,
     environment=None,
     segment=None,
-    _is_cli=False
+    _is_cli=False,
+    **kwargs
 ):
     options = {
         '-e': entrance,
