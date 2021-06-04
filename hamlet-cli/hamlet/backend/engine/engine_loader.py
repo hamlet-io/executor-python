@@ -85,7 +85,7 @@ class GlobalEngineLoader(EngineLoader):
 
 class InstalledEngineLoader(EngineLoader):
     '''
-    Loads the existing engines with a base engine that we can start with
+    Loads the installed engines to handle failures in loading external engines
     '''
     engine_states = []
     with os.scandir(ENGINE_STORE_ENGINES_DIR) as engines:
@@ -116,13 +116,13 @@ class InstalledEngineLoader(EngineLoader):
 class UnicycleEngineLoader(EngineLoader):
     '''
     Provides the latest builds of all official hamlet components
-    Each component is sourced directly from the code build image that is created on commit to the default branch
+    Each component is sourced directly from the image that is created on commit to the default branch
     '''
 
     engine_sources = [
         ContainerEngineSource(
             name='engine',
-            description='hamlet core components',
+            description='hamlet core engine',
             registry_url='https://ghcr.io',
             repository='hamlet-io/engine',
             tag='latest'
@@ -171,7 +171,7 @@ class UnicycleEngineLoader(EngineLoader):
 
     engine = Engine(
         name='unicycle',
-        description='Latest builds of the official parts'
+        description='Latest build of the official components'
     )
 
     engine.parts = engine_parts
