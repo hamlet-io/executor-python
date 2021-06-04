@@ -3,6 +3,7 @@ import click
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
 from hamlet.backend.engine import engine_store
+from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_DEFAULT_GLOBAL_ENGINE
 from hamlet.env import set_engine_env
 
 
@@ -18,21 +19,30 @@ def root(ctx, opts):
     '''
     hamlet deploy
     '''
+    use_global_env = False
+
     if opts.engine is not None:
         engine = engine_store.get_engine(opts.engine)
+    else:
+        engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE)
+        use_global_env = True
 
-        if not engine.installed:
-            click.echo(
-                click.style(f'[*] Installing hamlet engine - {engine.name}', fg='yellow'),
-                err=True
-            )
-            engine.install()
+    if not engine.installed:
+        click.echo(
+            click.style(f'[*] Installing hamlet engine - {engine.name}', fg='yellow'),
+            err=True
+        )
+        engine.install()
 
-        if engine_store.global_engine is None:
-            click.echo(
-                click.style(f'[*] No global engine defined, setting global engine - {engine.name}', fg='yellow'),
-                err=True
-            )
-            engine_store.global_engine = engine.name
+    if engine_store.global_engine is None:
+        click.echo(
+            click.style(f'[*] Global engine not set using the default global engine - {engine.name}', fg='yellow'),
+            err=True
+        )
+        engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
 
+    if use_global_env:
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        set_engine_env(global_engine.environment)
+    else:
         set_engine_env(engine.environment)

@@ -78,7 +78,6 @@ def common_engine_options(func):
     @click.option(
         '--engine',
         envvar='HAMLET_ENGINE',
-        default='unicycle',
         help='The name of the engine to use',
     )
     @click.pass_context
