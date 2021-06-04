@@ -34,7 +34,7 @@ def engines_table(data):
 @cli.group('engine')
 def group():
     """
-    Manage the setup of your hamlet workspace
+    Manage the engine used by the executor
     """
 
 
@@ -49,7 +49,7 @@ def group():
 @exceptions.backend_handler()
 def list_engines():
     '''
-    Lists the available hamlet engines
+    Lists the available engines
     '''
     data = []
 
@@ -92,14 +92,13 @@ def clean_engines():
 @click.option(
     '-n',
     '--name',
-    default='unicycle',
-    show_default=True,
+    required=True,
     help='The name of the engine to install'
 )
 @exceptions.backend_handler()
 def install_engine(name):
     '''
-    Get and install an hamlet engine version
+    Install an engine
     '''
     engine = engine_store.get_engine(name)
     engine.install()
@@ -120,7 +119,7 @@ def install_engine(name):
 @exceptions.backend_handler()
 def set_engine(name):
     '''
-    sets the global default engine to use
+    Sets the global engine used
     '''
     engine = engine_store.get_engine(name)
 
@@ -137,21 +136,17 @@ def set_engine(name):
     required=False,
     type=click.STRING,
 )
-@click.option(
-    '-n',
-    '--engine-name',
-    default=ENGINE_GLOBAL_NAME,
-    show_default=True,
-    help='The name of the engine to get env for'
-)
 @exceptions.backend_handler()
 @config.pass_options
-def env(options, environment_variable, engine_name):
+def env(opts, environment_variable):
     """
-    Get the env variable config for hamlet
+    Get the environment variables for the current engine
     """
 
-    engine = engine_store.get_engine(engine_name)
+    if opts.engine is None:
+        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+    else:
+        engine = engine_store.get_engine(opts.engine)
 
     if environment_variable is None:
         click.echo('# run eval $(hamlet engine env) to set variables')

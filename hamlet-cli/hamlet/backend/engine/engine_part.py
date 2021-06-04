@@ -41,7 +41,7 @@ class CMDBEnginePluginPart(EnginePartInterface):
 
 class BinaryEnginePart(EnginePartInterface):
     type = 'engine-binary'
-    description = 'cmdb input engine plugin'
+    description = 'hamlet freemarker wrapper binary'
 
 
 class BashExecutorEnginePart(EnginePartInterface):
