@@ -9,7 +9,7 @@ from hamlet.command.common import exceptions
 from hamlet.command.common import config
 
 from hamlet.backend.engine import engine_store
-from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_STORE_DIR
+from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.command.common.display import json_or_table_option, wrap_text
 
 
@@ -78,8 +78,9 @@ def clean_engines():
     '''
     Clean local engine store
     '''
-    if os.path.isdir(ENGINE_STORE_DIR):
-        shutil.rmtree(ENGINE_STORE_DIR)
+
+    if os.path.isdir(engine_store.store_dir):
+        shutil.rmtree(engine_store.store_dir)
 
 
 @group.command(

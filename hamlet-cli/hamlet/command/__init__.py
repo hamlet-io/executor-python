@@ -21,6 +21,10 @@ def root(ctx, opts):
     '''
     use_global_env = False
 
+    global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+    if not global_engine.installed:
+        global_engine.install()
+
     if opts.engine is not None:
         engine = engine_store.get_engine(opts.engine)
     else:
@@ -42,7 +46,6 @@ def root(ctx, opts):
         engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
 
     if use_global_env:
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
         set_engine_env(global_engine.environment)
     else:
         set_engine_env(engine.environment)
