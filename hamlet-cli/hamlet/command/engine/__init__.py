@@ -90,11 +90,10 @@ def clean_engines():
         max_content_width=240
     )
 )
-@click.option(
-    '-n',
-    '--name',
+@click.argument(
+    'name',
     required=True,
-    help='The name of the engine to install'
+    type=click.STRING
 )
 @exceptions.backend_handler()
 def install_engine(name):
