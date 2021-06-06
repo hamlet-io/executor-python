@@ -86,7 +86,7 @@ def test_install_engine(mock_engine_store):
     result = cli.invoke(
         install_engine,
         [
-            '--name', 'engine[1]'
+            'engine[1]'
         ]
     )
     print(result.exception)
