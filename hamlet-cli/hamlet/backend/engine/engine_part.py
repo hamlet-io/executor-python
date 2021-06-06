@@ -1,16 +1,12 @@
-from marshmallow import Schema, fields
 from abc import ABC
 
 
-class EnginePartStateSchema(Schema):
-    name = fields.String()
-    description = fields.String()
-    source_path = fields.String()
-    source_name = fields.String()
-
-
 class EnginePartInterface(ABC):
-
+    '''
+    An engine part defines a functional component of the hamlet tooling
+    Each part has a fixed type with instances have a link to a source that
+    has the component tooling
+    '''
     type = None
     description = ''
 

@@ -9,6 +9,10 @@ from hamlet.backend.container_registry import (
 
 
 class EngineSourceInterface(ABC):
+    '''
+    The engine source implements the retrevel of hamlet component artefacts
+    Source classes are based on the process require to retrieve the arefacts
+    '''
 
     def __init__(self, name, description=''):
         self.name = name
@@ -41,7 +45,7 @@ class ShimPathEngineSource(EngineSourceInterface):
 
     @property
     def digest(self):
-        return ''
+        return self.name
 
 
 class ContainerEngineSource(EngineSourceInterface):
@@ -59,6 +63,8 @@ class ContainerEngineSource(EngineSourceInterface):
         self.username = username
         self.password = password
 
+        self._manifest = None
+
     def _get_auth_token(self):
         return get_registry_login_token(
             self.registry_url,
@@ -67,20 +73,24 @@ class ContainerEngineSource(EngineSourceInterface):
             password=self.password
         )
 
-    def _manifest(self, auth_token=None):
+    def _get_manifest(self, auth_token=None):
         if auth_token is None:
             auth_token = self._get_auth_token()
-        return get_registry_image_manifest(self.registry_url, self.repository, self.tag, self._get_auth_token())
+        if self._manifest is None:
+            return get_registry_image_manifest(self.registry_url, self.repository, self.tag, auth_token)
+        else:
+            return self._manifest
 
     def pull(self, dst_dir):
 
         auth_token = self._get_auth_token()
-        manifest = self._manifest(auth_token)
+        self._manifest = self._get_manifest(auth_token)
 
-        pull_registry_image_to_dir(self.registry_url, self.repository, manifest, auth_token, dst_dir)
+        pull_registry_image_to_dir(self.registry_url, self.repository, self._manifest, auth_token, dst_dir)
 
     @property
     def digest(self):
-        manifest = self._manifest()
+        if self._manifest is None:
+            self._manifest = self._get_manifest()
 
-        return manifest['config']['digest']
+        return self._manifest['config']['digest']
