@@ -1,54 +1,10 @@
 # Hamlet Deploy - Executor Python
 
-This is a python-based CLI for the Hamlet Deploy application. It acts as the primary interface to Hamlet Deploy, its Plugins and Extensions.
+This is a CLI interface for [Hamlet Deploy](https://docs.hamlet.io). Using the cli you can manage your hamlet deployments including creating CMDBs, managing deployments and finding out about what you have deployed.
 
-See https://docs.hamlet.io for more info on Hamlet Deploy
+## Using the Cli
 
-## Installation
-
-```bash
-# Clone repository
-git clone https://github.com/hamlet-io/executor-python
-
-# install dependencies
-cd ./executor-python
-
-# optionally create a venv to isolate the package
-python -m venv hamlet-cli/.venv
-. hamlet-cli/.venv/bin/activate # If using windows see the venv activation process
-
-pip install -e hamlet-cli
-```
-
-Hamlet Deploy CLI is now installed.
-
-```bash
-hamlet --help
-```
-
-## Update
-
-```bash
-# pull down changes
-cd ./executor-python
-git pull
-```
-
-With the latest files, re-run the installation steps to complete the update.
-
-## Configuration
-
-The Hamlet Deploy - Executor Python does not require specific configuration, however as it functions as a wrapper around other Hamlet Deploy parts, those must each be configured before using the CLI.
-
-See the [Hamlet Deploy docs](https://docs.hamlet.io/docs/hamletdeploy/software/cli) site for more information.
-
-## Usage
-
-Usage of this provider requires the other parts of the Hamlet Deploy application.
-
-It is recommended that you use the Hamlet Deploy container for this.
-
-See https://docs.hamlet.io for more
+This README outlines how you can develop the cli. If you would like to just get in and start using hamlet head to the [CLI Readme](./hamlet-cli/README.md).
 
 ---
 
