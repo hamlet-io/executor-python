@@ -95,7 +95,7 @@ def get_registry_image_manifest(registry_url, repository, tag, auth_token):
 
 def pull_registry_image_to_dir(registry_url, repository, manifest, auth_token, dest_dir):
     '''
-    Pull down all of the layers from a manifest extract the tars over the top of each other
+    Pull down all of the layers from a manifest and extract the tars over the top of each other
     This is what docker itself does we are just using the docker images as file sharing rather than an container
     '''
     blob_base_url = parse.urljoin(registry_url, f'/v2/{repository}/blobs/')
