@@ -43,6 +43,10 @@ setup(
         'marshmallow>=3.7.0,<4.0.0',
         'jmespath>=0.10.0<1.0.0',
         'importlib-resources>=5.1.2<6.0.0',
+
+        # cfn-lint has issues with the latest networkx
+        # Their requirements are installing the latest one
+        'networkx==2.4;python_version>="3.5"',
     ],
     include_package_data=True,
     python_requires='>=3.6',

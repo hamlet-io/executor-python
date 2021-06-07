@@ -75,17 +75,38 @@ def run(script_name, args, options, env, _is_cli):
                 script_call_line
             ],
             stdout=None if _is_cli else subprocess.PIPE,
-            stderr=subprocess.STDOUT if _is_cli else subprocess.PIPE,
+            stderr=None if _is_cli else subprocess.PIPE,
+            env=env_overrides,
             encoding='utf-8',
-            env=env_overrides
+            bufsize=1,
         )
+
         stdout, stderr = process.communicate()
         if not _is_cli and process.returncode != 0:
-            raise BackendException(stdout)
+            exception_message = '\n'.join(
+                [
+                    f'script: {script_call_line}',
+                    '',
+                    ''.join((['#'] * 50)),
+                    '   stdout',
+                    ''.join((['#'] * 50)),
+                    '',
+                    stdout,
+                    ''.join((['#'] * 50)),
+                    '   stderr',
+                    ''.join((['#'] * 50)),
+                    '',
+                    stderr,
+                ]
+            )
+            raise BackendException(exception_message)
         if _is_cli and process.returncode != 0:
             raise BackendException(f'{script_name} failed to run')
+
     finally:
         try:
             process.kill()
         except ProcessLookupError:
+            pass
+        except UnboundLocalError:
             pass
