@@ -38,12 +38,15 @@ Before using the cli a few OS level requirements need to be installed. This proc
 
 These packages will give you base access to start using hamlet
 
-| Name   | Install Link                                 | Version           |
-|--------|----------------------------------------------|-------------------|
-| Java   | https://openjdk.java.net/install/            | 8/1.8 Required    |
-| Jq     | https://stedolan.github.io/jq/               | 1.6 and above     |
-| Bash   | https://www.gnu.org/software/bash/           | 4.0 and above     |
-| Python | https://www.python.org/about/gettingstarted/ | 3.6 and above     |
+| Name     | Install Link                                 | Version           |
+|----------|----------------------------------------------|-------------------|
+| Java     | https://openjdk.java.net/install/            | 8 (1.8) required  |
+| Jq       | https://stedolan.github.io/jq/               | 1.6 and above     |
+| dos2unix | http://dos2unix.sourceforge.net/             | Any version       |
+| Bash     | https://www.gnu.org/software/bash/           | 4.0 and above     |
+| Python   | https://www.python.org/about/gettingstarted/ | 3.6 and above     |
+
+All of these packages should be available through linux OS based package managers ( apt-get, yum etc ) and would be the recommended install approach
 
 #### Optional Packages
 
@@ -56,6 +59,8 @@ The optional packages depend on what you want to do with hamlet
 | Az       | https://docs.microsoft.com/en-us/cli/azure/  | No specific requirements | Azure deployments        |
 | Graphviz | https://graphviz.org/                        | No specific requirements | Diagram generation       |
 
+See the websites for each package for these ones, but they should also be available through OS package manages or language specific managers ( aws cli and az are both available through pypi)
+
 ### Cli Install
 
 Once you've got the prereqs installed the rest of hamlet is installed through the cli
@@ -65,6 +70,14 @@ To install the hamlet cli/executor use the python package manager pip
 ```bash
 pip install hamlet-cli
 ```
+
+If you want the latest changes that are in development we publish all commits as pre-releases
+
+```bash
+pip install --pre hamlet-cli
+```
+
+**Note** These builds can be unstable and aren't recommended for production usage
 
 To confirm the install has worked
 
