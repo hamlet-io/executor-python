@@ -22,7 +22,7 @@ To read more about hamlet and what it can do head to our docs site https://docs.
 Hamlet Deploy is made up of a couple of parts:
 
 - engine - The engine is the core of hamlet and defines how infrastructure is deployed along with understanding the context of your application defined in a CMDB. The engine creates contracts and supporting documents which describes a task to complete. The engine is a java based app using the freemarker template engine.
-- executor - The executor providers the user interface to hamlet along with the executing what the contracts provided by the engine. This is a mix of bash scripts and python code ( this cli )
+- executor - The executor providers the user interface to hamlet along with executing the contracts provided by the engine. This is a mix of bash scripts and python code ( this cli )
 
 ### Docker Image
 
