@@ -5,8 +5,7 @@ import shutil
 from tabulate import tabulate
 
 from hamlet.command import root as cli
-from hamlet.command.common import exceptions
-from hamlet.command.common import config
+from hamlet.command.common import exceptions, config
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME

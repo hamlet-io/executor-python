@@ -2,9 +2,10 @@ import click
 
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
-from hamlet.backend.engine import engine_store
-from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_DEFAULT_GLOBAL_ENGINE
-from hamlet.env import set_engine_env
+
+from hamlet.utils import isWriteable
+from hamlet.env import HAMLET_HOME_DIR
+from hamlet.command.common.setup import setup_initial_engines
 
 
 @click.group('root')
@@ -19,33 +20,21 @@ def root(ctx, opts):
     '''
     hamlet deploy
     '''
-    use_global_env = False
 
-    global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
-    if not global_engine.installed:
-        global_engine.install()
-
-    if opts.engine is not None:
-        engine = engine_store.get_engine(opts.engine)
-    else:
-        engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE)
-        use_global_env = True
-
-    if not engine.installed:
+    if not isWriteable(HAMLET_HOME_DIR):
         click.echo(
-            click.style(f'[*] Installing hamlet engine - {engine.name}', fg='yellow'),
+            click.style(
+                (
+                    f"[!] The hamlet home dir {HAMLET_HOME_DIR} isn't writable by this user\n"
+                    "[!] Check the permissions on the directory"
+                    " or change your home dir using the HAMLET_ENGINE_DIR environment variable\n"
+                    "[!] We will continue but some parts of hamlet won't work and will raise errors of their own"
+                ),
+                fg='red',
+                bold=True
+            ),
             err=True
         )
-        engine.install()
 
-    if engine_store.global_engine is None:
-        click.echo(
-            click.style(f'[*] Global engine not set using the default global engine - {engine.name}', fg='yellow'),
-            err=True
-        )
-        engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
-
-    if use_global_env:
-        set_engine_env(global_engine.environment)
-    else:
-        set_engine_env(engine.environment)
+    if isWriteable(HAMLET_HOME_DIR):
+        setup_initial_engines(opts.engine)
