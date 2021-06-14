@@ -153,14 +153,11 @@ def run_deployments(
             }
 
             if dryrun:
-                if deployment_state == 'deployed':
-                    dryrun_args = {
-                        **manage_args,
-                        'dryrun': True
-                    }
-                    run_provider_deployments(deployment.get('DeploymentProvider'), dryrun_args)
-                else:
-                    click.echo('[-] skipping dryrun - only possible for deployments that have been deployed')
+                dryrun_args = {
+                    **manage_args,
+                    'dryrun': True
+                }
+                run_provider_deployments(deployment.get('DeploymentProvider'), dryrun_args)
 
             if (
                 (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))
