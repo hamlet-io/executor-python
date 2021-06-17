@@ -4,7 +4,12 @@ import json
 from hamlet.backend.common.exceptions import BackendException
 
 from .common import ENGINE_STORE_DEFAULT_DIR
-from .engine_loader import GlobalEngineLoader, InstalledEngineLoader, UnicycleEngineLoader
+from .engine_loader import (
+    GlobalEngineLoader,
+    InstalledEngineLoader,
+    UnicycleEngineLoader,
+    TramEngineLoader
+)
 
 
 class EngineStore():
@@ -29,6 +34,7 @@ class EngineStore():
             InstalledEngineLoader(engine_dir=self.engine_dir),
             GlobalEngineLoader(),
             UnicycleEngineLoader(),
+            TramEngineLoader()
         ]
 
     @property

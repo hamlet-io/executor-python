@@ -21,11 +21,12 @@ def engines_table(data):
                 wrap_text(row['description']),
                 wrap_text(row['installed']),
                 wrap_text(row['global']),
+                wrap_text(row['update_available']),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Name', 'Description', 'Installed', 'GlobalEngine'],
+        headers=['Name', 'Description', 'Installed', 'Global', 'Update Available'],
         tablefmt='github'
     )
 
@@ -53,13 +54,22 @@ def list_engines():
     data = []
 
     for engine in engine_store.engines:
+
+        update_available = None
+        if engine.installed:
+            if engine.up_to_date:
+                update_available = False
+            else:
+                update_available = True
+
         data.append(
             {
                 'name': engine.name,
                 'description': engine.description,
                 'installed': engine.installed,
                 'digest': engine.digest,
-                'global': True if engine.name == engine_store.global_engine else False
+                'global': True if engine.name == engine_store.global_engine else False,
+                'update_available': update_available
             }
         )
     return data
