@@ -82,7 +82,7 @@ def common_engine_options(func):
     )
     @click.option(
         '--auto-update-engine/--no-auto-update-engine',
-        envvar='HAMLET_ENGINE_UPDATE',
+        envvar='HAMLET_UPDATE_ENGINE',
         default=True,
         help='Automatically update engines'
     )
