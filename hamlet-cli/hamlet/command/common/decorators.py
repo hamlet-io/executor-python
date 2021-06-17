@@ -80,6 +80,12 @@ def common_engine_options(func):
         envvar='HAMLET_ENGINE',
         help='The name of the engine to use',
     )
+    @click.option(
+        '--auto-update-engine/--no-auto-update-engine',
+        envvar='HAMLET_ENGINE_UPDATE',
+        default=True,
+        help='Automatically update engines'
+    )
     @click.pass_context
     @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
@@ -88,6 +94,7 @@ def common_engine_options(func):
         '''
         opts = ctx.ensure_object(Options)
         opts.engine = kwargs.pop('engine')
+        opts.auto_update_engine = kwargs.pop('auto_update_engine')
         kwargs['opts'] = opts
         return ctx.invoke(func, *args, **kwargs)
 

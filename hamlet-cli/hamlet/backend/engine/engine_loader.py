@@ -172,7 +172,56 @@ class UnicycleEngineLoader(EngineLoader):
 
         engine = Engine(
             name='unicycle',
-            description='Latest build of the official components'
+            description='Latest build of the official engine parts'
+        )
+        engine.parts = engine_parts
+        engine.sources = engine_sources
+
+        self._engines = [engine]
+
+
+class TramEngineLoader(EngineLoader):
+    '''
+    Provides the nightly build of the hamlet base engine image
+    This image is tested across all parts and sources as a collection
+    Includes testing of system level actions
+    '''
+
+    def __init__(self):
+        super().__init__()
+
+        engine_sources = [
+            ContainerEngineSource(
+                name='hamlet-engine-base',
+                description='hamlet official engine source',
+                registry_url='https://ghcr.io',
+                repository='hamlet-io/hamlet-engine-base',
+                tag='nightly'
+            ),
+        ]
+
+        engine_parts = [
+            CoreEnginePart(
+                source_path='engine/',
+                source_name='hamlet-engine-base'
+            ),
+            BashExecutorEnginePart(
+                source_path='executor-bash/',
+                source_name='hamlet-engine-base'
+            ),
+            AWSEnginePluginPart(
+                source_path='engine-plugin-aws/',
+                source_name='hamlet-engine-base'
+            ),
+            AzureEnginePluginPart(
+                source_path='engine-plugin-azure/',
+                source_name='hamlet-engine-base'
+            ),
+        ]
+
+        engine = Engine(
+            name='tram',
+            description='Nightly build of the official engine'
         )
         engine.parts = engine_parts
         engine.sources = engine_sources

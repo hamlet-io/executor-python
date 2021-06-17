@@ -139,6 +139,20 @@ class EngineInterface(ABC):
         return self.install_state.get('digest', None)
 
     @property
+    def source_digest(self):
+        '''
+        return the digest of the engine sources
+        '''
+        return self._format_engine_digest(self._get_source_digests().values())
+
+    @property
+    def up_to_date(self):
+        '''
+        Is an update available for the engine
+        '''
+        return self.digest == self.source_digest
+
+    @property
     def parts(self):
         '''
         Parts link concrete hamlet components to sources

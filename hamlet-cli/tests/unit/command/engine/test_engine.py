@@ -70,6 +70,7 @@ def test_list_engines(mock_engine_store):
         'digest': '',
         'installed': False,
         'global': False,
+        'update_available': None
     } in result
     assert {
         'name': 'Name[2]',
@@ -77,6 +78,7 @@ def test_list_engines(mock_engine_store):
         'digest': 'Digest[2]',
         'installed': True,
         'global': True,
+        'update_available': False
     } in result
 
 

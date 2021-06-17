@@ -39,3 +39,28 @@ def setup_initial_engines(engine_override):
         set_engine_env(global_engine.environment)
     else:
         set_engine_env(engine.environment)
+
+
+def update_engine(engine_override, auto_install):
+    '''
+    Automatically update the configured engine
+    '''
+    engine_name = engine_store.global_engine if engine_override is None else engine_override
+    engine = engine_store.get_engine(engine_name)
+
+    if not engine.up_to_date:
+        if auto_install:
+            click.echo(
+                click.style(f'[*] update available for {engine_name} - installing update', fg='yellow')
+            )
+            engine.install()
+        else:
+            click.echo(
+                click.style(
+                    (
+                        f'[*] update available for {engine_name}'
+                        '- run hamlet engine install-engine {engine_name} to update'
+                    ),
+                    fg='yellow'
+                )
+            )

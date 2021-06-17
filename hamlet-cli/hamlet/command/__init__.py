@@ -1,11 +1,15 @@
 import click
+import os
 
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
 
 from hamlet.utils import isWriteable
 from hamlet.env import HAMLET_HOME_DIR
-from hamlet.command.common.setup import setup_initial_engines
+from hamlet.command.common.engine_setup import (
+    setup_initial_engines,
+    update_engine
+)
 
 
 @click.group('root')
@@ -20,6 +24,11 @@ def root(ctx, opts):
     '''
     hamlet deploy
     '''
+
+    try:
+        os.makedirs(HAMLET_HOME_DIR, exist_ok=True)
+    except OSError:
+        pass
 
     if not isWriteable(HAMLET_HOME_DIR):
         click.echo(
@@ -38,3 +47,4 @@ def root(ctx, opts):
 
     if isWriteable(HAMLET_HOME_DIR):
         setup_initial_engines(opts.engine)
+        update_engine(opts.engine, opts.auto_update_engine)
