@@ -5,6 +5,10 @@ from setuptools.command.install import install
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+version = {}
+with open("hamlet/__about__.py", 'r') as fp:
+    exec(fp.read(), version)
+
 packages = find_packages(exclude=["tests.*", "tests"])
 
 
@@ -23,10 +27,10 @@ class InstallCommand(install):
 
 
 setup(
-    name='hamlet-cli',
-    version='8.2.0-dev12',
-    author='Hamlet',
-    url="https://github.com/hamlet-io/executor-python",
+    name=version['__title__'],
+    version=version['__version__'],
+    author=version['__author__'],
+    url=version['__url__'],
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=packages,

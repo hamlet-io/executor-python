@@ -1,6 +1,8 @@
 import click
 import os
 
+from hamlet import __about__
+
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
 
@@ -13,6 +15,7 @@ from hamlet.command.common.engine_setup import (
 
 
 @click.group('root')
+@click.version_option(__about__.__version__)
 @decorators.common_engine_options
 @decorators.common_district_options
 @decorators.common_cli_config_options
