@@ -1,15 +1,21 @@
 name: release
 
 on:
-  push:
+
+  # Workflow run will run after another job has completed
+  # so we wait for the workflow to complete then get going
+  workflow_run:
+    workflows:
+      - 'testing'
     branches:
-      - master
-    tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+      - 'master'
+    types:
+      - completed
+
 
 jobs:
   build:
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -43,12 +49,6 @@ jobs:
       run: |
         bump2version --new-version "${{ steps.get_tag_name.outputs.TAG_NAME }}" release
 
-    - name: Run the compose network
-      run: make run
-
-    - name: Run the tests
-      run: docker-compose exec -T hamlet-cli /bin/bash -c 'source ~/.bashrc && make tests'
-
     - name: Create Release
       working-directory: ./hamlet-cli
       run: >-
@@ -74,9 +74,10 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v3
       with:
-        commit-message: "chore: release bump [skip actions]"
+        commit-message: "chore: version bump"
         delete-branch: true
         title: 'chore: update cli package version'
-        body: 'Updates the cli version details to align with pyi release'
+        body: 'Updates the cli version details to align with pypi release'
         labels: 'chore'
         base: 'master'
+        branch: create-pull-request/relase_bump
