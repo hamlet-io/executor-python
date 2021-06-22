@@ -21,7 +21,7 @@ __title__ = 'hamlet-cli'
 __summary__ = 'Building your infrastructure'
 __url__ = "https://hamlet.io"
 
-__version__= '8.2.0-dev13'
+__version__= '8.2.0-dev14'
 
 if base_dir is not None and os.path.exists(os.path.join(base_dir, ".commit")):
     with open(os.path.join(base_dir, ".commit")) as fp:
