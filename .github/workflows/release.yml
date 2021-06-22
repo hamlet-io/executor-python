@@ -80,4 +80,4 @@ jobs:
         body: 'Updates the cli version details to align with pypi release'
         labels: 'chore'
         base: 'master'
-        branch: create-pull-request/relase_bump
+        branch: create-pull-request/release_bump
