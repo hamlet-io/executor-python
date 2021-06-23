@@ -10,4 +10,3 @@ flake8
 build
 wheel
 twine
-bump2version

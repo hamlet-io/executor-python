@@ -5,8 +5,7 @@ __all__ = [
     '__title__',
     '__summary__',
     '__url__',
-    '__version__',
-    '__commit__',
+    '__repository_url__',
     '__author__',
     '__email__',
 ]
@@ -19,15 +18,8 @@ except NameError:
 
 __title__ = 'hamlet-cli'
 __summary__ = 'Building your infrastructure'
-__url__ = "https://hamlet.io"
-
-__version__= '8.2.0-dev17'
-
-if base_dir is not None and os.path.exists(os.path.join(base_dir, ".commit")):
-    with open(os.path.join(base_dir, ".commit")) as fp:
-        __commit__ = fp.read().strip()
-else:
-    __commit__ = None
+__url__ = 'https://hamlet.io'
+__repository_url__ = 'https://github.com/hamletio/executor-python'
 
 __author__ = 'Hamlet'
 __email__ = 'help@hamlet.io'

@@ -1,7 +1,6 @@
 import click
 import os
-
-from hamlet import __about__
+from importlib_metadata import version, PackageNotFoundError
 
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
@@ -14,8 +13,15 @@ from hamlet.command.common.engine_setup import (
 )
 
 
+try:
+    __version__ = version('hamlet-cli')
+except PackageNotFoundError:
+    # package is not installed
+    __version__ = 'not_installed'
+
+
 @click.group('root')
-@click.version_option(__about__.__version__)
+@click.version_option(__version__)
 @decorators.common_engine_options
 @decorators.common_district_options
 @decorators.common_cli_config_options

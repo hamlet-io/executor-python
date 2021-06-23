@@ -7,11 +7,14 @@ on:
   workflow_run:
     workflows:
       - 'testing'
+
     branches:
       - 'master'
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
     types:
       - completed
-
 
 jobs:
   build:
@@ -32,52 +35,13 @@ jobs:
         pip install -r requirements/dev.txt
         pip install -e ./
 
-    - name: Create Pre-release build
-      if: github.ref == 'refs/heads/master'
-      working-directory: ./hamlet-cli
-      run: |
-        bump2version build
-
-    - name: Get the tag name
-      if: startsWith(github.ref, 'refs/tags/')
-      id: get_tag_name
-      run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
-
-    - name: Bump Release Version
-      if: startsWith(github.ref, 'refs/tags/' )
-      working-directory: ./hamlet-cli
-      run: |
-        bump2version --new-version "${{ steps.get_tag_name.outputs.TAG_NAME }}" release
-
     - name: Create Release
       working-directory: ./hamlet-cli
       run: >-
-        python -m
-        build
-        --sdist
-        --wheel
-        --outdir dist/
-        .
+        python -m build --sdist --wheel --outdir dist/ .
 
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
         packages_dir: hamlet-cli/dist
-
-    - name: Bump to next dev release
-      if: startsWith(github.ref, 'refs/tags/' )
-      working-directory: ./hamlet-cli
-      run: |
-        bump2version minor --allow-dirty
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        commit-message: "chore: version bump"
-        delete-branch: true
-        title: 'chore: update cli package version'
-        body: 'Updates the cli version details to align with pypi release'
-        labels: 'chore'
-        base: 'master'
-        branch: create-pull-request/release_bump
