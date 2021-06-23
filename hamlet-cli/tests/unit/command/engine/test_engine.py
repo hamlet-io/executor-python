@@ -5,6 +5,7 @@ from click.testing import CliRunner
 
 from hamlet.command.engine import (
     list_engines,
+    describe_engine,
     clean_engines,
     install_engine,
     set_engine,
@@ -80,6 +81,20 @@ def test_list_engines(mock_engine_store):
         'global': True,
         'update_available': False
     } in result
+
+
+@mock.patch("json.dumps", mock.MagicMock(return_value='{cool}'))
+@mock_backend()
+def test_describe_engine(mock_engine_store):
+    cli = CliRunner()
+    result = cli.invoke(
+        describe_engine,
+        [
+            '--name', 'Name[1]'
+        ]
+    )
+    print(result.output)
+    assert result.exit_code == 0
 
 
 @mock_backend()
