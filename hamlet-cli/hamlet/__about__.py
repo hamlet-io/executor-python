@@ -4,7 +4,7 @@ import os.path
 __all__ = [
     '__title__',
     '__summary__',
-    '__uri__',
+    '__url__',
     '__version__',
     '__commit__',
     '__author__',
