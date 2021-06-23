@@ -33,6 +33,10 @@ setup(
     url=about['__url__'],
     long_description=long_description,
     long_description_content_type="text/markdown",
+    license='GPLv3',
+    project_urls={
+        'Repository' : about['__repository_url__']
+    },
     packages=packages,
     setup_requires=[
         'setuptools_scm>=6.0.1,<7.0.0'
@@ -73,7 +77,7 @@ setup(
     },
     classifiers=[
         'Natural Language :: English',
-        'Intended Audience :: Information Technology',
+        'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Java',

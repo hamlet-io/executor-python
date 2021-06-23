@@ -5,6 +5,7 @@ __all__ = [
     '__title__',
     '__summary__',
     '__url__',
+    '__repository_url__',
     '__author__',
     '__email__',
 ]
@@ -17,7 +18,8 @@ except NameError:
 
 __title__ = 'hamlet-cli'
 __summary__ = 'Building your infrastructure'
-__url__ = "https://hamlet.io"
+__url__ = 'https://hamlet.io'
+__repository_url__ = 'https://github.com/hamletio/executor-python'
 
 __author__ = 'Hamlet'
 __email__ = 'help@hamlet.io'
