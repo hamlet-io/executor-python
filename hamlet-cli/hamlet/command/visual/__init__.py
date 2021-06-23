@@ -24,11 +24,9 @@ LIST_DIAGRAMS_QUERY = (
 )
 
 
-def find_diagrams_from_options(generation, ids):
+def find_diagrams_from_options(options, ids):
     query_args = {
-        'generation_provider': generation.generation_provider,
-        'generation_framework': generation.generation_framework,
-        'generation_input_source': generation.generation_input_source,
+        **options.opts,
         'generation_entrance': 'diagraminfo',
         'output_filename': 'diagraminfo.json',
         'use_cache': False
