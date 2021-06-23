@@ -1,4 +1,9 @@
 import os
+import subprocess
+import shutil
+import glob
+import json
+
 from abc import ABC, abstractmethod
 
 from hamlet.backend.container_registry import (
@@ -33,6 +38,22 @@ class EngineSourceInterface(ABC):
         '''
         raise NotImplementedError
 
+    @property
+    @abstractmethod
+    def build_details(self):
+        '''
+        Return the details of how the source was built
+        '''
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def package_details(self):
+        '''
+        Return the details of how the source was packaged
+        '''
+        raise NotImplementedError
+
 
 class ShimPathEngineSource(EngineSourceInterface):
     '''
@@ -46,6 +67,14 @@ class ShimPathEngineSource(EngineSourceInterface):
     @property
     def digest(self):
         return self.name
+
+    @property
+    def build_details(self):
+        return None
+
+    @property
+    def package_details(self):
+        return None
 
 
 class ContainerEngineSource(EngineSourceInterface):
@@ -65,6 +94,8 @@ class ContainerEngineSource(EngineSourceInterface):
 
         self._manifest = None
 
+        self._dst_dir = None
+
     def _get_auth_token(self):
         return get_registry_login_token(
             self.registry_url,
@@ -83,6 +114,8 @@ class ContainerEngineSource(EngineSourceInterface):
 
     def pull(self, dst_dir):
 
+        self._dst_dir = dst_dir
+
         auth_token = self._get_auth_token()
         self._manifest = self._get_manifest(auth_token)
 
@@ -94,3 +127,107 @@ class ContainerEngineSource(EngineSourceInterface):
             self._manifest = self._get_manifest()
 
         return self._manifest['config']['digest']
+
+    @property
+    def build_details(self):
+        if self._dst_dir is not None:
+            engine_source_files = glob.glob(
+                os.path.join(self.dst_dir, '**/.hamlet/engine_source.json'),
+                recursive=True
+            )
+
+            build_sources = {}
+            for file in engine_source_files:
+                build_sources[file[::len(os.path.commonprefix([self._dst_dir, file]))]] = json.load(file)
+
+            return build_sources
+
+        return None
+
+    @property
+    def package_details(self):
+        return {
+            'provider': 'container',
+            'registry_url': self.registry_url,
+            'repository': self.repository,
+            'tag': self.tag
+        }
+
+
+class EngineSourceBuildData():
+    '''
+    Provides utility functions that generate version details about
+    an engine source as part of its build process
+    '''
+
+    def _git_path(self):
+        return shutil.which('git')
+
+    def __init__(self, path):
+        self.path = path
+
+    def _is_git_repo(self):
+        try:
+            subprocess.check_output(
+                [
+                    self._git_path(),
+                    'rev-parse',
+                    '--is-inside-work-tree',
+                ],
+                cwd=self.path,
+                stderr=subprocess.STDOUT
+            )
+        except subprocess.CalledProcessError:
+            return False
+
+        return True
+
+    def _git_current_revision(self):
+        return subprocess.check_output(
+            [
+                self._git_path(),
+                'rev-parse',
+                'HEAD',
+            ],
+            cwd=self.path,
+            text=True
+        ).strip()
+
+    def _git_current_tag(self):
+        return subprocess.check_output(
+            [
+                self._git_path(),
+                'tag',
+                '--points-at',
+                'HEAD',
+            ],
+            cwd=self.path,
+            text=True
+        ).strip()
+
+    def _git_current_origin(self):
+        return subprocess.check_output(
+            [
+                self._git_path(),
+                'remote',
+                'get-url',
+                'origin',
+            ],
+            cwd=self.path,
+            text=True
+        ).strip()
+
+    @property
+    def details(self):
+
+        details = {}
+
+        if self._is_git_repo():
+            details['code_source'] = {
+                'provider': 'git',
+                'revision': self._git_current_revision(),
+                'tag': self._git_current_tag(),
+                'origin': self._git_current_origin()
+            }
+
+        return details
