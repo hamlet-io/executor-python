@@ -1,13 +1,14 @@
 import subprocess
+
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-version = {}
+about = {}
 with open("hamlet/__about__.py", 'r') as fp:
-    exec(fp.read(), version)
+    exec(fp.read(), about)
 
 packages = find_packages(exclude=["tests.*", "tests"])
 
@@ -27,13 +28,19 @@ class InstallCommand(install):
 
 
 setup(
-    name=version['__title__'],
-    version=version['__version__'],
-    author=version['__author__'],
-    url=version['__url__'],
+    name=about['__title__'],
+    author=about['__author__'],
+    url=about['__url__'],
     long_description=long_description,
     long_description_content_type="text/markdown",
     packages=packages,
+    setup_requires=[
+        'setuptools_scm>=6.0.1,<7.0.0'
+    ],
+    use_scm_version = {
+        "root": "..",
+        "relative_to": __file__,
+    },
     install_requires=[
         'click>=7.0.0,<8.0.0',
         'click-configfile>=0.2.3,<1.0.0',
