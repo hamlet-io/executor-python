@@ -87,15 +87,23 @@ def list_engines():
 @click.option(
     '-n',
     '--name',
-    required=True,
-    help='The name of the engine to describe'
+    help='An override to the default engine name to query'
 )
 @exceptions.backend_handler()
-def describe_engine(name):
+@config.pass_options
+def describe_engine(opts, name):
     '''
     Provides a detailed description of an engine
     '''
-    engine = engine_store.get_engine(name)
+    if name:
+        engine_name = name
+    elif opts.engine:
+        engine_name = opts.engine
+    else:
+        engine_name = engine_store.global_engine
+
+    engine = engine_store.get_engine(engine_name)
+
     engine_details = {
         'engine': {
             'name': engine.name,

@@ -132,7 +132,7 @@ class ContainerEngineSource(EngineSourceInterface):
     def build_details(self):
         if self._dst_dir is not None:
             engine_source_files = glob.glob(
-                os.path.join(self.dst_dir, '**/.hamlet/engine_source.json'),
+                os.path.join(self._dst_dir, '**/.hamlet/engine_source.json'),
                 recursive=True
             )
 
