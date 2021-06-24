@@ -24,10 +24,17 @@ jobs:
         distribution: 'adopt'
         java-version: '8'
 
-    - name: install os extras
+    - name: setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6
+
+    - name: install extras deps
       run: |
         sudo apt-get install \
             jq dos2unix
+
+        gem install cfn-nag
 
     - name: install reqs
       run: |
