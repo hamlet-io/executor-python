@@ -32,7 +32,7 @@ jobs:
     - name: install reqs
       run: |
         pip install -r requirements/dev.txt
-        pip install ./
+        pip install -e ./
 
     - name: Run tests
       run: |

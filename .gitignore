@@ -13,3 +13,6 @@ test-report.xml
 .cmdb
 **.egg-info
 **/.eggs
+
+# Ignore the scm generated version
+hamlet/__version__.py

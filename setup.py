@@ -42,8 +42,10 @@ setup(
         'setuptools_scm>=6.0.1,<7.0.0'
     ],
     use_scm_version = {
-        "root": "..",
-        "relative_to": __file__,
+        'root': '',
+        'relative_to': __file__,
+        'fallback_version' : '_testing_',
+        'write_to' : 'hamlet/__version__.py'
     },
     install_requires=[
         'click>=7.0.0,<8.0.0',
