@@ -1,24 +1,27 @@
-.PHONY: clean
+.PHONY: tests
 .ONESHELL:
-clean:
-	@ docker-compose down --rmi all --volumes
+tests:
+	@ pytest tests -vv -x -c pytest.ini
 
-.PHONY: run
+.PHONY: coverage
 .ONESHELL:
-run:
-	@ docker-compose up --build --remove-orphans -d
+coverage:
+		coverage run -m tests
+		coverage report -m
+		coverage html
 
-.PHONY: run-fg
+.PHONY: lint
 .ONESHELL:
-run-fg:
-	@ docker-compose up --build --remove-orphans
+lint:
+	@ PYTHONDONTWRITEBYTECODE=1 flake8 --exit-zero --config=.flake8 hamlet tests setup.py
 
-.PHONY: build
+.PHONY: install
 .ONESHELL:
-build:
-	@ docker-compose build --no-cache
+install:
+	pip uninstall hamlet-cli -y
+	pip install -e /hamlet-cli
 
-.PHONY: shell
+.PHONY: uninstall
 .ONESHELL:
-shell:
-	@ docker-compose exec hamlet-cli /bin/bash
+uninstall:
+	pip uninstall hamlet-cli -y

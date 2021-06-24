@@ -1,115 +1,97 @@
-# Hamlet Deploy - Executor Python
+# Hamlet Deploy - CLI
 
-This is a CLI interface for [Hamlet Deploy](https://docs.hamlet.io). Using the cli you can manage your hamlet deployments including creating CMDBs, managing deployments and finding out about what you have deployed.
+Hamlet deploy is a tool to manage infrastructure throughout the life of your application. With hamlet you define the functional components of your application along with the context they should be run in. The context includes things like environments, tenants, and policies that can be applied across all of your different applications.
+From this information hamlet then creates the infrastructure that will perform the function you have asked for and manages it over the life of your application.
 
-## Using the Cli
+## Support
 
-This README outlines how you can develop the cli. If you would like to just get in and start using hamlet head to the [CLI Readme](./hamlet-cli/README.md).
+Hamlet deploy is built on a plugin based approach so you can create infrastructure for any provider you want, we provide an API of common processes and tasks for provisioning and describing infrastructure which allows you to build a common language across different infrastructure providers
 
----
+We also provide official plugins for:
 
-## Development
+- Amazon Web Services (AWS) based on CloudFormation
+- Microsoft Azure based on Azure Resource Manager
+- mingrammer Diagrams for generating diagrams of your deployed infrastructure
 
-There are two development approaches for working in this repo
+## Docs
 
-- Isolated: creates a complete isolated dev environment using a local docker image
-- Integrated: uses an existing hamlet workspace ( this is useful for working on your own CMDBS )
+To read more about hamlet and what it can do head to our docs site https://docs.hamlet.io/
 
-### Isolated Process
+## Installation
 
-#### Requirements
+Hamlet Deploy is made up of a couple of parts:
 
-You just need to install requirements:
+- engine - The engine is the core of hamlet and defines how infrastructure is deployed along with understanding the context of your application defined in a CMDB. The engine creates contracts and supporting documents which describes a task to complete. The engine is a java based app using the freemarker template engine.
+- executor - The executor providers the user interface to hamlet along with executing the contracts provided by the engine. This is a mix of bash scripts and python code ( this cli )
 
-- ```docker```
-- ```docker-compose```
-- ```make```
+### Docker Image
 
-#### Build
+This guide takes you through installing the cli on your own machine and includes the OS packages that are required. We also offer a docker image which includes the hamelt cli along with a suite of tools to use the image as a general purpose CI/CD environment
 
-Build the Python Executor into a docker container
+The image is available on Dockerhub - https://hub.docker.com/r/hamletio/hamlet
 
-```bash
-make build
-```
+### Prerequisites
 
-#### Run
+Before using the cli a few OS level requirements need to be installed. This process differs from OS to OS so we are just including the packages and the websites if they are available. The packages need to be available on the PATH of your cli
 
-Build and then run the Executor Python in a docker container
+#### Minimum
 
-The container image built will be tagged as `hamlet-cli`
+These packages will give you base access to start using hamlet
 
-```bash
-# in the background
-make run
+| Name     | Install Link                                 | Version           |
+|----------|----------------------------------------------|-------------------|
+| Java     | https://openjdk.java.net/install/            | 8 (1.8) required  |
+| Jq       | https://stedolan.github.io/jq/               | 1.6 and above     |
+| dos2unix | http://dos2unix.sourceforge.net/             | Any version       |
+| Bash     | https://www.gnu.org/software/bash/           | 4.0 and above     |
+| Python   | https://www.python.org/about/gettingstarted/ | 3.6 and above     |
 
-# in the foreground
-make run-fg
+All of these packages should be available through linux OS based package managers ( apt-get, yum etc ) and would be the recommended install approach
 
-# start a terminal session inside a running container
-make shell
-```
+#### Optional Packages
 
-#### Install
+The optional packages depend on what you want to do with hamlet
 
-Once you are inside the built container
+| Name     | Install Link                                 | Version                  | Purpose                  |
+|----------|----------------------------------------------|--------------------------|--------------------------|
+| Docker   | https://www.docker.com/get-started           | No specific requirements | Container deployments    |
+| AWS Cli  | https://aws.amazon.com/cli/                  | v1 Currently Supported   | AWS deployments          |
+| Az       | https://docs.microsoft.com/en-us/cli/azure/  | No specific requirements | Azure deployments        |
+| Graphviz | https://graphviz.org/                        | No specific requirements | Diagram generation       |
 
-```bash
-# install common tooling & Hamlet Deploy
-make install
-```
+See the websites for each package for these ones, but they should also be available through OS package manages or language specific managers ( aws cli and az are both available through pypi)
 
-#### Clean Up
+### Cli Install
 
-Clear the local development environment build data
+Once you've got the prereqs installed the rest of hamlet is installed through the cli
 
-```bash
-make clean
-```
-
-### Integrated Process
-
-You will need an existing hamlet workspace with `python` and `make` available ( the hamletio/hamlet docker container comes with these )
-
-1. Clone this repo into your workspace ( feel free to change the directory to what you need )
-
-    ```bash
-    git clone https://github.com/hamlet-io/executor-python hamlet/executor/python
-    ```
-
-2. Hop into the executor clone location and setup a python venv
-
-    ```bash
-    cd hamlet/executor/python/hamlet-cli
-    python -m venv .venv
-    . .venv/bin/activate
-
-    # install requirements
-    pip install -r requirements/dev.txt
-
-    # Install the hamlet-cli into the venv in edit mode
-    pip install -e hamlet-cli
-    ```
-
-When calling hamlet from within the venv the development installation will be used instead of the workspace installation
-
-To use the workspace installation again deactivate the venv
+To install the hamlet cli/executor use the python package manager pip
 
 ```bash
-deactivate
+pip install hamlet-cli
 ```
 
-### Development tasks
-
-Once you have setup the hamlet-cli the following make commands are available from the hamlet-cli directory in this repo
+If you want the latest changes that are in development we publish all commits as pre-releases
 
 ```bash
-# create test coverage report
-make coverage
-
-# test the project (no coverage report)
-make tests
-
-# python linter
-make link
+pip install --pre hamlet-cli
 ```
+
+**Note** These builds can be unstable and aren't recommended for production usage
+
+To confirm the install has worked
+
+```bash
+hamlet --help
+```
+
+Should return something like this
+
+```bash
+hamlet --help
+Usage: hamlet [OPTIONS] COMMAND [ARGS]...
+
+  hamlet deploy
+```
+
+And that's it, to see what you can do head to our docs https://docs.hamlet.io

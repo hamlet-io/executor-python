@@ -1,4 +1,18 @@
 .cmdb/**
 .hamlet/**
 
-node_modules
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.coverage
+**/htmlcov
+**/dist
+**/build
+test-report.xml
+
+.cmdb
+**.egg-info
+**/.eggs
+
+# Ignore the scm generated version
+hamlet/__version__.py

@@ -22,7 +22,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 0
 
     - name: Setup Python
       uses: actions/setup-python@v1
@@ -30,13 +32,11 @@ jobs:
         python-version: 3.8
 
     - name: Install reqs
-      working-directory: ./hamlet-cli
       run: |
         pip install -r requirements/dev.txt
         pip install -e ./
 
     - name: Create Release
-      working-directory: ./hamlet-cli
       run: >-
         python -m build --sdist --wheel --outdir dist/ .
 
@@ -44,4 +44,4 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-        packages_dir: hamlet-cli/dist
+        packages_dir: dist
