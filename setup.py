@@ -45,7 +45,8 @@ setup(
         'root': '',
         'relative_to': __file__,
         'fallback_version' : '_testing_',
-        'write_to' : 'hamlet/__version__.py'
+        'write_to' : 'hamlet/__version__.py',
+        'local_scheme' : 'no-local-version',
     },
     install_requires=[
         'click>=7.0.0,<8.0.0',
