@@ -34,7 +34,7 @@ jobs:
     - name: Install reqs
       run: |
         pip install -r requirements/dev.txt
-        pip install ./
+        pip install -e ./
 
     - name: Create Release
       run: >-
