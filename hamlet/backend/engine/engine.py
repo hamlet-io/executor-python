@@ -177,18 +177,20 @@ class EngineInterface(ABC):
         '''
         return the digest of the engine sources
         '''
-        if self.updater_state is not None:
-            if (datetime.now() - datetime.strptime(self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
+        if self.installed:
+            if self.updater_state is not None:
+                if (datetime.now() - datetime.strptime(self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
+                    self._update_updater_state()
+
+                if ignore_cache:
+                    self._update_updater_state()
+
+            else:
                 self._update_updater_state()
 
-            if ignore_cache:
-                self._update_updater_state()
+            self._load_engine_state()
+            return self.updater_state.get('latest_digest', None)
 
-        else:
-            self._update_updater_state()
-
-        self._load_engine_state()
-        return self.updater_state.get('latest_digest', None)
 
     def up_to_date(self, ignore_cache=False):
         '''
@@ -248,7 +250,10 @@ class EngineInterface(ABC):
         '''
         Part paths list the physical location of an installed part for a given engine
         '''
-        return self.install_state.get('part_paths', None)
+        if self.install_state is not None:
+            return self.install_state.get('part_paths', None)
+        else:
+            return {}
 
     @property
     def environment(self):
@@ -301,7 +306,7 @@ class EngineInterface(ABC):
             with open(self.engine_state_file, 'r') as file:
                 self._engine_state = json.load(file)
                 if self._engine_state.get('version', '0.0.0') != self._engine_state_version:
-                    self.install()
+                    raise BackendException(f'Engine state version does not match required version - run: install engine --force {self.name}')
 
     def _save_engine_state(self):
         '''
