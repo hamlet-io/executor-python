@@ -31,28 +31,30 @@ def root(ctx, opts):
     hamlet deploy
     '''
 
-    try:
-        os.makedirs(HAMLET_HOME_DIR, exist_ok=True)
-    except OSError:
-        pass
+    if ctx.invoked_subcommand != 'engine':
 
-    if not isWriteable(HAMLET_HOME_DIR):
-        click.echo(
-            click.style(
-                (
-                    f"[!] The hamlet home dir {HAMLET_HOME_DIR} isn't writable by this user\n"
-                    "[!] Check the permissions on the directory"
-                    " or change your home dir using the HAMLET_ENGINE_DIR environment variable\n"
-                    "[!] We will continue but some parts of hamlet won't work and will raise errors of their own"
+        try:
+            os.makedirs(HAMLET_HOME_DIR, exist_ok=True)
+        except OSError:
+            pass
+
+        if not isWriteable(HAMLET_HOME_DIR):
+            click.echo(
+                click.style(
+                    (
+                        f"[!] The hamlet home dir {HAMLET_HOME_DIR} isn't writable by this user\n"
+                        "[!] Check the permissions on the directory"
+                        " or change your home dir using the HAMLET_ENGINE_DIR environment variable\n"
+                        "[!] We will continue but some parts of hamlet won't work and will raise errors of their own"
+                    ),
+                    fg='red',
+                    bold=True
                 ),
-                fg='red',
-                bold=True
-            ),
-            err=True
-        )
+                err=True
+            )
 
-    if isWriteable(HAMLET_HOME_DIR):
-        setup_initial_engines(opts.engine)
+        if isWriteable(HAMLET_HOME_DIR):
+            setup_initial_engines(opts.engine)
 
-        if opts.check_engine_updates:
-            check_engine_update(opts.engine)
+            if opts.check_engine_updates:
+                check_engine_update(opts.engine)
