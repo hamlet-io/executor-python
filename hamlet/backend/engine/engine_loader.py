@@ -106,7 +106,7 @@ class InstalledEngineLoader(EngineLoader):
             yield InstalledEngine(
                 name=engine_state['name'],
                 description=engine_state['description'],
-                digest=engine_state['digest'],
+                digest=engine_state['install']['digest'],
                 hidden=engine_state['hidden'],
             )
 

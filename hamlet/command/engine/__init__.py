@@ -11,7 +11,7 @@ from hamlet.command.common.display import json_or_table_option, wrap_text
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
-from hamlet.backend.engine.engine_source import EngineSourceBuildData
+from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
 
 
 def engines_table(data):
@@ -59,10 +59,14 @@ def list_engines():
 
         update_available = None
         if engine.installed:
-            if engine.up_to_date:
-                update_available = False
-            else:
-                update_available = True
+            try:
+                if engine.up_to_date(ignore_cache=True):
+                    update_available = False
+                else:
+                    update_available = True
+            except BaseException as e:
+                click.secho(f'[!]engine update failed for {engine.name}', fg='red', err=True)
+                click.secho(f'[!]  {e}', fg='red', err=True)
 
         data.append(
             {
@@ -104,6 +108,17 @@ def describe_engine(opts, name):
 
     engine = engine_store.get_engine(engine_name)
 
+    try:
+        up_to_date = engine.up_to_date(ignore_cache=True)
+        latest_digest = engine.latest_digest(ignore_cache=True)
+    except BaseException as e:
+        click.secho(f'[!] Engine update failed for {engine.name}', fg='red', err=True)
+        click.secho(f'[!]  {e}', fg='red', err=True)
+
+        up_to_date = None
+        latest_digest = None
+        pass
+
     engine_details = {
         'engine': {
             'name': engine.name,
@@ -111,22 +126,31 @@ def describe_engine(opts, name):
             'hidden': engine.hidden,
             'installed': engine.installed,
             'engine_dir': engine.engine_dir,
-            'up_to_date': engine.up_to_date,
+            'up_to_date': up_to_date,
             'current_digest': engine.digest,
-            'latest_digest': engine.source_digest
+            'latest_digest': latest_digest
         },
-        'environment': engine.environment
+        'environment': engine.environment,
+        'install_state' : engine.install_state
     }
 
     sources = []
     for source in engine.sources:
+
+        try:
+            source_digest = source.digest
+        except BaseException as e:
+            click.secho(f'[!] Source check failed {engine.name} - {source.name}', fg='red', err=True)
+            click.secho(f'[!]  {e}', fg='red', err=True)
+
+            source_digest = None
+            pass
+
         sources.append(
             {
                 'name': source.name,
                 'description': source.description,
-                'latest_digest': source.digest,
-                'build_details': source.build_details,
-                'package_details': source.package_details
+                'latest_digest': source_digest,
             }
         )
 
@@ -272,7 +296,7 @@ def add_engine_source_build(path):
     """
     Generates build metadata that will be used by the engine cli
     """
-    build_details = EngineSourceBuildData(path=path)
+    build_details = EngineCodeSourceBuildData(path=path)
 
     hamlet_meta_dir = os.path.join(path, '.hamlet')
     hamlet_build_state_file = os.path.join(hamlet_meta_dir, 'engine_source.json')

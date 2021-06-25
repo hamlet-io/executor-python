@@ -23,14 +23,14 @@ def setup_initial_engines(engine_override):
 
     if not engine.installed:
         click.echo(
-            click.style(f'[*] Installing hamlet engine - {engine.name}', fg='yellow'),
+            click.style(f'[*] No default engine found installing default engine - {engine.name}', fg='yellow'),
             err=True
         )
         engine.install()
 
     if engine_store.global_engine is None:
         click.echo(
-            click.style(f'[*] Global engine not set using the default global engine - {engine.name}', fg='yellow'),
+            click.style(f'[*] Setting the global engine to the default engine - {engine.name}', fg='yellow'),
             err=True
         )
         engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
@@ -41,26 +41,31 @@ def setup_initial_engines(engine_override):
         set_engine_env(engine.environment)
 
 
-def update_engine(engine_override, auto_install):
+def check_engine_update(engine_override):
     '''
-    Automatically update the configured engine
+    Check for updates to the current engine
     '''
-    engine_name = engine_store.global_engine if engine_override is None else engine_override
-    engine = engine_store.get_engine(engine_name)
+    try:
+        engine_name = engine_store.global_engine if engine_override is None else engine_override
+        engine = engine_store.get_engine(engine_name)
 
-    if not engine.up_to_date:
-        if auto_install:
-            click.echo(
-                click.style(f'[*] update available for {engine_name} - installing update', fg='yellow')
-            )
-            engine.install()
-        else:
+        if not engine.up_to_date():
             click.echo(
                 click.style(
                     (
-                        f'[*] update available for {engine_name}'
-                        '- run hamlet engine install-engine {engine_name} to update'
+                        f'[*] engine update available for {engine_name}\n'
+                        f'[*]   - to update run: hamlet engine install-engine {engine_name}'
                     ),
                     fg='yellow'
                 )
             )
+    except Exception:
+        click.echo(
+            click.style(
+                (
+                    f'[!] engine update check failed for {engine_name}\n'
+                     '[!]   - run hamlet engine list-engines for more details'
+                ),
+                fg='red'
+            )
+        )

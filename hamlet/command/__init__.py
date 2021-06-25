@@ -8,7 +8,7 @@ from hamlet.utils import isWriteable
 from hamlet.env import HAMLET_HOME_DIR
 from hamlet.command.common.engine_setup import (
     setup_initial_engines,
-    update_engine
+    check_engine_update
 )
 
 try:
@@ -53,4 +53,6 @@ def root(ctx, opts):
 
     if isWriteable(HAMLET_HOME_DIR):
         setup_initial_engines(opts.engine)
-        update_engine(opts.engine, opts.auto_update_engine)
+
+        if opts.check_engine_updates:
+            check_engine_update(opts.engine)

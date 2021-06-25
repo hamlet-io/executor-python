@@ -49,7 +49,7 @@ def test_global_engine_loading():
 
         global_engine.install()
 
-        assert os.path.isfile(global_engine.install_state_file)
+        assert os.path.isfile(global_engine.engine_state_file)
 
         generation_dir_path = os.path.join(global_engine.install_path, 'shim/executor-bash/cli')
         assert global_engine.environment['GENERATION_DIR'] == generation_dir_path
@@ -97,7 +97,7 @@ def test_installed_engine_loading():
         ]
 
         manually_installed_engine.install()
-        assert os.path.isfile(manually_installed_engine.install_state_file)
+        assert os.path.isfile(manually_installed_engine.engine_state_file)
 
         '''
         Use the Installed loader to discover the manually installed engine
