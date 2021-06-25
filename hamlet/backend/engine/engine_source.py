@@ -1,10 +1,11 @@
 import os
 import subprocess
 import shutil
-import glob
+import pathlib
 import json
 
 from abc import ABC, abstractmethod
+from hamlet.backend import engine
 
 from hamlet.backend.container_registry import (
     get_registry_login_token,
@@ -27,30 +28,19 @@ class EngineSourceInterface(ABC):
     def pull(self, dst_dir):
         '''
         Pull the source to a local directory
+        Must return a status object describing the source state
         '''
-        raise NotImplementedError
+        return EngineSourcePullState(
+            name=self.name,
+            type=self.__class__.__name__,
+            digest=self.name
+        )
 
     @property
     @abstractmethod
     def digest(self):
         '''
         Return a digest of the source to use for verification and version updates
-        '''
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def build_details(self):
-        '''
-        Return the details of how the source was built
-        '''
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def package_details(self):
-        '''
-        Return the details of how the source was packaged
         '''
         raise NotImplementedError
 
@@ -64,17 +54,15 @@ class ShimPathEngineSource(EngineSourceInterface):
         if not os.path.isdir(dst_dir):
             os.makedirs(dst_dir)
 
+        return EngineSourcePullState(
+            name=self.name,
+            type=self.__class__.__name__,
+            digest=self.name
+        )
+
     @property
     def digest(self):
         return self.name
-
-    @property
-    def build_details(self):
-        return None
-
-    @property
-    def package_details(self):
-        return None
 
 
 class ContainerEngineSource(EngineSourceInterface):
@@ -114,12 +102,23 @@ class ContainerEngineSource(EngineSourceInterface):
 
     def pull(self, dst_dir):
 
-        self._dst_dir = dst_dir
-
         auth_token = self._get_auth_token()
         self._manifest = self._get_manifest(auth_token)
 
         pull_registry_image_to_dir(self.registry_url, self.repository, self._manifest, auth_token, dst_dir)
+
+        return EngineSourcePullState(
+            name=self.name,
+            type=self.__class__.__name__,
+            digest=self._manifest['config']['digest'],
+            source_metadata={
+                'registry_url': self.registry_url,
+                'repository': self.repository,
+                'tag': self.tag
+            },
+            build_metadata=self._get_build_details(dst_dir)
+        )
+
 
     @property
     def digest(self):
@@ -128,106 +127,28 @@ class ContainerEngineSource(EngineSourceInterface):
 
         return self._manifest['config']['digest']
 
-    @property
-    def build_details(self):
-        if self._dst_dir is not None:
-            engine_source_files = glob.glob(
-                os.path.join(self._dst_dir, '**/.hamlet/engine_source.json'),
-                recursive=True
-            )
+    def _get_build_details(self, dst_dir):
 
+        engine_source = '.hamlet/engine_source.json'
+        if dst_dir is not None:
+            engine_source_paths = pathlib.Path(dst_dir).glob(f'**/{engine_source}')
             build_sources = {}
-            for file in engine_source_files:
-                build_sources[file[::len(os.path.commonprefix([self._dst_dir, file]))]] = json.load(file)
+            for engine_source_path in engine_source_paths:
+                with open(engine_source_path, 'r') as file:
+                    source_name = str(engine_source_path)[len((os.path.commonprefix([dst_dir, engine_source_path]))):len(engine_source)]
+                    build_sources[source_name] = json.load(file)
 
             return build_sources
 
-        return None
-
-    @property
-    def package_details(self):
-        return {
-            'provider': 'container',
-            'registry_url': self.registry_url,
-            'repository': self.repository,
-            'tag': self.tag
-        }
 
 
-class EngineSourceBuildData():
+class EngineSourcePullState(dict):
     '''
-    Provides utility functions that generate version details about
-    an engine source as part of its build process
+    Provides details about the source that was pulled
     '''
-
-    def _git_path(self):
-        return shutil.which('git')
-
-    def __init__(self, path):
-        self.path = path
-
-    def _is_git_repo(self):
-        try:
-            subprocess.check_output(
-                [
-                    self._git_path(),
-                    'rev-parse',
-                    '--is-inside-work-tree',
-                ],
-                cwd=self.path,
-                stderr=subprocess.STDOUT
-            )
-        except subprocess.CalledProcessError:
-            return False
-
-        return True
-
-    def _git_current_revision(self):
-        return subprocess.check_output(
-            [
-                self._git_path(),
-                'rev-parse',
-                'HEAD',
-            ],
-            cwd=self.path,
-            text=True
-        ).strip()
-
-    def _git_current_tag(self):
-        return subprocess.check_output(
-            [
-                self._git_path(),
-                'tag',
-                '--points-at',
-                'HEAD',
-            ],
-            cwd=self.path,
-            text=True
-        ).strip()
-
-    def _git_current_origin(self):
-        return subprocess.check_output(
-            [
-                self._git_path(),
-                'remote',
-                'get-url',
-                'origin',
-            ],
-            cwd=self.path,
-            text=True
-        ).strip()
-
-    @property
-    def details(self):
-
-        details = {}
-
-        if self._is_git_repo():
-            details['code_source'] = {
-                'provider': 'git',
-                'revision': self._git_current_revision(),
-                'tag': self._git_current_tag(),
-                'origin': self._git_current_origin()
-            }
-
-        return details
+    def __init__(self, name, type, digest, source_metadata=None, build_metadata=None):
+        self.name = name
+        self.type = type
+        self.digest = digest
+        self.source_metadata = source_metadata
+        self.build_metadata = build_metadata

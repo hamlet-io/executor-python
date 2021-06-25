@@ -2,6 +2,8 @@ import os
 import json
 import shutil
 import hashlib
+
+from datetime import datetime
 from abc import ABC, abstractmethod
 
 from hamlet.backend.common.exceptions import BackendException
@@ -12,15 +14,18 @@ from .common import ENGINE_STATE_FILE_NAME
 
 
 class EngineInterface(ABC):
-    def __init__(self, name, description, hidden=False):
+    def __init__(self, name, description, hidden=False, update_timeout=3600):
         self.name = name
         self.description = description
         self.hidden = hidden
 
-        self.engine_state_filename = ENGINE_STATE_FILE_NAME
+        self.update_timeout=update_timeout
+
+        self._engine_state_version = '1.0.1'
+        self._engine_state_filename = ENGINE_STATE_FILE_NAME
 
         self._engine_dir = None
-        self._install_state = {
+        self._engine_state = {
             'name': self.name,
             'description': self.description,
             'hidden': self.hidden
@@ -98,7 +103,7 @@ class EngineInterface(ABC):
         The engine dir is set as part of the loader process
         '''
         self._engine_dir = engine_dir
-        self._load_install_state()
+        self._load_engine_state()
 
     @property
     def install_path(self):
@@ -108,49 +113,91 @@ class EngineInterface(ABC):
         return os.path.join(self.engine_dir, self.name)
 
     @property
-    def install_state_file(self):
+    def engine_state_file(self):
         '''
         The install state file is a persistant file that holds the install_state
         '''
-        return os.path.join(self.install_path, self.engine_state_filename)
+        return os.path.join(self.install_path, self._engine_state_filename)
 
     @property
     def install_state(self):
         '''
         The install state contains the details about the instaltion
         '''
-        self._load_install_state()
-        return self._install_state
+        self._load_engine_state()
+        return self._engine_state.get('install', None)
 
-    def update_install_state(self):
+    @property
+    def updater_state(self):
+        '''
+        Return the state of the engine updater
+        '''
+        self._load_engine_state()
+        return self._engine_state.get('updater', None)
+
+    def update_install_state(self, source_install_state=None):
         '''
         Builds the internal state and saves it to the persistant store
         '''
-        self._install_state['part_paths'] = self._get_part_paths()
-        self._install_state['source_digests'] = self._get_source_digests()
-        self._install_state['digest'] = self._format_engine_digest(self._install_state['source_digests'].values())
-        self._save_install_state()
+
+        source_digests = []
+        if source_install_state is not None:
+            source_digests = [s.digest for s in source_install_state]
+
+        install_state = {
+            'part_paths': self._get_part_paths(),
+            'digest' : self._format_engine_digest(source_digests),
+            'source_install_state' : [ vars(s) for s in source_install_state]
+        }
+
+        self._engine_state['version'] = self._engine_state_version
+        self._engine_state['install'] = install_state
+        self._save_engine_state()
+
+
+    def _update_updater_state(self):
+        updater_state = {
+            'last_check': datetime.now().isoformat(timespec='seconds'),
+            'latest_digest': self._format_engine_digest([ s.digest for s in self.sources])
+        }
+        self._engine_state['updater'] = updater_state
+        self._save_engine_state()
 
     @property
     def digest(self):
         '''
         returns the digests of the current installed sources
         '''
-        return self.install_state.get('digest', None)
+        if self.install_state is not None:
+            return self.install_state['digest']
+        else:
+            return None
 
-    @property
-    def source_digest(self):
+    def latest_digest(self, ignore_cache=False):
         '''
         return the digest of the engine sources
         '''
-        return self._format_engine_digest(self._get_source_digests().values())
+        if self.updater_state is not None:
+            if (datetime.now() - datetime.strptime(self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
+                self._update_updater_state()
 
-    @property
-    def up_to_date(self):
+            if ignore_cache:
+                self._update_updater_state()
+
+        else:
+            self._update_updater_state()
+
+        self._load_engine_state()
+        return self.updater_state.get('latest_digest', None)
+
+    def up_to_date(self, ignore_cache=False):
         '''
         Is an update available for the engine
         '''
-        return self.digest == self.source_digest
+        if self.latest_digest is not None:
+            return self.digest == self.latest_digest(ignore_cache=ignore_cache)
+        else:
+            return False
 
     @property
     def parts(self):
@@ -210,7 +257,7 @@ class EngineInterface(ABC):
         to determine where different engine parts are by the executor
         '''
         env_result = {}
-        self._load_install_state()
+        self._load_engine_state()
         if self.part_paths is not None:
             for k, part_mappings in self._environment.items():
                 env_values = []
@@ -246,23 +293,25 @@ class EngineInterface(ABC):
         source = self._get_source(source_name)
         return os.path.join(self.install_path, source.name)
 
-    def _load_install_state(self):
+    def _load_engine_state(self):
         '''
         Load the state of an engine based on its install path
         '''
-        if os.path.isfile(self.install_state_file):
-            with open(self.install_state_file, 'r') as file:
-                self._install_state = json.load(file)
+        if os.path.isfile(self.engine_state_file):
+            with open(self.engine_state_file, 'r') as file:
+                self._engine_state = json.load(file)
+                if self._engine_state.get('version', '0.0.0') != self._engine_state_version:
+                    self.install()
 
-    def _save_install_state(self):
+    def _save_engine_state(self):
         '''
-        Writes the installation state to disk so that it can be accessed between cli runs
+        Writes the engine state to disk so that it can be accessed between cli runs
         '''
         if not os.path.isdir(self.install_path):
             os.makedirs(self.install_path)
 
-        with open(self.install_state_file, 'w') as file:
-            json.dump(self._install_state, file)
+        with open(self.engine_state_file, 'w') as file:
+            json.dump(self._engine_state, file)
 
     def _get_part_paths(self):
         part_paths = {}
@@ -272,17 +321,6 @@ class EngineInterface(ABC):
                 part.source_path
             )
         return part_paths
-
-    def _get_source_digests(self):
-        '''
-        Each source creates a digest that we use to determine updates
-        of the overall engine
-        '''
-        source_digests = {}
-        for source in self.sources:
-            source_digests[source.name] = source.digest
-
-        return source_digests
 
     def _format_engine_digest(self, source_digests):
         return 'sha256:' + hashlib.sha256(':'.join(source_digests).encode('utf-8')).hexdigest()
@@ -313,10 +351,13 @@ class GlobalEngine(EngineInterface):
 
     def install(self):
 
+        source_details = []
         for source in self.sources:
             source_dir = self._get_engine_source_dir(source.name)
-            source.pull(source_dir)
-        self.update_install_state()
+            source_details.append(
+                source.pull(source_dir)
+            )
+        self.update_install_state(source_details)
 
 
 class Engine(EngineInterface):
@@ -326,8 +367,11 @@ class Engine(EngineInterface):
         if os.path.isdir(self.install_path):
             shutil.rmtree(self.install_path)
 
+        source_details = []
         for source in self.sources:
             source_dir = self._get_engine_source_dir(source.name)
-            source.pull(source_dir)
+            source_details.append(
+                source.pull(source_dir)
+            )
 
-        self.update_install_state()
+        self.update_install_state(source_details)

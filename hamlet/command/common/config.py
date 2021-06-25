@@ -49,7 +49,7 @@ class ConfigSchema(object):
         environment = ConfigParam(name='environment', type=str)
         segment = ConfigParam(name='segment', type=str)
         engine = ConfigParam(name='engine', type=str)
-        auto_update_engine = ConfigParam(name='auto_update_engine', type=bool)
+        check_engine_updates = ConfigParam(name='check_engine_updates', type=bool)
 
     @matches_section("profile:*")
     class Profile(Default):
@@ -228,14 +228,14 @@ class Options:
         self._set_option('engine', value)
 
     @property
-    def auto_update_engine(self):
-        '''Set engine automatic updating'''
-        return self._get_option('auto_update_engine')
+    def check_engine_updates(self):
+        '''Check for updates to active engine'''
+        return self._get_option('check_engine_updates')
 
-    @auto_update_engine.setter
-    def auto_update_engine(self, value):
-        '''Set the auto_update_engine setting'''
-        self._set_option('auto_update_engine', value)
+    @check_engine_updates.setter
+    def check_engine_updates(self, value):
+        '''Set the check_engine_updates setting'''
+        self._set_option('check_engine_updates', value)
 
     @property
     def generation_framework(self):
