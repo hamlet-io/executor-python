@@ -122,7 +122,7 @@ class EngineInterface(ABC):
     @property
     def install_state(self):
         '''
-        The install state contains the details about the instaltion
+        The install state contains the details about the installation
         '''
         self._load_engine_state()
         return self._engine_state.get('install', None)
