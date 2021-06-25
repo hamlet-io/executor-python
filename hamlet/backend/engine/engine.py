@@ -137,7 +137,7 @@ class EngineInterface(ABC):
 
     def update_install_state(self, source_install_state=None):
         '''
-        Builds the internal state and saves it to the persistant store
+        Builds the internal state and saves it to the persistent store
         '''
 
         source_digests = []
