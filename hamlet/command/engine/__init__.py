@@ -35,9 +35,9 @@ def engines_table(data):
 
 @cli.group('engine')
 def group():
-    """
+    '''
     Manage the engine used by the executor
-    """
+    '''
 
 
 @group.command(
@@ -184,6 +184,7 @@ def clean_engines():
     Clean local engine store
     '''
 
+    click.echo(f'[*] cleaning engines in {engine_store.store_dir}')
     if os.path.isdir(engine_store.store_dir):
         shutil.rmtree(engine_store.store_dir)
 
@@ -229,9 +230,10 @@ def set_engine(name):
     engine = engine_store.get_engine(name)
 
     if not engine.installed:
+        click.echo(f'[*] installing engine')
         engine.install()
 
-    click.echo(f'default engine set to {name}')
+    click.echo(f'[*] global engine set to {name}')
     engine_store.global_engine = name
 
 
@@ -250,9 +252,9 @@ def set_engine(name):
 @exceptions.backend_handler()
 @config.pass_options
 def env(opts, environment_variable):
-    """
+    '''
     Get the environment variables for the current engine
-    """
+    '''
 
     if opts.engine is None:
         engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
@@ -293,9 +295,10 @@ def env(opts, environment_variable):
 )
 @exceptions.backend_handler()
 def add_engine_source_build(path):
-    """
-    Generates build metadata that will be used by the engine cli
-    """
+    '''
+    Generates build metadata for engine sources
+    '''
+
     build_details = EngineCodeSourceBuildData(path=path)
 
     hamlet_meta_dir = os.path.join(path, '.hamlet')
