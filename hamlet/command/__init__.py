@@ -8,13 +8,15 @@ from hamlet.utils import isWriteable
 from hamlet.env import HAMLET_HOME_DIR
 from hamlet.command.common.engine_setup import (
     setup_initial_engines,
-    check_engine_update
+    check_engine_update,
+    setup_global_engine,
+    get_engine_env
 )
 
 try:
     from hamlet.__version__ import version
 except ImportError:
-    version = 'unkown'
+    version = 'unknown'
 
 
 @click.group('root')
@@ -31,29 +33,32 @@ def root(ctx, opts):
     hamlet deploy
     '''
 
-    if ctx.invoked_subcommand != 'engine':
+    try:
+        os.makedirs(HAMLET_HOME_DIR, exist_ok=True)
+    except OSError:
+        pass
 
-        try:
-            os.makedirs(HAMLET_HOME_DIR, exist_ok=True)
-        except OSError:
-            pass
+    homeWritable = isWriteable(HAMLET_HOME_DIR)
 
-        if not isWriteable(HAMLET_HOME_DIR):
-            click.echo(
-                click.style(
-                    (
-                        f"[!] The hamlet home dir {HAMLET_HOME_DIR} isn't writable by this user\n"
-                        "[!] Check the permissions on the directory"
-                        " or change your home dir using the HAMLET_ENGINE_DIR environment variable\n"
-                        "[!] We will continue but some parts of hamlet won't work and will raise errors of their own"
-                    ),
-                    fg='red',
-                    bold=True
-                ),
-                err=True
-            )
+    if not homeWritable:
+        click.secho(
+            (
+                f"[!] The hamlet home dir {HAMLET_HOME_DIR} isn't writable by this user\n"
+                "[!] Check the permissions on the directory"
+                " or change your home dir using the HAMLET_ENGINE_DIR environment variable\n"
+                "[!] We will continue but some parts of hamlet won't work and will raise errors of their own"
+            ),
+            fg='red',
+            bold=True,
+            err=True
+        )
 
-        if isWriteable(HAMLET_HOME_DIR):
+    if homeWritable:
+        setup_global_engine()
+        get_engine_env(opts.engine)
+
+        if ctx.invoked_subcommand != 'engine':
+
             setup_initial_engines(opts.engine)
 
             if opts.check_engine_updates:

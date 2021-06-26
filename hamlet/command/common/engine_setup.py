@@ -1,44 +1,53 @@
 import click
+from hamlet.backend import engine
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_DEFAULT_GLOBAL_ENGINE
 from hamlet.env import set_engine_env
 
 
-def setup_initial_engines(engine_override):
+def setup_global_engine():
     '''
-    Sets up the initial engines for the cli to start working
+    Always make sure the global engine is installed
     '''
-    use_global_env = False
-
     global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
     if not global_engine.installed:
         global_engine.install()
 
+
+def get_engine_env(engine_override):
+
     if engine_override is not None:
         engine = engine_store.get_engine(engine_override)
     else:
-        engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE)
-        use_global_env = True
+        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
 
-    if not engine.installed:
-        click.echo(
-            click.style(f'[*] No default engine found installing default engine - {engine.name}', fg='yellow'),
-            err=True
-        )
-        engine.install()
+    set_engine_env(engine.environment)
 
+
+def setup_initial_engines(engine_override):
+    '''
+    Sets up the initial engines for the cli to start working
+    '''
     if engine_store.global_engine is None:
+
+        if engine_override is not None:
+            engine = engine_store.get_engine(engine_override)
+        else:
+            engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE)
+
+        if not engine.installed:
+            click.echo(
+                click.style(f'[*] No default engine found installing default engine - {engine.name}', fg='yellow'),
+                err=True
+            )
+            engine.install()
+
         click.echo(
             click.style(f'[*] Setting the global engine to the default engine - {engine.name}', fg='yellow'),
             err=True
         )
-        engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
-
-    if use_global_env:
-        set_engine_env(global_engine.environment)
-    else:
-        set_engine_env(engine.environment)
+        engine_store.global_engine = engine.name
 
 
 def check_engine_update(engine_override):
