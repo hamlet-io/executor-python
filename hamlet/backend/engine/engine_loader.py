@@ -15,7 +15,8 @@ from .engine_part import (
 )
 from .common import (
     ENGINE_GLOBAL_NAME,
-    ENGINE_STATE_FILE_NAME
+    ENGINE_STATE_FILE_NAME,
+    ENGINE_STATE_VERSION
 )
 
 
@@ -103,12 +104,14 @@ class InstalledEngineLoader(EngineLoader):
                                         engine_states.append(json.load(f))
 
         for engine_state in engine_states:
-            yield InstalledEngine(
-                name=engine_state['name'],
-                description=engine_state['description'],
-                digest=engine_state['install']['digest'],
-                hidden=engine_state['hidden'],
-            )
+
+            if engine_state.get('version', '0.0.0') == ENGINE_STATE_VERSION:
+                yield InstalledEngine(
+                    name=engine_state['name'],
+                    description=engine_state['description'],
+                    digest=engine_state['install']['digest'],
+                    hidden=engine_state['hidden'],
+                )
 
 
 class UnicycleEngineLoader(EngineLoader):
