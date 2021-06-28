@@ -1,27 +1,8 @@
 import click
-
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
-from hamlet.backend.create import template as create_template_backend
-from hamlet.backend.manage import stack as manage_stack_backend
-from hamlet.backend.manage import deployment as manage_deployment_backend
 
-from .util import find_deployments_from_options
-
-
-def run_provider_deployments(deployment_provider, manage_args):
-
-    supported_deployment_provider = False
-    if deployment_provider == 'aws':
-        supported_deployment_provider = True
-        manage_stack_backend.run(**manage_args, _is_cli=True)
-
-    if deployment_provider == 'azure':
-        supported_deployment_provider = True
-        manage_deployment_backend.run(**manage_args, _is_cli=True)
-
-    if not supported_deployment_provider:
-        raise exceptions.CommandError(f'Deployment provider {deployment_provider} is not supported')
+from hamlet.backend.deploy import find_deployments, create_deployment, run_deployment
 
 
 @click.command(
@@ -105,12 +86,12 @@ def run_deployments(
     """
     Create and run deployments
     """
-    deployments = find_deployments_from_options(
-        options=options,
-        deployment_mode=deployment_mode,
-        deployment_group=deployment_group,
+    deployments = find_deployments(
+        deployment_mode,
+        deployment_group,
         deployment_units=deployment_unit,
-        deployment_states=deployment_state
+        deployment_states=deployment_state,
+        **options.opts
     )
 
     if len(deployments) == 0:
@@ -121,50 +102,28 @@ def run_deployments(
         deployment_group = deployment['DeploymentGroup']
         deployment_unit = deployment['DeploymentUnit']
         deployment_state = deployment['CurrentState']
+        provider = deployment['DeploymentProvider']
 
         click.echo('')
-        click.echo((click.style(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')))
+        click.secho(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')
 
         if deployment_state == 'orphaned':
-            click.echo(
-                (click.style('[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow'))
-            )
+            click.secho('[-] deployment has been orphaned, running orphan clean up', bold=False, fg='yellow')
 
         click.echo('')
 
         if refresh_outputs:
             if deployment_state != 'orphaned':
-                generate_args = {
-                    **options.opts,
-                    'entrance': 'deployment',
-                    'deployment_group': deployment_group,
-                    'deployment_unit': deployment_unit,
-                    'output_dir': output_dir
-                }
-                create_template_backend.run(**generate_args, _is_cli=True)
+                create_deployment(deployment_group, deployment_unit, deployment_mode, output_dir, **options.opts)
+
 
         for operation in deployment['Operations']:
 
-            manage_args = {
-                **options.opts,
-                'deployment_group': deployment_group,
-                'deployment_unit': deployment_unit,
-                'output_dir': output_dir
-            }
-
             if dryrun:
-                dryrun_args = {
-                    **manage_args,
-                    'dryrun': True
-                }
-                run_provider_deployments(deployment.get('DeploymentProvider'), dryrun_args)
+                run_deployment(provider, deployment_group, deployment_unit, operation, output_dir, dryrun )
 
             if (
                 (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))
                 or not confirm
             ):
-
-                if operation == 'delete':
-                    manage_args['delete'] = True
-
-                run_provider_deployments(deployment.get('DeploymentProvider'), manage_args)
+                run_deployment(provider, deployment_group, deployment_unit, operation, output_dir)

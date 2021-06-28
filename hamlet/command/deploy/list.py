@@ -4,7 +4,7 @@ from tabulate import tabulate
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from .util import find_deployments_from_options
+from hamlet.backend.deploy import find_deployments
 
 
 def deployments_table(data):
@@ -71,10 +71,10 @@ def list_deployments(options, deployment_mode, deployment_group, deployment_unit
     """
     List available deployments
     """
-    return find_deployments_from_options(
-        options=options,
-        deployment_mode=deployment_mode,
-        deployment_group=deployment_group,
+    return find_deployments(
+        deployment_mode,
+        deployment_group,
         deployment_units=deployment_unit,
-        deployment_states=deployment_state
+        deployment_states=deployment_state,
+        **options.opts
     )
