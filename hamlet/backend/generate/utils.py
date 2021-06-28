@@ -33,10 +33,8 @@ def cookiecutter(template_package, output_dir, **kwargs):
     with tempfile.TemporaryDirectory() as template_dir:
 
         if importlib_resources.is_resource(template_package, 'cookiecutter.json'):
-            cookiecutter_path = importlib_resources.path(template_package, 'cookiecutter.json')
-            package_root_dir = os.path.dirname(cookiecutter_path)
-
-            extract_package_to_temp(template_package, template_dir, package_root_dir, '')
+            with importlib_resources.path(template_package, 'cookiecutter.json') as path:
+                extract_package_to_temp(template_package, template_dir, os.path.dirname(path), '')
         else:
             raise BackendException(
                 f'Provided template package does not contain cookiecutter.json config: {template_package}'
