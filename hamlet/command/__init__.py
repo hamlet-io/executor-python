@@ -3,6 +3,7 @@ import os
 
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
+from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
 
 from hamlet.utils import isWriteable
 from hamlet.env import HAMLET_HOME_DIR
@@ -54,8 +55,12 @@ def root(ctx, opts):
         )
 
     if homeWritable:
-        setup_global_engine()
-        get_engine_env(opts.engine)
+
+        try:
+            setup_global_engine()
+            get_engine_env(opts.engine)
+        except HamletEngineInvalidVersion:
+            pass
 
         if ctx.invoked_subcommand != 'engine':
 
