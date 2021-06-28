@@ -12,6 +12,7 @@ from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
+from hamlet.backend.engine.engine import HamletEngineInvalidVersion
 
 
 def engines_table(data):
@@ -178,15 +179,25 @@ def describe_engine(opts, name):
         max_content_width=240
     )
 )
+@click.option(
+    '-n',
+    '--name',
+    multiple=True,
+    help='The name of an engine to clean'
+)
 @exceptions.backend_handler()
-def clean_engines():
+def clean_engines(name):
     '''
     Clean local engine store
     '''
+    if name:
+        for engine in name:
+            click.echo(f'[*] cleaning {engine} from {engine_store.store_dir}')
+            engine_store.clean_engine(engine)
 
-    click.echo(f'[*] cleaning engines in {engine_store.store_dir}')
-    if os.path.isdir(engine_store.store_dir):
-        shutil.rmtree(engine_store.store_dir)
+    else:
+        click.echo(f'[*] cleaning all engines from {engine_store.store_dir}')
+        engine_store.clean_engines()
 
 
 @group.command(
@@ -196,18 +207,37 @@ def clean_engines():
         max_content_width=240
     )
 )
+@click.option(
+    '-f',
+    '--force',
+    is_flag=True,
+    help='Force reinstall of engine',
+)
 @click.argument(
     'name',
     required=True,
     type=click.STRING
 )
 @exceptions.backend_handler()
-def install_engine(name):
+def install_engine(name, force):
     '''
     Install an engine
     '''
-    engine = engine_store.get_engine(name)
-    engine.install()
+    try:
+        engine = engine_store.get_engine(name)
+
+    except HamletEngineInvalidVersion as e:
+        if force or click.confirm(
+                (
+                    '[!] The engine state of this engine is not compatible the cli\n'
+                    '[!] To fix this we need to reinstall the engine, if the engine can not be reinstalled it will no longer be available\n'
+                    '[!] Is this ok?'
+                ), abort=True):
+            engine_store.clean_engine(name)
+        else:
+            raise e
+    else:
+        engine.install()
 
 
 @group.command(
@@ -227,6 +257,7 @@ def set_engine(name):
     '''
     Sets the global engine used
     '''
+
     engine = engine_store.get_engine(name)
 
     if not engine.installed:

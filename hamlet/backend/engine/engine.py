@@ -12,6 +12,8 @@ from .engine_part import EnginePartInterface
 from .engine_source import EngineSourceInterface
 from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
 
+from .exceptions import HamletEngineInvalidVersion
+
 
 class EngineInterface(ABC):
     def __init__(self, name, description, hidden=False, update_timeout=3600):
@@ -304,8 +306,13 @@ class EngineInterface(ABC):
         if os.path.isfile(self.engine_state_file):
             with open(self.engine_state_file, 'r') as file:
                 self._engine_state = json.load(file)
-                if self._engine_state.get('version', '0.0.0') != ENGINE_STATE_VERSION:
-                    raise BackendException(f'Engine state version does not match required version - run: install engine --force {self.name}')
+                engine_version = self._engine_state.get('version', '0.0.0')
+
+                if engine_version != ENGINE_STATE_VERSION:
+                    raise HamletEngineInvalidVersion(
+                        engine_name=self.name,
+                        version=engine_version,
+                    )
 
     def _save_engine_state(self):
         '''
@@ -340,9 +347,10 @@ class EngineInterface(ABC):
 
 
 class InstalledEngine(EngineInterface):
-    def __init__(self, name, description, digest, hidden):
+    def __init__(self, name, description, digest, hidden, state_version):
         super().__init__(name, description, hidden=hidden)
         self._installed_digest = digest
+        self._engine_state['version'] = state_version
 
     def digest(self):
         return self._installed_digest

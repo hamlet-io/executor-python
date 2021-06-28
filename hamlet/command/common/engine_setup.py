@@ -1,8 +1,8 @@
 import click
-from hamlet.backend import engine
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_DEFAULT_GLOBAL_ENGINE
+from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
 from hamlet.env import set_engine_env
 
 
@@ -10,7 +10,24 @@ def setup_global_engine():
     '''
     Always make sure the global engine is installed
     '''
-    global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+
+    try:
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+    except HamletEngineInvalidVersion:
+        '''
+        If the global engine is old then we need to force it to be the latest
+        '''
+        engine_store.clean_engine(ENGINE_GLOBAL_NAME)
+
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        global_engine.install()
+
+        if engine_store.global_engine is not None:
+            if engine_store.get_engine(engine_store.global_engine).installed:
+                engine_store.global_engine = engine_store.global_engine
+            else:
+                engine_store.global_engine = None
+
     if not global_engine.installed:
         global_engine.install()
 

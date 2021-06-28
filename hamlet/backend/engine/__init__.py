@@ -1,4 +1,5 @@
 import os
+import shutil
 import json
 
 from hamlet.backend.common.exceptions import BackendException
@@ -120,6 +121,14 @@ class EngineStore():
 
             with open(self._store_state_file, 'w') as file:
                 json.dump(self.store_state, file)
+
+    def clean_engines(self):
+        if os.path.isdir(os.path.join(self.engine_dir)):
+            shutil.rmtree(self.engine_dir)
+
+    def clean_engine(self, name):
+        if os.path.isdir(os.path.join(self.engine_dir, name)):
+            shutil.rmtree(os.path.join(self.engine_dir, name))
 
 
 engine_store = EngineStore(store_dir=ENGINE_STORE_DEFAULT_DIR)
