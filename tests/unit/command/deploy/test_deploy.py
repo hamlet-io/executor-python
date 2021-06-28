@@ -46,8 +46,8 @@ def template_backend_run_mock(data):
 
 def mock_backend(unitlist=None):
     def decorator(func):
-        @mock.patch('hamlet.command.deploy.run.manage_stack_backend')
-        @mock.patch('hamlet.command.deploy.run.create_template_backend')
+        @mock.patch('hamlet.command.deploy.run.run_deployment')
+        @mock.patch('hamlet.command.deploy.run.create_deployment')
         @mock.patch('hamlet.backend.query.context.Context')
         @mock.patch('hamlet.backend.query.template')
         def wrapper(blueprint_mock, ContextClassMock, create_template_backend, *args, **kwargs):
