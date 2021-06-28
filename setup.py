@@ -55,7 +55,7 @@ setup(
         'cookiecutter>=1.7.0,<2.0.0',
         'tabulate>=0.8.0,<1.0.0',
         'Jinja2>=2.11.0,<3.0.0',
-        'cfn-lint>=0.25.0,<1.0.0',
+        'cfn-lint>=0.51.0,<1.0.0',
         'cfn-flip>=1.2.0,<2.0.0',
         'diagrams>=0.18.0,<1.0.0',
         'marshmallow>=3.7.0,<4.0.0',
@@ -63,10 +63,6 @@ setup(
         'importlib-resources>=5.2.0<6.0.0',
         'www-authenticate>=0.9.2<1.0.0',
         'requests>=2.25.1<3.0.0',
-
-        # cfn-lint has issues with the latest networkx
-        # Their requirements are installing the latest one
-        'networkx==2.4;python_version>="3.5"',
     ],
     include_package_data=True,
     python_requires='>=3.6',
