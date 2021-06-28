@@ -10,7 +10,7 @@ from hamlet.backend.common.exceptions import BackendException
 
 from .engine_part import EnginePartInterface
 from .engine_source import EngineSourceInterface
-from .common import ENGINE_STATE_FILE_NAME
+from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
 
 
 class EngineInterface(ABC):
@@ -21,7 +21,6 @@ class EngineInterface(ABC):
 
         self.update_timeout=update_timeout
 
-        self._engine_state_version = '1.0.1'
         self._engine_state_filename = ENGINE_STATE_FILE_NAME
 
         self._engine_dir = None
@@ -150,7 +149,7 @@ class EngineInterface(ABC):
             'source_install_state' : [ vars(s) for s in source_install_state]
         }
 
-        self._engine_state['version'] = self._engine_state_version
+        self._engine_state['version'] = ENGINE_STATE_VERSION
         self._engine_state['install'] = install_state
         self._save_engine_state()
 
@@ -305,7 +304,7 @@ class EngineInterface(ABC):
         if os.path.isfile(self.engine_state_file):
             with open(self.engine_state_file, 'r') as file:
                 self._engine_state = json.load(file)
-                if self._engine_state.get('version', '0.0.0') != self._engine_state_version:
+                if self._engine_state.get('version', '0.0.0') != ENGINE_STATE_VERSION:
                     raise BackendException(f'Engine state version does not match required version - run: install engine --force {self.name}')
 
     def _save_engine_state(self):
