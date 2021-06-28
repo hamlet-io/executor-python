@@ -52,10 +52,10 @@ class EngineInterface(ABC):
                 'env_path': ''
             }
         ],
-        'GENERATION_BIN_DIR': [
+        'GENERATION_WRAPPER_JAR_FILE': [
             {
-                'part_type': 'engine-binary',
-                'env_path': ''
+                'part_type': 'engine-wrapper',
+                'env_path': 'freemarker-wrapper.jar'
             }
         ],
         'GENERATION_BASE_DIR': [

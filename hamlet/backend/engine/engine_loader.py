@@ -10,13 +10,12 @@ from .engine_part import (
     AWSEnginePluginPart,
     AzureEnginePluginPart,
     CMDBEnginePluginPart,
-    BinaryEnginePart,
-    BashExecutorEnginePart
+    BashExecutorEnginePart,
+    WrapperEnginePart,
 )
 from .common import (
     ENGINE_GLOBAL_NAME,
     ENGINE_STATE_FILE_NAME,
-    ENGINE_STATE_VERSION
 )
 
 
@@ -64,8 +63,8 @@ class GlobalEngineLoader(EngineLoader):
                 source_path='engine-plugin-cmdb',
                 source_name='shim'
             ),
-            BinaryEnginePart(
-                source_path='engine-binary',
+            WrapperEnginePart(
+                source_path='engine-wrapper',
                 source_name='shim'
             )
         ]
@@ -151,9 +150,20 @@ class UnicycleEngineLoader(EngineLoader):
                 repository='hamlet-io/engine-plugin-azure',
                 tag='latest'
             ),
+            ContainerEngineSource(
+                name='engine-core',
+                description='hamlet freemarker wrapper',
+                registry_url='https://ghcr.io',
+                repository='hamlet-io/engine-core',
+                tag='latest'
+            ),
         ]
 
         engine_parts = [
+            WrapperEnginePart(
+                source_path='',
+                source_name='engine-core'
+            ),
             CoreEnginePart(
                 source_path='',
                 source_name='engine'
