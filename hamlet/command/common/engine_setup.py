@@ -28,7 +28,7 @@ def setup_global_engine():
             else:
                 engine_store.global_engine = None
 
-    if not global_engine.installed:
+    if not global_engine.installed or not global_engine.up_to_date:
         global_engine.install()
 
 
