@@ -213,6 +213,10 @@ class TramEngineLoader(EngineLoader):
         ]
 
         engine_parts = [
+            WrapperEnginePart(
+                source_path='engine-core/',
+                source_name='hamlet-engine-base'
+            ),
             CoreEnginePart(
                 source_path='engine/',
                 source_name='hamlet-engine-base'
