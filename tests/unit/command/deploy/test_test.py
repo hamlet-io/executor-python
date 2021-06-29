@@ -47,9 +47,10 @@ def mock_backend(unitlist=None):
         @mock.patch('hamlet.command.deploy.test.test_run_backend')
         @mock.patch('hamlet.command.deploy.test.test_generate_backend')
         @mock.patch('hamlet.command.deploy.test.create_template_backend')
+        @mock.patch('hamlet.command.deploy.test.create_deployment')
         @mock.patch('hamlet.backend.query.context.Context')
         @mock.patch('hamlet.backend.query.template')
-        def wrapper(blueprint_mock, ContextClassMock, create_template_backend, *args, **kwargs):
+        def wrapper(blueprint_mock, ContextClassMock, create_deployment_backend, create_template_backend, *args, **kwargs):
             with tempfile.TemporaryDirectory() as temp_cache_dir:
 
                 ContextObjectMock = ContextClassMock()

@@ -8,8 +8,7 @@ from hamlet.command.common.exceptions import CommandError
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.test.generate import run as test_generate_backend
 from hamlet.backend.test import run as test_run_backend
-
-from .util import find_deployments_from_options
+from hamlet.backend.deploy import find_deployments, create_deployment
 
 
 @click.command(
@@ -86,11 +85,11 @@ def test_deployments(
 
     output_dir = os.path.abspath(output_dir)
 
-    deployments = find_deployments_from_options(
-        options=options,
+    deployments = find_deployments(
         deployment_mode=deployment_mode,
         deployment_group=deployment_group,
-        deployment_units=deployment_unit
+        deployment_units=deployment_unit,
+        **options.opts
     )
 
     if len(deployments) == 0:
@@ -106,27 +105,29 @@ def test_deployments(
 
         click.echo(f'[-] {deployment_group}/{deployment_unit}')
 
-        generate_args = {
-            **options.opts,
-            'entrance': 'deployment',
-            'deployment_group': deployment_group,
-            'deployment_unit': deployment_unit,
-            'output_dir': output_dir,
-        }
-        create_template_backend.run(**generate_args, _is_cli=False)
+        create_deployment(
+            deployment_group,
+            deployment_unit,
+            deployment_mode,
+            output_dir,
+            _is_cli=False,
+            **options.opts
+        )
 
         generate_args = {
             **options.opts,
             'entrance': 'deploymenttest',
             'deployment_group': deployment_group,
             'deployment_unit': deployment_unit,
+            'deployment_mode': deployment_mode,
             'output_dir': output_dir,
         }
         create_template_backend.run(**generate_args, _is_cli=False)
 
     click.echo('')
-    click.echo(click.style('[*] Testing deployments:', bold=True, fg='green'))
+    click.secho('[*] Testing deployments:', bold=True, fg='green')
     click.echo('')
+
     test_script_filename = 'test_deployments.py'
     test_generate_backend(
         output=f'{output_dir}/{test_script_filename}',

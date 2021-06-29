@@ -2,9 +2,8 @@ import click
 
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
-from hamlet.backend.create import template as create_template_backend
 
-from .util import find_deployments_from_options
+from hamlet.backend.deploy import find_deployments, create_deployment
 
 
 @click.command(
@@ -71,12 +70,12 @@ def create_deployments(
     Create deployment outputs
     """
 
-    deployments = find_deployments_from_options(
-        options=options,
-        deployment_mode=deployment_mode,
-        deployment_group=deployment_group,
+    deployments = find_deployments(
+        deployment_mode,
+        deployment_group,
         deployment_units=deployment_unit,
-        deployment_states=deployment_state
+        deployment_states=deployment_state,
+        **options.opts
     )
 
     if len(deployments) == 0:
@@ -86,13 +85,14 @@ def create_deployments(
 
         deployment_group = deployment['DeploymentGroup']
         deployment_unit = deployment['DeploymentUnit']
-        click.echo(f'[*] {deployment_group}/{deployment_unit}')
 
-        generate_args = {
-            **options.opts,
-            'entrance': 'deployment',
-            'deployment_group': deployment_group,
-            'deployment_unit': deployment_unit,
-            'output_dir': output_dir
-        }
-        create_template_backend.run(**generate_args, _is_cli=True)
+        click.echo('')
+        click.secho(f'[*] {deployment_group}/{deployment_unit}', bold=True, fg='green')
+
+        create_deployment(
+            deployment_group,
+            deployment_unit,
+            deployment_mode,
+            output_dir,
+            **options.opts
+        )
