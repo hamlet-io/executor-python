@@ -1,146 +1,169 @@
 import os
 import base64
-import requests
 import tempfile
 import hashlib
 import shutil
-
+import httpx
+import typing
 import www_authenticate
 
 from urllib import parse
 
+class ContainerRepositoryException(BaseException):
+    def __init__(self, repository: str,*args: object) -> None:
+        self.repository = repository
+        super().__init__(*args)
 
-def get_registry_login_token(
-        registry_url,
-        repository, actions=['pull'],
-        username=None,
-        password=None,
-        authorization_header=None
-):
-    '''
-    Uses the docker v2 registry api to get an auth token compliant with the registry
-    '''
-    registry_base_url = parse.urljoin(registry_url, 'v2/')
-    registry_version = requests.get(registry_base_url, allow_redirects=True)
+class ContainerTagNotFoundException(ContainerRepositoryException):
+    def __init__(self, repository: str, tag: str, *args: object) -> None:
+        self.tag = tag
+        super().__init__(repository, *args)
 
-    if registry_version.status_code == requests.codes.ok:
-        return None
 
-    if registry_version.status_code != requests.codes.unauthorized:
-        raise requests.exceptions.HTTPError(registry_version)
+class DockerRegistryV2Auth(httpx.Auth):
+    def __init__(self, repository, username=None, password=None) -> None:
+        self.repository = repository
+        self.username = username
+        self.password = password
+        self.token = None
 
-    if registry_version.status_code == requests.codes.unauthorized:
+    actions = ['pull']
 
-        if username is not None and password is not None:
-            headers = {
-                'Authorization': 'Basic ' + base64.b64encode(f'{username}:{password}').decode('utf-8')
-            }
+    def auth_flow(self, request: httpx.Request) -> typing.Generator[httpx.Request, httpx.Response, None]:
 
-        elif authorization_header is not None:
-            headers = {
-                'Authorization': authorization_header
-            }
-        else:
-            headers = {}
+        if self.token:
+            request.headers['Authorization'] = self.token
 
-        status_respose = www_authenticate.parse(registry_version.headers['WWW-Authenticate'])
+        response = yield request
 
-        if 'bearer' in status_respose:
-            bearer_info = status_respose['bearer']
-            if actions:
+        if response.status_code == httpx.codes.UNAUTHORIZED:
+            self.token = self.sign_request(response, self.repository, self.actions, self.username, self.password)
+            request.headers['Authorization'] = self.token
+
+            yield request
+
+
+    def sign_request(self, registry_response, repository, actions, username, password):
+        realm_client = httpx.Client()
+
+        if self.username or self.password:
+            realm_client.headers['Authorization'] = self._build_basic_auth_header(username, password)
+
+        realm_response = realm_client.get(self._build_realm_token_url(registry_response, repository, actions)).json()
+        realm_token = realm_response.get('access_token') or realm_response['token']
+
+        return f'Bearer {realm_token}'
+
+
+    def _build_basic_auth_header(
+            self, username, password
+        ) -> str:
+            userpass = b":".join((httpx.to_bytes(username), httpx.to_bytes(password)))
+            token = base64.b64encode(userpass).decode()
+            return f"Basic {token}"
+
+    def _build_realm_token_url(self, response, repository, actions):
+        www_authenticate_response = www_authenticate.parse(response.headers['WWW-Authenticate'])
+
+        if 'bearer' in www_authenticate_response:
+            if self.actions:
                 scope = f'repository:{repository}:' + ','.join(actions)
-            elif 'scope' in bearer_info:
-                scope = bearer_info['scope']
+            elif 'scope' in www_authenticate_response['bearer']:
+                scope = www_authenticate_response['bearer']['scope']
             else:
                 scope = ''
-            url_parts = list(parse.urlparse(bearer_info['realm']))
+
+            url_parts = list(parse.urlparse(www_authenticate_response['bearer']['realm']))
             query = parse.parse_qs(url_parts[4])
             query.update({
-                'service': bearer_info['service'],
-                'scope': scope
+                'service': www_authenticate_response['bearer']['service'],
+                'scope': scope,
             })
             url_parts[4] = parse.urlencode(query, True)
             url_parts[0] = 'https'
-            auth_url = parse.urlunparse(url_parts)
 
-            auth_response = requests.get(auth_url, headers=headers)
-            auth_response.raise_for_status()
+            return parse.urlunparse(url_parts)
 
-            auth_json = auth_response.json()
+class ContainerRepository():
 
-            return auth_json.get('access_token') or auth_json['token']
+    def __init__(self, registry_url, repository, username=None, password=None) -> None:
 
-    return None
+        self.registry_url = registry_url
+        self.repository = repository
 
+        self.username = username
+        self.password = password
 
-def get_registry_image_manifest(registry_url, repository, tag, auth_token):
-    '''
-    Get the manifest of a docker image based on the v2 docker registry spec
-    The manifest contains the layers and details of the over all docker image
-    '''
-    manifest_url = parse.urljoin(registry_url, f'v2/{repository}/manifests/{tag}')
-    if auth_token is not None:
-        headers = {
-            'Authorization': f'Bearer {auth_token}',
-            'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
-        }
-    else:
-        headers = {}
+        self.registry_client = httpx.Client(
+            base_url=self.registry_url,
+            auth=DockerRegistryV2Auth(
+                self.repository,
+                self.username,
+                self.password
+            ),
+            headers={
+                'Accept': 'application/vnd.docker.distribution.manifest.v2+json'
+            }
+        )
 
-    manifest_response = requests.get(manifest_url, headers=headers, allow_redirects=True)
-    manifest_response.raise_for_status()
+    @property
+    def tags(self):
+        return self.registry_client.get(f'/v2/{self.repository}/tags/list').json()['tags']
 
-    return manifest_response.json()
+    def get_tag_digest(self, tag):
+        return self.get_tag_manifest(tag)['config']['digest']
 
+    def get_tag_manifest(self, tag):
+        manifest_response = self.registry_client.get(f'/v2/{self.repository}/manifests/{tag}')
 
-def pull_registry_image_to_dir(registry_url, repository, manifest, auth_token, dest_dir):
-    '''
-    Pull down all of the layers from a manifest and extract the tars over the top of each other
-    This is what docker itself does we are just using the docker images as file sharing rather than an container
-    '''
-    blob_base_url = parse.urljoin(registry_url, f'/v2/{repository}/blobs/')
-    if auth_token is not None:
-        headers = {
-            'Authorization': f'Bearer {auth_token}'
-        }
-    else:
-        headers = {}
+        try:
+            manifest_response.raise_for_status()
 
-    with tempfile.TemporaryDirectory() as temp_dir:
-        extract_dir = os.path.join(temp_dir, 'extract')
-        os.makedirs(extract_dir)
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == httpx.codes.NOT_FOUND:
+                raise ContainerTagNotFoundException(self.repository, tag, exc )
 
-        for layer in manifest['layers']:
-            with tempfile.NamedTemporaryFile(dir=temp_dir, delete=False) as layer_file:
-                layer_url = blob_base_url + layer['digest']
+            raise exc
 
-                layer_response = requests.get(layer_url, headers=headers, allow_redirects=True)
-                layer_response.raise_for_status()
-                layer_content = requests.get(layer_response.url, stream=True, headers=headers)
-                layer_content.raise_for_status()
+        return manifest_response.json()
 
-                for chunk in layer_content.iter_content(chunk_size=(1024 * 1024)):
-                    if chunk:
-                        layer_file.write(chunk)
+    def pull(self, tag, dst_dir):
+        manifest = self.get_tag_manifest(tag)
 
-                layer_file.flush()
+        with tempfile.TemporaryDirectory() as extract_dir:
+            with tempfile.TemporaryDirectory() as stage_dir:
+                for layer in manifest['layers']:
+                    with tempfile.NamedTemporaryFile(dir=stage_dir, delete=False) as layer_file:
 
-                digest_algorithm = layer['digest'].split(':')[0]
-                digest_hash = layer['digest'].split(':')[1]
+                        layer_url = self.registry_client.get(
+                            url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
+                            allow_redirects=True
+                        ).url
 
-                file_hash = hashlib.new(digest_algorithm)
-                with open(layer_file.name, "rb") as f:
-                    for byte_block in iter(lambda: f.read((1024 * 1024)), b""):
-                        file_hash.update(byte_block)
+                        with self.registry_client.stream(method='get', url=layer_url) as r:
+                            for chunk in r.iter_raw(chunk_size=(1024 * 1024 * 3)):
+                                layer_file.write(chunk)
 
-                if digest_hash != file_hash.hexdigest():
-                    print(f'Layer hash does not match digest - ours {file_hash.hexdigest()} - theirs {digest_hash}')
+                        layer_file.flush()
 
-                if layer['mediaType'] == 'application/vnd.docker.image.rootfs.diff.tar.gzip':
+                        digest_algorithm = layer['digest'].split(':')[0]
+                        digest_hash = layer['digest'].split(':')[1]
 
-                    shutil.unpack_archive(layer_file.name, extract_dir, 'gztar')
+                        file_hash = hashlib.new(digest_algorithm)
+                        with open(layer_file.name, "rb") as f:
+                            for byte_block in iter(lambda: f.read((1024 * 1024 * 10)), b""):
+                                file_hash.update(byte_block)
 
-        if os.listdir(extract_dir):
-            if os.path.isdir(dest_dir):
-                shutil.rmtree(dest_dir)
-            shutil.copytree(extract_dir, dest_dir, symlinks=True)
+                        if digest_hash != file_hash.hexdigest():
+                            print(f'Layer hash does not match digest - ours {file_hash.hexdigest()} - theirs {digest_hash}')
+
+                        if layer['mediaType'] == 'application/vnd.docker.image.rootfs.diff.tar.gzip':
+
+                            shutil.unpack_archive(layer_file.name, extract_dir, 'gztar')
+
+                if os.listdir(extract_dir):
+                    if os.path.isdir(dst_dir):
+                        shutil.rmtree(dst_dir)
+                    shutil.copytree(extract_dir, dst_dir, symlinks=True)
+
+        return manifest

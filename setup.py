@@ -62,7 +62,7 @@ setup(
         'jmespath>=0.10.0<1.0.0',
         'importlib-resources>=5.2.0<6.0.0',
         'www-authenticate>=0.9.2<1.0.0',
-        'requests>=2.25.1<3.0.0',
+        'httpx>=0.18.2<1.0.0',
     ],
     include_package_data=True,
     python_requires='>=3.6',
