@@ -12,5 +12,8 @@ class HamletEngineInvalidVersion(BackendException):
         self.version = version
         self.engine_name = engine_name
 
-        msg = f'Engine {self.engine_name} state not supported by this cli version - run: hamlet engine install-engine {self.engine_name}'
+        msg = (
+            f'Engine {self.engine_name} state not supported by this cli version'
+            f'- run: hamlet engine install-engine {self.engine_name}'
+        )
         super().__init__(msg)

@@ -21,7 +21,7 @@ class EngineInterface(ABC):
         self.description = description
         self.hidden = hidden
 
-        self.update_timeout=update_timeout
+        self.update_timeout = update_timeout
 
         self._engine_state_filename = ENGINE_STATE_FILE_NAME
 
@@ -147,19 +147,18 @@ class EngineInterface(ABC):
 
         install_state = {
             'part_paths': self._get_part_paths(),
-            'digest' : self._format_engine_digest(source_digests),
-            'source_install_state' : [ vars(s) for s in source_install_state]
+            'digest': self._format_engine_digest(source_digests),
+            'source_install_state': [vars(s) for s in source_install_state]
         }
 
         self._engine_state['version'] = ENGINE_STATE_VERSION
         self._engine_state['install'] = install_state
         self._save_engine_state()
 
-
     def _update_updater_state(self):
         updater_state = {
             'last_check': datetime.now().isoformat(timespec='seconds'),
-            'latest_digest': self._format_engine_digest([ s.digest for s in self.sources])
+            'latest_digest': self._format_engine_digest([s.digest for s in self.sources])
         }
         self._engine_state['updater'] = updater_state
         self._save_engine_state()
@@ -180,7 +179,9 @@ class EngineInterface(ABC):
         '''
         if self.installed:
             if self.updater_state is not None:
-                if (datetime.now() - datetime.strptime(self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
+                if (datetime.now()
+                        - datetime.strptime(
+                            self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
                     self._update_updater_state()
 
                 if ignore_cache:
@@ -191,7 +192,6 @@ class EngineInterface(ABC):
 
             self._load_engine_state()
             return self.updater_state.get('latest_digest', None)
-
 
     def up_to_date(self, ignore_cache=False):
         '''

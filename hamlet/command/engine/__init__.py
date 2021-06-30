@@ -63,7 +63,7 @@ def list_engines(show_hidden):
     for engine in engine_store.engines:
 
         update_available = None
-        if ( show_hidden and engine.hidden ) or not engine.hidden:
+        if (show_hidden and engine.hidden) or not engine.hidden:
             if engine.installed:
                 try:
                     if engine.up_to_date(ignore_cache=True):
@@ -137,7 +137,7 @@ def describe_engine(opts, name):
             'latest_digest': latest_digest
         },
         'environment': engine.environment,
-        'install_state' : engine.install_state
+        'install_state': engine.install_state
     }
 
     sources = []
@@ -235,7 +235,8 @@ def install_engine(name, force):
         if force or click.confirm(
                 (
                     '[!] The engine state of this engine is not compatible the cli\n'
-                    '[!] To fix this we need to reinstall the engine, if the engine can not be reinstalled it will no longer be available\n'
+                    '[!] To fix this we need to reinstall the engine,'
+                    'if the engine can not be reinstalled it will no longer be available\n'
                     '[!] Is this ok?'
                 ), abort=True):
             engine_store.clean_engine(name)
@@ -266,7 +267,7 @@ def set_engine(name):
     engine = engine_store.get_engine(name)
 
     if not engine.installed:
-        click.echo(f'[*] installing engine')
+        click.echo('[*] installing engine')
         engine.install()
 
     click.echo(f'[*] global engine set to {name}')

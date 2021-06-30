@@ -116,11 +116,10 @@ def run_deployments(
             if deployment_state != 'orphaned':
                 create_deployment(deployment_group, deployment_unit, deployment_mode, output_dir, **options.opts)
 
-
         for operation in deployment['Operations']:
 
             if dryrun:
-                run_deployment(provider, deployment_group, deployment_unit, operation, output_dir, dryrun )
+                run_deployment(provider, deployment_group, deployment_unit, operation, output_dir, dryrun)
 
             if (
                 (confirm and click.confirm(f'Start Deployment of {deployment_group}/{deployment_unit} ?'))

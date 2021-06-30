@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 
+
 class EngineCodeSourceBuildData():
     '''
     Provides utility functions that generate version details about

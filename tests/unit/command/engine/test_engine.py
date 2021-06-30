@@ -18,7 +18,7 @@ def mock_engine(name, description, installed, digest='', hidden=False):
     mock_engine.name = name
     mock_engine.description = description
     mock_engine.digest = digest
-    mock_engine.hidden =hidden
+    mock_engine.hidden = hidden
     type(mock_engine).installed = mock.PropertyMock(return_value=installed)
 
     return mock_engine
@@ -76,6 +76,7 @@ def test_list_engines(mock_engine_store):
         'global': False,
         'update_available': None
     } in result
+
 
 @mock.patch("json.dumps", mock.MagicMock(return_value='{cool}'))
 @mock_backend()
