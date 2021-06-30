@@ -45,7 +45,7 @@ def mock_backend():
                 )
             ]
 
-            type(mock_engine_store).engines = mock.PropertyMock(return_value=mock_engines)
+            mock_engine_store.get_engines.return_value = mock_engines
             type(mock_engine_store).global_engine = mock.PropertyMock(return_value='Name[2]')
 
             return func(mock_engine_store, *args, **kwargs)
@@ -63,7 +63,7 @@ def test_list_engines(mock_engine_store):
             '--output-format', 'json'
         ]
     )
-    print(result.exception)
+    print(result.output)
     assert result.exit_code == 0
     result = json.loads(result.output)
     print(result)
