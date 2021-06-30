@@ -114,7 +114,19 @@ def occurrences_table(data):
 def query_group(ctx, use_cache):
     """
     Base command used to set blueprint generation options
+
+    DEPRECATED: this command group will be removed in the next release
+        the component group ( hamlet component ) replaces this group
     """
+    click.secho(
+        (
+            '[!] the query command group has been deprecated and will be removed in the next release\n'
+            '[!] the component command group replaces these commands'
+        ),
+        err=True,
+        fg='red'
+    )
+
     ctx.obj = BlueprintContext(
         use_cache=use_cache
     )
