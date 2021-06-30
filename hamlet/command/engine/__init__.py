@@ -1,6 +1,5 @@
 import click
 import os
-import shutil
 import json
 
 from tabulate import tabulate
@@ -48,9 +47,14 @@ def group():
         max_content_width=240
     )
 )
+@click.option(
+    '--show-hidden/--hide-hidden',
+    default=False,
+    help='Control visibility of hidden engines'
+)
 @json_or_table_option(engines_table)
 @exceptions.backend_handler()
-def list_engines():
+def list_engines(show_hidden):
     '''
     Lists the available engines
     '''
@@ -59,26 +63,27 @@ def list_engines():
     for engine in engine_store.engines:
 
         update_available = None
-        if engine.installed:
-            try:
-                if engine.up_to_date(ignore_cache=True):
-                    update_available = False
-                else:
-                    update_available = True
-            except BaseException as e:
-                click.secho(f'[!]engine update failed for {engine.name}', fg='red', err=True)
-                click.secho(f'[!]  {e}', fg='red', err=True)
+        if ( show_hidden and engine.hidden ) or not engine.hidden:
+            if engine.installed:
+                try:
+                    if engine.up_to_date(ignore_cache=True):
+                        update_available = False
+                    else:
+                        update_available = True
+                except BaseException as e:
+                    click.secho(f'[!]engine update failed for {engine.name}', fg='red', err=True)
+                    click.secho(f'[!]  {e}', fg='red', err=True)
 
-        data.append(
-            {
-                'name': engine.name,
-                'description': engine.description,
-                'installed': engine.installed,
-                'digest': engine.digest,
-                'global': True if engine.name == engine_store.global_engine else False,
-                'update_available': update_available
-            }
-        )
+            data.append(
+                {
+                    'name': engine.name,
+                    'description': engine.description,
+                    'installed': engine.installed,
+                    'digest': engine.digest,
+                    'global': True if engine.name == engine_store.global_engine else False,
+                    'update_available': update_available
+                }
+            )
     return data
 
 
