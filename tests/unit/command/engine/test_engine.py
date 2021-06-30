@@ -13,11 +13,12 @@ from hamlet.command.engine import (
 )
 
 
-def mock_engine(name, description, installed, digest=''):
+def mock_engine(name, description, installed, digest='', hidden=False):
     mock_engine = mock.Mock()
     mock_engine.name = name
     mock_engine.description = description
     mock_engine.digest = digest
+    mock_engine.hidden =hidden
     type(mock_engine).installed = mock.PropertyMock(return_value=installed)
 
     return mock_engine
@@ -32,13 +33,15 @@ def mock_backend():
                 mock_engine(
                     name='Name[1]',
                     description='Description[1]',
-                    installed=False
+                    installed=False,
+                    hidden=False
                 ),
                 mock_engine(
                     name='Name[2]',
                     description='Description[2]',
                     installed=True,
-                    digest='Digest[2]'
+                    digest='Digest[2]',
+                    hidden=True
                 )
             ]
 
@@ -64,7 +67,7 @@ def test_list_engines(mock_engine_store):
     assert result.exit_code == 0
     result = json.loads(result.output)
     print(result)
-    assert len(result) == 2
+    assert len(result) == 1
     assert {
         'name': 'Name[1]',
         'description': 'Description[1]',
@@ -73,15 +76,6 @@ def test_list_engines(mock_engine_store):
         'global': False,
         'update_available': None
     } in result
-    assert {
-        'name': 'Name[2]',
-        'description': 'Description[2]',
-        'digest': 'Digest[2]',
-        'installed': True,
-        'global': True,
-        'update_available': False
-    } in result
-
 
 @mock.patch("json.dumps", mock.MagicMock(return_value='{cool}'))
 @mock_backend()
