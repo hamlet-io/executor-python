@@ -13,18 +13,23 @@ from hamlet.backend.engine.engine_source import ShimPathEngineSource
 
 def mock_container_registry():
     def decorator(func):
-        @mock.patch('hamlet.backend.engine.engine_source.pull_registry_image_to_dir')
-        @mock.patch('hamlet.backend.engine.engine_source.get_registry_image_manifest')
-        @mock.patch('hamlet.backend.engine.engine_source.get_registry_login_token')
-        def wrapper(mock_login_token, mock_image_manifest, mock_image_to_dir, *args, **kwargs):
 
-            mock_image_manifest.return_value = {
+        @mock.patch('hamlet.backend.engine.engine_source.ContainerRepository')
+        def wrapper(container_repository, *args, **kwargs):
+
+            container_repository.return_value.get_tag_digest.return_value = 'config_digest[1]'
+            container_repository.return_value.get_tag_manifest.return_value = {
+                'config': {
+                    'digest': 'config_digest[1]'
+                }
+            }
+            container_repository.return_value.pull.return_value = {
                 'config': {
                     'digest': 'config_digest[1]'
                 }
             }
 
-            return func(mock_login_token, mock_image_manifest, mock_image_to_dir, *args, **kwargs)
+            return func(container_repository, *args, **kwargs)
 
         return wrapper
     return decorator
@@ -110,7 +115,7 @@ def test_installed_engine_loading():
 
 
 @mock_container_registry()
-def test_unicycle_engine_loading(mock_login_token, mock_image_manifest, mock_image_to_dir):
+def test_unicycle_engine_loading(container_repository):
     '''
     tests that we can run source loading from a container
     '''
@@ -126,7 +131,6 @@ def test_unicycle_engine_loading(mock_login_token, mock_image_manifest, mock_ima
         unicycle_engine.install()
 
         assert unicycle_engine.name == 'unicycle'
-        assert mock_image_manifest.call_count == len(unicycle_engine.sources)
 
         container_digests = ['config_digest[1]'] * len(unicycle_engine.sources)
         expected_digest = 'sha256:' + hashlib.sha256(':'.join(container_digests).encode('utf-8')).hexdigest()

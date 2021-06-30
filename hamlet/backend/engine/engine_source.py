@@ -1,17 +1,10 @@
 import os
-import subprocess
-import shutil
+
 import pathlib
 import json
 
 from abc import ABC, abstractmethod
-from hamlet.backend import engine
-
-from hamlet.backend.container_registry import (
-    get_registry_login_token,
-    get_registry_image_manifest,
-    pull_registry_image_to_dir
-)
+from hamlet.backend.container_registry import ContainerRepository
 
 
 class EngineSourceInterface(ABC):
@@ -80,37 +73,21 @@ class ContainerEngineSource(EngineSourceInterface):
         self.username = username
         self.password = password
 
-        self._manifest = None
-
-        self._dst_dir = None
-
-    def _get_auth_token(self):
-        return get_registry_login_token(
-            self.registry_url,
-            self.repository,
+        self._container_repository = ContainerRepository(
+            registry_url=self.registry_url,
+            repository=self.repository,
             username=self.username,
             password=self.password
         )
 
-    def _get_manifest(self, auth_token=None):
-        if auth_token is None:
-            auth_token = self._get_auth_token()
-        if self._manifest is None:
-            return get_registry_image_manifest(self.registry_url, self.repository, self.tag, auth_token)
-        else:
-            return self._manifest
-
     def pull(self, dst_dir):
 
-        auth_token = self._get_auth_token()
-        self._manifest = self._get_manifest(auth_token)
-
-        pull_registry_image_to_dir(self.registry_url, self.repository, self._manifest, auth_token, dst_dir)
+        pull_manifest = self._container_repository.pull(self.tag, dst_dir)
 
         return EngineSourcePullState(
             name=self.name,
             type=self.__class__.__name__,
-            digest=self._manifest['config']['digest'],
+            digest=pull_manifest['config']['digest'],
             source_metadata={
                 'registry_url': self.registry_url,
                 'repository': self.repository,
@@ -119,13 +96,9 @@ class ContainerEngineSource(EngineSourceInterface):
             build_metadata=self._get_build_details(dst_dir)
         )
 
-
     @property
     def digest(self):
-        if self._manifest is None:
-            self._manifest = self._get_manifest()
-
-        return self._manifest['config']['digest']
+        return self._container_repository.get_tag_digest(self.tag)
 
     def _get_build_details(self, dst_dir):
 
