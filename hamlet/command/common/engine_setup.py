@@ -12,18 +12,18 @@ def setup_global_engine():
     '''
 
     try:
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=True)
     except HamletEngineInvalidVersion:
         '''
         If the global engine is old then we need to force it to be the latest
         '''
         engine_store.clean_engine(ENGINE_GLOBAL_NAME)
 
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=True)
         global_engine.install()
 
         if engine_store.global_engine is not None:
-            if engine_store.get_engine(engine_store.global_engine).installed:
+            if engine_store.get_engine(engine_store.global_engine, local_only=True).installed:
                 engine_store.global_engine = engine_store.global_engine
             else:
                 engine_store.global_engine = None
@@ -35,9 +35,9 @@ def setup_global_engine():
 def get_engine_env(engine_override):
 
     if engine_override is not None:
-        engine = engine_store.get_engine(engine_override)
+        engine = engine_store.get_engine(engine_override, local_only=True)
     else:
-        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=False)
 
     set_engine_env(engine.environment)
 
@@ -49,9 +49,9 @@ def setup_initial_engines(engine_override):
     if engine_store.global_engine is None:
 
         if engine_override is not None:
-            engine = engine_store.get_engine(engine_override)
+            engine = engine_store.get_engine(engine_override, local_only=True)
         else:
-            engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE)
+            engine = engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE, local_only=False)
 
         if not engine.installed:
             click.echo(
