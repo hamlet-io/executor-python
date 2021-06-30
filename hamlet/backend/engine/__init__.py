@@ -9,7 +9,10 @@ from .engine_loader import (
     GlobalEngineLoader,
     InstalledEngineLoader,
     UnicycleEngineLoader,
-    TramEngineLoader
+    LatestTramEngineLoader,
+    TramEngineLoader,
+    LatestTrainEngineLoader,
+    TrainEngineLoader
 )
 
 
@@ -35,7 +38,10 @@ class EngineStore():
             InstalledEngineLoader(engine_dir=self.engine_dir),
             GlobalEngineLoader(),
             UnicycleEngineLoader(),
-            TramEngineLoader()
+            LatestTramEngineLoader(),
+            TramEngineLoader(),
+            LatestTrainEngineLoader(),
+            TrainEngineLoader(),
         ]
 
     @property
@@ -44,7 +50,7 @@ class EngineStore():
         Return the engines that have been loaded into the store
         '''
         self._load_engines()
-        return list(filter(lambda x: not x.hidden, self._engines.values()))
+        return list(self._engines.values())
 
     @property
     def global_engine(self):
