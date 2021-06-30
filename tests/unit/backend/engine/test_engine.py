@@ -46,9 +46,9 @@ def test_global_engine_loading():
             GlobalEngineLoader()
         ]
 
-        assert len(engine_store.engines) == 1
+        assert len(engine_store.get_engines()) == 1
 
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=True)
 
         assert global_engine.name == ENGINE_GLOBAL_NAME
 
@@ -75,7 +75,7 @@ def test_installed_engine_loading():
             InstalledEngineLoader(engine_store.engine_dir)
         ]
 
-        assert len(engine_store.engines) == 0
+        assert len(engine_store.get_engines()) == 0
 
         '''
         Engine is created in a directory which matches the engine_store engine search location
@@ -107,7 +107,7 @@ def test_installed_engine_loading():
         '''
         Use the Installed loader to discover the manually installed engine
         '''
-        discovered_engine = engine_store.get_engine('installed_engine')
+        discovered_engine = engine_store.get_engine('installed_engine', local_only=True)
         assert discovered_engine.name == 'installed_engine'
 
         generation_engine_path = os.path.join(discovered_engine.install_path, 'shim_source')
@@ -127,7 +127,7 @@ def test_unicycle_engine_loading(container_repository):
             UnicycleEngineLoader()
         ]
 
-        unicycle_engine = engine_store.get_engine('unicycle')
+        unicycle_engine = engine_store.get_engine('unicycle', local_only=False)
         unicycle_engine.install()
 
         assert unicycle_engine.name == 'unicycle'

@@ -45,14 +45,6 @@ class EngineStore():
         ]
 
     @property
-    def engines(self):
-        '''
-        Return the engines that have been loaded into the store
-        '''
-        self._load_engines()
-        return list(self._engines.values())
-
-    @property
     def global_engine(self):
         '''
         The global engine defines a special engine that uses other engines to provide parts
@@ -88,20 +80,27 @@ class EngineStore():
         }
         self.save_store_state()
 
-    def _load_engines(self):
+    def _load_engines(self, local_only):
         '''
         Get the engines from the loaders
         '''
         for loader in self.engine_loaders:
-            for engine in loader.load():
+            for engine in loader.load(local_only):
                 engine.engine_dir = self.engine_dir
                 self._engines[engine.name] = engine
 
-    def get_engine(self, name, allow_missing=False):
+    def get_engines(self, local_only=False):
+        '''
+        Return the engines that have been loaded into the store
+        '''
+        self._load_engines(local_only)
+        return list(self._engines.values())
+
+    def get_engine(self, name, allow_missing=False, local_only=False):
         '''
         returns engines matching the name provided
         '''
-        self._load_engines()
+        self._load_engines(local_only)
         result = self._engines.get(name, None)
 
         if not allow_missing and result is None:
