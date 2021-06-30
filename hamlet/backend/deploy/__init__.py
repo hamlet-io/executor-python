@@ -79,7 +79,6 @@ def create_deployment(
     create_template_backend.run(**generate_args, _is_cli=_is_cli)
 
 
-
 def run_deployment(
         deployment_provider,
         deployment_group,
