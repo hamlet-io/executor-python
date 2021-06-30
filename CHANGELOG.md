@@ -1,9 +1,20 @@
 # Changelog
 
-## Unreleased (2021-06-21)
+## Unreleased (2021-06-30)
 
 #### New Features
 
+* removes the query command group
+* deprecate the query command group
+* add dynamic engine loaders tram and train
+* show hidden engines in cli
+* adds support for getting container tags
+* (engine): add the wrapper into the tram
+* auto update the global engine
+* add wrapper to unicycle loader
+* handle out of date global engine
+* detailed engine information ([#167](https://github.com/hamlet-io/executor-python/issues/167))
+* include cli version in command
 * add support for engine updates
 * allow dryn runs on create  actions
 * update docs to outline install process
@@ -16,6 +27,18 @@
 * container registry helper functions
 #### Fixes
 
+* testing
+* build detail path splitting
+* tests
+* use context manager for generate
+* handle invalid versions for engine loading
+* handle  instllation process and global env
+* handle broken engines
+* remove local version from scm
+* options passed to backend query for diagrams
+* version bump
+* set title to package name ([#163](https://github.com/hamlet-io/executor-python/issues/163))
+* changelog command
 * align env with arg
 * handle permissions on home dir
 * more descriptions on packages and add dos2unix
@@ -27,12 +50,26 @@
 * logging during cli execptions
 #### Refactorings
 
+* align tests with backend move for deploy
+* align with backend deploy move
+* move deploy functions to backend
+* remove networkx fixed dependecy
+* engine update handling
+* project layout ([#173](https://github.com/hamlet-io/executor-python/issues/173))
+* move to scm based versioning ([#172](https://github.com/hamlet-io/executor-python/issues/172))
+* (ci): release trigger process ([#164](https://github.com/hamlet-io/executor-python/issues/164))
 * remove jenkinsfile docker trigger
 * move engine name to argument
 * update commands to align with backend
 * updates and documentation
 #### Others
 
+* liniting fixes
+* version bump ([#170](https://github.com/hamlet-io/executor-python/issues/170))
+* version bump ([#169](https://github.com/hamlet-io/executor-python/issues/169))
+* version bump ([#168](https://github.com/hamlet-io/executor-python/issues/168))
+* release bump [skip actions] ([#157](https://github.com/hamlet-io/executor-python/issues/157))
+* release bump [skip actions] ([#156](https://github.com/hamlet-io/executor-python/issues/156))
 * release bump [skip actions] ([#154](https://github.com/hamlet-io/executor-python/issues/154))
 * release bump [skip actions] ([#153](https://github.com/hamlet-io/executor-python/issues/153))
 * release bump [skip actions]
@@ -43,7 +80,7 @@
 * release bump [skip actions] ([#140](https://github.com/hamlet-io/executor-python/issues/140))
 * update cli package version ([#137](https://github.com/hamlet-io/executor-python/issues/137))
 
-Full set of changes: [`8.1.2...fde4c5a`](https://github.com/hamlet-io/executor-python/compare/8.1.2...fde4c5a)
+Full set of changes: [`8.1.2...3877a7a`](https://github.com/hamlet-io/executor-python/compare/8.1.2...3877a7a)
 
 ## 8.1.2 (2021-05-13)
 
