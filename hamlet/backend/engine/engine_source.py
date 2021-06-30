@@ -108,11 +108,13 @@ class ContainerEngineSource(EngineSourceInterface):
             build_sources = {}
             for engine_source_path in engine_source_paths:
                 with open(engine_source_path, 'r') as file:
-                    source_name = str(engine_source_path)[len((os.path.commonprefix([dst_dir, engine_source_path]))):len(engine_source)]
+                    source_name = str(engine_source_path)[
+                        len(dst_dir)
+                        :len(str(engine_source_path)) - len(engine_source)
+                    ]
                     build_sources[source_name] = json.load(file)
 
             return build_sources
-
 
 
 class EngineSourcePullState(dict):
