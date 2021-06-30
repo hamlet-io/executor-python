@@ -1,5 +1,6 @@
 import os
 import json
+import re
 
 from abc import ABC
 
@@ -17,6 +18,7 @@ from .common import (
     ENGINE_GLOBAL_NAME,
     ENGINE_STATE_FILE_NAME,
 )
+from hamlet.backend.container_registry import ContainerRepository
 
 
 class EngineLoader(ABC):
@@ -35,6 +37,7 @@ class GlobalEngineLoader(EngineLoader):
     def __init__(self):
         super().__init__()
 
+    def load(self):
         engine_source = [
             ShimPathEngineSource(
                 name='shim',
@@ -77,7 +80,7 @@ class GlobalEngineLoader(EngineLoader):
         engine.parts = engine_parts
         engine.sources = engine_source
 
-        self._engines = [engine]
+        yield engine
 
 
 class InstalledEngineLoader(EngineLoader):
@@ -118,9 +121,7 @@ class UnicycleEngineLoader(EngineLoader):
     Each component is sourced directly from the image that is created on commit to the default branch
     '''
 
-    def __init__(self):
-        super().__init__()
-
+    def load(self):
         engine_sources = [
             ContainerEngineSource(
                 name='engine',
@@ -189,19 +190,17 @@ class UnicycleEngineLoader(EngineLoader):
         engine.parts = engine_parts
         engine.sources = engine_sources
 
-        self._engines = [engine]
+        yield engine
 
 
-class TramEngineLoader(EngineLoader):
+class LatestTramEngineLoader(EngineLoader):
     '''
     Provides the nightly build of the hamlet base engine image
     This image is tested across all parts and sources as a collection
     Includes testing of system level actions
     '''
 
-    def __init__(self):
-        super().__init__()
-
+    def load(self):
         engine_sources = [
             ContainerEngineSource(
                 name='hamlet-engine-base',
@@ -242,4 +241,174 @@ class TramEngineLoader(EngineLoader):
         engine.parts = engine_parts
         engine.sources = engine_sources
 
+        yield engine
+
+
+class TramEngineLoader(EngineLoader):
+    '''
+    Provides all of the tram releases which have been created
+    '''
+
+    def load(self):
+
+        container_repo = ContainerRepository(
+            registry_url='https://ghcr.io',
+            repository='hamlet-io/hamlet-engine-base'
+        )
+
+        for tag in container_repo.tags:
+            if tag.startswith('tram_'):
+
+                engine_sources = [
+                    ContainerEngineSource(
+                        name='hamlet-engine-base',
+                        description='hamlet official engine source',
+                        registry_url='https://ghcr.io',
+                        repository='hamlet-io/hamlet-engine-base',
+                        tag=tag
+                    ),
+                ]
+
+                engine_parts = [
+                    WrapperEnginePart(
+                        source_path='engine-core/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    CoreEnginePart(
+                        source_path='engine/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    BashExecutorEnginePart(
+                        source_path='executor-bash/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    AWSEnginePluginPart(
+                        source_path='engine-plugin-aws/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    AzureEnginePluginPart(
+                        source_path='engine-plugin-azure/',
+                        source_name='hamlet-engine-base'
+                    ),
+                ]
+
+                engine = Engine(
+                    name=tag,
+                    description='Scheduled build of the official hamlet engine',
+                    hidden=True
+                )
+                engine.parts = engine_parts
+                engine.sources = engine_sources
+
+                yield engine
+
+
+class LatestTrainEngineLoader(EngineLoader):
+    '''
+    Provides the latest Train release
+    '''
+
+    def load(self):
+
+        engine_sources = [
+            ContainerEngineSource(
+                name='hamlet-engine-base',
+                description='hamlet official engine source',
+                registry_url='https://ghcr.io',
+                repository='hamlet-io/hamlet-engine-base',
+                tag='latest'
+            ),
+        ]
+
+        engine_parts = [
+            WrapperEnginePart(
+                source_path='engine-core/',
+                source_name='hamlet-engine-base'
+            ),
+            CoreEnginePart(
+                source_path='engine/',
+                source_name='hamlet-engine-base'
+            ),
+            BashExecutorEnginePart(
+                source_path='executor-bash/',
+                source_name='hamlet-engine-base'
+            ),
+            AWSEnginePluginPart(
+                source_path='engine-plugin-aws/',
+                source_name='hamlet-engine-base'
+            ),
+            AzureEnginePluginPart(
+                source_path='engine-plugin-azure/',
+                source_name='hamlet-engine-base'
+            ),
+        ]
+
+        engine = Engine(
+            name='train',
+            description='The latest release of the official hamlet engine'
+        )
+        engine.parts = engine_parts
+        engine.sources = engine_sources
+
         self._engines = [engine]
+
+        yield engine
+
+
+class TrainEngineLoader(EngineLoader):
+    '''
+    Provides all of the tram releases which have been created
+    These are considered the Train Release Candidates and can be used for managing releases
+    '''
+
+    def load(self):
+
+        container_repo = ContainerRepository(
+            registry_url='https://ghcr.io',
+            repository='hamlet-io/hamlet-engine-base'
+        )
+
+        for tag in container_repo.tags:
+            if re.fullmatch('^v?[0-9]*.[0-9]*.[0-9]*.$', tag) is not None:
+
+                engine_sources = [
+                    ContainerEngineSource(
+                        name='hamlet-engine-base',
+                        description='hamlet official engine source',
+                        registry_url='https://ghcr.io',
+                        repository='hamlet-io/hamlet-engine-base',
+                        tag=tag
+                    ),
+                ]
+
+                engine_parts = [
+                    WrapperEnginePart(
+                        source_path='engine-core/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    CoreEnginePart(
+                        source_path='engine/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    BashExecutorEnginePart(
+                        source_path='executor-bash/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    AWSEnginePluginPart(
+                        source_path='engine-plugin-aws/',
+                        source_name='hamlet-engine-base'
+                    ),
+                    AzureEnginePluginPart(
+                        source_path='engine-plugin-azure/',
+                        source_name='hamlet-engine-base'
+                    ),
+                ]
+
+                engine = Engine(
+                    name=tag,
+                    description='Stable release of the official hamlet engine',
+                )
+                engine.parts = engine_parts
+                engine.sources = engine_sources
+
+                yield engine

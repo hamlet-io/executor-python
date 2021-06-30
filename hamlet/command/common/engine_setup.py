@@ -90,7 +90,7 @@ def check_engine_update(engine_override):
             click.style(
                 (
                     f'[!] engine update check failed for {engine_name}\n'
-                     '[!]   - run hamlet engine list-engines for more details'
+                    '[!]   - run hamlet engine list-engines for more details'
                 ),
                 fg='red'
             )

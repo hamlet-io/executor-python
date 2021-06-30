@@ -46,7 +46,7 @@ def test_global_engine_loading():
             GlobalEngineLoader()
         ]
 
-        assert len(engine_store.engines) == 0
+        assert len(engine_store.engines) == 1
 
         global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
 

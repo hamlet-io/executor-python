@@ -9,10 +9,12 @@ import www_authenticate
 
 from urllib import parse
 
+
 class ContainerRepositoryException(BaseException):
-    def __init__(self, repository: str,*args: object) -> None:
+    def __init__(self, repository: str, *args: object) -> None:
         self.repository = repository
         super().__init__(*args)
+
 
 class ContainerTagNotFoundException(ContainerRepositoryException):
     def __init__(self, repository: str, tag: str, *args: object) -> None:
@@ -42,8 +44,7 @@ class DockerRegistryV2Auth(httpx.Auth):
 
             yield request
 
-
-    def sign_request(self, registry_response, repository, actions, username, password):
+    def sign_request(self, registry_response, repository, actions, username, password) -> str:
         realm_client = httpx.Client()
 
         if self.username or self.password:
@@ -54,15 +55,13 @@ class DockerRegistryV2Auth(httpx.Auth):
 
         return f'Bearer {realm_token}'
 
+    def _build_basic_auth_header(self, username, password) -> str:
 
-    def _build_basic_auth_header(
-            self, username, password
-        ) -> str:
-            userpass = b":".join((httpx.to_bytes(username), httpx.to_bytes(password)))
-            token = base64.b64encode(userpass).decode()
-            return f"Basic {token}"
+        userpass = b":".join((httpx.to_bytes(username), httpx.to_bytes(password)))
+        token = base64.b64encode(userpass).decode()
+        return f"Basic {token}"
 
-    def _build_realm_token_url(self, response, repository, actions):
+    def _build_realm_token_url(self, response, repository, actions) -> str:
         www_authenticate_response = www_authenticate.parse(response.headers['WWW-Authenticate'])
 
         if 'bearer' in www_authenticate_response:
@@ -83,6 +82,7 @@ class DockerRegistryV2Auth(httpx.Auth):
             url_parts[0] = 'https'
 
             return parse.urlunparse(url_parts)
+
 
 class ContainerRepository():
 
@@ -119,11 +119,11 @@ class ContainerRepository():
         try:
             manifest_response.raise_for_status()
 
-        except httpx.HTTPStatusError as exc:
-            if exc.response.status_code == httpx.codes.NOT_FOUND:
-                raise ContainerTagNotFoundException(self.repository, tag, exc )
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == httpx.codes.NOT_FOUND:
+                raise ContainerTagNotFoundException(self.repository, tag, e)
 
-            raise exc
+            raise e
 
         return manifest_response.json()
 
@@ -155,7 +155,12 @@ class ContainerRepository():
                                 file_hash.update(byte_block)
 
                         if digest_hash != file_hash.hexdigest():
-                            print(f'Layer hash does not match digest - ours {file_hash.hexdigest()} - theirs {digest_hash}')
+                            print(
+                                (
+                                    'Layer hash does not match digest '
+                                    f'- ours {file_hash.hexdigest()} - theirs {digest_hash}'
+                                )
+                            )
 
                         if layer['mediaType'] == 'application/vnd.docker.image.rootfs.diff.tar.gzip':
 
