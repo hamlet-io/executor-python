@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased (2021-06-30)
+## latest (2021-07-01)
+
+#### Fixes
+
+* typo
+* changelog details
+#### Refactorings
+
+* (engine): align unicycle docker tags
+
+Full set of changes: [`9.0.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.0.0...latest)
+
+## 9.0.0 (2021-06-30)
 
 #### New Features
 
@@ -64,6 +76,7 @@
 * updates and documentation
 #### Others
 
+* changelog bump ([#165](https://github.com/hamlet-io/executor-python/issues/165))
 * liniting fixes
 * version bump ([#170](https://github.com/hamlet-io/executor-python/issues/170))
 * version bump ([#169](https://github.com/hamlet-io/executor-python/issues/169))
@@ -80,7 +93,7 @@
 * release bump [skip actions] ([#140](https://github.com/hamlet-io/executor-python/issues/140))
 * update cli package version ([#137](https://github.com/hamlet-io/executor-python/issues/137))
 
-Full set of changes: [`8.1.2...3877a7a`](https://github.com/hamlet-io/executor-python/compare/8.1.2...3877a7a)
+Full set of changes: [`8.1.2...9.0.0`](https://github.com/hamlet-io/executor-python/compare/8.1.2...9.0.0)
 
 ## 8.1.2 (2021-05-13)
 
