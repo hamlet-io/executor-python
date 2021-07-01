@@ -126,35 +126,35 @@ class UnicycleEngineLoader(EngineLoader):
                 description='hamlet core engine',
                 registry_url='https://ghcr.io',
                 repository='hamlet-io/engine',
-                tag='latest'
+                tag='edge'
             ),
             ContainerEngineSource(
                 name='executor-bash',
                 description='hamlet bash executor',
                 registry_url='https://ghcr.io',
                 repository='hamlet-io/executor-bash',
-                tag='latest'
+                tag='edge'
             ),
             ContainerEngineSource(
                 name='engine-plugin-aws',
                 description='hamlet aws engine plugin',
                 registry_url='https://ghcr.io',
                 repository='hamlet-io/engine-plugin-aws',
-                tag='latest'
+                tag='edge'
             ),
             ContainerEngineSource(
                 name='engine-plugin-azure',
                 description='hamlet azure engine plugin',
                 registry_url='https://ghcr.io',
                 repository='hamlet-io/engine-plugin-azure',
-                tag='latest'
+                tag='edge'
             ),
             ContainerEngineSource(
                 name='engine-core',
                 description='hamlet freemarker wrapper',
                 registry_url='https://ghcr.io',
                 repository='hamlet-io/engine-core',
-                tag='latest'
+                tag='edge'
             ),
         ]
 
@@ -256,7 +256,7 @@ class TramEngineLoader(EngineLoader):
             )
 
             for tag in container_repo.tags:
-                if tag.startswith('tram_'):
+                if tag.startswith('schedule-'):
 
                     engine_sources = [
                         ContainerEngineSource(
@@ -292,7 +292,7 @@ class TramEngineLoader(EngineLoader):
                     ]
 
                     engine = Engine(
-                        name=tag,
+                        name=tag.replace('schedule-', 'tram-'),
                         description='Scheduled build of the official hamlet engine',
                         hidden=True
                     )
