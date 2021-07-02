@@ -16,12 +16,10 @@ from .exceptions import HamletEngineInvalidVersion
 
 
 class EngineInterface(ABC):
-    def __init__(self, name, description, hidden=False, update_timeout=3600):
+    def __init__(self, name, description, hidden=False):
         self.name = name
         self.description = description
         self.hidden = hidden
-
-        self.update_timeout = update_timeout
 
         self._engine_state_filename = ENGINE_STATE_FILE_NAME
 
@@ -153,6 +151,7 @@ class EngineInterface(ABC):
 
         self._engine_state['version'] = ENGINE_STATE_VERSION
         self._engine_state['install'] = install_state
+        self._update_updater_state()
         self._save_engine_state()
 
     def _update_updater_state(self):
@@ -173,32 +172,28 @@ class EngineInterface(ABC):
         else:
             return None
 
-    def latest_digest(self, ignore_cache=False):
+    def get_latest_digest(self, cache_timeout=0):
         '''
         return the digest of the engine sources
         '''
         if self.installed:
-            if self.updater_state is not None:
+            if self.updater_state:
                 if (datetime.now()
                         - datetime.strptime(
-                            self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > self.update_timeout:
+                            self.updater_state['last_check'], "%Y-%m-%dT%H:%M:%S")).seconds > cache_timeout:
                     self._update_updater_state()
-
-                if ignore_cache:
-                    self._update_updater_state()
-
             else:
                 self._update_updater_state()
 
             self._load_engine_state()
             return self.updater_state.get('latest_digest', None)
 
-    def up_to_date(self, ignore_cache=False):
+    def up_to_date(self, cache_timeout=0):
         '''
         Is an update available for the engine
         '''
-        if self.latest_digest is not None:
-            return self.digest == self.latest_digest(ignore_cache=ignore_cache)
+        if self.digest:
+            return self.digest == self.get_latest_digest(cache_timeout=cache_timeout)
         else:
             return False
 
@@ -352,6 +347,7 @@ class InstalledEngine(EngineInterface):
         self._installed_digest = digest
         self._engine_state['version'] = state_version
 
+    @property
     def digest(self):
         return self._installed_digest
 

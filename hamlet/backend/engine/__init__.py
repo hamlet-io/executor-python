@@ -1,10 +1,11 @@
 import os
 import shutil
 import json
+from datetime import datetime
 
 from hamlet.backend.common.exceptions import BackendException
 
-from .common import ENGINE_STORE_DEFAULT_DIR
+from .common import ENGINE_STORE_DEFAULT_DIR, ENGINE_GLOBAL_NAME
 from .engine_loader import (
     GlobalEngineLoader,
     InstalledEngineLoader,
@@ -14,6 +15,13 @@ from .engine_loader import (
     LatestTrainEngineLoader,
     TrainEngineLoader
 )
+
+
+class EngineStoreException(BackendException):
+    pass
+
+class EngineStoreMissingEngineException(EngineStoreException):
+    pass
 
 
 class EngineStore():
@@ -29,14 +37,17 @@ class EngineStore():
         self._store_state_file = os.path.join(self.store_dir, 'store_state.json')
         self.engine_dir = os.path.join(self.store_dir, 'engines')
 
-        self.store_state = None
+        self.store_state = {}
         self.load_store_state()
 
-        self._global_engine = self.store_state.get('global_engine', None) if self.store_state is not None else None
+        self._global_engine = self.store_state.get('global_engine', None)
 
-        self.engine_loaders = [
+        self.local_engine_loaders = [
             InstalledEngineLoader(engine_dir=self.engine_dir),
             GlobalEngineLoader(),
+        ]
+
+        self.external_engine_loaders = [
             UnicycleEngineLoader(),
             LatestTramEngineLoader(),
             TramEngineLoader(),
@@ -58,7 +69,7 @@ class EngineStore():
         Setting the global engine will locate the provided engine then update
         its symlinks to point to the provided engine.
         '''
-        global_engine = self.get_engine('_global')
+        global_engine = self.get_engine(ENGINE_GLOBAL_NAME)
         engine = self.get_engine(name)
 
         for type, path in global_engine.part_paths.items():
@@ -68,7 +79,7 @@ class EngineStore():
             if os.path.isdir(path):
                 os.rmdir(path)
 
-            if engine.part_paths.get(type, None) is not None:
+            if engine.part_paths.get(type, None):
                 os.symlink(engine.part_paths[type], path, target_is_directory=True)
             else:
                 os.makedirs(path)
@@ -80,31 +91,63 @@ class EngineStore():
         }
         self.save_store_state()
 
-    def _load_engines(self, local_only):
-        '''
-        Get the engines from the loaders
-        '''
-        for loader in self.engine_loaders:
-            for engine in loader.load(local_only):
+    def _load_local_engines(self):
+        for loader in self.local_engine_loaders:
+            for engine in loader.load():
                 engine.engine_dir = self.engine_dir
                 self._engines[engine.name] = engine
 
-    def get_engines(self, local_only=False):
+    def _load_external_engines(self, cache_timeout):
+
+        time_dif = (datetime.now()
+                        - datetime.strptime(
+                            self.store_state.get('last_external_load', datetime.now().isoformat(timespec='seconds')), "%Y-%m-%dT%H:%M:%S")).seconds
+        if (datetime.now()
+                - datetime.strptime(
+                    self.store_state.get('last_external_load', datetime.now().isoformat(timespec='seconds')), "%Y-%m-%dT%H:%M:%S")).seconds >= cache_timeout:
+            for loader in self.external_engine_loaders:
+                for engine in loader.load():
+                    engine.engine_dir = self.engine_dir
+                    self._engines[engine.name] = engine
+
+            self.store_state['last_external_load'] = datetime.now().isoformat(timespec='seconds')
+            self.save_store_state()
+
+    def get_engines(self):
         '''
-        Return the engines that have been loaded into the store
+        Return as list of the engines available locally
         '''
-        self._load_engines(local_only)
+        self._load_local_engines()
         return list(self._engines.values())
 
-    def get_engine(self, name, allow_missing=False, local_only=False):
+    def get_engine(self, name, allow_missing=False):
         '''
-        returns engines matching the name provided
+        Return an existing engine
         '''
-        self._load_engines(local_only)
+        self._load_local_engines()
         result = self._engines.get(name, None)
 
-        if not allow_missing and result is None:
-            raise BackendException(f'Could not find engine {name} in engine store')
+        if not allow_missing and not result:
+            raise EngineStoreMissingEngineException(f'Could not find engine {name} in engine store')
+
+        return result
+
+    def find_engines(self, cache_timeout=0):
+        '''
+        Find engines that can be installed from external sources
+        '''
+        self._load_external_engines(cache_timeout)
+        return list(self._engines.values())
+
+    def find_engine(self, name, allow_missing=False, cache_timeout=0):
+        '''
+        Find an external engine
+        '''
+        self._load_external_engines(cache_timeout)
+        result = self._engines.get(name, None)
+
+        if not allow_missing and not result:
+            raise EngineStoreMissingEngineException(f'Could not find engine {name} in engine store')
 
         return result
 
@@ -120,7 +163,7 @@ class EngineStore():
         '''
         Save the persisted enginestore state
         '''
-        if self.store_state is not None:
+        if self.store_state:
             if not os.path.isdir(self.store_dir):
                 os.makedirs(self.store_dir)
 

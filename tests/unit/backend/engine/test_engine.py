@@ -4,6 +4,7 @@ import hashlib
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
+from hamlet.backend.engine import engine
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine import Engine
 from hamlet.backend.engine.engine_loader import GlobalEngineLoader, InstalledEngineLoader, UnicycleEngineLoader
@@ -42,13 +43,13 @@ def test_global_engine_loading():
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
 
-        engine_store.engine_loaders = [
+        engine_store.local_engine_loaders = [
             GlobalEngineLoader()
         ]
 
         assert len(engine_store.get_engines()) == 1
 
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=True)
+        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
 
         assert global_engine.name == ENGINE_GLOBAL_NAME
 
@@ -71,7 +72,7 @@ def test_installed_engine_loading():
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
 
-        engine_store.engine_loaders = [
+        engine_store.local_engine_loaders = [
             InstalledEngineLoader(engine_store.engine_dir)
         ]
 
@@ -107,7 +108,7 @@ def test_installed_engine_loading():
         '''
         Use the Installed loader to discover the manually installed engine
         '''
-        discovered_engine = engine_store.get_engine('installed_engine', local_only=True)
+        discovered_engine = engine_store.get_engine('installed_engine')
         assert discovered_engine.name == 'installed_engine'
 
         generation_engine_path = os.path.join(discovered_engine.install_path, 'shim_source')
@@ -123,11 +124,11 @@ def test_unicycle_engine_loading(container_repository):
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
 
-        engine_store.engine_loaders = [
+        engine_store.external_engine_loaders = [
             UnicycleEngineLoader()
         ]
 
-        unicycle_engine = engine_store.get_engine('unicycle', local_only=False)
+        unicycle_engine = engine_store.find_engine('unicycle')
         unicycle_engine.install()
 
         assert unicycle_engine.name == 'unicycle'
