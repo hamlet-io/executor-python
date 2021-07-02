@@ -7,6 +7,7 @@ from tabulate import tabulate
 from hamlet.command import root as cli
 from hamlet.command.common import exceptions, config
 from hamlet.command.common.display import json_or_table_option, wrap_text
+from hamlet.command.common.config import pass_options
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
@@ -222,14 +223,21 @@ def clean_engines(name):
 )
 @click.argument(
     'name',
-    required=True,
+    required=False,
     type=click.STRING
 )
 @exceptions.backend_handler()
-def install_engine(name, force):
+@pass_options
+def install_engine(opts, name, force):
     '''
-    Install an engine
+    Install or update an engine
     '''
+
+    if name is None:
+        name = opts.engine or engine_store.global_engine
+
+    click.echo(f'[*] installing engine - {name}')
+
     try:
         engine = engine_store.find_engine(name, cache_timeout=0)
 
