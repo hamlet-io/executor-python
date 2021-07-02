@@ -109,8 +109,7 @@ class ContainerEngineSource(EngineSourceInterface):
             for engine_source_path in engine_source_paths:
                 with open(engine_source_path, 'r') as file:
                     source_name = str(engine_source_path)[
-                        len(dst_dir)
-                        :len(str(engine_source_path)) - len(engine_source)
+                        len(dst_dir):len(str(engine_source_path)) - len(engine_source)
                     ]
                     build_sources[source_name] = json.load(file)
 

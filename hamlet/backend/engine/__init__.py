@@ -20,6 +20,7 @@ from .engine_loader import (
 class EngineStoreException(BackendException):
     pass
 
+
 class EngineStoreMissingEngineException(EngineStoreException):
     pass
 
@@ -98,13 +99,12 @@ class EngineStore():
                 self._engines[engine.name] = engine
 
     def _load_external_engines(self, cache_timeout):
-
-        time_dif = (datetime.now()
-                        - datetime.strptime(
-                            self.store_state.get('last_external_load', datetime.now().isoformat(timespec='seconds')), "%Y-%m-%dT%H:%M:%S")).seconds
         if (datetime.now()
                 - datetime.strptime(
-                    self.store_state.get('last_external_load', datetime.now().isoformat(timespec='seconds')), "%Y-%m-%dT%H:%M:%S")).seconds >= cache_timeout:
+                    self.store_state.get(
+                        'last_external_load', datetime.now().isoformat(timespec='seconds')
+                    ), "%Y-%m-%dT%H:%M:%S")).seconds >= cache_timeout:
+
             for loader in self.external_engine_loaders:
                 for engine in loader.load():
                     engine.engine_dir = self.engine_dir

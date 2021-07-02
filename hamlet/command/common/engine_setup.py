@@ -1,5 +1,4 @@
 import click
-from hamlet.backend import engine
 
 from hamlet.backend.engine import engine_store, EngineStoreMissingEngineException
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME, ENGINE_DEFAULT_GLOBAL_ENGINE
@@ -26,7 +25,6 @@ def setup_global_engine():
     if not global_engine.installed or not global_engine.up_to_date():
         global_engine.install()
 
-
     if engine_store.global_engine is not None:
         try:
             engine_store.get_engine(engine_store.global_engine).installed
@@ -45,6 +43,7 @@ def setup_global_engine():
             engine_store.find_engine(ENGINE_DEFAULT_GLOBAL_ENGINE).install()
 
         engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
+
 
 def get_engine_env(engine_override):
 
@@ -66,13 +65,13 @@ def check_engine_update(engine_override, update_install, cache_timeout=0):
         engine = engine_store.find_engine(engine_name, cache_timeout=cache_timeout)
 
     except EngineStoreMissingEngineException:
-        cache_timeout=0
+        cache_timeout = 0
         engine = engine_store.find_engine(engine_name, cache_timeout=cache_timeout)
         update_install = True
 
     if not engine.up_to_date(cache_timeout=cache_timeout):
 
-        click.secho(f'[*] update available for current engine', fg='yellow')
+        click.secho('[*] update available for current engine', fg='yellow')
 
         if update_install:
             click.secho(f'[*] installing {engine_name} update', fg='yellow')
