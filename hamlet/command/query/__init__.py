@@ -1,5 +1,3 @@
-import click
-
 from hamlet.command import root
 
 

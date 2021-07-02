@@ -4,7 +4,6 @@ import hashlib
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
-from hamlet.backend.engine import engine
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine import Engine
 from hamlet.backend.engine.engine_loader import GlobalEngineLoader, InstalledEngineLoader, UnicycleEngineLoader
