@@ -9,7 +9,7 @@ from hamlet.command.common import exceptions, config
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.config import pass_options
 
-from hamlet.backend.engine import engine_store
+from hamlet.backend.engine import engine_store, EngineStoreMissingEngineException
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
 from hamlet.backend.engine.engine import HamletEngineInvalidVersion
@@ -274,11 +274,16 @@ def set_engine(name):
     Sets the global engine used
     '''
 
-    engine = engine_store.find_engine(name, cache_timeout=0)
+    try:
+        engine = engine_store.get_engine(name)
 
-    if not engine.installed:
-        click.echo('[*] installing engine')
-        engine.install()
+    except EngineStoreMissingEngineException:
+
+        engine = engine_store.find_engine(name, cache_timeout=0)
+
+        if not engine.installed:
+            click.echo('[*] installing engine')
+            engine.install()
 
     click.echo(f'[*] global engine set to {name}')
     engine_store.global_engine = name
