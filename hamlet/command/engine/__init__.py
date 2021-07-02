@@ -60,13 +60,13 @@ def list_engines(show_hidden):
     '''
     data = []
 
-    for engine in engine_store.get_engines(local_only=False):
+    for engine in engine_store.find_engines(cache_timeout=0):
 
         update_available = None
         if (show_hidden and engine.hidden) or not engine.hidden:
             if engine.installed:
                 try:
-                    if engine.up_to_date(ignore_cache=True):
+                    if engine.up_to_date():
                         update_available = False
                     else:
                         update_available = True
@@ -112,11 +112,13 @@ def describe_engine(opts, name):
     else:
         engine_name = engine_store.global_engine
 
-    engine = engine_store.get_engine(engine_name, local_only=False)
+    engine = engine_store.find_engine(engine_name)
 
     try:
-        up_to_date = engine.up_to_date(ignore_cache=True)
-        latest_digest = engine.latest_digest(ignore_cache=True)
+
+        up_to_date = engine.up_to_date()
+        latest_digest = engine.get_latest_digest()
+
     except BaseException as e:
         click.secho(f'[!] Engine update failed for {engine.name}', fg='red', err=True)
         click.secho(f'[!]  {e}', fg='red', err=True)
@@ -229,7 +231,7 @@ def install_engine(name, force):
     Install an engine
     '''
     try:
-        engine = engine_store.get_engine(name, local_only=False)
+        engine = engine_store.find_engine(name, cache_timeout=0)
 
     except HamletEngineInvalidVersion as e:
         if force or click.confirm(
@@ -264,7 +266,7 @@ def set_engine(name):
     Sets the global engine used
     '''
 
-    engine = engine_store.get_engine(name, local_only=False)
+    engine = engine_store.find_engine(name, cache_timeout=0)
 
     if not engine.installed:
         click.echo('[*] installing engine')
@@ -294,9 +296,9 @@ def env(opts, environment_variable):
     '''
 
     if opts.engine is None:
-        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME, local_only=True)
+        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
     else:
-        engine = engine_store.get_engine(opts.engine, local_only=True)
+        engine = engine_store.get_engine(opts.engine)
 
     if environment_variable is None:
         click.echo('# run eval $(hamlet engine env) to set variables')

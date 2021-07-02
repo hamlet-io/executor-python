@@ -8,7 +8,6 @@ from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
 from hamlet.utils import isWriteable
 from hamlet.env import HAMLET_HOME_DIR
 from hamlet.command.common.engine_setup import (
-    setup_initial_engines,
     check_engine_update,
     setup_global_engine,
     get_engine_env
@@ -55,16 +54,14 @@ def root(ctx, opts):
         )
 
     if homeWritable:
-
         try:
             setup_global_engine()
-            get_engine_env(opts.engine)
+
         except HamletEngineInvalidVersion:
             pass
 
         if ctx.invoked_subcommand != 'engine':
 
-            setup_initial_engines(opts.engine)
+            check_engine_update(opts.engine, opts.engine_update_install, opts.engine_update_interval)
 
-            if opts.check_engine_updates:
-                check_engine_update(opts.engine)
+        get_engine_env(opts.engine)
