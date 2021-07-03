@@ -7,7 +7,7 @@ from hamlet.command.common.display import json_or_table_option, table_from_dict
 from .common import query_occurrences_state, DescribeContext
 
 
-DESCRIBE_OCCURRENCE_QUERY = "Occurrences[?Core.RawName=={name}] | [0]"
+DESCRIBE_OCCURRENCE_QUERY = "Occurrences[?Core.TypedRawName=={name}] | [0]"
 
 
 def query_occurrence_state(ctx, query=None):
