@@ -1,7 +1,6 @@
 from hamlet.backend.automation_tasks.base import AutomationRunner
 from hamlet.backend.automation import (
-    set_context,
-    construct_tree,
+    set_generation_context,
     manage_build_references,
     deploy
 )
@@ -9,11 +8,7 @@ from hamlet.backend.automation import (
 class RunDeployAutomationRunner(AutomationRunner):
     script_list = [
         {
-            'func': set_context.run,
-            'args': {}
-        },
-        {
-            'func': construct_tree.run,
+            'func': set_generation_context.run,
             'args': {}
         },
         {
