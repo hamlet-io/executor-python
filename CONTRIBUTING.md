@@ -43,4 +43,7 @@ make tests
 
 # python linter
 make lint
+
+# code formatting
+make format
 ```

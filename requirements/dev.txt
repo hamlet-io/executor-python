@@ -5,6 +5,7 @@ coverage
 freezegun
 setuptools
 flake8
+black
 
 ## packaging
 build

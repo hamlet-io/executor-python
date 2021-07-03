@@ -10,4 +10,4 @@ exclude_lines =
     if __name__ == .__main__.:
 [run]
 source=
-     /hamlet-cli/hamlet
+    hamlet

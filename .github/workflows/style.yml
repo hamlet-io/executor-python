@@ -1,0 +1,29 @@
+name: style
+
+on:
+  pull_request:
+
+jobs:
+  style_checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: install reqs
+        run: |
+          pip install -r requirements/dev.txt
+          pip install -e ./
+
+      - name: black check
+        run: |
+          black --check hamlet tests setup.py
+
+      - name: flake check
+        run: |
+          flake8 --config=.flake8 hamlet tests setup.py
