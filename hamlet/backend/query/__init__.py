@@ -31,7 +31,7 @@ def run(
     environment=None,
     segment=None,
     _is_cli=False,
-    **kwargs
+    **kwargs,
 ):
     query = Query(
         cwd,
@@ -48,7 +48,7 @@ def run(
         account=account,
         product=product,
         environment=environment,
-        segment=segment
+        segment=segment,
     )
     if query_name is not None:
         result = query.query_by_name(query_name, query_params or {})
@@ -68,13 +68,13 @@ def mark_query(func):
 
 class Query:
     LIST_TIERS_QUERY = (
-        'Tenants[].Products[].Environments[].Segments[].Tiers[]'
-        '.{'
-        'Id:Id,'
-        'Name:Configuration.Name,'
-        'Description:Configuration.Description,'
-        'NetworkEnabledState:Configuration.Network.Enabled'
-        '}'
+        "Tenants[].Products[].Environments[].Segments[].Tiers[]"
+        ".{"
+        "Id:Id,"
+        "Name:Configuration.Name,"
+        "Description:Configuration.Description,"
+        "NetworkEnabledState:Configuration.Network.Enabled"
+        "}"
     )
 
     LIST_COMPONENTS_QUERY = (
@@ -157,13 +157,13 @@ class Query:
         segment=None,
     ):
         # mocked blueprint doesn't need the valid context
-        if generation_input_source == 'mock':
+        if generation_input_source == "mock":
             # using static temp dir to make cache work
             tempdir = tempfile.gettempdir()
-            output_dir = os.path.join(tempdir, 'hamlet', 'query', 'mock')
+            output_dir = os.path.join(tempdir, "hamlet", "query", "mock")
         else:
             ctx = context.Context(directory=cwd, root_dir=root_dir)
-            output_dir = os.path.join(ctx.cache_dir, 'query', ctx.md5_hash())
+            output_dir = os.path.join(ctx.cache_dir, "query", ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
         if not os.path.isfile(output_filepath) or not use_cache:
             template.run(
@@ -181,7 +181,7 @@ class Query:
                 environment=environment,
                 segment=segment,
             )
-        with open(output_filepath, 'rt') as f:
+        with open(output_filepath, "rt") as f:
             self.blueprint_data = json.load(f)
 
     @mark_query
@@ -193,9 +193,9 @@ class Query:
         raw_result = self.query(self.LIST_COMPONENTS_QUERY)
         result = []
         for item in raw_result:
-            components = item['Components']
+            components = item["Components"]
             for component in components:
-                result.append({**component, 'TierId': item['TierId']})
+                result.append({**component, "TierId": item["TierId"]})
         return result
 
     @mark_query
@@ -203,10 +203,7 @@ class Query:
         return self.query(
             self.LIST_OCCURRENCES_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id'
-            ]
+            require=["tier_id", "component_id"],
         )
 
     @mark_query
@@ -214,12 +211,7 @@ class Query:
         return self.query(
             self.DESCRIBE_OCCURRENCE_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id',
-                'instance_id',
-                'version_id'
-            ]
+            require=["tier_id", "component_id", "instance_id", "version_id"],
         )
 
     @mark_query
@@ -227,17 +219,12 @@ class Query:
         raw_result = self.query(
             self.DESCRIBE_OCCURRENCE_ATTRIBUTES_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id',
-                'instance_id',
-                'version_id'
-            ]
+            require=["tier_id", "component_id", "instance_id", "version_id"],
         )
         result = []
         for obj in raw_result:
             for key, value in obj.items():
-                result.append({'Key': key, 'Value': value})
+                result.append({"Key": key, "Value": value})
         return result
 
     @mark_query
@@ -245,12 +232,7 @@ class Query:
         return self.query(
             self.DESCRIBE_OCCURRENCE_SOLUTION_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id',
-                'instance_id',
-                'version_id'
-            ]
+            require=["tier_id", "component_id", "instance_id", "version_id"],
         )
 
     @mark_query
@@ -258,12 +240,7 @@ class Query:
         return self.query(
             self.DESCRIBE_OCCURRENCE_SETTINGS_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id',
-                'instance_id',
-                'version_id'
-            ]
+            require=["tier_id", "component_id", "instance_id", "version_id"],
         )
 
     @mark_query
@@ -271,12 +248,7 @@ class Query:
         return self.query(
             self.DESCRIBE_OCCURRENCE_RESOURCES_QUERY,
             params=params,
-            require=[
-                'tier_id',
-                'component_id',
-                'instance_id',
-                'version_id'
-            ]
+            require=["tier_id", "component_id", "instance_id", "version_id"],
         )
 
     def query(self, query, params=None, require=None):
@@ -287,7 +259,9 @@ class Query:
                 try:
                     params[key]
                 except KeyError as e:
-                    raise exceptions.BackendException(f"Missing required query param:\"{key}\".") from e
+                    raise exceptions.BackendException(
+                        f'Missing required query param:"{key}".'
+                    ) from e
         if params:
             # jsonify every param
             for key, value in params.items():
@@ -303,7 +277,7 @@ class Query:
 
     def perform_query(self, query, data):
         if not query:
-            raise exceptions.BackendException('Query can not be empty')
+            raise exceptions.BackendException("Query can not be empty")
         try:
             return jmespath.search(query, data)
         except JMESPathError as e:

@@ -16,19 +16,14 @@ def run(
     _is_cli=False,
     **kwargs,
 ):
-    options = {
-        '-d': decrypt,
-        '-e': encrypt,
-        '-f': crypto_file,
-        '-u': update
-    }
+    options = {"-d": decrypt, "-e": encrypt, "-f": crypto_file, "-u": update}
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('manageFileCrypto.sh', [], options, env, _is_cli)
+    runner.run("manageFileCrypto.sh", [], options, env, _is_cli)

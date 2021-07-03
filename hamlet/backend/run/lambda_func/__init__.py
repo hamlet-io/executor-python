@@ -17,18 +17,18 @@ def run(
     **kwargs
 ):
     options = {
-        '-f': function_id,
-        '-u': deployment_unit,
-        '-i': input_payload,
-        '-l': include_log_tail
+        "-f": function_id,
+        "-u": deployment_unit,
+        "-i": input_payload,
+        "-l": include_log_tail,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('runLambda.sh', [], options, env, _is_cli)
+    runner.run("runLambda.sh", [], options, env, _is_cli)

@@ -20,21 +20,21 @@ def run(
     **kwargs,
 ):
     options = {
-        '-e': credential_email,
-        '-f': crypto_file,
-        '-i': credential_id,
-        '-n': credential_path,
-        '-v': visible,
-        '-y': credential_type,
-        '-s': credential_secret
+        "-e": credential_email,
+        "-f": crypto_file,
+        "-i": credential_id,
+        "-n": credential_path,
+        "-v": visible,
+        "-y": credential_type,
+        "-s": credential_secret,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('manageCredentialCrypto.sh', [], options, env, _is_cli)
+    runner.run("manageCredentialCrypto.sh", [], options, env, _is_cli)

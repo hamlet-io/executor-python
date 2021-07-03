@@ -15,39 +15,32 @@ from hamlet.backend import query as query_backend
 
 
 LIST_DIAGRAMS_QUERY = (
-    'Diagrams[]'
-    '.{'
-    'Id:Id,'
-    'Type:Type,'
-    'Description:Description'
-    '}'
+    "Diagrams[]" ".{" "Id:Id," "Type:Type," "Description:Description" "}"
 )
 
 
 def find_diagrams_from_options(options, ids):
     query_args = {
         **options.opts,
-        'generation_entrance': 'diagraminfo',
-        'output_filename': 'diagraminfo.json',
-        'use_cache': False
+        "generation_entrance": "diagraminfo",
+        "output_filename": "diagraminfo.json",
+        "use_cache": False,
     }
     available_diagrams = query_backend.run(
-        **query_args,
-        cwd=os.getcwd(),
-        query_text=LIST_DIAGRAMS_QUERY
+        **query_args, cwd=os.getcwd(), query_text=LIST_DIAGRAMS_QUERY
     )
 
     diagrams = []
 
     for diagram in available_diagrams:
         for id in ids:
-            if re.fullmatch(id, diagram['Id']):
+            if re.fullmatch(id, diagram["Id"]):
                 diagrams.append(diagram)
 
     return diagrams
 
 
-@cli.group('visual')
+@cli.group("visual")
 def group():
     """
     Generates visual representations of your hamlet
@@ -60,33 +53,29 @@ def diagrams_table(data):
     for row in data:
         tablerows.append(
             [
-                wrap_text(row['Id']),
-                wrap_text(row['Type']),
-                wrap_text(row['Description']),
+                wrap_text(row["Id"]),
+                wrap_text(row["Type"]),
+                wrap_text(row["Description"]),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Id', 'Type', 'Description'],
+        headers=["Id", "Type", "Description"],
         showindex=True,
-        tablefmt="fancy_grid"
+        tablefmt="fancy_grid",
     )
 
 
 @group.command(
-    'list-diagrams',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "list-diagrams", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '-i',
-    '--diagram-id',
-    default=['.*'],
+    "-i",
+    "--diagram-id",
+    default=[".*"],
     show_default=True,
     multiple=True,
-    help='The deployment id pattern to match'
+    help="The deployment id pattern to match",
 )
 @json_or_table_option(diagrams_table)
 @exceptions.backend_handler()
@@ -99,15 +88,11 @@ def list_diagrams(options, diagram_id):
 
 
 @group.command(
-    'draw-diagrams',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "draw-diagrams", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '-s',
-    '--src-dir',
+    "-s",
+    "--src-dir",
     required=False,
     type=click.Path(
         file_okay=False,
@@ -116,11 +101,11 @@ def list_diagrams(options, diagram_id):
         readable=True,
     ),
     default=None,
-    help='the directory to save the generation scripts to - temp dir by default'
+    help="the directory to save the generation scripts to - temp dir by default",
 )
 @click.option(
-    '-d',
-    '--asset-dir',
+    "-d",
+    "--asset-dir",
     required=True,
     type=click.Path(
         file_okay=False,
@@ -128,15 +113,15 @@ def list_diagrams(options, diagram_id):
         writable=True,
         readable=True,
     ),
-    help='the directory to save the generated diagrams to'
+    help="the directory to save the generated diagrams to",
 )
 @click.option(
-    '-i',
-    '--diagram-id',
-    default=['.*'],
+    "-i",
+    "--diagram-id",
+    default=[".*"],
     show_default=True,
     multiple=True,
-    help='The diagram id pattern to match'
+    help="The diagram id pattern to match",
 )
 @exceptions.backend_handler()
 @pass_options
@@ -153,32 +138,30 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
     diagrams = find_diagrams_from_options(options, diagram_id)
 
     if len(diagrams) == 0:
-        raise exceptions.CommandError('No diagrams found that match pattern')
+        raise exceptions.CommandError("No diagrams found that match pattern")
 
     for diagram in diagrams:
 
-        diagram_id = diagram['Id']
+        diagram_id = diagram["Id"]
 
-        click.echo((click.style(f'[*] {diagram_id}', bold=True, fg='green')))
+        click.echo((click.style(f"[*] {diagram_id}", bold=True, fg="green")))
         args = {
             **options.opts,
-            "entrance": 'diagram',
-            'deployment_unit': diagram_id,
-            'output_dir': src_dir
+            "entrance": "diagram",
+            "deployment_unit": diagram_id,
+            "output_dir": src_dir,
         }
         create_template_backend.run(**args, _is_cli=False)
-        create_diagram_backend.run(diagram_id=diagram_id, src_dir=src_dir, output_dir=asset_dir)
+        create_diagram_backend.run(
+            diagram_id=diagram_id, src_dir=src_dir, output_dir=asset_dir
+        )
 
     if temp_dir is not None:
         temp_dir.cleanup()
 
 
 LIST_DIAGRAM_TYPES_QUERY = (
-    'DiagramTypes[]'
-    '.{'
-    'Type:Type,'
-    'Description:Description'
-    '}'
+    "DiagramTypes[]" ".{" "Type:Type," "Description:Description" "}"
 )
 
 
@@ -187,24 +170,20 @@ def diagram_types_table(data):
     for row in data:
         tablerows.append(
             [
-                wrap_text(row['Type']),
-                wrap_text(row['Description']),
+                wrap_text(row["Type"]),
+                wrap_text(row["Description"]),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Type', 'Description'],
+        headers=["Type", "Description"],
         showindex=True,
-        tablefmt="fancy_grid"
+        tablefmt="fancy_grid",
     )
 
 
 @group.command(
-    'list-diagram-types',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "list-diagram-types", short_help="", context_settings=dict(max_content_width=240)
 )
 @json_or_table_option(diagram_types_table)
 @exceptions.backend_handler()
@@ -215,14 +194,12 @@ def list_diagram_types(options):
     """
     args = {
         **options.opts,
-        'generation_input_source': 'mock',
-        'generation_entrance': 'diagraminfo',
-        'output_filename': 'diagraminfo.json',
-        'use_cache': False
+        "generation_input_source": "mock",
+        "generation_entrance": "diagraminfo",
+        "output_filename": "diagraminfo.json",
+        "use_cache": False,
     }
 
     return query_backend.run(
-        **args,
-        cwd=os.getcwd(),
-        query_text=LIST_DIAGRAM_TYPES_QUERY
+        **args, cwd=os.getcwd(), query_text=LIST_DIAGRAM_TYPES_QUERY
     )

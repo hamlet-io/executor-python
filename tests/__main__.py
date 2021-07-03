@@ -1,5 +1,3 @@
 import pytest
-pytest.main([
-    'tests',
-    '-xvv'
-])
+
+pytest.main(["tests", "-xvv"])

@@ -7,7 +7,7 @@ from . import template as account_cmdb_template
 def generate_account_seed():
     seed = list(string.ascii_lowercase + string.digits)
     random.shuffle(seed)
-    return ''.join(seed[:10])
+    return "".join(seed[:10])
 
 
 def run(**kwargs):

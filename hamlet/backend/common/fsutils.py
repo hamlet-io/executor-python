@@ -4,18 +4,17 @@ import pathlib
 
 
 class Search:
-
     @staticmethod
     def split_path(path):
         parts = os.path.normpath(path).split(os.path.sep)
-        if len(parts) > 0 and parts[0] == '':
+        if len(parts) > 0 and parts[0] == "":
             parts[0] = os.path.sep
         return parts
 
     @staticmethod
     def exists(directory, name, up=0):
         if up < 0:
-            raise ValueError('up parameter must be >= 0')
+            raise ValueError("up parameter must be >= 0")
         search_dir_parts = Search.split_path(directory)
         up = min(len(search_dir_parts), up)
         up = len(search_dir_parts) - up
@@ -69,16 +68,16 @@ class Search:
         return os.path.join(*parts[:up])
 
     @staticmethod
-    def cut(path, prefix='', suffix=''):
+    def cut(path, prefix="", suffix=""):
         path = Search.split_path(path)
         if prefix:
             prefix = Search.split_path(prefix)
-            if path[:len(prefix)] == prefix:
-                path = path[len(prefix):]
+            if path[: len(prefix)] == prefix:
+                path = path[len(prefix) :]
         if suffix:
             suffix = Search.split_path(suffix)
-            if path[-len(suffix):] == suffix:
-                path = path[:-len(suffix)]
+            if path[-len(suffix) :] == suffix:
+                path = path[: -len(suffix)]
         return os.path.join(*path)
 
     @staticmethod
@@ -112,10 +111,18 @@ class Search:
         return [name for name in os.listdir(dirname)]
 
     def list_files(dirname):
-        return [name for name in os.listdir(dirname) if os.path.isfile(os.path.join(dirname, name))]
+        return [
+            name
+            for name in os.listdir(dirname)
+            if os.path.isfile(os.path.join(dirname, name))
+        ]
 
     def list_dirs(dirname):
-        return [name for name in os.listdir(dirname) if os.path.isdir(os.path.join(dirname, name))]
+        return [
+            name
+            for name in os.listdir(dirname)
+            if os.path.isdir(os.path.join(dirname, name))
+        ]
 
 
 class ContextSearch:
@@ -129,11 +136,11 @@ class ContextSearch:
     @cwd.setter
     def cwd(self, value):
         if not os.path.isabs(value):
-            raise ValueError('{} is not abs path'.format(value))
+            raise ValueError("{} is not abs path".format(value))
         if not os.path.exists(value):
-            raise ValueError('{} does not exist'.format(value))
+            raise ValueError("{} does not exist".format(value))
         if not os.path.isdir(value):
-            raise ValueError('{} is not directory'.format(value))
+            raise ValueError("{} is not directory".format(value))
         self.__cwd = value
 
     def exists(self, name, up=0):
@@ -161,7 +168,6 @@ class ContextSearch:
 # TODO: Needs to be splitted into several subclasses like JSONFile, TXTFile, ByteFile
 # Then File may be used as an automated type resolver.
 class File:
-
     def __init__(self, path):
         self.path = path
         self.data = None
@@ -171,11 +177,11 @@ class File:
     def load(self):
         if self.data is not None:
             return self.data
-        if self.ext == '.json':
-            with open(self.path, 'rb') as f:
+        if self.ext == ".json":
+            with open(self.path, "rb") as f:
                 self.data = json.load(f)
         else:
-            with open(self.path, 'rt') as f:
+            with open(self.path, "rt") as f:
                 self.data = f.read()
         return self.data
 
@@ -184,13 +190,17 @@ class File:
         return self.load()
 
     def write(self):
-        if self.ext == '.json':
+        if self.ext == ".json":
+
             def serialize():
                 return json.dumps(self.data)
+
         else:
+
             def serialize():
                 return self.data
-        with open(self.path, 'wt+') as f:
+
+        with open(self.path, "wt+") as f:
             f.write(serialize())
 
     def __getitem__(self, key):
@@ -198,7 +208,7 @@ class File:
             self.load()
             return self.data[key]
         except TypeError as e:
-            raise TypeError('Unstructured data') from e
+            raise TypeError("Unstructured data") from e
 
 
 class Directory:
@@ -208,7 +218,7 @@ class Directory:
     def __getitem__(self, key):
         path = os.path.join(self.path, key)
         if not os.path.exists(path):
-            raise KeyError('Path {} does not exist'.format(path))
+            raise KeyError("Path {} does not exist".format(path))
         if os.path.isfile(path):
             return File(path)
         else:

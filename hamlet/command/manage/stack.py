@@ -5,65 +5,53 @@ from hamlet.command.common import exceptions
 
 
 @click.command(
-    'stack',
-    short_help='Manage a CloudFormation stack',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "stack",
+    short_help="Manage a CloudFormation stack",
+    context_settings=dict(max_content_width=240),
 )
+@click.option("-d", "--delete", help="delete the stack", is_flag=True)
 @click.option(
-    '-d',
-    '--delete',
-    help='delete the stack',
-    is_flag=True
-)
-@click.option(
-    '-i',
-    '--stack-initiate',
+    "-i",
+    "--stack-initiate",
     is_flag=True,
-    help='initiate but do not monitor the stack operation(disable monitoring)',
+    help="initiate but do not monitor the stack operation(disable monitoring)",
 )
 @click.option(
-    '-m',
-    '--stack-monitor',
+    "-m",
+    "--stack-monitor",
     is_flag=True,
-    help='monitor but do not initiate the stack operation(disable initiation)'
+    help="monitor but do not initiate the stack operation(disable initiation)",
 )
 @click.option(
-    '-w',
-    '--stack-wait',
+    "-w",
+    "--stack-wait",
     type=click.INT,
     show_default=True,
     default=30,
-    help='interval between checking the progress of the stack operation'
+    help="interval between checking the progress of the stack operation",
 )
 @click.option(
-    '-r',
-    '--region',
-    help='AWS region identifier for the region in which the stack should be managed'
+    "-r",
+    "--region",
+    help="AWS region identifier for the region in which the stack should be managed",
 )
 @click.option(
-    '-l',
-    '--deployment-group',
-    help='the deployment group to manage',
-    required=True
+    "-l", "--deployment-group", help="the deployment group to manage", required=True
 )
 @click.option(
-    '-u',
-    '--deployment-unit',
-    help='deployment unit used to determine the stack template',
-    required=True
+    "-u",
+    "--deployment-unit",
+    help="deployment unit used to determine the stack template",
+    required=True,
 )
 @click.option(
-    '-z',
-    '--deployment-unit-subset',
-    help='subset of the deployment unit required'
+    "-z", "--deployment-unit-subset", help="subset of the deployment unit required"
 )
 @click.option(
-    '-y',
-    '--dryrun',
+    "-y",
+    "--dryrun",
     is_flag=True,
-    help='show what will happen without actually updating the stack'
+    help="show what will happen without actually updating the stack",
 )
 @exceptions.backend_handler()
 @pass_options
@@ -82,9 +70,6 @@ def stack(options, **kwargs):
        the STACK_OPERATION=update
     """
 
-    args = {
-        **options.opts,
-        **kwargs
-    }
+    args = {**options.opts, **kwargs}
 
     manage_stack_backend.run(**args, _is_cli=True)

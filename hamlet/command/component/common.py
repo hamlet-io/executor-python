@@ -2,8 +2,7 @@ import os
 from hamlet.backend import query as query_backend
 
 
-class DescribeContext():
-
+class DescribeContext:
     @property
     def name(self):
         return self._name
@@ -16,9 +15,9 @@ class DescribeContext():
 def query_occurrences_state(options, query, query_params=None, sub_query_text=None):
     query_args = {
         **options.opts,
-        'generation_entrance': 'occurrences',
-        'output_filename': 'occurrences-state.json',
-        'use_cache': False,
+        "generation_entrance": "occurrences",
+        "output_filename": "occurrences-state.json",
+        "use_cache": False,
     }
     query_result = query_backend.run(
         **query_args,

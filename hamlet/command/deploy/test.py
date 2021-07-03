@@ -12,68 +12,56 @@ from hamlet.backend.deploy import find_deployments, create_deployment
 
 
 @click.command(
-    'test-deployments',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "test-deployments", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '-m',
-    '--deployment-mode',
-    default='update',
-    help='The deployment mode to use for the deployment'
+    "-m",
+    "--deployment-mode",
+    default="update",
+    help="The deployment mode to use for the deployment",
 )
 @click.option(
-    '-l',
-    '--deployment-group',
-    default='.*',
+    "-l",
+    "--deployment-group",
+    default=".*",
     show_default=True,
-    help='The deployment group pattern to match',
+    help="The deployment group pattern to match",
 )
 @click.option(
-    '-u',
-    '--deployment-unit',
-    default=['.*'],
+    "-u",
+    "--deployment-unit",
+    default=[".*"],
     show_default=True,
     multiple=True,
-    help='The deployment unit pattern to match'
+    help="The deployment unit pattern to match",
 )
 @click.option(
-    '-o',
-    '--output-dir',
+    "-o",
+    "--output-dir",
     type=click.Path(
         file_okay=False,
         dir_okay=True,
         writable=True,
         readable=True,
     ),
-    help='The directory where tests are run - temp dir by default'
+    help="The directory where tests are run - temp dir by default",
 )
 @click.option(
-    '-p',
-    '--pytest-args',
-    'pytest_args',
-    help='additional arguments for pytest'
+    "-p", "--pytest-args", "pytest_args", help="additional arguments for pytest"
 )
-@click.option(
-    '-s',
-    '--silent',
-    'silent',
-    is_flag=True,
-    help='minimize pytest output'
-)
+@click.option("-s", "--silent", "silent", is_flag=True, help="minimize pytest output")
 @exceptions.backend_handler()
 @pass_options
 def test_deployments(
-        options,
-        deployment_mode,
-        deployment_group,
-        deployment_unit,
-        output_dir,
-        pytest_args,
-        silent,
-        **kwargs):
+    options,
+    deployment_mode,
+    deployment_group,
+    deployment_unit,
+    output_dir,
+    pytest_args,
+    silent,
+    **kwargs,
+):
     """
     Create deployments and test them using their test cases
     """
@@ -89,21 +77,21 @@ def test_deployments(
         deployment_mode=deployment_mode,
         deployment_group=deployment_group,
         deployment_units=deployment_unit,
-        **options.opts
+        **options.opts,
     )
 
     if len(deployments) == 0:
-        raise exceptions.CommandError('No deployments found that match pattern')
+        raise exceptions.CommandError("No deployments found that match pattern")
 
-    click.echo('')
-    click.echo(click.style('[*] Creating deployments:', bold=True, fg='green'))
-    click.echo('')
+    click.echo("")
+    click.echo(click.style("[*] Creating deployments:", bold=True, fg="green"))
+    click.echo("")
     for deployment in deployments:
 
-        deployment_group = deployment['DeploymentGroup']
-        deployment_unit = deployment['DeploymentUnit']
+        deployment_group = deployment["DeploymentGroup"]
+        deployment_unit = deployment["DeploymentUnit"]
 
-        click.echo(f'[-] {deployment_group}/{deployment_unit}')
+        click.echo(f"[-] {deployment_group}/{deployment_unit}")
 
         create_deployment(
             deployment_group,
@@ -111,26 +99,26 @@ def test_deployments(
             deployment_mode,
             output_dir,
             _is_cli=False,
-            **options.opts
+            **options.opts,
         )
 
         generate_args = {
             **options.opts,
-            'entrance': 'deploymenttest',
-            'deployment_group': deployment_group,
-            'deployment_unit': deployment_unit,
-            'deployment_mode': deployment_mode,
-            'output_dir': output_dir,
+            "entrance": "deploymenttest",
+            "deployment_group": deployment_group,
+            "deployment_unit": deployment_unit,
+            "deployment_mode": deployment_mode,
+            "output_dir": output_dir,
         }
         create_template_backend.run(**generate_args, _is_cli=False)
 
-    click.echo('')
-    click.secho('[*] Testing deployments:', bold=True, fg='green')
-    click.echo('')
+    click.echo("")
+    click.secho("[*] Testing deployments:", bold=True, fg="green")
+    click.echo("")
 
-    test_script_filename = 'test_deployments.py'
+    test_script_filename = "test_deployments.py"
     test_generate_backend(
-        output=f'{output_dir}/{test_script_filename}',
+        output=f"{output_dir}/{test_script_filename}",
         directory=output_dir,
     )
 
@@ -139,7 +127,7 @@ def test_deployments(
             testpaths=[test_script_filename],
             pytest_args=pytest_args,
             silent=silent,
-            root_dir=output_dir
+            root_dir=output_dir,
         )
     except Exception as e:
         raise CommandError(str(e))

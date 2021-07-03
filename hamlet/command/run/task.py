@@ -5,74 +5,58 @@ from hamlet.command.common.config import pass_options
 
 
 @click.command(
-    'task',
-    short_help='Run an ECS task',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "task", short_help="Run an ECS task", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '-c',
-    '--container-id',
-    help='name of the container that environment details are applied to'
+    "-c",
+    "--container-id",
+    help="name of the container that environment details are applied to",
 )
 @click.option(
-    '-d',
-    '--delay',
-    help='interval between checking the progress of the task',
+    "-d",
+    "--delay",
+    help="interval between checking the progress of the task",
     type=click.INT,
     default=30,
-    show_default=True
+    show_default=True,
 )
 @click.option(
-    '-e',
-    '--env',
-    'env_name',
-    help='name of an environment variable to define for the task'
+    "-e",
+    "--env",
+    "env_name",
+    help="name of an environment variable to define for the task",
 )
 @click.option(
-    '-i',
-    '--component',
+    "-i",
+    "--component",
     required=True,
-    help='name of the ecs component in the solution where the task is defined'
+    help="name of the ecs component in the solution where the task is defined",
 )
 @click.option(
-    '-j',
-    '--component-instance',
-    help='instance of the ecs cluster to run the task on'
+    "-j", "--component-instance", help="instance of the ecs cluster to run the task on"
 )
 @click.option(
-    '-k',
-    '--component-version',
-    help='version of the ecs clsuter to run the task on'
+    "-k", "--component-version", help="version of the ecs clsuter to run the task on"
 )
 @click.option(
-    '-t',
-    '--tier',
+    "-t",
+    "--tier",
     required=True,
-    help='name of the tier in the solution where the task is defined'
+    help="name of the tier in the solution where the task is defined",
 )
 @click.option(
-    '-v',
-    '--value',
-    help='value for the last environment value defined (via -e) for the task'
+    "-v",
+    "--value",
+    help="value for the last environment value defined (via -e) for the task",
 )
 @click.option(
-    '-w',
-    '--task',
+    "-w",
+    "--task",
     required=True,
-    help='name of the task to be run',
+    help="name of the task to be run",
 )
-@click.option(
-    '-x',
-    '--instance',
-    help='instance of the task to be run'
-)
-@click.option(
-    '-y',
-    '--version',
-    help='version of the task to be run'
-)
+@click.option("-x", "--instance", help="instance of the task to be run")
+@click.option("-y", "--version", help="version of the task to be run")
 @exceptions.backend_handler()
 @pass_options
 def task(options, **kwargs):
@@ -85,9 +69,6 @@ def task(options, **kwargs):
     2. ENV and VALUE should always appear in pairs
     """
 
-    args = {
-        **options.opts,
-        **kwargs
-    }
+    args = {**options.opts, **kwargs}
 
     run_task_backend.run(**args, _is_cli=True)

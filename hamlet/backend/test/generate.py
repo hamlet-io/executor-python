@@ -6,14 +6,10 @@ from .renderer import testcases_template
 from .testcase_schema import Testcase as TestcaseSchema
 
 
-TESTCASE_EXT = '-testcase.json'
+TESTCASE_EXT = "-testcase.json"
 
 
-def run(
-    filenames=None,
-    output=None,
-    directory=None
-):
+def run(filenames=None, output=None, directory=None):
     filenames = filenames or []
     # searching testcase files in given directory if no files provided
     if not filenames and directory:
@@ -27,8 +23,10 @@ def run(
     cases = dict()
     for filename in filenames:
         if not filename.endswith(TESTCASE_EXT):
-            raise BackendException(f'Invalid extension for {filename}. Must be {TESTCASE_EXT}')
-        with open(filename, 'rt') as f:
+            raise BackendException(
+                f"Invalid extension for {filename}. Must be {TESTCASE_EXT}"
+            )
+        with open(filename, "rt") as f:
             testcase_file_data = json.load(f)
             for name, testcase in testcase_file_data.items():
                 try:
@@ -36,7 +34,7 @@ def run(
                 except ValidationError as e:
                     message = json.dumps(e.messages, indent=4)
                     raise BackendException(
-                        f"Invalid testcase schema in {filename}, testcase \"{name}\". \n\nErrors: \n{message}"
+                        f'Invalid testcase schema in {filename}, testcase "{name}". \n\nErrors: \n{message}'
                     ) from e
             cases.update(**testcase_file_data)
 
@@ -46,7 +44,7 @@ def run(
 
     text = testcases_template.render(cases)
     if output is not None:
-        with open(output, 'wt') as f:
+        with open(output, "wt") as f:
             f.write(text)
         return ""
     return text

@@ -6,7 +6,7 @@ from .pipeline import pipeline as pipeline_cmd
 from .sentry_release import sentry_release as sentry_release_cmd
 
 
-@cli.group('run')
+@cli.group("run")
 def group():
     """
     Runs stuff

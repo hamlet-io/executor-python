@@ -20,45 +20,41 @@ def engines_table(data):
     for row in data:
         tablerows.append(
             [
-                wrap_text(row['name']),
-                wrap_text(row['description']),
-                wrap_text(row['installed']),
-                wrap_text(row['global']),
-                wrap_text(row['update_available']),
+                wrap_text(row["name"]),
+                wrap_text(row["description"]),
+                wrap_text(row["installed"]),
+                wrap_text(row["global"]),
+                wrap_text(row["update_available"]),
             ]
         )
     return tabulate(
         tablerows,
-        headers=['Name', 'Description', 'Installed', 'Global', 'Update Available'],
-        tablefmt='github'
+        headers=["Name", "Description", "Installed", "Global", "Update Available"],
+        tablefmt="github",
     )
 
 
-@cli.group('engine')
+@cli.group("engine")
 def group():
-    '''
+    """
     Manage the engine used by the executor
-    '''
+    """
 
 
 @group.command(
-    'list-engines',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "list-engines", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '--show-hidden/--hide-hidden',
+    "--show-hidden/--hide-hidden",
     default=False,
-    help='Control visibility of hidden engines'
+    help="Control visibility of hidden engines",
 )
 @json_or_table_option(engines_table)
 @exceptions.backend_handler()
 def list_engines(show_hidden):
-    '''
+    """
     Lists the available engines
-    '''
+    """
     data = []
 
     for engine in engine_store.find_engines(cache_timeout=0):
@@ -72,40 +68,36 @@ def list_engines(show_hidden):
                     else:
                         update_available = True
                 except BaseException as e:
-                    click.secho(f'[!]engine update failed for {engine.name}', fg='red', err=True)
-                    click.secho(f'[!]  {e}', fg='red', err=True)
+                    click.secho(
+                        f"[!]engine update failed for {engine.name}", fg="red", err=True
+                    )
+                    click.secho(f"[!]  {e}", fg="red", err=True)
 
             data.append(
                 {
-                    'name': engine.name,
-                    'description': engine.description,
-                    'installed': engine.installed,
-                    'digest': engine.digest,
-                    'global': True if engine.name == engine_store.global_engine else False,
-                    'update_available': update_available
+                    "name": engine.name,
+                    "description": engine.description,
+                    "installed": engine.installed,
+                    "digest": engine.digest,
+                    "global": True
+                    if engine.name == engine_store.global_engine
+                    else False,
+                    "update_available": update_available,
                 }
             )
     return data
 
 
 @group.command(
-    'describe-engine',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "describe-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option(
-    '-n',
-    '--name',
-    help='An override to the default engine name to query'
-)
+@click.option("-n", "--name", help="An override to the default engine name to query")
 @exceptions.backend_handler()
 @config.pass_options
 def describe_engine(opts, name):
-    '''
+    """
     Provides a detailed description of an engine
-    '''
+    """
     if name:
         engine_name = name
     elif opts.engine:
@@ -121,26 +113,26 @@ def describe_engine(opts, name):
         latest_digest = engine.get_latest_digest()
 
     except BaseException as e:
-        click.secho(f'[!] Engine update failed for {engine.name}', fg='red', err=True)
-        click.secho(f'[!]  {e}', fg='red', err=True)
+        click.secho(f"[!] Engine update failed for {engine.name}", fg="red", err=True)
+        click.secho(f"[!]  {e}", fg="red", err=True)
 
         up_to_date = None
         latest_digest = None
         pass
 
     engine_details = {
-        'engine': {
-            'name': engine.name,
-            'description': engine.description,
-            'hidden': engine.hidden,
-            'installed': engine.installed,
-            'engine_dir': engine.engine_dir,
-            'up_to_date': up_to_date,
-            'current_digest': engine.digest,
-            'latest_digest': latest_digest
+        "engine": {
+            "name": engine.name,
+            "description": engine.description,
+            "hidden": engine.hidden,
+            "installed": engine.installed,
+            "engine_dir": engine.engine_dir,
+            "up_to_date": up_to_date,
+            "current_digest": engine.digest,
+            "latest_digest": latest_digest,
         },
-        'environment': engine.environment,
-        'install_state': engine.install_state
+        "environment": engine.environment,
+        "install_state": engine.install_state,
     }
 
     sources = []
@@ -149,17 +141,21 @@ def describe_engine(opts, name):
         try:
             source_digest = source.digest
         except BaseException as e:
-            click.secho(f'[!] Source check failed {engine.name} - {source.name}', fg='red', err=True)
-            click.secho(f'[!]  {e}', fg='red', err=True)
+            click.secho(
+                f"[!] Source check failed {engine.name} - {source.name}",
+                fg="red",
+                err=True,
+            )
+            click.secho(f"[!]  {e}", fg="red", err=True)
 
             source_digest = None
             pass
 
         sources.append(
             {
-                'name': source.name,
-                'description': source.description,
-                'latest_digest': source_digest,
+                "name": source.name,
+                "description": source.description,
+                "latest_digest": source_digest,
             }
         )
 
@@ -167,88 +163,73 @@ def describe_engine(opts, name):
     for part in engine.parts:
         parts.append(
             {
-                'type': part.type,
-                'description': part.description,
-                'source_path': part.source_path,
-                'source_name': part.source_name
+                "type": part.type,
+                "description": part.description,
+                "source_path": part.source_path,
+                "source_name": part.source_name,
             }
         )
 
-    engine_details['sources'] = sources
-    engine_details['parts'] = parts
+    engine_details["sources"] = sources
+    engine_details["parts"] = parts
 
     click.echo(json.dumps(engine_details, indent=2))
 
 
 @group.command(
-    'clean-engines',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "clean-engines", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option(
-    '-n',
-    '--name',
-    multiple=True,
-    help='The name of an engine to clean'
-)
+@click.option("-n", "--name", multiple=True, help="The name of an engine to clean")
 @exceptions.backend_handler()
 def clean_engines(name):
-    '''
+    """
     Clean local engine store
-    '''
+    """
     if name:
         for engine in name:
-            click.echo(f'[*] cleaning {engine} from {engine_store.store_dir}')
+            click.echo(f"[*] cleaning {engine} from {engine_store.store_dir}")
             engine_store.clean_engine(engine)
 
     else:
-        click.echo(f'[*] cleaning all engines from {engine_store.store_dir}')
+        click.echo(f"[*] cleaning all engines from {engine_store.store_dir}")
         engine_store.clean_engines()
 
 
 @group.command(
-    'install-engine',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "install-engine", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    '-f',
-    '--force',
+    "-f",
+    "--force",
     is_flag=True,
-    help='Force reinstall of engine',
+    help="Force reinstall of engine",
 )
-@click.argument(
-    'name',
-    required=False,
-    type=click.STRING
-)
+@click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
 @pass_options
 def install_engine(opts, name, force):
-    '''
+    """
     Install or update an engine
-    '''
+    """
 
     if name is None:
         name = opts.engine or engine_store.global_engine
 
-    click.echo(f'[*] installing engine - {name}')
+    click.echo(f"[*] installing engine - {name}")
 
     try:
         engine = engine_store.find_engine(name, cache_timeout=0)
 
     except HamletEngineInvalidVersion as e:
         if force or click.confirm(
-                (
-                    '[!] The engine state of this engine is not compatible the cli\n'
-                    '[!] To fix this we need to reinstall the engine,'
-                    'if the engine can not be reinstalled it will no longer be available\n'
-                    '[!] Is this ok?'
-                ), abort=True):
+            (
+                "[!] The engine state of this engine is not compatible the cli\n"
+                "[!] To fix this we need to reinstall the engine,"
+                "if the engine can not be reinstalled it will no longer be available\n"
+                "[!] Is this ok?"
+            ),
+            abort=True,
+        ):
             engine_store.clean_engine(name)
         else:
             raise e
@@ -257,22 +238,14 @@ def install_engine(opts, name, force):
 
 
 @group.command(
-    'set-engine',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "set-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.argument(
-    'name',
-    required=True,
-    type=click.STRING
-)
+@click.argument("name", required=True, type=click.STRING)
 @exceptions.backend_handler()
 def set_engine(name):
-    '''
+    """
     Sets the global engine used
-    '''
+    """
 
     try:
         engine = engine_store.get_engine(name)
@@ -282,31 +255,25 @@ def set_engine(name):
         engine = engine_store.find_engine(name, cache_timeout=0)
 
         if not engine.installed:
-            click.echo('[*] installing engine')
+            click.echo("[*] installing engine")
             engine.install()
 
-    click.echo(f'[*] global engine set to {name}')
+    click.echo(f"[*] global engine set to {name}")
     engine_store.global_engine = name
 
 
-@group.command(
-    'env',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
-)
+@group.command("env", short_help="", context_settings=dict(max_content_width=240))
 @click.argument(
-    'environment_variable',
+    "environment_variable",
     required=False,
     type=click.STRING,
 )
 @exceptions.backend_handler()
 @config.pass_options
 def env(opts, environment_variable):
-    '''
+    """
     Get the environment variables for the current engine
-    '''
+    """
 
     if opts.engine is None:
         engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
@@ -314,7 +281,7 @@ def env(opts, environment_variable):
         engine = engine_store.get_engine(opts.engine)
 
     if environment_variable is None:
-        click.echo('# run eval $(hamlet engine env) to set variables')
+        click.echo("# run eval $(hamlet engine env) to set variables")
         for k, v in engine.environment.items():
             click.echo(f'export {k}="{v}"')
 
@@ -322,41 +289,35 @@ def env(opts, environment_variable):
         try:
             click.echo(engine.environment[environment_variable])
         except KeyError:
-            click.echo('')
+            click.echo("")
 
 
 @group.command(
-    'add-engine-source-build',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
+    "add-engine-source-build",
+    short_help="",
+    context_settings=dict(max_content_width=240),
 )
 @click.option(
-    '-p',
-    '--path',
+    "-p",
+    "--path",
     type=click.Path(
-        exists=True,
-        file_okay=False,
-        dir_okay=True,
-        readable=True,
-        resolve_path=True
+        exists=True, file_okay=False, dir_okay=True, readable=True, resolve_path=True
     ),
-    default='.',
-    help='The path to generate build details for'
+    default=".",
+    help="The path to generate build details for",
 )
 @exceptions.backend_handler()
 def add_engine_source_build(path):
-    '''
+    """
     Generates build metadata for engine sources
-    '''
+    """
 
     build_details = EngineCodeSourceBuildData(path=path)
 
-    hamlet_meta_dir = os.path.join(path, '.hamlet')
-    hamlet_build_state_file = os.path.join(hamlet_meta_dir, 'engine_source.json')
+    hamlet_meta_dir = os.path.join(path, ".hamlet")
+    hamlet_build_state_file = os.path.join(hamlet_meta_dir, "engine_source.json")
     if not os.path.isdir(hamlet_meta_dir):
         os.makedirs(hamlet_meta_dir)
 
-    with open(hamlet_build_state_file, 'w') as file:
+    with open(hamlet_build_state_file, "w") as file:
         json.dump(build_details.details, file, indent=2)

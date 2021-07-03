@@ -4,21 +4,12 @@ from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
 
 
-@cli.command(
-    'setup',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
-    )
-)
+@cli.command("setup", short_help="", context_settings=dict(max_content_width=240))
 @exceptions.backend_handler()
 @pass_options
 def setup(options, **kwargs):
-    '''
+    """
     Loads the plugins defined as part of the current district
-    '''
-    args = {
-        **options.opts,
-        **kwargs
-    }
+    """
+    args = {**options.opts, **kwargs}
     setup_backend.run(**args, _is_cli=True)
