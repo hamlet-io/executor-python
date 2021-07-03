@@ -193,7 +193,11 @@ def create_script(diagram, image_filename, temp_path):
                     return obj.rank
 
         # import libraries from entity types
-        import_diagrams = "import diagrams\nfrom diagrams import Cluster, Diagram, Edge\nfrom diagrams.generic.blank import Blank\n"
+        import_diagrams = (
+            "import diagrams\n"
+            "from diagrams import Cluster, Diagram, Edge\n"
+            "from diagrams.generic.blank import Blank\n"
+        )
         imported_libraries = []
         for obj in groupObjects:
             for diagClass in obj.libraries:
