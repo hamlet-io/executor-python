@@ -1,16 +1,43 @@
 # Changelog
 
-## latest (2021-07-01)
+## latest (2021-07-03)
+
+#### New Features
+
+* default to options for engine install
+#### Refactorings
+
+* set engine use local first
+* updating handling for engines
+#### Others
+
+* linting fixes
+
+Full set of changes: [`9.0.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.0.2...latest)
+
+## 9.0.2 (2021-07-01)
 
 #### Fixes
 
+* release pattern for release condition
+
+Full set of changes: [`9.0.1...9.0.2`](https://github.com/hamlet-io/executor-python/compare/9.0.1...9.0.2)
+
+## 9.0.1 (2021-07-01)
+
+#### Fixes
+
+* (ci): move release job into single workflow ([#194](https://github.com/hamlet-io/executor-python/issues/194))
 * typo
 * changelog details
 #### Refactorings
 
 * (engine): align unicycle docker tags
+#### Others
 
-Full set of changes: [`9.0.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.0.0...latest)
+* changelog bump ([#190](https://github.com/hamlet-io/executor-python/issues/190))
+
+Full set of changes: [`9.0.0...9.0.1`](https://github.com/hamlet-io/executor-python/compare/9.0.0...9.0.1)
 
 ## 9.0.0 (2021-06-30)
 
