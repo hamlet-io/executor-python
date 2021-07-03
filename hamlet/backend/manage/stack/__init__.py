@@ -24,25 +24,25 @@ def run(
     **kwargs,
 ):
     options = {
-        '-d': delete,
-        '-i': stack_initiate,
-        '-m': stack_monitor,
-        '-o': output_dir,
-        '-w': stack_wait,
-        '-n': stack_name,
-        '-r': region,
-        '-y': dryrun,
-        '-u': deployment_unit,
-        '-z': deployment_unit_subset,
-        '-l': deployment_group
+        "-d": delete,
+        "-i": stack_initiate,
+        "-m": stack_monitor,
+        "-o": output_dir,
+        "-w": stack_wait,
+        "-n": stack_name,
+        "-r": region,
+        "-y": dryrun,
+        "-u": deployment_unit,
+        "-z": deployment_unit_subset,
+        "-l": deployment_group,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('manageStack.sh', [], options, env, _is_cli)
+    runner.run("manageStack.sh", [], options, env, _is_cli)

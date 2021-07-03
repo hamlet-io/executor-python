@@ -5,37 +5,22 @@ from hamlet.command.common.exceptions import CommandError
 
 
 @click.command(
-    'run',
-    context_settings=dict(
-        max_content_width=240
-    ),
-    short_help="Run pytest on specified files"
+    "run",
+    context_settings=dict(max_content_width=240),
+    short_help="Run pytest on specified files",
 )
 @click.option(
-    '-t',
-    '--test',
-    'tests',
+    "-t",
+    "--test",
+    "tests",
     multiple=True,
-    help='file or directory containing tests',
-    type=click.Path(
-        dir_okay=True,
-        file_okay=True,
-        exists=True
-    )
+    help="file or directory containing tests",
+    type=click.Path(dir_okay=True, file_okay=True, exists=True),
 )
 @click.option(
-    '-p',
-    '--pytest-args',
-    'pytest_args',
-    help='additional arguments for pytest'
+    "-p", "--pytest-args", "pytest_args", help="additional arguments for pytest"
 )
-@click.option(
-    '-s',
-    '--silent',
-    'silent',
-    is_flag=True,
-    help='minimize pytest output'
-)
+@click.option("-s", "--silent", "silent", is_flag=True, help="minimize pytest output")
 def run(tests, pytest_args, silent):
     """
     Discover and run tests in specified files or/and directories. If no tests paths provided

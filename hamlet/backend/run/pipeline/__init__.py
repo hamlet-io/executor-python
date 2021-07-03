@@ -19,20 +19,20 @@ def run(
     **kwargs
 ):
     options = {
-        '-i': component,
-        '-t': tier,
-        '-x': instance,
-        '-y': version,
-        '-s': pipeline_status_only,
-        '-c': pipeline_allow_concurrent
+        "-i": component,
+        "-t": tier,
+        "-x": instance,
+        "-y": version,
+        "-s": pipeline_status_only,
+        "-c": pipeline_allow_concurrent,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('runPipeline.sh', [], options, env, _is_cli)
+    runner.run("runPipeline.sh", [], options, env, _is_cli)

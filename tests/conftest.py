@@ -1,10 +1,7 @@
 import os
 import shutil
 import pytest
-from hamlet.loggers import (
-    logging,
-    root
-)
+from hamlet.loggers import logging, root
 
 
 root.setLevel(logging.DEBUG)
@@ -12,21 +9,22 @@ root.setLevel(logging.DEBUG)
 
 class __CMDBContext:
 
-    if os.getenv('TEST_ROOT_DIR', None) is not None:
-        ROOT_DIR = os.getenv('TEST_ROOT_DIR')
+    if os.getenv("TEST_ROOT_DIR", None) is not None:
+        ROOT_DIR = os.getenv("TEST_ROOT_DIR")
     else:
-        ROOT_DIR = os.getcwd() + '/.cmdb'
+        ROOT_DIR = os.getcwd() + "/.cmdb"
         os.makedirs(ROOT_DIR, exist_ok=True)
 
     def create_cmdb_filename_compositor(self):
         root = self.dir
 
-        def cmdb_filename_compositor(*args, sep='-', ext=''):
+        def cmdb_filename_compositor(*args, sep="-", ext=""):
             name = sep.join([*args])
             filename = os.path.join(root, name)
             if ext:
-                filename += '.%s' % ext
+                filename += ".%s" % ext
             return os.path.normpath(filename)
+
         return cmdb_filename_compositor
 
     def __init__(self, *args):
@@ -34,8 +32,8 @@ class __CMDBContext:
         self.old_cwd = os.getcwd()
 
     def __enter__(self):
-        assert os.path.exists(self.dir), 'Path %s does not exit' % self.dir
-        assert os.path.isdir(self.dir), 'Path %s is not a dir' % self.dir
+        assert os.path.exists(self.dir), "Path %s does not exit" % self.dir
+        assert os.path.isdir(self.dir), "Path %s is not a dir" % self.dir
         os.chdir(self.dir)
         return self.create_cmdb_filename_compositor()
 
@@ -61,11 +59,11 @@ def __clear_cmdb(*args):
             __clear_dir(os.path.join(*args))
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def cmdb():
     return __CMDBContext
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def clear_cmdb():
     return __clear_cmdb

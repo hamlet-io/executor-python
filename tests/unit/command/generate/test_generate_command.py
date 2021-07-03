@@ -1,11 +1,12 @@
 from hamlet.loggers import logging
 from hamlet.utils import DynamicOption
+
 # TEST_OPTIONS = collections.OrderedDict()
 # TEST_OPTIONS['!-i,--id,id'] = ('id')
 # TEST_OPTIONS['--name,name'] = ('name', 'id')
 # TEST_OPTIONS['--param,param'] = ('non-default', 'default')
 
-logger = logging.getLogger('test-generate')
+logger = logging.getLogger("test-generate")
 
 
 def __inputlines(*args):
@@ -13,8 +14,8 @@ def __inputlines(*args):
 
 
 def __split_key(key):
-    key = key.strip('! ')
-    parts = tuple(part.strip() for part in key.split(',') if part.strip())
+    key = key.strip("! ")
+    parts = tuple(part.strip() for part in key.split(",") if part.strip())
     if len(parts) < 2:
         raise ValueError('Key should be in format:"--option-key, param_name"')
     return parts
@@ -30,7 +31,7 @@ def __get_param_name_from_key(key):
 
 
 def __is_required_key(key):
-    return key.strip().startswith('!')
+    return key.strip().startswith("!")
 
 
 def __get_value(values):
@@ -43,7 +44,7 @@ def __get_value(values):
 def __get_default(values):
     if isinstance(values, (list, tuple)):
         return values[1]
-    raise ValueError('default value not set')
+    raise ValueError("default value not set")
 
 
 def __generate_prompt_options_testcase(template):
@@ -51,7 +52,7 @@ def __generate_prompt_options_testcase(template):
         options = []
         options_str = []
         if required_only:
-            options.append('--use-default')
+            options.append("--use-default")
             options_str.append(options[-1])
         input = []
         expected = {}
@@ -61,15 +62,17 @@ def __generate_prompt_options_testcase(template):
             value = __get_value(values)
             if not required_only or required:
                 if isinstance(value, bool):
-                    input.append('y' if value else 'n')
+                    input.append("y" if value else "n")
                 else:
                     input.append(str(value))
-            expected[param] = value if not required_only or required else __get_default(values)
+            expected[param] = (
+                value if not required_only or required else __get_default(values)
+            )
         yield {
-            'options': options,
-            'options_str': options_str,
-            'input': __inputlines(*input, 'y'),
-            'expected': expected
+            "options": options,
+            "options_str": options_str,
+            "input": __inputlines(*input, "y"),
+            "expected": expected,
         }
 
 
@@ -94,15 +97,17 @@ def __generate_options_testcase(template):
                             options.append(key)
                             options_str.append(key)
                     else:
-                        options_str.append('{} {}'.format(key, value))
+                        options_str.append("{} {}".format(key, value))
                         options.append(key)
                         options.append(value)
-                expected[param] = value if not required_only or required else __get_default(values)
+                expected[param] = (
+                    value if not required_only or required else __get_default(values)
+                )
             yield {
-                'options': options,
-                'options_str': options_str,
-                'input': None,
-                'expected': expected
+                "options": options,
+                "options_str": options_str,
+                "input": None,
+                "expected": expected,
             }
 
 
@@ -116,16 +121,16 @@ def __generate_testcases(options):
 def __log_testcase(testcase, cmd):
     output = "\n"
     output += "Options:\n"
-    for option in testcase['options_str']:
+    for option in testcase["options_str"]:
         output += "  {}\n".format(option)
-    if testcase['input']:
-        output += 'Input:\n'
-        for input in testcase['input'].split('\n'):
+    if testcase["input"]:
+        output += "Input:\n"
+        for input in testcase["input"].split("\n"):
             output += "  {}\n".format(input)
-    output += 'Expected:\n'
-    for key, value in testcase['expected'].items():
+    output += "Expected:\n"
+    for key, value in testcase["expected"].items():
         if isinstance(value, str) and not value:
-            value = "\"\""
+            value = '""'
         output += "  {}={}\n".format(key, value)
     logger.info(output)
 
@@ -148,12 +153,8 @@ def run_generate_command_test(runner, cmd, cmd_backend_run, options):
     for case in __generate_testcases(options):
         cmd_backend_run.reset_mock()
         __log_testcase(case, cmd)
-        result = runner.invoke(
-            cmd,
-            case['options'],
-            input=case['input']
-        )
+        result = runner.invoke(cmd, case["options"], input=case["input"])
         assert result.exit_code == 0, result.output
         cmd_backend_run.assert_called_once()
-        cmd_backend_run.call_args_list[0].kwargs == case['expected']
+        cmd_backend_run.call_args_list[0].kwargs == case["expected"]
     cmd_backend_run.reset_mock()

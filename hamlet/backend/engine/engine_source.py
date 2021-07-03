@@ -8,49 +8,45 @@ from hamlet.backend.container_registry import ContainerRepository
 
 
 class EngineSourceInterface(ABC):
-    '''
+    """
     The engine source implements the retrevel of hamlet component artefacts
     Source classes are based on the process require to retrieve the arefacts
-    '''
+    """
 
-    def __init__(self, name, description=''):
+    def __init__(self, name, description=""):
         self.name = name
         self.description = description
 
     @abstractmethod
     def pull(self, dst_dir):
-        '''
+        """
         Pull the source to a local directory
         Must return a status object describing the source state
-        '''
+        """
         return EngineSourcePullState(
-            name=self.name,
-            type=self.__class__.__name__,
-            digest=self.name
+            name=self.name, type=self.__class__.__name__, digest=self.name
         )
 
     @property
     @abstractmethod
     def digest(self):
-        '''
+        """
         Return a digest of the source to use for verification and version updates
-        '''
+        """
         raise NotImplementedError
 
 
 class ShimPathEngineSource(EngineSourceInterface):
-    '''
+    """
     Sets a standard source path to use for shim based providers
-    '''
+    """
 
     def pull(self, dst_dir):
         if not os.path.isdir(dst_dir):
             os.makedirs(dst_dir)
 
         return EngineSourcePullState(
-            name=self.name,
-            type=self.__class__.__name__,
-            digest=self.name
+            name=self.name, type=self.__class__.__name__, digest=self.name
         )
 
     @property
@@ -59,11 +55,20 @@ class ShimPathEngineSource(EngineSourceInterface):
 
 
 class ContainerEngineSource(EngineSourceInterface):
-    '''
+    """
     Container based engine source which uses docker registries to pull content
-    '''
+    """
 
-    def __init__(self, name, description, registry_url, repository, tag, username=None, password=None):
+    def __init__(
+        self,
+        name,
+        description,
+        registry_url,
+        repository,
+        tag,
+        username=None,
+        password=None,
+    ):
         super().__init__(name, description)
 
         self.registry_url = registry_url
@@ -77,7 +82,7 @@ class ContainerEngineSource(EngineSourceInterface):
             registry_url=self.registry_url,
             repository=self.repository,
             username=self.username,
-            password=self.password
+            password=self.password,
         )
 
     def pull(self, dst_dir):
@@ -87,13 +92,13 @@ class ContainerEngineSource(EngineSourceInterface):
         return EngineSourcePullState(
             name=self.name,
             type=self.__class__.__name__,
-            digest=pull_manifest['config']['digest'],
+            digest=pull_manifest["config"]["digest"],
             source_metadata={
-                'registry_url': self.registry_url,
-                'repository': self.repository,
-                'tag': self.tag
+                "registry_url": self.registry_url,
+                "repository": self.repository,
+                "tag": self.tag,
             },
-            build_metadata=self._get_build_details(dst_dir)
+            build_metadata=self._get_build_details(dst_dir),
         )
 
     @property
@@ -102,14 +107,14 @@ class ContainerEngineSource(EngineSourceInterface):
 
     def _get_build_details(self, dst_dir):
 
-        engine_source = '.hamlet/engine_source.json'
+        engine_source = ".hamlet/engine_source.json"
         if dst_dir is not None:
-            engine_source_paths = pathlib.Path(dst_dir).glob(f'**/{engine_source}')
+            engine_source_paths = pathlib.Path(dst_dir).glob(f"**/{engine_source}")
             build_sources = {}
             for engine_source_path in engine_source_paths:
-                with open(engine_source_path, 'r') as file:
+                with open(engine_source_path, "r") as file:
                     source_name = str(engine_source_path)[
-                        len(dst_dir):len(str(engine_source_path)) - len(engine_source)
+                        len(dst_dir) : len(str(engine_source_path)) - len(engine_source)
                     ]
                     build_sources[source_name] = json.load(file)
 
@@ -117,9 +122,10 @@ class ContainerEngineSource(EngineSourceInterface):
 
 
 class EngineSourcePullState(dict):
-    '''
+    """
     Provides details about the source that was pulled
-    '''
+    """
+
     def __init__(self, name, type, digest, source_metadata=None, build_metadata=None):
         self.name = name
         self.type = type

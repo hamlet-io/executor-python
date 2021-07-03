@@ -25,26 +25,26 @@ def run(
     **kwargs,
 ):
     options = {
-        '-a': alias,
-        '-b': base64_decode,
-        '-d': decrypt,
-        '-e': encrypt,
-        '-f': crypto_file,
-        '-k': key_id,
-        '-n': no_alteration,
-        '-p': json_path,
-        '-q': quiet,
-        '-t': crypto_text,
-        '-u': update,
-        '-v': visible
+        "-a": alias,
+        "-b": base64_decode,
+        "-d": decrypt,
+        "-e": encrypt,
+        "-f": crypto_file,
+        "-k": key_id,
+        "-n": no_alteration,
+        "-p": json_path,
+        "-q": quiet,
+        "-t": crypto_text,
+        "-u": update,
+        "-v": visible,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('manageCrypto.sh', [], options, env, _is_cli)
+    runner.run("manageCrypto.sh", [], options, env, _is_cli)

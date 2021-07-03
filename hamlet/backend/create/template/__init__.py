@@ -27,28 +27,28 @@ def run(
     **kwargs
 ):
     options = {
-        '-e': entrance,
-        '-c': config_ref,
-        '-g': resource_group,
-        '-l': deployment_group,
-        '-q': request_ref,
-        '-r': region,
-        '-u': deployment_unit,
-        '-z': deployment_unit_subset,
-        '-d': deployment_mode,
-        '-p': generation_provider,
-        '-f': generation_framework,
-        '-i': generation_input_source,
-        '-o': output_dir,
-        '-x': disable_output_cleanup
+        "-e": entrance,
+        "-c": config_ref,
+        "-g": resource_group,
+        "-l": deployment_group,
+        "-q": request_ref,
+        "-r": region,
+        "-u": deployment_unit,
+        "-z": deployment_unit_subset,
+        "-d": deployment_mode,
+        "-p": generation_provider,
+        "-f": generation_framework,
+        "-i": generation_input_source,
+        "-o": output_dir,
+        "-x": disable_output_cleanup,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('createTemplate.sh', [], options, env, _is_cli)
+    runner.run("createTemplate.sh", [], options, env, _is_cli)

@@ -48,7 +48,7 @@ class SpecifiedAccountNotFoundError(ContextError):
         super().__init__(msg)
 
 
-class Context():
+class Context:
     # Enables tenant->account lookup at the init stage
     ACCOUNT_REQUIRED = False
     # Enables tenant lookup at the init stage
@@ -86,7 +86,7 @@ class Context():
     # Cache dir path
     @property
     def cache_dir(self):
-        return os.path.join(self.__root_dir, 'cache')
+        return os.path.join(self.__root_dir, "cache")
 
     @property
     def account_dir(self):
@@ -138,7 +138,9 @@ class Context():
 
     def __try_to_find_root(self):
         if RootLevel.level_file_directory:
-            found = self.search.downwards(RootLevel.level_file_directory, RootLevel.level_file)
+            found = self.search.downwards(
+                RootLevel.level_file_directory, RootLevel.level_file
+            )
         found = self.search.upwards(RootLevel.level_file)
         if not found:
             raise NoRootFileError(f"Can't find {RootLevel.level_file} file.")
@@ -151,21 +153,23 @@ class Context():
         # If suggested account is set(config['account']), try to find account with name == config['account']
         # If no account with that name found raise SpecifiedAccountNotFoundError.
         accounts_directory = Search.parent(self.tenant_dir, up=1)
-        account_suffix = os.path.join('config', AccountLevel.level_file)
+        account_suffix = os.path.join("config", AccountLevel.level_file)
 
         # Each account filepath has common prefix and suffix
         def name_from_path(path):
             return Search.cut(path, prefix=accounts_directory, suffix=account_suffix)
 
         found = Search.downwards(accounts_directory, AccountLevel.level_file)
-        account_name = self.config.get('account')
+        account_name = self.config.get("account")
         account_path = None
         if not found:
             raise NoAccountsFoundError(f"Can't find accounts in {self.tenant_dir}")
         elif len(found) == 1:
             account_path = found[0]
             if account_name and account_name != name_from_path(account_path):
-                raise SpecifiedAccountNotFoundError(f"Can't find account {account_name} in {accounts_directory}")
+                raise SpecifiedAccountNotFoundError(
+                    f"Can't find account {account_name} in {accounts_directory}"
+                )
         else:
             if not account_name:
                 raise MultipleAccountsFoundError(
@@ -175,7 +179,9 @@ class Context():
                 if account_name == name_from_path(account_path):
                     break
             else:
-                raise SpecifiedAccountNotFoundError(f"Can't find account {account_name} in {accounts_directory}")
+                raise SpecifiedAccountNotFoundError(
+                    f"Can't find account {account_name} in {accounts_directory}"
+                )
         self._account_dir = Search.parent(account_path, up=2)
 
     def __try_to_set_tenant(self):
@@ -199,7 +205,9 @@ class Context():
         level_file_relpath.append(self.level_file)
         level_file_path = self.search.isfile(os.path.join(*level_file_relpath))
         if not level_file_path:
-            raise NoLevelFileError(f"No level file in {os.path.join(self.directory, *level_file_relpath)}")
+            raise NoLevelFileError(
+                f"No level file in {os.path.join(self.directory, *level_file_relpath)}"
+            )
         self.level_file_path = level_file_path
 
 
@@ -207,8 +215,8 @@ class SegmentLevel(Context):
 
     ACCOUNT_REQUIRED = True
 
-    level_name = 'segment'
-    level_file = 'segment.json'
+    level_name = "segment"
+    level_file = "segment.json"
 
     def setup(self):
         segment = self.search.basename()
@@ -217,33 +225,33 @@ class SegmentLevel(Context):
             environment = self.search.basename(up=1)
         else:
             environment = segment
-            segment = 'default'
+            segment = "default"
             self.cwd = self.search.parent(up=2)
-        self.props['Environment'] = environment
-        self.props['Segment'] = segment
+        self.props["Environment"] = environment
+        self.props["Segment"] = segment
 
 
 class EnvironmentLevel(Context):
 
     ACCOUNT_REQUIRED = True
 
-    level_name = 'environment'
-    level_file = 'environment.json'
+    level_name = "environment"
+    level_file = "environment.json"
 
     def setup(self):
-        self.props['Environment'] = self.search.basename()
+        self.props["Environment"] = self.search.basename()
         self.cwd = self.search.parent(up=2)
 
 
 class RootLevel(Context):
-    level_name = 'root'
-    level_file = 'root.json'
+    level_name = "root"
+    level_file = "root.json"
     level_file_directory = None
 
 
 class TenantLevel(Context):
-    level_name = 'tenant'
-    level_file = 'tenant.json'
+    level_name = "tenant"
+    level_file = "tenant.json"
     level_file_directory = None
 
 
@@ -251,9 +259,9 @@ class AccountLevel(Context):
 
     TENANT_REQUIRED = True
 
-    level_name = 'account'
-    level_file = 'account.json'
-    level_file_directory = 'config'
+    level_name = "account"
+    level_file = "account.json"
+    level_file_directory = "config"
 
     def setup(self):
         self.props.update(File(self.level_file_path).load())
@@ -263,9 +271,9 @@ class ProductLevel(Context):
 
     ACCOUNT_REQUIRED = True
 
-    level_name = 'product'
-    level_file = 'product.json'
-    level_file_directory = 'config'
+    level_name = "product"
+    level_file = "product.json"
+    level_file_directory = "config"
 
     def setup(self):
         self._product_dir = self.directory
@@ -273,8 +281,8 @@ class ProductLevel(Context):
 
 class IntegratorLevel(Context):
 
-    name = 'integrator'
-    filename = 'integrator.json'
+    name = "integrator"
+    filename = "integrator.json"
 
     def setup(self):
-        self.props['Integrator'] = self.search.basename()
+        self.props["Integrator"] = self.search.basename()

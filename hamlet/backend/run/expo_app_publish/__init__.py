@@ -21,22 +21,22 @@ def run(
     **kwargs
 ):
     options = {
-        '-u': deployment_unit,
-        '-s': run_setup,
-        '-t': binary_expiration,
-        '-f': force_binary_build,
-        '-m': submit_binary,
-        '-o': disable_ota,
-        '-b': binary_build_process,
-        '-q': qr_build_formats
+        "-u": deployment_unit,
+        "-s": run_setup,
+        "-t": binary_expiration,
+        "-f": force_binary_build,
+        "-m": submit_binary,
+        "-o": disable_ota,
+        "-b": binary_build_process,
+        "-q": qr_build_formats,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('runExpoAppPublish.sh', [], options, env, _is_cli)
+    runner.run("runExpoAppPublish.sh", [], options, env, _is_cli)

@@ -18,16 +18,16 @@ from click.testing import CliRunner
 from hamlet.loggers import logging
 
 
-logger = logging.getLogger('options')
+logger = logging.getLogger("options")
 
 
 def are_required_keys(keys):
-    return keys.startswith('!')
+    return keys.startswith("!")
 
 
 def parse_keys(keys):
     # removing spaces and required flag
-    return tuple(key.strip().strip('!') for key in keys.split(',') if key)
+    return tuple(key.strip().strip("!") for key in keys.split(",") if key)
 
 
 def get_key(keys, index):
@@ -82,10 +82,12 @@ def generate_incremental_required_options_collection(all_options):
             else:
                 value = values
             required_options[keys] = value
-            required_keys_max_parts = max(required_keys_max_parts, len(parse_keys(keys)))
+            required_keys_max_parts = max(
+                required_keys_max_parts, len(parse_keys(keys))
+            )
 
     if not required_options:
-        logger.info(['no required options'])
+        logger.info(["no required options"])
         return
 
     for key_index in range(required_keys_max_parts):
@@ -98,13 +100,11 @@ def generate_incremental_required_options_collection(all_options):
                 key = get_key(keys, key_index)
                 args.append(key)
                 args.append(value)
-                str_args.append(
-                    '{} {}'.format(key, value)
-                )
-            logger.info('[required options: %s/%s]', len(str_args), len(required_options))
+                str_args.append("{} {}".format(key, value))
             logger.info(
-                '\n'.join(str_args)
+                "[required options: %s/%s]", len(str_args), len(required_options)
             )
+            logger.info("\n".join(str_args))
             yield args, len(str_args) < len(required_options)
 
 
@@ -154,7 +154,9 @@ def generate_test_options_collection(all_options):
                 optional_keys_collection_values.append(keys)
 
     # fixed_value_keys is plural because it's a commaseparated list of keys
-    def generate_args(key_index, fixed_value_keys=None, fixed_value_index=0, options=None):
+    def generate_args(
+        key_index, fixed_value_keys=None, fixed_value_index=0, options=None
+    ):
         args = []
         str_args = []
         for keys, values in options.items():
@@ -173,16 +175,14 @@ def generate_test_options_collection(all_options):
             else:
                 args.append(key)
                 args.append(value)
-                str_args.append('{} {}'.format(key, value))
+                str_args.append("{} {}".format(key, value))
         if fixed_value_index == 0:
-            logger.info(
-                '\n'.join(str_args)
-            )
+            logger.info("\n".join(str_args))
         else:
             logger.info(
-                'Change:[%s %s]',
+                "Change:[%s %s]",
                 get_key(fixed_value_keys, key_index),
-                options[fixed_value_keys][fixed_value_index]
+                options[fixed_value_keys][fixed_value_index],
             )
         return args
 
@@ -195,32 +195,28 @@ def generate_test_options_collection(all_options):
                 for fixed_value_index in range(1, len(options[fixed_value_keys])):
                     for key_index in range(max_keys_parts):
                         yield generate_args(
-                            key_index,
-                            fixed_value_keys,
-                            fixed_value_index,
-                            options
+                            key_index, fixed_value_keys, fixed_value_index, options
                         )
+
     # generating using only required options
     if len(required_options) != len(all_options):
-        logger.info('[required]')
+        logger.info("[required]")
         if required_options:
             for args in generate_args_group(
                 required_keys_max_parts,
                 required_options,
-                required_keys_collection_values
+                required_keys_collection_values,
             ):
                 yield args
         else:
             # command should run without options
-            logger.info('None')
+            logger.info("None")
             yield []
 
     # generating using all options
-    logger.info('[all]')
+    logger.info("[all]")
     for args in generate_args_group(
-        all_keys_max_parts,
-        all_options,
-        optional_keys_collection_values
+        all_keys_max_parts, all_options, optional_keys_collection_values
     ):
         yield args
 
@@ -248,47 +244,29 @@ def run_single_validatable_option_test(
     That's is not the best test in the world, but click env is quite isolated.
     Therefore I can't capture click's standard exceptions.
     """
-    logger.info('[validation test:%s]', key)
-    logger.info('invalid value:%s', incorrect)
+    logger.info("[validation test:%s]", key)
+    logger.info("invalid value:%s", incorrect)
     options = copy.deepcopy(options)
     options[key] = incorrect
-    result = runner.invoke(
-        cmd,
-        options_dict_to_list(options)
-    )
+    result = runner.invoke(cmd, options_dict_to_list(options))
     assert result.exit_code == 2, result.output
     assert runner_mock.call_count == 0
-    logger.info('valid value:%s', correct)
+    logger.info("valid value:%s", correct)
     options[key] = correct
-    result = runner.invoke(
-        cmd,
-        options_dict_to_list(options)
-    )
+    result = runner.invoke(cmd, options_dict_to_list(options))
     assert result.exit_code == 0, result.output
     assert runner_mock.call_count == 1
     runner_mock.call_count = 0
-    logger.info('[success]')
+    logger.info("[success]")
 
 
-def run_validatable_option_test(
-    runner,
-    cmd,
-    runner_mock,
-    options,
-    tests
-):
+def run_validatable_option_test(runner, cmd, runner_mock, options, tests):
     """
     Handy shortcut for testing multiply options of the same command using run_single_validatable_option_test
     """
     for key, incorrect, correct in tests:
         run_single_validatable_option_test(
-            runner,
-            cmd,
-            runner_mock,
-            options,
-            key,
-            incorrect,
-            correct
+            runner, cmd, runner_mock, options, key, incorrect, correct
         )
 
 
@@ -325,19 +303,10 @@ def test_run_options_test():
     runner = CliRunner()
 
     @click.command()
-    @click.option('-a', '--a', required=True)
-    @click.option('-b', '--b', required=True, type=click.Choice(['bvalue1', 'bvalue2']))
-    @click.option(
-        '-c', '--c',
-        type=click.Choice(
-            [
-                'cvalue1',
-                'cvalue2',
-                'cvalue3'
-            ]
-        )
-    )
-    @click.option('-f', '--f', is_flag=True)
+    @click.option("-a", "--a", required=True)
+    @click.option("-b", "--b", required=True, type=click.Choice(["bvalue1", "bvalue2"]))
+    @click.option("-c", "--c", type=click.Choice(["cvalue1", "cvalue2", "cvalue3"]))
+    @click.option("-f", "--f", is_flag=True)
     def test_command(a, b, c, f):
         runner_mock()
 
@@ -349,45 +318,45 @@ def test_run_options_test():
             run_options_test(runner, test_command, options, runner_mock)
 
     correct_options = collections.OrderedDict()
-    correct_options['!-a,--a'] = 'avalue'
-    correct_options['!-b,--b'] = ['bvalue1', 'bvalue2']
-    correct_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    correct_options['-f,--f'] = [True, False]
+    correct_options["!-a,--a"] = "avalue"
+    correct_options["!-b,--b"] = ["bvalue1", "bvalue2"]
+    correct_options["-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    correct_options["-f,--f"] = [True, False]
 
     # tests should pass for correct options
     run_test(correct_options, False)
 
     not_all_options = collections.OrderedDict()
-    not_all_options['!-a,--a'] = 'avalue'
-    not_all_options['!-b,--b'] = ['bvalue1', 'bvalue2']
-    not_all_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
+    not_all_options["!-a,--a"] = "avalue"
+    not_all_options["!-b,--b"] = ["bvalue1", "bvalue2"]
+    not_all_options["-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
 
     # should fail because not all options listed
     run_test(not_all_options)
 
     incorrect_value_options = collections.OrderedDict()
-    incorrect_value_options['!-a,--a'] = 'avalue'
-    incorrect_value_options['!-b,--b'] = ['bvalue1', 'bvalue2', 'bvalue3']
-    incorrect_value_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    incorrect_value_options['-f,--f'] = [True, False]
+    incorrect_value_options["!-a,--a"] = "avalue"
+    incorrect_value_options["!-b,--b"] = ["bvalue1", "bvalue2", "bvalue3"]
+    incorrect_value_options["-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    incorrect_value_options["-f,--f"] = [True, False]
 
     # should fail because bvalue3 is not accepted
     run_test(incorrect_value_options)
 
     required_is_optional_options = collections.OrderedDict()
-    required_is_optional_options['!-a,--a'] = 'avalue'
-    required_is_optional_options['-b,--b'] = ['bvalue1', 'bvalue2']
-    required_is_optional_options['-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    required_is_optional_options['-f,--f'] = [True, False]
+    required_is_optional_options["!-a,--a"] = "avalue"
+    required_is_optional_options["-b,--b"] = ["bvalue1", "bvalue2"]
+    required_is_optional_options["-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    required_is_optional_options["-f,--f"] = [True, False]
 
     # should fail because b is not required
     run_test(required_is_optional_options)
 
     optional_is_required_options = collections.OrderedDict()
-    optional_is_required_options['!-a,--a'] = 'avalue'
-    optional_is_required_options['!-b,--b'] = ['bvalue1', 'bvalue2']
-    optional_is_required_options['!-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    optional_is_required_options['-f,--f'] = [True, False]
+    optional_is_required_options["!-a,--a"] = "avalue"
+    optional_is_required_options["!-b,--b"] = ["bvalue1", "bvalue2"]
+    optional_is_required_options["!-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    optional_is_required_options["-f,--f"] = [True, False]
 
     # should fail because c is required
     run_test(optional_is_required_options)
@@ -399,22 +368,17 @@ def test_validatable_options_test():
     runner = CliRunner()
 
     @click.command()
-    @click.option('-r', required=True, type=click.INT)
-    @click.option('-o', type=click.INT)
+    @click.option("-r", required=True, type=click.INT)
+    @click.option("-o", type=click.INT)
     def test_command(r, o):
         runner_mock()
 
     def run_test(options, error=True):
         def start():
             run_validatable_option_test(
-                runner,
-                test_command,
-                runner_mock,
-                {
-                    '-r': '10'
-                },
-                options
+                runner, test_command, runner_mock, {"-r": "10"}, options
             )
+
         if error:
             with pytest.raises(AssertionError):
                 start()
@@ -422,146 +386,87 @@ def test_validatable_options_test():
             start()
 
         # will raise error because all values valid
-        run_test(
-            [
-                ('-r', '10', '10'),
-                ('-o', 'not_an_int', '10')
-            ]
-        )
+        run_test([("-r", "10", "10"), ("-o", "not_an_int", "10")])
         # will raise error because -r option incorrect value passes validation
-        run_test(
-            [
-                ('-r', '10', 'not_an_int'),
-                ('-o', 'not_an_int', '10')
-            ]
-        )
+        run_test([("-r", "10", "not_an_int"), ("-o", "not_an_int", "10")])
         # will raise error because -o option all invalid
-        run_test(
-            [
-                ('-r', 'not_an_int', '10'),
-                ('-o', 'not_an_int', 'not_an_int')
-            ]
-        )
+        run_test([("-r", "not_an_int", "10"), ("-o", "not_an_int", "not_an_int")])
         # tests must pass
-        run_test(
-            [
-                ('-r', 'not_an_int', '10'),
-                ('-o', 'not_an_int', '10')
-            ],
-            False
-        )
+        run_test([("-r", "not_an_int", "10"), ("-o", "not_an_int", "10")], False)
 
 
 def test_generate_incremental_required_options_collection():
     options = collections.OrderedDict()
-    options['!-a,--a'] = 'avalue'
-    options['-b,--b'] = ['bvalue1', 'bvalue2']
-    options['!-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    options['-f,--f'] = [True, False]
+    options["!-a,--a"] = "avalue"
+    options["-b,--b"] = ["bvalue1", "bvalue2"]
+    options["!-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    options["-f,--f"] = [True, False]
 
     generator = generate_incremental_required_options_collection(options)
     assert next(generator) == ([], True)
-    assert next(generator) == (
-        [
-            '-a', 'avalue'
-        ],
-        True
-    )
-    assert next(generator) == (
-        [
-            '-a', 'avalue',
-            '-c', 'cvalue1'
-        ],
-        False
-    )
+    assert next(generator) == (["-a", "avalue"], True)
+    assert next(generator) == (["-a", "avalue", "-c", "cvalue1"], False)
     assert next(generator) == ([], True)
-    assert next(generator) == (
-        [
-            '--a', 'avalue'
-        ],
-        True
-    )
-    assert next(generator) == (
-        [
-            '--a', 'avalue',
-            '--c', 'cvalue1'
-        ],
-        False
-    )
+    assert next(generator) == (["--a", "avalue"], True)
+    assert next(generator) == (["--a", "avalue", "--c", "cvalue1"], False)
     with pytest.raises(StopIteration):
         next(generator)
 
 
 def test_option_generation():
     options = collections.OrderedDict()
-    options['!-a,--a'] = 'avalue'
-    options['-b,--b'] = ['bvalue1', 'bvalue2']
-    options['!-c,--c'] = ['cvalue1', 'cvalue2', 'cvalue3']
-    options['-f,--f'] = [True, False]
+    options["!-a,--a"] = "avalue"
+    options["-b,--b"] = ["bvalue1", "bvalue2"]
+    options["!-c,--c"] = ["cvalue1", "cvalue2", "cvalue3"]
+    options["-f,--f"] = [True, False]
     generator = generate_test_options_collection(options)
     # start with  only required options
-    assert next(generator) == [
-        '-a', 'avalue',
-        '-c', 'cvalue1'
-    ]
-    assert next(generator) == [
-        '--a', 'avalue',
-        '--c', 'cvalue1'
-    ]
+    assert next(generator) == ["-a", "avalue", "-c", "cvalue1"]
+    assert next(generator) == ["--a", "avalue", "--c", "cvalue1"]
     # iteration over required collection values
-    assert next(generator) == [
-        '-a', 'avalue',
-        '-c', 'cvalue2'
-    ]
-    assert next(generator) == [
-        '--a', 'avalue',
-        '--c', 'cvalue2'
-    ]
-    assert next(generator) == [
-        '-a', 'avalue',
-        '-c', 'cvalue3'
-    ]
-    assert next(generator) == [
-        '--a', 'avalue',
-        '--c', 'cvalue3'
-    ]
+    assert next(generator) == ["-a", "avalue", "-c", "cvalue2"]
+    assert next(generator) == ["--a", "avalue", "--c", "cvalue2"]
+    assert next(generator) == ["-a", "avalue", "-c", "cvalue3"]
+    assert next(generator) == ["--a", "avalue", "--c", "cvalue3"]
     # then all options without required collection values
+    assert next(generator) == ["-a", "avalue", "-b", "bvalue1", "-c", "cvalue1", "-f"]
     assert next(generator) == [
-        '-a', 'avalue',
-        '-b', 'bvalue1',
-        '-c', 'cvalue1',
-        '-f'
-    ]
-    assert next(generator) == [
-        '--a', 'avalue',
-        '--b', 'bvalue1',
-        '--c', 'cvalue1',
-        '--f'
+        "--a",
+        "avalue",
+        "--b",
+        "bvalue1",
+        "--c",
+        "cvalue1",
+        "--f",
     ]
     # collection values variations
     # iterating over '-b,--b' collection
+    assert next(generator) == ["-a", "avalue", "-b", "bvalue2", "-c", "cvalue1", "-f"]
     assert next(generator) == [
-        '-a', 'avalue',
-        '-b', 'bvalue2',
-        '-c', 'cvalue1',
-        '-f'
-    ]
-    assert next(generator) == [
-        '--a', 'avalue',
-        '--b', 'bvalue2',
-        '--c', 'cvalue1',
-        '--f'
+        "--a",
+        "avalue",
+        "--b",
+        "bvalue2",
+        "--c",
+        "cvalue1",
+        "--f",
     ]
     # iterating over '-f,--f'
     assert next(generator) == [
-        '-a', 'avalue',
-        '-b', 'bvalue1',
-        '-c', 'cvalue1',
+        "-a",
+        "avalue",
+        "-b",
+        "bvalue1",
+        "-c",
+        "cvalue1",
     ]
     assert next(generator) == [
-        '--a', 'avalue',
-        '--b', 'bvalue1',
-        '--c', 'cvalue1',
+        "--a",
+        "avalue",
+        "--b",
+        "bvalue1",
+        "--c",
+        "cvalue1",
     ]
     with pytest.raises(StopIteration):
         next(generator)

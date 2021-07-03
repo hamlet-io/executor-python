@@ -24,25 +24,25 @@ def run(
     **kwargs
 ):
     options = {
-        '-c': container_id,
-        '-d': delay,
-        '-e': env_name,
-        '-i': component,
-        '-j': component_instance,
-        '-k': component_version,
-        '-t': tier,
-        '-v': value,
-        '-w': task,
-        '-x': instance,
-        '-y': version
+        "-c": container_id,
+        "-d": delay,
+        "-e": env_name,
+        "-i": component,
+        "-j": component_instance,
+        "-k": component_version,
+        "-t": tier,
+        "-v": value,
+        "-w": task,
+        "-x": instance,
+        "-y": version,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('runTask.sh', [], options, env, _is_cli)
+    runner.run("runTask.sh", [], options, env, _is_cli)

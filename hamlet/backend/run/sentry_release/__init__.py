@@ -17,18 +17,18 @@ def run(
     **kwargs
 ):
     options = {
-        '-m': sentry_source_map_s3_url,
-        '-p': sentry_url_prefix,
-        '-r': sentry_release_name,
-        '-s': run_setup
+        "-m": sentry_source_map_s3_url,
+        "-p": sentry_url_prefix,
+        "-r": sentry_release_name,
+        "-s": run_setup,
     }
     env = {
-        'GENERATION_LOG_LEVEL': log_level,
-        'ROOT_DIR': root_dir,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
+        "GENERATION_LOG_LEVEL": log_level,
+        "ROOT_DIR": root_dir,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
     }
-    runner.run('runSentryRelease.sh', [], options, env, _is_cli)
+    runner.run("runSentryRelease.sh", [], options, env, _is_cli)

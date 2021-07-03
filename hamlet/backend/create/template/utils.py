@@ -2,7 +2,7 @@ import re
 from hamlet.loggers import logging
 
 
-logger = logging.getLogger('UTILS')
+logger = logging.getLogger("UTILS")
 
 
 def deep_dict_update(a, b):
@@ -19,7 +19,9 @@ def deep_dict_update(a, b):
 # in case we want to replace these routines with calls to this package via
 # docker
 def semver_valid(version):
-    pattern = r'^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-([^+]+))?(\+(.*))?$'
+    pattern = (
+        r"^v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\-([^+]+))?(\+(.*))?$"
+    )
     match = re.search(pattern, version)
     if not match:
         raise ValueError(f'Invalid semantic version format "{version}"')
@@ -28,7 +30,13 @@ def semver_valid(version):
     patch = match.group(3)
     prere = match.group(5)
     build = match.group(7)
-    return (major, minor, patch, prere, build,)
+    return (
+        major,
+        minor,
+        patch,
+        prere,
+        build,
+    )
 
 
 # Strip any leading "v" (note we handle leading = in semver_satisfies)
@@ -36,31 +44,31 @@ def semver_valid(version):
 # * not supported as substitute for x
 def semver_clean(version):
     # Handle the full format
-    pattern = r'^v?(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)(\-([^+]+))?(\+(.*))?$'
+    pattern = r"^v?(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)(\-([^+]+))?(\+(.*))?$"
     match = re.search(pattern, version)
     if match:
-        major = match.group(1).lower().replace('x', '0')
-        minor = match.group(2).lower().replace('x', '0')
-        patch = match.group(3).lower().replace('x', '0')
+        major = match.group(1).lower().replace("x", "0")
+        minor = match.group(2).lower().replace("x", "0")
+        patch = match.group(3).lower().replace("x", "0")
         prere = match.group(5)
         build = match.group(7)
-        version = f'{major}.{minor}.{patch}'
-        version = f'{version}-{prere}' if prere else version
-        version = f'{version}+{build}' if build else version
+        version = f"{major}.{minor}.{patch}"
+        version = f"{version}-{prere}" if prere else version
+        version = f"{version}+{build}" if build else version
         return version
     # Handle major.minor
-    pattern = r'^v?(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)$'
+    pattern = r"^v?(0|[1-9][0-9]*|x|X)\.(0|[1-9][0-9]*|x|X)$"
     match = re.search(pattern, version)
     if match:
-        major = match.group(1).lower().replace('x', '0')
-        minor = match.group(2).lower().replace('x', '0')
-        return f'{major}.{minor}.0'
+        major = match.group(1).lower().replace("x", "0")
+        minor = match.group(2).lower().replace("x", "0")
+        return f"{major}.{minor}.0"
     # Handle major
-    pattern = r'^v?(0|[1-9][0-9]*|x|X)$'
+    pattern = r"^v?(0|[1-9][0-9]*|x|X)$"
     match = re.search(pattern, version)
     if match:
-        major = match.group(1).lower().replace('x', '0')
-        return f'{major}.0.0'
+        major = match.group(1).lower().replace("x", "0")
+        return f"{major}.0.0"
     raise ValueError(f'Invalid semantic version format "{version}"')
 
 
@@ -99,21 +107,21 @@ def semver_compare(v1, v2):
 def semver_satisfies(version, comparators_set):
     for comparator in comparators_set:
         logger.debug('Checking comparator "%s" ...', comparator)
-        match = re.match(r'^(<=|>=|=|<|>)(.+)$', comparator)
+        match = re.match(r"^(<=|>=|=|<|>)(.+)$", comparator)
         if not match:
-            raise ValueError(f'Unknown comparator {comparator}')
+            raise ValueError(f"Unknown comparator {comparator}")
         operator = match.group(1)
         comparator_version = semver_clean(match.group(2))
         comparator_result = semver_compare(version, comparator_version)
-        if operator == '<' and comparator_result < 0:
+        if operator == "<" and comparator_result < 0:
             continue
-        elif operator == '>' and comparator_result > 0:
+        elif operator == ">" and comparator_result > 0:
             continue
-        elif operator == '=' and comparator_result == 0:
+        elif operator == "=" and comparator_result == 0:
             continue
-        elif operator == '<=' and comparator_result <= 0:
+        elif operator == "<=" and comparator_result <= 0:
             continue
-        elif operator == '>=' and comparator_result >= 0:
+        elif operator == ">=" and comparator_result >= 0:
             continue
         else:
             return False

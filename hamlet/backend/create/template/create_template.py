@@ -1,6 +1,2 @@
-
-
-def create_template(
-    environment=None
-):
+def create_template(environment=None):
     pass
