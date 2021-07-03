@@ -8,11 +8,9 @@ class AutomationRunner(ABC):
     Executes an automation based task
     '''
 
-    def __init__(self, product_properties_file, work_dir):
-        self.product_properties_file = product_properties_file
-        self.work_dir = work_dir
-
+    def __init__(self):
         self._context_env = {}
+        self._script_list = []
 
     @staticmethod
     def _load_properties_to_context(self, properties_file):
@@ -28,11 +26,7 @@ class AutomationRunner(ABC):
             itemDict[key]=value
         self._context_env = { **self._context_env, **itemDict}
 
-    script_list = []
-
     def run(self):
-        self._load_properties_to_context(self.product_properties_file)
-
-        for script in self.script_list:
-            script['func'](env=self._context_env **script['args'])
+        for script in self._script_list:
+            script['func']({ 'env': self._context_env, **script['args']})
             self._load_properties_to_context(os.path.join(self.work_dir, 'context.properties'))

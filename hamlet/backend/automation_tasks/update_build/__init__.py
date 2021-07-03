@@ -1,7 +1,6 @@
 from hamlet.backend.automation_tasks.base import AutomationRunner
 from hamlet.backend.automation import (
-    set_context,
-    construct_tree,
+    set_generation_context,
     confirm_builds,
     update_build_references
 )
@@ -9,8 +8,6 @@ from hamlet.backend.automation import (
 class UpdateBuildAutomationRunner(AutomationRunner):
     def __init__(
             self,
-            product_properties_file,
-            work_dir,
             product,
             environment,
             segment,
@@ -18,7 +15,7 @@ class UpdateBuildAutomationRunner(AutomationRunner):
             git_commit,
             code_tag=None
         ):
-        super().__init__(product_properties_file, work_dir)
+        super().__init__()
 
         self._context_env['PRODUCT'] = product
         self._context_env['ENVIRONMENT'] = environment
@@ -30,11 +27,7 @@ class UpdateBuildAutomationRunner(AutomationRunner):
 
     script_list = [
         {
-            'func': set_context.run,
-            'args': {}
-        },
-        {
-            'func': construct_tree.run,
+            'func': set_generation_context.run,
             'args': {}
         },
         {
