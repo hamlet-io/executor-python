@@ -15,6 +15,11 @@ coverage:
 lint:
 	@ PYTHONDONTWRITEBYTECODE=1 flake8 --exit-zero --config=.flake8 hamlet tests setup.py
 
+.PHONY: format
+.ONESHELL:
+format:
+	@ PYTHONDONTWRITEBYTECODE=1 black hamlet tests setup.py
+
 .PHONY: install
 .ONESHELL:
 install:

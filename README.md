@@ -1,5 +1,9 @@
 # Hamlet Deploy - CLI
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![release workflow](https://github.com/hamlet-io/executor-python/actions/workflows/release.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/hamlet-cli.svg)](https://badge.fury.io/py/hamlet-cli)
+
 Hamlet deploy is a tool to manage infrastructure throughout the life of your application. With hamlet you define the functional components of your application along with the context they should be run in. The context includes things like environments, tenants, and policies that can be applied across all of your different applications.
 From this information hamlet then creates the infrastructure that will perform the function you have asked for and manages it over the life of your application.
 
