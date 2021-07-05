@@ -75,7 +75,7 @@ occurrence_state_data = {
             "Core": {
                 "Tier": {"Id": "TierId[1]"},
                 "Component": {"Id": "ComponentId[1]", "RawId": "ComponentRawId[1]"},
-                "RawName": "CoreRawName[1]",
+                "TypedRawName": "CoreRawName[1]",
                 "Type": "CoreType[1]",
             },
             "Configuration": {
@@ -93,7 +93,7 @@ occurrence_state_data = {
             "Core": {
                 "Tier": {"Id": "TierId[2]"},
                 "Component": {"Id": "ComponentId[2]", "RawId": "ComponentRawId[2]"},
-                "RawName": "CoreRawName[2]",
+                "TypedRawName": "CoreRawName[2]",
                 "Type": "CoreType[2]",
             },
             "Configuration": {
