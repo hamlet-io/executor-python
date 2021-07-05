@@ -11,17 +11,19 @@ def run(
     registry_scope=None,
     log_level=None,
     _is_cli=False,
-    env={}
+    env={},
 ):
     env = {
-        'AUTOMATION_LOG_LEVEL': log_level,
-        'DEPLOYMENT_UNIT_LIST': deployment_unit,
-        'CODE_COMMIT': code_commit,
-        'CODE_TAG': code_tag,
-        'IMAGE_FORMAT': image_format,
-        'REGISTRY_SCOPE': registry_scope,
-        'RELEASE_MODE' : release_mode,
-        'ACCEPTANCE_TAG' : acceptance_tag,
-        **env
+        "AUTOMATION_LOG_LEVEL": log_level,
+        "DEPLOYMENT_UNIT_LIST": deployment_unit,
+        "CODE_COMMIT": code_commit,
+        "CODE_TAG": code_tag,
+        "IMAGE_FORMAT": image_format,
+        "REGISTRY_SCOPE": registry_scope,
+        "RELEASE_MODE": release_mode,
+        "ACCEPTANCE_TAG": acceptance_tag,
+        **env,
     }
-    runner.run('confirmBuilds.sh', [], {}, env, _is_cli, script_base_path_env='AUTOMATION_DIR')
+    runner.run(
+        "confirmBuilds.sh", [], {}, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+    )

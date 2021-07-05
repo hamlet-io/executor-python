@@ -43,7 +43,9 @@ def __env_params_to_envvars(env=None):
     return cmd_env
 
 
-def run(script_name, args, options, env, _is_cli, script_base_path_env='GENERATION_DIR'):
+def run(
+    script_name, args, options, env, _is_cli, script_base_path_env="GENERATION_DIR"
+):
 
     env_overrides = {
         **global_env.ENGINE_ENV,
@@ -54,7 +56,7 @@ def run(script_name, args, options, env, _is_cli, script_base_path_env='GENERATI
         os.path.isdir(env_overrides[script_base_path_env])
     except TypeError:
         raise BackendException(
-            f'Could not find script base path using env {script_base_path_env}: {env_overrides[script_base_path_env]}'
+            f"Could not find script base path using env {script_base_path_env}: {env_overrides[script_base_path_env]}"
         )
 
     if shutil.which("bash") is None:
@@ -62,10 +64,7 @@ def run(script_name, args, options, env, _is_cli, script_base_path_env='GENERATI
 
     try:
         script_call_line = __cli_params_to_script_call(
-            env_overrides[script_base_path_env],
-            script_name,
-            args=args,
-            options=options
+            env_overrides[script_base_path_env], script_name, args=args, options=options
         )
         process = subprocess.Popen(
             [shutil.which("bash"), "-c", script_call_line],
@@ -80,15 +79,15 @@ def run(script_name, args, options, env, _is_cli, script_base_path_env='GENERATI
         if not _is_cli and process.returncode != 0:
             exception_message = "\n".join(
                 [
-                    f'script: {script_call_line}',
-                    '',
-                    '   stdout',
-                    ''.join((['#'] * 30)),
-                    '',
+                    f"script: {script_call_line}",
+                    "",
+                    "   stdout",
+                    "".join((["#"] * 30)),
+                    "",
                     stdout,
-                    '   stderr',
-                    ''.join((['#'] * 30)),
-                    '',
+                    "   stderr",
+                    "".join((["#"] * 30)),
+                    "",
                     stderr,
                 ]
             )

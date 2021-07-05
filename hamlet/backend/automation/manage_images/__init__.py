@@ -16,18 +16,17 @@ def run(
 ):
 
     opts = {
-        '-c': registry_scope,
-        '-d': dockerfile,
-        '-e': docker_context,
-        '-f': image_formats,
-        '-g': code_commit,
-        '-i': image_paths,
-        '-t': docker_image,
-        '-u': deployment_unit,
+        "-c": registry_scope,
+        "-d": dockerfile,
+        "-e": docker_context,
+        "-f": image_formats,
+        "-g": code_commit,
+        "-i": image_paths,
+        "-t": docker_image,
+        "-u": deployment_unit,
     }
 
-    env = {
-        'AUTOMATION_LOG_LEVEL': log_level,
-        **env
-    }
-    runner.run('manageImages.sh', [], opts, env, _is_cli, script_base_path_env='AUTOMATION_DIR')
+    env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
+    runner.run(
+        "manageImages.sh", [], opts, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+    )
