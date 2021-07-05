@@ -152,5 +152,5 @@ def run_deployments(
                     deployment_unit,
                     operation,
                     output_dir,
-                    **options.opts
+                    **options.opts,
                 )
