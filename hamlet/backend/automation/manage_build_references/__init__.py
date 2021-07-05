@@ -1,5 +1,5 @@
 from hamlet.backend.common import runner
-import json
+
 
 def run(
     acceptance_tag=None,
@@ -20,22 +20,26 @@ def run(
     env={},
 ):
     opts = {
-        '-a': acceptance_tag,
-        '-c': code_commits,
-        '-f': list_full,
-        '-g': segment_builds_dir,
-        '-i': image_formats,
-        '-l': list,
-        '-o': registry_scopes,
-        '-p': code_providers,
-        '-r': code_repos,
-        '-s': deployment_units,
-        '-t': code_tags,
-        '-u': update,
-        '-v': verify
+        "-a": acceptance_tag,
+        "-c": code_commits,
+        "-f": list_full,
+        "-g": segment_builds_dir,
+        "-i": image_formats,
+        "-l": list,
+        "-o": registry_scopes,
+        "-p": code_providers,
+        "-r": code_repos,
+        "-s": deployment_units,
+        "-t": code_tags,
+        "-u": update,
+        "-v": verify,
     }
-    env = {
-        'AUTOMATION_LOG_LEVEL': log_level,
-        **env
-    }
-    runner.run('manageBuildReferences.sh', [], opts, env, _is_cli, script_base_path_env='AUTOMATION_DIR')
+    env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
+    runner.run(
+        "manageBuildReferences.sh",
+        [],
+        opts,
+        env,
+        _is_cli,
+        script_base_path_env="AUTOMATION_DIR",
+    )

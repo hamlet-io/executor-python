@@ -18,22 +18,29 @@ def run(
     _is_cli=False,
     env={},
 ):
-    opts={
-        '-a': exclude_account_dirs,
-        '-c': product_config_reference,
-        '-e': use_existing_tree,
-        '-i': product_infrastructure_reference,
-        '-r': exclude_product_dirs,
-        '-x': account_config_reference,
-        '-y': account_infrastructure_reference,
+    opts = {
+        "-a": exclude_account_dirs,
+        "-c": product_config_reference,
+        "-e": use_existing_tree,
+        "-i": product_infrastructure_reference,
+        "-r": exclude_product_dirs,
+        "-x": account_config_reference,
+        "-y": account_infrastructure_reference,
     }
     env = {
-        'AUTOMATION_LOG_LEVEL': log_level,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
-        **env
+        "AUTOMATION_LOG_LEVEL": log_level,
+        "TENANT": tenant,
+        "ACCOUNT": account,
+        "PRODUCT": product,
+        "ENVIRONMENT": environment,
+        "SEGMENT": segment,
+        **env,
     }
-    runner.run('constructTree.sh', [], opts, env, _is_cli, script_base_path_env='AUTOMATION_BASE_DIR')
+    runner.run(
+        "constructTree.sh",
+        [],
+        opts,
+        env,
+        _is_cli,
+        script_base_path_env="AUTOMATION_BASE_DIR",
+    )
