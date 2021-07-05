@@ -137,6 +137,7 @@ def run_deployments(
                     operation,
                     output_dir,
                     dryrun,
+                    **options.opts,
                 )
 
             if (
@@ -146,5 +147,10 @@ def run_deployments(
                 )
             ) or not confirm:
                 run_deployment(
-                    provider, deployment_group, deployment_unit, operation, output_dir
+                    provider,
+                    deployment_group,
+                    deployment_unit,
+                    operation,
+                    output_dir,
+                    **options.opts
                 )
