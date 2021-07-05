@@ -1,14 +1,11 @@
-from os import environ
 import click
 
 from hamlet.command import root as cli
 from hamlet.command.common import exceptions, config
-from hamlet.backend.automation_tasks import (
-    accept_release,
-    manage_images,
-    transfer_release,
-    update_build
-)
+
+from hamlet.backend.automation_tasks import upload_image as upload_image_backend
+from hamlet.backend.automation_tasks import transfer_image as transfer_image_backend
+from hamlet.backend.automation_tasks import update_build as update_build_backend
 
 @cli.group('release')
 def group():
@@ -105,55 +102,132 @@ def upload_image(opts, **kwargs):
     '''
     Upload a code image to a registry
     '''
-    task = manage_images.ManageImagesAutomationRunner(
-        { **kwargs, **opts.opts }
+    task = upload_image_backend.UploadImageAutomationRunner(
+        **opts.opts, **kwargs
     )
     task.run()
 
 
 @group.command(
-    'update-build-reference',
+    'transfer-image',
     short_help='',
     context_settings=dict(
         max_content_width=240
     )
 )
+@click.option(
+    '--source-account',
+    envvar='SOURCE_ACCOUNT',
+    required=True,
+    help='The Id of the account to get the release from'
+)
+@click.option(
+    '--source-environment',
+    envvar='SOURCE_ENVIRONMENT',
+    required=True,
+    help='The Id of the environment to get the release from'
+)
+@click.option(
+    '--deployment-unit',
+    envvar='DEPLOYMENT_UNITS',
+    required=True,
+    multiple=True,
+    help='A list of deployment unit releases to transfer - uses all if not set'
+)
+@click.option(
+    '--build-reference',
+    envvar='BUILD_REFERENCE',
+    required=True,
+    help='The unique reference of the image you want to transfer - usually git full hash'
+)
+@click.option(
+    '--image-format',
+    envvar='IMAGE_FORMAT',
+    required=True,
+    help='The format of the code image',
+    type=click.Choice(
+        [
+            'dataset',
+            'rdssnapshot',
+            'docker',
+            'lambda',
+            'pipeline',
+            'scripts',
+            'openapi',
+            'swagger',
+            'spa',
+            'contentnode'
+        ]
+    )
+)
 @exceptions.backend_handler()
 @config.pass_options
-def update_build_reference(opts):
+def transfer_image(opts, **kwargs):
     '''
-    Update the build reference for a component
+    Transfer an image between registries
     '''
-    pass
+    task = transfer_image_backend.TransferImageAutomationRunner(
+        **opts.opts, **kwargs
+    )
+    task.run()
 
 
 @group.command(
-    'transfer-environment-release',
+    'update-image-reference',
     short_help='',
     context_settings=dict(
         max_content_width=240
     )
 )
-@exceptions.backend_handler()
-@config.pass_options
-def transfer_environment_release(opts):
-    '''
-    Transfer a release between environments
-    '''
-    pass
-
-
-@group.command(
-    'accept-environment-release',
-    short_help='',
-    context_settings=dict(
-        max_content_width=240
+@click.option(
+    '--deployment-unit',
+    envvar='DEPLOYMENT_UNIT',
+    required=True,
+    help='The deployment unit the code belongs to'
+)
+@click.option(
+    '--build-reference',
+    envvar='BUILD_REFERENCE',
+    required=True,
+    help='The unique reference for the build of this image - usually git commit'
+)
+@click.option(
+    '--code-tag',
+    envvar='CODE_TAG',
+    help='A tag applied to your code repo which will be mapped to a build reference'
+)
+@click.option(
+    '--image-format',
+    envvar='IMAGE_FORMAT',
+    required=True,
+    help='The format of the code image',
+    type=click.Choice(
+        [
+            'dataset',
+            'rdssnapshot',
+            'docker',
+            'lambda',
+            'pipeline',
+            'scripts',
+            'openapi',
+            'swagger',
+            'spa',
+            'contentnode'
+        ]
     )
+)
+@click.option(
+    '--registry-scope',
+    envvar='REGISTRY_SCOPE',
+    help='The scope of the registry to update the image to'
 )
 @exceptions.backend_handler()
 @config.pass_options
-def transfer_environment_release(opts):
+def update_image_reference(opts, **kwargs):
     '''
-    Accept a release into an environment
+    Update the image reference for a component
     '''
-    pass
+    task = update_build_backend.UpdateBuildAutomationRunner(
+        **opts.opts, **kwargs
+    )
+    task.run()
