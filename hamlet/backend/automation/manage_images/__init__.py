@@ -10,15 +10,9 @@ def run(
     image_paths=None,
     docker_image=None,
     deployment_unit=None,
-    env=None,
     log_level=None,
-    tenant=None,
-    account=None,
-    product=None,
-    environment=None,
-    segment=None,
     _is_cli=False,
-    **kwargs,
+    env={},
 ):
 
     opts = {
@@ -34,11 +28,6 @@ def run(
 
     env = {
         'AUTOMATION_LOG_LEVEL': log_level,
-        'TENANT': tenant,
-        'ACCOUNT': account,
-        'PRODUCT': product,
-        'ENVIRONMENT': environment,
-        'SEGMENT': segment,
         **env
     }
     runner.run('manageImages.sh', [], opts, env, _is_cli, script_base_path_env='AUTOMATION_DIR')

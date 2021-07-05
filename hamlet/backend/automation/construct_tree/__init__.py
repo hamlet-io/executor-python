@@ -8,7 +8,7 @@ def run(
     exclude_product_dirs=None,
     account_config_reference=None,
     account_infrastructure_reference=None,
-    env=None,
+    use_existing_tree=None,
     log_level=None,
     tenant=None,
     account=None,
@@ -16,11 +16,12 @@ def run(
     environment=None,
     segment=None,
     _is_cli=False,
-    **kwargs,
+    env={},
 ):
     opts={
         '-a': exclude_account_dirs,
         '-c': product_config_reference,
+        '-e': use_existing_tree,
         '-i': product_infrastructure_reference,
         '-r': exclude_product_dirs,
         '-x': account_config_reference,
