@@ -1,4 +1,5 @@
 import click
+import functools
 
 from hamlet.command import root as cli
 from hamlet.command.common import exceptions, config
@@ -6,6 +7,65 @@ from hamlet.command.common import exceptions, config
 from hamlet.backend.automation_tasks import upload_image as upload_image_backend
 from hamlet.backend.automation_tasks import transfer_image as transfer_image_backend
 from hamlet.backend.automation_tasks import update_build as update_build_backend
+
+
+def image_options(func):
+    """Standard image details"""
+
+    @click.option(
+        "-u",
+        "--deployment-unit",
+        envvar="DEPLOYMENT_UNIT",
+        required=True,
+        help="The deployment unit the image belongs to",
+    )
+    @click.option(
+        "-r",
+        "--build-reference",
+        envvar="BUILD_REFERENCE",
+        required=True,
+        help="The unique reference for the build of this image - usually git commit",
+    )
+    @click.option(
+        "--code-tag",
+        envvar="CODE_TAG",
+        help="A tag applied to your code repo which will be mapped to a build reference",
+    )
+    @click.option(
+        "-f",
+        "--image-format",
+        envvar="IMAGE_FORMAT",
+        required=True,
+        help="The format of the code image",
+        type=click.Choice(
+            [
+                "dataset",
+                "rdssnapshot",
+                "docker",
+                "lambda",
+                "pipeline",
+                "scripts",
+                "openapi",
+                "swagger",
+                "spa",
+                "contentnode",
+            ]
+        ),
+    )
+    @click.option(
+        "-s",
+        "--registry-scope",
+        envvar="REGISTRY_SCOPE",
+        help="The scope of the registry to update the image to",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        """
+        Image Detail handling
+        """
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 @cli.group("release")
@@ -18,38 +78,7 @@ def group():
 @group.command(
     "upload-image", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option(
-    "--deployment-unit",
-    envvar="DEPLOYMENT_UNIT",
-    required=True,
-    help="The deployment unit the code belongs to",
-)
-@click.option(
-    "--build-reference",
-    envvar="BUILD_REFERENCE",
-    required=True,
-    help="The unique reference for the build of this image - usually git commit",
-)
-@click.option(
-    "--image-format",
-    envvar="IMAGE_FORMAT",
-    required=True,
-    help="The format of the code image",
-    type=click.Choice(
-        [
-            "dataset",
-            "rdssnapshot",
-            "docker",
-            "lambda",
-            "pipeline",
-            "scripts",
-            "openapi",
-            "swagger",
-            "spa",
-            "contentnode",
-        ]
-    ),
-)
+@image_options
 @click.option(
     "--image-path",
     envvar="IMAGE_PATH",
@@ -71,11 +100,6 @@ def group():
 @click.option(
     "--docker-image", envvar="DOCKER_IMAGE", help="The tag of an existing docker image"
 )
-@click.option(
-    "--registry-scope",
-    envvar="REGISTRY_SCOPE",
-    help="The scope of the registry to update the image to",
-)
 @exceptions.backend_handler()
 @config.pass_options
 def upload_image(opts, **kwargs):
@@ -89,50 +113,12 @@ def upload_image(opts, **kwargs):
 @group.command(
     "transfer-image", short_help="", context_settings=dict(max_content_width=240)
 )
+@image_options
 @click.option(
     "--source-account",
     envvar="SOURCE_ACCOUNT",
     required=True,
     help="The Id of the account to get the release from",
-)
-@click.option(
-    "--source-environment",
-    envvar="SOURCE_ENVIRONMENT",
-    required=True,
-    help="The Id of the environment to get the release from",
-)
-@click.option(
-    "--deployment-unit",
-    envvar="DEPLOYMENT_UNITS",
-    required=True,
-    multiple=True,
-    help="A list of deployment unit releases to transfer - uses all if not set",
-)
-@click.option(
-    "--build-reference",
-    envvar="BUILD_REFERENCE",
-    required=True,
-    help="The unique reference of the image you want to transfer - usually git full hash",
-)
-@click.option(
-    "--image-format",
-    envvar="IMAGE_FORMAT",
-    required=True,
-    help="The format of the code image",
-    type=click.Choice(
-        [
-            "dataset",
-            "rdssnapshot",
-            "docker",
-            "lambda",
-            "pipeline",
-            "scripts",
-            "openapi",
-            "swagger",
-            "spa",
-            "contentnode",
-        ]
-    ),
 )
 @exceptions.backend_handler()
 @config.pass_options
@@ -149,48 +135,7 @@ def transfer_image(opts, **kwargs):
     short_help="",
     context_settings=dict(max_content_width=240),
 )
-@click.option(
-    "--deployment-unit",
-    envvar="DEPLOYMENT_UNIT",
-    required=True,
-    help="The deployment unit the code belongs to",
-)
-@click.option(
-    "--build-reference",
-    envvar="BUILD_REFERENCE",
-    required=True,
-    help="The unique reference for the build of this image - usually git commit",
-)
-@click.option(
-    "--code-tag",
-    envvar="CODE_TAG",
-    help="A tag applied to your code repo which will be mapped to a build reference",
-)
-@click.option(
-    "--image-format",
-    envvar="IMAGE_FORMAT",
-    required=True,
-    help="The format of the code image",
-    type=click.Choice(
-        [
-            "dataset",
-            "rdssnapshot",
-            "docker",
-            "lambda",
-            "pipeline",
-            "scripts",
-            "openapi",
-            "swagger",
-            "spa",
-            "contentnode",
-        ]
-    ),
-)
-@click.option(
-    "--registry-scope",
-    envvar="REGISTRY_SCOPE",
-    help="The scope of the registry to update the image to",
-)
+@image_options
 @exceptions.backend_handler()
 @config.pass_options
 def update_image_reference(opts, **kwargs):
