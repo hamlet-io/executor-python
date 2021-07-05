@@ -9,22 +9,14 @@ from hamlet.backend.automation.properties_file import get_automation_properties
 
 class TransferImageAutomationRunner(AutomationRunner):
     def __init__(
-        self,
-        source_account,
-        source_environment,
-        deployment_unit,
-        build_reference,
-        image_format,
-        **kwargs
+        self, source_account, deployment_unit, build_reference, image_format, **kwargs
     ):
         super().__init__(**kwargs)
 
         self._source_account = source_account
-        self._source_environment = source_environment
         self._context_env = kwargs
 
         self._context_env["FROM_ACCOUNT"] = source_account
-        self._context_env["FROM_ENVIRONMENT"] = source_environment
 
         self._script_list = [
             {
@@ -58,7 +50,6 @@ class TransferImageAutomationRunner(AutomationRunner):
             **self._context_env,
             **{
                 "account": self._source_account,
-                "environment": self._source_environment,
             },
         }
         source_automation_properties = get_automation_properties(**source_args)
