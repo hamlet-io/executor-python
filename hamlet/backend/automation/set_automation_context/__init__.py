@@ -4,7 +4,6 @@ from hamlet.backend.common import runner
 def run(
     release_mode=None,
     deployment_mode=None,
-    env=None,
     log_level=None,
     tenant=None,
     account=None,
@@ -12,7 +11,7 @@ def run(
     environment=None,
     segment=None,
     _is_cli=False,
-    **kwargs,
+    env={},
 ):
     env = {
         'AUTOMATION_LOG_LEVEL': log_level,
