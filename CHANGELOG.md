@@ -1,6 +1,22 @@
 # Changelog
 
-## latest (2021-07-03)
+## latest (2021-07-06)
+
+#### New Features
+
+* add support for black code formatting
+#### Fixes
+
+* (deploy): include options when running deploys ([#200](https://github.com/hamlet-io/executor-python/issues/200))
+#### Refactorings
+
+* component commands ([#199](https://github.com/hamlet-io/executor-python/issues/199))
+* linting fixes
+* apply formatting
+
+Full set of changes: [`9.1.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.1.0...latest)
+
+## 9.1.0 (2021-07-03)
 
 #### New Features
 
@@ -11,9 +27,10 @@
 * updating handling for engines
 #### Others
 
+* changelog bump ([#193](https://github.com/hamlet-io/executor-python/issues/193))
 * linting fixes
 
-Full set of changes: [`9.0.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.0.2...latest)
+Full set of changes: [`9.0.2...9.1.0`](https://github.com/hamlet-io/executor-python/compare/9.0.2...9.1.0)
 
 ## 9.0.2 (2021-07-01)
 
