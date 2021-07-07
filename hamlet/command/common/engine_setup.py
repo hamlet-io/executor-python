@@ -43,7 +43,7 @@ def setup_global_engine():
 
         except EngineStoreMissingEngineException:
             click.secho(
-                "[*] no default engine set using {ENGINE_DEFAULT_GLOBAL_ENGINE}"
+                f"[*] no default engine set using {ENGINE_DEFAULT_GLOBAL_ENGINE}"
             )
             engine_store.find_engine(ENGINE_DEFAULT_GLOBAL_ENGINE).install()
 
