@@ -118,7 +118,13 @@ def upload_image(opts, **kwargs):
     "--source-account",
     envvar="SOURCE_ACCOUNT",
     required=True,
-    help="The Id of the account to get the release from",
+    help="The name of the account to get the image from",
+)
+@click.option(
+    "--source-environment",
+    envvar="SOURCE_ENVIRONMENT",
+    required=True,
+    help="The name of the environment to get the image from",
 )
 @exceptions.backend_handler()
 @config.pass_options
