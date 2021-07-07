@@ -9,7 +9,13 @@ from hamlet.backend.automation.properties_file import get_automation_properties
 
 class TransferImageAutomationRunner(AutomationRunner):
     def __init__(
-        self, source_account, source_environment, deployment_unit, build_reference, image_format, **kwargs
+        self,
+        source_account,
+        source_environment,
+        deployment_unit,
+        build_reference,
+        image_format,
+        **kwargs
     ):
         super().__init__(**kwargs)
 
