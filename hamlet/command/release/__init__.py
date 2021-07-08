@@ -35,7 +35,6 @@ def image_options(func):
         "-f",
         "--image-format",
         envvar="IMAGE_FORMAT",
-        required=True,
         help="The format of the code image",
         type=click.Choice(
             [
