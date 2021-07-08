@@ -15,10 +15,11 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["!-u,--deployment-unit"] = "deployment_unit"
 ALL_VALID_OPTIONS["!-r,--build-reference"] = "build_reference"
 ALL_VALID_OPTIONS["--code-tag"] = "code_tag"
-ALL_VALID_OPTIONS["!-f,--image-format"] = "docker"
+ALL_VALID_OPTIONS["-f,--image-format"] = "docker"
 ALL_VALID_OPTIONS["-s,--registry-scope"] = "registry_scope"
 
 ALL_VALID_OPTIONS["!--source-account"] = "source_account"
+ALL_VALID_OPTIONS["!--source-environment"] = "source_environment"
 
 
 @mock.patch(
