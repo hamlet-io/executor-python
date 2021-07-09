@@ -5,7 +5,7 @@ from .generate import geneate as generate_cmd
 from .run import run as run_cmd
 
 
-@cli.group("test")
+@cli.group("test", context_settings=dict(max_content_width=240))
 def group():
     """
     Tests stuff

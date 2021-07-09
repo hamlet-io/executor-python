@@ -11,7 +11,9 @@ from hamlet.command.generate import decorators
 from hamlet.command.common.exceptions import CommandError
 
 
-@click.command("tenant-cmdb", cls=DynamicCommand)
+@click.command(
+    "tenant-cmdb", cls=DynamicCommand, context_settings=dict(max_content_width=240)
+)
 @dynamic_option(
     "--tenant-id",
     help="The unique Id for the tenant",
@@ -54,7 +56,9 @@ def generate_tenant(ctx, prompt=None, use_default=None, **kwargs):
             raise CommandError(e)
 
 
-@click.command("account-cmdb", cls=DynamicCommand)
+@click.command(
+    "account-cmdb", cls=DynamicCommand, context_settings=dict(max_content_width=240)
+)
 @dynamic_option(
     "--account-id",
     help="The unique id for the account",
@@ -103,7 +107,9 @@ def generate_account(ctx, prompt=None, use_default=None, **kwargs):
             raise CommandError(e)
 
 
-@click.command("product-cmdb", cls=DynamicCommand)
+@click.command(
+    "product-cmdb", cls=DynamicCommand, context_settings=dict(max_content_width=240)
+)
 @dynamic_option(
     "--product-id",
     help="The Id of your product",

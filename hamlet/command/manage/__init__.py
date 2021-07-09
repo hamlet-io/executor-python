@@ -6,7 +6,7 @@ from .file_crypto import file_crypto as file_crypto_cmd
 from .credentials_crypto import credentials_crypto as credentials_crypto_cmd
 
 
-@cli.group("manage")
+@cli.group("manage", context_settings=dict(max_content_width=240))
 def group():
     """
     Manages stuff

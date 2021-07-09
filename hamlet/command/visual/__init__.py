@@ -40,7 +40,7 @@ def find_diagrams_from_options(options, ids):
     return diagrams
 
 
-@cli.group("visual")
+@cli.group("visual", context_settings=dict(max_content_width=240))
 def group():
     """
     Generates visual representations of your hamlet

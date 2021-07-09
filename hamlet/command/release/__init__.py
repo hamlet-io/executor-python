@@ -15,26 +15,22 @@ def image_options(func):
     @click.option(
         "-u",
         "--deployment-unit",
-        envvar="DEPLOYMENT_UNIT",
         required=True,
         help="The deployment unit the image belongs to",
     )
     @click.option(
         "-r",
         "--build-reference",
-        envvar="BUILD_REFERENCE",
         required=True,
         help="The unique reference for the build of this image - usually git commit",
     )
     @click.option(
         "--code-tag",
-        envvar="CODE_TAG",
         help="A tag applied to your code repo which will be mapped to a build reference",
     )
     @click.option(
         "-f",
         "--image-format",
-        envvar="IMAGE_FORMAT",
         help="The format of the code image",
         type=click.Choice(
             [
@@ -54,7 +50,6 @@ def image_options(func):
     @click.option(
         "-s",
         "--registry-scope",
-        envvar="REGISTRY_SCOPE",
         help="The scope of the registry to update the image to",
     )
     @functools.wraps(func)
@@ -67,7 +62,7 @@ def image_options(func):
     return wrapper
 
 
-@cli.group("release")
+@cli.group("release", context_settings=dict(max_content_width=240))
 def group():
     """
     Manage the lifecycle of code images
@@ -80,25 +75,20 @@ def group():
 @image_options
 @click.option(
     "--image-path",
-    envvar="IMAGE_PATH",
     help="The path to the image can be zip file or directory",
     type=click.Path(file_okay=True, dir_okay=True, readable=True, resolve_path=True),
 )
 @click.option(
     "--dockerfile",
-    envvar="DOCKERFILE",
     help="The path to a dockerfile to create the image with",
     type=click.Path(file_okay=True, dir_okay=False, readable=True, resolve_path=True),
 )
 @click.option(
     "--docker-context",
-    envvar="DOCKER_CONTEXT",
     help="The docker context directory used with the dockerfile",
     type=click.Path(file_okay=False, dir_okay=True, readable=True, resolve_path=True),
 )
-@click.option(
-    "--docker-image", envvar="DOCKER_IMAGE", help="The tag of an existing docker image"
-)
+@click.option("--docker-image", help="The tag of an existing docker image")
 @exceptions.backend_handler()
 @config.pass_options
 def upload_image(opts, **kwargs):
@@ -115,13 +105,11 @@ def upload_image(opts, **kwargs):
 @image_options
 @click.option(
     "--source-account",
-    envvar="SOURCE_ACCOUNT",
     required=True,
     help="The name of the account to get the image from",
 )
 @click.option(
     "--source-environment",
-    envvar="SOURCE_ENVIRONMENT",
     required=True,
     help="The name of the environment to get the image from",
 )

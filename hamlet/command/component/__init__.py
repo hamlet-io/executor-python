@@ -8,7 +8,7 @@ from hamlet.command.component.list_occurrences import (
 )
 
 
-@cli.group("component")
+@cli.group("component", context_settings=dict(max_content_width=240))
 def component_group():
     """
     Provides information on the components used in a hamlet

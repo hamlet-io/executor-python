@@ -21,6 +21,7 @@ def common_cli_config_options(func):
         envvar="HAMLET_CONFIG_FILE",
         type=click.Path(dir_okay=True, exists=True, writable=False, resolve_path=True),
         help="The path to your config file",
+        show_envvar=True,
     )
     @click.option(
         "-p",
@@ -28,6 +29,7 @@ def common_cli_config_options(func):
         default=None,
         envvar="HAMLET_PROFILE",
         help="The name of the profile to use for configuration",
+        show_envvar=True,
     )
     @click.pass_context
     @functools.wraps(func)
@@ -57,6 +59,7 @@ def common_logging_options(func):
         default="info",
         help="The minimum log event level",
         show_default=True,
+        show_envvar=True,
     )
     @click.pass_context
     @functools.wraps(func)
@@ -79,12 +82,14 @@ def common_engine_options(func):
         "--engine",
         envvar="HAMLET_ENGINE",
         help="The name of the engine to use",
+        show_envvar=True,
     )
     @click.option(
         "--engine-update-install/--engine-update-check",
         envvar="HAMLET_ENGINE_INSTALL_UPDATE",
         default=False,
         help="Check or install engine updates",
+        show_envvar=True,
     )
     @click.option(
         "--engine-update-interval",
@@ -92,6 +97,7 @@ def common_engine_options(func):
         type=click.INT,
         default=3600,
         help="How often in seconds to check for engine updates",
+        show_envvar=True,
     )
     @click.pass_context
     @functools.wraps(func)
@@ -121,6 +127,7 @@ def common_generation_options(func):
         type=CommaSplitParamType(),
         multiple=True,
         show_default=True,
+        show_envvar=True,
     )
     @click.option(
         "-f",
@@ -159,31 +166,37 @@ def common_district_options(func):
         "--root-dir",
         envvar="ROOT_DIR",
         help="The root CMDB directory (default: CMDB current location)",
+        show_envvar=True,
     )
     @click.option(
         "--tenant",
         envvar="TENANT",
         help="The tenant name to use (default: CMDB current location)",
+        show_envvar=True,
     )
     @click.option(
         "--account",
         envvar="ACCOUNT",
         help="The account name to use",
+        show_envvar=True,
     )
     @click.option(
         "--product",
         envvar="PRODUCT",
         help="The product name to use (default: CMDB current location)",
+        show_envvar=True,
     )
     @click.option(
         "--environment",
         envvar="ENVIRONMENT",
         help="The environment name to use (default: CMDB current location)",
+        show_envvar=True,
     )
     @click.option(
         "--segment",
         envvar="SEGMENT",
         help="The segment name to use (default: CMDB current location)",
+        show_envvar=True,
     )
     @click.pass_context
     @functools.wraps(func)
