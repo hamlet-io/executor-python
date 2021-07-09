@@ -47,9 +47,7 @@ def setup_global_engine(engine_override):
             engine_store.get_engine(engine_name).installed
 
         except EngineStoreMissingEngineException:
-            click.secho(
-                f"[*] no default engine set using {engine_name}"
-            )
+            click.secho(f"[*] no default engine set using {engine_name}")
             engine_store.find_engine(engine_name).install()
 
         engine_store.global_engine = engine_name
