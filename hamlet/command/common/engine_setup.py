@@ -9,7 +9,7 @@ from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
 from hamlet.env import set_engine_env
 
 
-def setup_global_engine():
+def setup_global_engine(engine_override):
     """
     Always make sure the global engine is installed
     """
@@ -38,22 +38,31 @@ def setup_global_engine():
             engine_store.global_engine = engine_store.global_engine
 
     else:
+        if not engine_store.global_engine and engine_override:
+            engine_name = engine_override
+        else:
+            engine_name = ENGINE_DEFAULT_GLOBAL_ENGINE
+
         try:
-            engine_store.get_engine(ENGINE_DEFAULT_GLOBAL_ENGINE).installed
+            engine_store.get_engine(engine_name).installed
 
         except EngineStoreMissingEngineException:
             click.secho(
-                f"[*] no default engine set using {ENGINE_DEFAULT_GLOBAL_ENGINE}"
+                f"[*] no default engine set using {engine_name}"
             )
-            engine_store.find_engine(ENGINE_DEFAULT_GLOBAL_ENGINE).install()
+            engine_store.find_engine(engine_name).install()
 
-        engine_store.global_engine = ENGINE_DEFAULT_GLOBAL_ENGINE
+        engine_store.global_engine = engine_name
 
 
 def get_engine_env(engine_override):
 
     if engine_override is not None:
-        engine = engine_store.get_engine(engine_override)
+        try:
+            engine = engine_store.get_engine(engine_override)
+
+        except EngineStoreMissingEngineException:
+            engine = engine_store.find_engine(engine_override, cache_timeout=0)
     else:
         engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
 

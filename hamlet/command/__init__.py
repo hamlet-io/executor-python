@@ -55,7 +55,7 @@ def root(ctx, opts):
 
     if homeWritable:
         try:
-            setup_global_engine()
+            setup_global_engine(opts.engine)
 
         except HamletEngineInvalidVersion:
             pass
