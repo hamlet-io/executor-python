@@ -12,7 +12,7 @@ from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
 
 
-@cli.group("entrance")
+@cli.group("entrance", context_settings=dict(max_content_width=240))
 def group():
     """
     Hamlet entrances provide access to the hamlet cmdb to perform different tasks

@@ -34,7 +34,7 @@ def find_schemas_from_options(options, schema_type, schema_instances):
     return schemas
 
 
-@cli.group("schema")
+@cli.group("schema", context_settings=dict(max_content_width=240))
 def group():
     """
     Generates JSONSchema files for Hamlet data types

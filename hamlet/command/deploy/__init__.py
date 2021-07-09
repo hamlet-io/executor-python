@@ -6,7 +6,7 @@ from .run import run_deployments as run_deployments_cmd
 from .test import test_deployments as test_deployments_cmd
 
 
-@cli.group("deploy")
+@cli.group("deploy", context_settings=dict(max_content_width=240))
 def group():
     """
     Deploys infrastructure based on the hamlet cmdb

@@ -4,7 +4,7 @@ from .cmdb import generate_account as generate_account_cmdb_cmd
 from .cmdb import generate_product as generate_product_cmdb_cmd
 
 
-@cli.group("generate")
+@cli.group("generate", context_settings=dict(max_content_width=240))
 def group():
     """
     Generates base CMDB file system structures

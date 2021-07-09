@@ -34,7 +34,7 @@ def engines_table(data):
     )
 
 
-@cli.group("engine")
+@cli.group("engine", context_settings=dict(max_content_width=240))
 def group():
     """
     Manage the engine used by the executor
