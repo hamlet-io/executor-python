@@ -1,6 +1,35 @@
 # Changelog
 
-## latest (2021-07-06)
+## latest (2021-07-09)
+
+#### New Features
+
+* add tests for release commands
+* release commands
+* add manage images command
+* automation task runners
+* wrap the basic automation commands
+* allow the runner to be used for automation
+#### Fixes
+
+* handle engine set via env var
+* allow for shared image formats
+* add environment to align with promote
+* default engine notification during install
+#### Refactorings
+
+* remove env from image transfer
+* backend automation tasks
+* realign backend tasks to handle testing
+#### Others
+
+* formatting fixes
+* formatting updates
+* formatting and linting
+
+Full set of changes: [`9.1.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.1.1...latest)
+
+## 9.1.1 (2021-07-06)
 
 #### New Features
 
@@ -13,8 +42,11 @@
 * component commands ([#199](https://github.com/hamlet-io/executor-python/issues/199))
 * linting fixes
 * apply formatting
+#### Others
 
-Full set of changes: [`9.1.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.1.0...latest)
+* changelog bump ([#198](https://github.com/hamlet-io/executor-python/issues/198))
+
+Full set of changes: [`9.1.0...9.1.1`](https://github.com/hamlet-io/executor-python/compare/9.1.0...9.1.1)
 
 ## 9.1.0 (2021-07-03)
 
