@@ -9,10 +9,13 @@ from hamlet.command.common import exceptions, config
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.config import pass_options
 
-from hamlet.backend.engine import engine_store, EngineStoreMissingEngineException
+from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
-from hamlet.backend.engine.engine import HamletEngineInvalidVersion
+from hamlet.backend.engine.exceptions import (
+    HamletEngineInvalidVersion,
+    EngineStoreMissingEngineException,
+)
 
 
 def engines_table(data):

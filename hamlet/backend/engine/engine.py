@@ -11,7 +11,6 @@ from hamlet.backend.common.exceptions import BackendException
 from .engine_part import EnginePartInterface
 from .engine_source import EngineSourceInterface
 from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
-
 from .exceptions import HamletEngineInvalidVersion
 
 
