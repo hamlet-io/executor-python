@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import typing
 
 from abc import ABC
 
@@ -22,20 +23,28 @@ from hamlet.backend.container_registry import ContainerRepository
 
 
 class EngineLoader(ABC):
+    """
+    The engine loader locates and seeds the engines available to an engine store
+    """
+
     def __init__(self):
         pass
 
-    def load(self, local_only):
+    def load(self) -> typing.Iterable[Engine]:
+        """
+        Load should locate and build instances of Engines and yield each engine
+        """
         for engine in self._engines:
             yield engine
 
 
 class GlobalEngineLoader(EngineLoader):
     """
-    A hidden engine used to provide the path mappings for the shim global engine
+    Seeds an engine used to create a known engine directory that can be used to establish
+    a standard location for hamlet scripts called outside of the cli
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
         engine_source = [
             ShimPathEngineSource(name="shim", description="shim based root dir source")
         ]
@@ -64,14 +73,15 @@ class GlobalEngineLoader(EngineLoader):
 
 class InstalledEngineLoader(EngineLoader):
     """
-    Loads the installed engines to handle failures in loading external engines
+    Discovers any existing engines under a directory and seeds them as basic
+    engine implementations
     """
 
     def __init__(self, engine_dir):
         super().__init__()
         self.engine_dir = engine_dir
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
 
         engine_states = []
         if os.path.isdir(self.engine_dir):
@@ -103,7 +113,7 @@ class UnicycleEngineLoader(EngineLoader):
     Each component is sourced directly from the image that is created on commit to the default branch
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
         engine_sources = [
             ContainerEngineSource(
                 name="engine",
@@ -166,7 +176,7 @@ class LatestTramEngineLoader(EngineLoader):
     Includes testing of system level actions
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
         engine_sources = [
             ContainerEngineSource(
                 name="hamlet-engine-base",
@@ -205,7 +215,7 @@ class TramEngineLoader(EngineLoader):
     Provides all of the tram releases which have been created
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
         container_repo = ContainerRepository(
             registry_url="https://ghcr.io", repository="hamlet-io/hamlet-engine-base"
         )
@@ -259,7 +269,7 @@ class LatestTrainEngineLoader(EngineLoader):
     Provides the latest Train release
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
 
         engine_sources = [
             ContainerEngineSource(
@@ -304,7 +314,7 @@ class TrainEngineLoader(EngineLoader):
     These are considered the Train Release Candidates and can be used for managing releases
     """
 
-    def load(self):
+    def load(self) -> typing.Iterable[Engine]:
 
         container_repo = ContainerRepository(
             registry_url="https://ghcr.io", repository="hamlet-io/hamlet-engine-base"

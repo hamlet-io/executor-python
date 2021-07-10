@@ -3,8 +3,6 @@ import shutil
 import json
 from datetime import datetime
 
-from hamlet.backend.common.exceptions import BackendException
-
 from .common import ENGINE_STORE_DEFAULT_DIR, ENGINE_GLOBAL_NAME
 from .engine_loader import (
     GlobalEngineLoader,
@@ -15,14 +13,7 @@ from .engine_loader import (
     LatestTrainEngineLoader,
     TrainEngineLoader,
 )
-
-
-class EngineStoreException(BackendException):
-    pass
-
-
-class EngineStoreMissingEngineException(EngineStoreException):
-    pass
+from .exceptions import EngineStoreMissingEngineException
 
 
 class EngineStore:

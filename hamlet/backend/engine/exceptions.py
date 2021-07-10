@@ -15,3 +15,19 @@ class HamletEngineInvalidVersion(BackendException):
             f"- run: hamlet engine install-engine {self.engine_name}"
         )
         super().__init__(msg)
+
+
+class EngineStoreException(BackendException):
+    """
+    A base exception for issues in the Engine Store
+    """
+
+    pass
+
+
+class EngineStoreMissingEngineException(EngineStoreException):
+    """
+    A requested engine can't be found in the engine store
+    """
+
+    pass
