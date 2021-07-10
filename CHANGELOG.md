@@ -1,6 +1,26 @@
 # Changelog
 
-## latest (2021-07-09)
+## latest (2021-07-10)
+
+#### New Features
+
+* rename hamlet package
+* make the train engine the default
+* add auto generated reference docs
+* show envvars for root command options
+#### Fixes
+
+* update docs nd make
+#### Refactorings
+
+* general docs updates and tidy up
+#### Others
+
+* changelog bump ([#201](https://github.com/hamlet-io/executor-python/issues/201))
+
+Full set of changes: [`9.2.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.2.0...latest)
+
+## 9.2.0 (2021-07-09)
 
 #### New Features
 
@@ -27,7 +47,7 @@
 * formatting updates
 * formatting and linting
 
-Full set of changes: [`9.1.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.1.1...latest)
+Full set of changes: [`9.1.1...9.2.0`](https://github.com/hamlet-io/executor-python/compare/9.1.1...9.2.0)
 
 ## 9.1.1 (2021-07-06)
 
