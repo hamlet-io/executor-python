@@ -19,7 +19,7 @@ except NameError:
 __title__ = "hamlet"
 __summary__ = "Building your infrastructure"
 __url__ = "https://hamlet.io"
-__repository_url__ = "https://github.com/hamletio/executor-python"
+__repository_url__ = "https://github.com/hamlet-io/executor-python"
 
 __author__ = "Hamlet"
 __email__ = "help@hamlet.io"
