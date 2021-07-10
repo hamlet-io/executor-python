@@ -16,7 +16,7 @@ try:
 except NameError:
     base_dir = None
 
-__title__ = "hamlet-cli"
+__title__ = "hamlet"
 __summary__ = "Building your infrastructure"
 __url__ = "https://hamlet.io"
 __repository_url__ = "https://github.com/hamletio/executor-python"
