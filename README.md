@@ -2,7 +2,7 @@
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![release workflow](https://github.com/hamlet-io/executor-python/actions/workflows/release.yml/badge.svg)
-[![PyPI version](https://badge.fury.io/py/hamlet-cli.svg)](https://badge.fury.io/py/hamlet-cli)
+[![PyPI version](https://badge.fury.io/py/hamlet.svg)](https://badge.fury.io/py/hamlet)
 
 Hamlet deploy is a tool to manage infrastructure throughout the life of your application. With hamlet you define the functional components of your application along with the context they should be run in. The context includes things like environments, tenants, and policies that can be applied across all of your different applications.
 From this information hamlet then creates the infrastructure that will perform the function you have asked for and manages it over the life of your application.
@@ -72,13 +72,13 @@ Once you've got the prereqs installed the rest of hamlet is installed through th
 To install the hamlet cli/executor use the python package manager pip
 
 ```bash
-pip install hamlet-cli
+pip install hamlet
 ```
 
 If you want the latest changes that are in development we publish all commits as pre-releases
 
 ```bash
-pip install --pre hamlet-cli
+pip install --pre hamlet
 ```
 
 **Note** These builds can be unstable and aren't recommended for production usage

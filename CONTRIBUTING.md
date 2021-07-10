@@ -11,15 +11,15 @@ You will need an existing hamlet workspace with `python` and `make` available ( 
 2. Hop into the executor clone location and setup a python venv
 
     ```bash
-    cd hamlet/executor/python/hamlet-cli
+    cd hamlet/executor/python/hamlet
     python -m venv .venv
     . .venv/bin/activate
 
     # install requirements
     pip install -r requirements/dev.txt
 
-    # Install the hamlet-cli into the venv in edit mode
-    pip install -e hamlet-cli
+    # Install the hamlet into the venv in edit mode
+    pip install -e hamlet
     ```
 
 When calling hamlet from within the venv the development installation will be used instead of the workspace installation
@@ -32,7 +32,7 @@ deactivate
 
 ## Development tasks
 
-Once you have setup the hamlet-cli the following make commands are available from the hamlet-cli directory in this repo
+Once you have setup the hamlet the following make commands are available from the hamlet directory in this repo
 
 ```bash
 # create test coverage report
