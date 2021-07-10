@@ -23,10 +23,10 @@ format:
 .PHONY: install
 .ONESHELL:
 install:
-	pip uninstall hamlet-cli -y
-	pip install -e /hamlet-cli
+	pip uninstall hamlet -y
+	pip install -e /hamlet
 
 .PHONY: uninstall
 .ONESHELL:
 uninstall:
-	pip uninstall hamlet-cli -y
+	pip uninstall hamlet -y
