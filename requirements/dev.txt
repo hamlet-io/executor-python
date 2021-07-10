@@ -11,3 +11,8 @@ black
 build
 wheel
 twine
+
+# Docs
+Sphinx
+sphinx-markdown-builder
+sphinx-click
