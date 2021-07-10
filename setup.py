@@ -28,6 +28,7 @@ setup(
     name=about["__title__"],
     author=about["__author__"],
     url=about["__url__"],
+    description=about["__summary__"],
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="GPLv3",
