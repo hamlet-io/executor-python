@@ -243,12 +243,12 @@ def install_engine(opts, name, force, update):
         raise e
 
     if not engine.installed or force:
-        click.echo(f"[*] installing engine | {name} | digest: {engine.latest_digest}")
+        click.echo(f"[*] installing engine | {name} | digest: {engine.get_latest_digest()}")
         engine.install()
     elif not engine.up_to_date() and update:
         click.echo(f"[*] updating engine | {name}")
         click.echo(
-            f"[*] current digest: {engine.digest} | latest digest: {engine.latest_digest}"
+            f"[*] current digest: {engine.digest} | latest digest: {engine.get_latest_digest()}"
         )
         engine.install()
     else:
