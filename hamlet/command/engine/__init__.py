@@ -94,7 +94,7 @@ def list_engines(show_hidden):
 @group.command(
     "describe-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option("-n", "--name", help="An override to the default engine name to query")
+@click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
 @config.pass_options
 def describe_engine(opts, name):
@@ -116,7 +116,9 @@ def describe_engine(opts, name):
         latest_digest = engine.get_latest_digest()
 
     except BaseException as e:
-        click.secho(f"[!] Engine update failed for {engine.name}", fg="red", err=True)
+        click.secho(
+            f"[!] Engine update check failed for {engine.name}", fg="red", err=True
+        )
         click.secho(f"[!]  {e}", fg="red", err=True)
 
         up_to_date = None
@@ -182,7 +184,7 @@ def describe_engine(opts, name):
 @group.command(
     "clean-engines", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option("-n", "--name", multiple=True, help="The name of an engine to clean")
+@click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
 def clean_engines(name):
     """
@@ -202,6 +204,12 @@ def clean_engines(name):
     "install-engine", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
+    "-u",
+    "--update",
+    is_flag=True,
+    help="Update the engine",
+)
+@click.option(
     "-f",
     "--force",
     is_flag=True,
@@ -210,45 +218,54 @@ def clean_engines(name):
 @click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
 @pass_options
-def install_engine(opts, name, force):
+def install_engine(opts, name, force, update):
     """
-    Install or update an engine
+    Install an engine
     """
 
     if name is None:
         name = opts.engine or engine_store.global_engine
 
-    click.echo(f"[*] installing engine - {name}")
-
     try:
         engine = engine_store.find_engine(name, cache_timeout=0)
 
     except HamletEngineInvalidVersion as e:
-        if force or click.confirm(
+        click.secho(
             (
-                "[!] The engine state of this engine is not compatible the cli\n"
-                "[!] To fix this we need to reinstall the engine,"
-                "if the engine can not be reinstalled it will no longer be available\n"
-                "[!] Is this ok?"
+                "[!] The state of this engine is not compatible with the cli\n"
+                f"[!] Remove the engine using\n"
+                f"     hamlet engine clean-engine {name}\n"
+                "[!] then install the engine again"
             ),
-            abort=True,
-        ):
-            engine_store.clean_engine(name)
-        else:
-            raise e
-    else:
+            err=True,
+            fg="red",
+        )
+        raise e
+
+    if not engine.installed or force:
+        click.echo(f"[*] installing engine | {name} | digest: {engine.latest_digest}")
         engine.install()
+    elif not engine.up_to_date() and update:
+        click.echo(f"[*] updating engine | {name}")
+        click.echo(
+            f"[*] current digest: {engine.digest} | latest digest: {engine.latest_digest}"
+        )
+        engine.install()
+    else:
+        click.echo(f"[*] engine installed | {name} | digest: {engine.digest}")
 
 
 @group.command(
     "set-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.argument("name", required=True, type=click.STRING)
+@click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
-def set_engine(name):
+@config.pass_options
+def set_engine(opts, name):
     """
     Sets the global engine used
     """
+    name = name or opts.engine
 
     try:
         engine = engine_store.get_engine(name)
@@ -263,6 +280,19 @@ def set_engine(name):
 
     click.echo(f"[*] global engine set to {name}")
     engine_store.global_engine = name
+
+
+@group.command(
+    "get-engine", short_help="", context_settings=dict(max_content_width=240)
+)
+@exceptions.backend_handler()
+@config.pass_options
+def get_engine(opts):
+    """
+    Gets the current global engine
+    """
+    name = opts.engine or engine_store.global_engine
+    click.echo(engine_store.get_engine(name).name)
 
 
 @group.command("env", short_help="", context_settings=dict(max_content_width=240))
