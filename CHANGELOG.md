@@ -1,6 +1,19 @@
 # Changelog
 
-## latest (2021-07-10)
+## latest (2021-07-16)
+
+#### New Features
+
+* engine install control and get engine
+#### Fixes
+
+* wrong function call for digest ([#215](https://github.com/hamlet-io/executor-python/issues/215))
+* add description
+* (ci): update repository url
+
+Full set of changes: [`9.3.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.3.0...latest)
+
+## 9.3.0 (2021-07-10)
 
 #### New Features
 
@@ -16,9 +29,10 @@
 * general docs updates and tidy up
 #### Others
 
+* changelog bump ([#204](https://github.com/hamlet-io/executor-python/issues/204))
 * changelog bump ([#201](https://github.com/hamlet-io/executor-python/issues/201))
 
-Full set of changes: [`9.2.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.2.0...latest)
+Full set of changes: [`9.2.0...9.3.0`](https://github.com/hamlet-io/executor-python/compare/9.2.0...9.3.0)
 
 ## 9.2.0 (2021-07-09)
 
