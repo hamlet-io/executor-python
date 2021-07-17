@@ -16,6 +16,7 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["-m,--deployment-mode"] = "DeploymentMode1"
 ALL_VALID_OPTIONS["-l,--deployment-group"] = "DeploymentGroup1"
 ALL_VALID_OPTIONS["-u,--deployment-unit"] = "DeploymentUnit1"
+ALL_VALID_OPTIONS["-d,--district"] = "segment"
 ALL_VALID_OPTIONS["-o,--output-dir"] = "output_dir"
 ALL_VALID_OPTIONS["-p,--pytest-args"] = "PyTestArg1"
 ALL_VALID_OPTIONS["-s,--silent"] = False
@@ -98,6 +99,7 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation11"],
                         "CurrentState": "deployed",
+                        "District": "segment"
                     },
                 },
                 {
@@ -108,6 +110,7 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation21"],
                         "CurrentState": "deployed",
+                        "District": "segment"
                     },
                 },
             ],

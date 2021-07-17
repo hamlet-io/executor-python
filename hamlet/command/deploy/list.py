@@ -16,15 +16,17 @@ def deployments_table(data):
                 wrap_text(row["DeploymentUnit"]),
                 wrap_text(row["DeploymentProvider"]),
                 wrap_text(row["CurrentState"]),
+                wrap_text(row["District"]),
             ]
         )
     return tabulate(
         tablerows,
         headers=[
-            "DeploymentGroup",
-            "DeploymentUnit",
-            "DeploymentProvider",
-            "CurrentState",
+            "Deployment Group",
+            "Deployment Unit",
+            "Provider",
+            "State",
+            "District",
         ],
         tablefmt="github",
     )
@@ -65,11 +67,18 @@ def deployments_table(data):
     multiple=True,
     help="The states of deployments to include",
 )
+@click.option(
+    "-d",
+    "--district",
+    default=["segment"],
+    multiple=True,
+    help="The districts to include deployments from",
+)
 @json_or_table_option(deployments_table)
 @exceptions.backend_handler()
 @pass_options
 def list_deployments(
-    options, deployment_mode, deployment_group, deployment_unit, deployment_state
+    options, deployment_mode, deployment_group, deployment_unit, deployment_state, district
 ):
     """
     List available deployments
@@ -79,5 +88,6 @@ def list_deployments(
         deployment_group,
         deployment_units=deployment_unit,
         deployment_states=deployment_state,
+        districts=district,
         **options.opts
     )

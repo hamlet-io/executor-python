@@ -68,6 +68,7 @@ def mock_backend(unitlist=None):
                             "DeploymentProvider": "DeploymentProvider[1]",
                             "Operations": ["Operation[1]"],
                             "CurrentState": "deployed",
+                            "District": "segment"
                         },
                     },
                     {
@@ -78,6 +79,7 @@ def mock_backend(unitlist=None):
                             "DeploymentProvider": "DeploymentProvider[2]",
                             "Operations": ["Operation[2]"],
                             "CurrentState": "deployed",
+                            "District": "segment"
                         },
                     },
                 ],
@@ -93,6 +95,7 @@ def mock_backend(unitlist=None):
                             "DeploymentProvider": "DeploymentProvider[3]",
                             "Operations": ["Operation[3]"],
                             "CurrentState": "deployed",
+                            "District": "segment"
                         },
                     },
                     {
@@ -103,6 +106,7 @@ def mock_backend(unitlist=None):
                             "DeploymentProvider": "DeploymentProvider[4]",
                             "Operations": ["Operation[4]"],
                             "CurrentState": "deployed",
+                            "District": "segment"
                         },
                     },
                 ],
@@ -124,6 +128,7 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         "DeploymentProvider": "DeploymentProvider[1]",
         "Operations": ["Operation[1]"],
         "CurrentState": "deployed",
+        "District": "segment"
     } in result
     assert {
         "DeploymentUnit": "DeploymentUnit[2]",
@@ -131,6 +136,7 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         "DeploymentProvider": "DeploymentProvider[2]",
         "Operations": ["Operation[2]"],
         "CurrentState": "deployed",
+        "District": "segment"
     } in result
     assert {
         "DeploymentUnit": "DeploymentUnit[3]",
@@ -138,6 +144,7 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         "DeploymentProvider": "DeploymentProvider[3]",
         "Operations": ["Operation[3]"],
         "CurrentState": "deployed",
+        "District": "segment"
     } in result
     assert {
         "DeploymentUnit": "DeploymentUnit[4]",
@@ -145,4 +152,5 @@ def test_query_list_deployments(blueprint_mock, ContextClassMock):
         "DeploymentProvider": "DeploymentProvider[4]",
         "Operations": ["Operation[4]"],
         "CurrentState": "deployed",
+        "District": "segment"
     } in result
