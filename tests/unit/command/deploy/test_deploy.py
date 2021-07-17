@@ -16,6 +16,7 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["-o,--output-dir"] = "output_dir"
 ALL_VALID_OPTIONS["-u,--deployment-unit"] = "DeploymentUnit1"
 ALL_VALID_OPTIONS["-l,--deployment-group"] = "DeploymentGroup1"
+ALL_VALID_OPTIONS["-d,--district"] = "segment"
 ALL_VALID_OPTIONS["-m,--deployment-mode"] = "deployment_mode"
 ALL_VALID_OPTIONS["-s,--deployment-state"] = "deployed"
 ALL_VALID_OPTIONS["--refresh-outputs"] = True
@@ -93,6 +94,7 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation11"],
                         "CurrentState": "deployed",
+                        "District" : "segment"
                     },
                 },
                 {
@@ -101,8 +103,9 @@ unit_list = {
                         "DeploymentUnit": "DeploymentUnit2",
                         "DeploymentGroup": "DeploymentGroup2",
                         "DeploymentProvider": "aws",
-                        "Operations": ["Operation21"],
+                        "Operations": ["Operation2"],
                         "CurrentState": "deployed",
+                        "District" : "segment"
                     },
                 },
             ],

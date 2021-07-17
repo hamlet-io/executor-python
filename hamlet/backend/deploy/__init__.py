@@ -26,11 +26,13 @@ LIST_DEPLOYMENTS_QUERY = (
 )
 
 
+
 def find_deployments(
     deployment_mode,
     deployment_group,
     deployment_units,
     deployment_states=["deployed", "notdeployed"],
+    districts=["segment"],
     **kwargs,
 ):
 
@@ -48,11 +50,19 @@ def find_deployments(
     deployments = []
 
     for deployment in available_deployments:
-        if re.fullmatch(deployment_group, deployment["DeploymentGroup"]):
-            for deployment_unit in deployment_units:
-                if re.fullmatch(deployment_unit, deployment["DeploymentUnit"]):
-                    if deployment["CurrentState"] in deployment_states:
-                        deployments.append(deployment)
+
+        if "District" not in deployment:
+            if deployment["DeploymentGroup"] == "account":
+                deployment["District"] = "account"
+            else:
+                deployment["District"] = "segment"
+
+        if deployment["District"] in districts:
+            if re.fullmatch(deployment_group, deployment["DeploymentGroup"]):
+                for deployment_unit in deployment_units:
+                    if re.fullmatch(deployment_unit, deployment["DeploymentUnit"]):
+                        if deployment["CurrentState"] in deployment_states:
+                            deployments.append(deployment)
 
     return deployments
 
