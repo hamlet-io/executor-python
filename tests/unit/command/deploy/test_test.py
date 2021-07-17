@@ -99,7 +99,7 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation11"],
                         "CurrentState": "deployed",
-                        "District": "segment"
+                        "District": "segment",
                     },
                 },
                 {
@@ -110,7 +110,7 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation21"],
                         "CurrentState": "deployed",
-                        "District": "segment"
+                        "District": "segment",
                     },
                 },
             ],

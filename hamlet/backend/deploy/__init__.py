@@ -26,7 +26,6 @@ LIST_DEPLOYMENTS_QUERY = (
 )
 
 
-
 def find_deployments(
     deployment_mode,
     deployment_group,
