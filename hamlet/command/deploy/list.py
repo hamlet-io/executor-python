@@ -78,7 +78,12 @@ def deployments_table(data):
 @exceptions.backend_handler()
 @pass_options
 def list_deployments(
-    options, deployment_mode, deployment_group, deployment_unit, deployment_state, district
+    options,
+    deployment_mode,
+    deployment_group,
+    deployment_unit,
+    deployment_state,
+    district,
 ):
     """
     List available deployments
