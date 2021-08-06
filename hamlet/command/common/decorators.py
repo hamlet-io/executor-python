@@ -4,6 +4,8 @@ import functools
 
 from hamlet.command.common.config import Options
 
+from hamlet.env import set_cli_config_dir
+
 
 class CommaSplitParamType(StringParamType):
     envvar_list_splitter = ","
@@ -17,10 +19,16 @@ def common_cli_config_options(func):
 
     @click.option(
         "-c",
-        "--config-file",
-        envvar="HAMLET_CONFIG_FILE",
-        type=click.Path(dir_okay=True, exists=True, writable=False, resolve_path=True),
-        help="The path to your config file",
+        "--cli-config-dir",
+        envvar="HAMLET_CLI_CONFIG_DIR",
+        type=click.Path(
+            dir_okay=True,
+            file_okay=False,
+            exists=True,
+            writable=False,
+            resolve_path=True,
+        ),
+        help="The path to the CLI configuration directory",
         show_envvar=True,
     )
     @click.option(
@@ -39,8 +47,13 @@ def common_cli_config_options(func):
         """
         opts = ctx.ensure_object(Options)
         profile = kwargs.pop("profile")
-        config_file = kwargs.pop("config_file")
-        opts.load_config_file(path=config_file, profile=profile)
+        cli_config_dir = kwargs.pop("cli_config_dir")
+        opts.cli_config_dir = cli_config_dir
+
+        if cli_config_dir is not None:
+            set_cli_config_dir(cli_config_dir)
+
+        opts.load_config_file(profile=profile)
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 
