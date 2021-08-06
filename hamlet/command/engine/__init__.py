@@ -184,7 +184,7 @@ def describe_engine(opts, name):
 @group.command(
     "clean-engines", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.argument("name", required=False, type=click.STRING)
+@click.argument("name", type=click.STRING, nargs=-1)
 @exceptions.backend_handler()
 def clean_engines(name):
     """
