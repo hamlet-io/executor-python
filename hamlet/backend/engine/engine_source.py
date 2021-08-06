@@ -1,3 +1,4 @@
+import hashlib
 import os
 
 import pathlib
@@ -16,6 +17,7 @@ class EngineSourceInterface(ABC):
     def __init__(self, name, description=""):
         self.name = name
         self.description = description
+        self.env_path = None
 
     @abstractmethod
     def pull(self, dst_dir):
@@ -52,6 +54,31 @@ class ShimPathEngineSource(EngineSourceInterface):
     @property
     def digest(self):
         return self.name
+
+
+class LocalDirectoryEngineSource(EngineSourceInterface):
+    """
+    An engine source that is available from the local file system
+    """
+
+    def __init__(self, name, description, env_path):
+        super().__init__(name, description=description)
+        self.env_path = env_path
+
+    def pull(self, dst_dir):
+        if not os.path.isdir(dst_dir):
+            os.makedirs(dst_dir)
+
+        return EngineSourcePullState(
+            name=self.name,
+            type=self.__class__.__name__,
+            digest=hashlib.sha256(bytes(self.env_path, encoding="utf8")).hexdigest(),
+            source_metadata={"local_path": self.env_path},
+        )
+
+    @property
+    def digest(self):
+        return hashlib.sha256(bytes(self.env_path, encoding="utf8")).hexdigest()
 
 
 class ContainerEngineSource(EngineSourceInterface):
