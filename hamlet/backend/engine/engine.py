@@ -109,13 +109,15 @@ class EngineInterface(ABC):
         """
 
         source_digests = []
+        source_install_details = {}
         if source_install_state is not None:
             source_digests = [s.digest for s in source_install_state]
+            source_install_details = [vars(s) for s in source_install_state]
 
         install_state = {
             "part_paths": self._get_part_paths(),
             "digest": self._format_engine_digest(source_digests),
-            "source_install_state": [vars(s) for s in source_install_state],
+            "source_install_state": source_install_details,
         }
 
         self._engine_state["version"] = ENGINE_STATE_VERSION
@@ -264,10 +266,20 @@ class EngineInterface(ABC):
 
     def _get_engine_source_dir(self, source_name):
         """
-        Find the location of a source for within an instllation
+        Find the location of a source in an engines installation
         """
         source = self._get_source(source_name)
         return os.path.join(self.install_path, source.name)
+
+    def _get_engine_env_dir(self, source_name):
+        """
+        Find the directory for the source that will be used in env var paths
+        """
+        source = self._get_source(source_name)
+        if source.env_path is not None:
+            return source.env_path
+        else:
+            return self._get_engine_source_dir(source_name)
 
     def _load_engine_state(self):
         """
@@ -298,7 +310,7 @@ class EngineInterface(ABC):
         part_paths = {}
         for part in self.parts:
             part_paths[part.type] = os.path.join(
-                self._get_engine_source_dir(part.source_name), part.source_path
+                self._get_engine_env_dir(part.source_name), part.source_path
             )
         return part_paths
 
