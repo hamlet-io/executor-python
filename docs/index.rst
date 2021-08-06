@@ -10,5 +10,6 @@ The hamlet python executor is a python client for the hamlet engine and provides
    :maxdepth: 2
    :caption: Contents:
 
+   config_files
    command_reference
    backend_reference
