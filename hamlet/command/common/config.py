@@ -1,67 +1,47 @@
 import click
 import os
 
-from click_configfile import ConfigFileReader, Param, SectionSchema, matches_section
-from hamlet.env import HAMLET_HOME_DIR
-
-
-hamlet_config_dir = os.path.join(HAMLET_HOME_DIR, "config")
-
-
-class ConfigParam(Param):
-    # For compatibility with click>=7.0
-    def __init__(self, *args, **kwargs):
-        super(ConfigParam, self).__init__(*args, **kwargs)
-        self.ctx = None
-
-    def parse(self, text):
-        if text:
-            text = text.strip()
-        if self.type.name == "boolean":
-            if not text:
-                return None
-        return super(ConfigParam, self).parse(text)
-
-    def get_error_hint(self, ctx):
-        if self.ctx:
-            files = []
-            for path in self.ctx.config_searchpath:
-                for filename in self.ctx.config_files:
-                    files.append(os.path.join(path, filename))
-            files = " or ".join(files)
-            msg = f"{self.name} in {files}"
-        else:
-            msg = f"{self.name} in a config file"
-        return msg
+from click_configfile import ConfigFileReader, SectionSchema, matches_section
+from hamlet.env import HAMLET_HOME_DIR, HAMLET_CONFIG_DIR
+from hamlet.utils import ConfigParam
 
 
 class ConfigSchema(object):
     """Schema for standard configuration."""
 
-    @matches_section("default")
-    class Default(SectionSchema):
-        """Default configuration schema."""
-
-        root_dir = ConfigParam(name="root_dir", type=click.Path())
-        tenant = ConfigParam(name="tenant", type=str)
-        account = ConfigParam(name="account", type=str)
-        product = ConfigParam(name="product", type=str)
-        environment = ConfigParam(name="environment", type=str)
-        segment = ConfigParam(name="segment", type=str)
-        engine = ConfigParam(name="engine", type=str)
-
     @matches_section("profile:*")
-    class Profile(Default):
+    class Profile(SectionSchema):
         """Profile-specific configuration schema."""
+
+        #: the root directory of the CMDB
+        root_dir = ConfigParam(name="root_dir", type=click.Path())
+
+        #: the name of the tenant
+        tenant = ConfigParam(name="tenant", type=str)
+
+        #: the name of the account
+        account = ConfigParam(name="account", type=str)
+
+        #: the name of the product
+        product = ConfigParam(name="product", type=str)
+
+        #: the name of the environment
+        environment = ConfigParam(name="environment", type=str)
+
+        #: the name of the segment
+        segment = ConfigParam(name="segment", type=str)
+
+        #: the name of the engine to use within this profile
+        engine = ConfigParam(name="engine", type=str)
 
 
 class ConfigReader(ConfigFileReader):
     """Reader for standard configuration."""
 
-    config_files = ["config"]
+    config_files = ["config.ini", "config"]
     config_name = "standard"
-    config_searchpath = [HAMLET_HOME_DIR, hamlet_config_dir]
-    config_section_schemas = [ConfigSchema.Default, ConfigSchema.Profile]
+    config_searchpath = [HAMLET_HOME_DIR, HAMLET_CONFIG_DIR]
+    config_section_schemas = [ ConfigSchema.Profile]
 
     @classmethod
     def select_config_schema_for(cls, section_name):
@@ -90,14 +70,8 @@ class ConfigReader(ConfigFileReader):
         return os.path.join(filepath, filename)
 
     @classmethod
-    def load_config(cls, opts, path=None, profile=None):
+    def load_config(cls, opts, profile=None):
         """Load a configuration file into an options object."""
-        if path and os.path.exists(path):
-            if os.path.isdir(path):
-                cls.config_searchpath.insert(0, path)
-            else:
-                cls.config_files.insert(0, path)
-
         config = cls.read_config()
         values = config.get("default", {})
         cls._load_values_into_opts(opts, values)
@@ -141,10 +115,20 @@ class Options:
         """Get the config reader class."""
         return ConfigReader
 
-    def load_config_file(self, path, profile=None):
+    def load_config_file(self, profile=None):
         """Load the config file."""
         config_cls = self.get_config_reader()
-        return config_cls.load_config(self, path, profile=profile)
+        return config_cls.load_config(self, profile=profile)
+
+    @property
+    def cli_config_dir(self):
+        """The cli config dir"""
+        return self._get_option("cli_config_dir")
+
+    @cli_config_dir.setter
+    def cli_config_dir(self, value):
+        """Set the cli config dir"""
+        self._set_option("cli_config_dir", value)
 
     @property
     def log_level(self):

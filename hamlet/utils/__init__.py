@@ -1,6 +1,9 @@
 import click
 import tempfile
 import errno
+import os
+
+from click_configfile import Param
 
 
 class DynamicCommand(click.Command):
@@ -76,3 +79,30 @@ def isWriteable(path):
         e.filename = path
         raise
     return True
+
+
+class ConfigParam(Param):
+    # For compatibility with click>=7.0
+    def __init__(self, *args, **kwargs):
+        super(ConfigParam, self).__init__(*args, **kwargs)
+        self.ctx = None
+
+    def parse(self, text):
+        if text:
+            text = text.strip()
+        if self.type.name == "boolean":
+            if not text:
+                return None
+        return super(ConfigParam, self).parse(text)
+
+    def get_error_hint(self, ctx):
+        if self.ctx:
+            files = []
+            for path in self.ctx.config_searchpath:
+                for filename in self.ctx.config_files:
+                    files.append(os.path.join(path, filename))
+            files = " or ".join(files)
+            msg = f"{self.name} in {files}"
+        else:
+            msg = f"{self.name} in a config file"
+        return msg
