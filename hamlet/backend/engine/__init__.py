@@ -4,16 +4,13 @@ import json
 from datetime import datetime
 
 from .common import ENGINE_STORE_DEFAULT_DIR, ENGINE_GLOBAL_NAME
-from .engine_loader import (
-    GlobalEngineLoader,
-    InstalledEngineLoader,
-    UnicycleEngineLoader,
-    LatestTramEngineLoader,
-    TramEngineLoader,
-    LatestTrainEngineLoader,
-    TrainEngineLoader,
-)
 from .exceptions import EngineStoreMissingEngineException
+
+from .loaders.base import GlobalEngineLoader, InstalledEngineLoader
+from .loaders.unicycle import UnicycleEngineLoader
+from .loaders.tram import LatestTramEngineLoader, TramEngineLoader
+from .loaders.train import LatestTrainEngineLoader, TrainEngineLoader
+from .loaders.user import UserDefinedEngineLoader
 
 
 class EngineStore:
@@ -37,6 +34,7 @@ class EngineStore:
 
         self.local_engine_loaders = [
             InstalledEngineLoader(engine_dir=self.engine_dir),
+            UserDefinedEngineLoader(),
             GlobalEngineLoader(),
         ]
 
