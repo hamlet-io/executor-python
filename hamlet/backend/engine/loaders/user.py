@@ -1,9 +1,9 @@
 import click
-import os
 import typing
+import os
 
 from click_configfile import ConfigFileReader, SectionSchema, matches_section
-from hamlet.env import HAMLET_CONFIG_DIR
+from hamlet.env import HAMLET_GLOBAL_CONFIG
 
 from hamlet.utils import ConfigParam
 
@@ -22,6 +22,11 @@ from hamlet.backend.engine.engine_part import (
     BashExecutorEnginePart,
     WrapperEnginePart,
 )
+
+
+def get_engine_config_dir():
+    print("getting engine config")
+    return HAMLET_GLOBAL_CONFIG.config_dir
 
 
 class EngineSchema(object):
@@ -95,7 +100,7 @@ class EngineReader(ConfigFileReader):
 
     config_files = ["engine.ini", "engine"]
     config_name = "engine"
-    config_searchpath = [HAMLET_CONFIG_DIR]
+    config_searchpath = []
     config_section_schemas = [
         EngineSchema.Engine,
         EngineSchema.EnginePart,
@@ -104,33 +109,19 @@ class EngineReader(ConfigFileReader):
 
     @classmethod
     def select_config_schema_for(cls, section_name):
-        section_schema = super(EngineReader, cls).select_config_schema_for(
-            section_name
-        )
+        section_schema = super(EngineReader, cls).select_config_schema_for(section_name)
         for v in section_schema.__dict__:
             if isinstance(v, ConfigParam):
                 v.ctx = cls
         return section_schema
 
     @classmethod
-    def get_default_filepath(cls):
-        """Get the default filepath for the configuration file."""
-        if not cls.config_files:
-            return None
-        if not cls.config_searchpath:
-            return None
-        filename = cls.config_files[0]
-        filepath = cls.config_searchpath[0]
-        return os.path.join(filepath, filename)
-
-    @classmethod
-    def load_engines(cls, path=None):
+    def load_engines(cls):
         """Load engines found in the config file."""
-        if path and os.path.exists(path):
-            if os.path.isdir(path):
-                cls.config_searchpath.insert(0, path)
-            else:
-                cls.config_files.insert(0, path)
+
+        if os.path.exists(HAMLET_GLOBAL_CONFIG.config_dir):
+            if os.path.isdir(HAMLET_GLOBAL_CONFIG.config_dir):
+                cls.config_searchpath.insert(0, HAMLET_GLOBAL_CONFIG.config_dir)
 
         config = cls.read_config()
 
@@ -157,9 +148,7 @@ class EngineReader(ConfigFileReader):
                         sources.append(
                             LocalDirectoryEngineSource(
                                 name=source_name,
-                                description=source_config.get(
-                                    "description", None
-                                ),
+                                description=source_config.get("description", None),
                                 env_path=source_config["local_dir_path"],
                             )
                         )
@@ -168,15 +157,11 @@ class EngineReader(ConfigFileReader):
                         sources.append(
                             ContainerEngineSource(
                                 name=source_name,
-                                description=source_config.get(
-                                    "description", None
-                                ),
+                                description=source_config.get("description", None),
                                 registry_url=source_config.get(
                                     "container_registry_url"
                                 ),
-                                repository=source_config.get(
-                                    "container_repository"
-                                ),
+                                repository=source_config.get("container_repository"),
                                 tag=source_config.get("container_tag"),
                             )
                         )
@@ -198,17 +183,13 @@ class EngineReader(ConfigFileReader):
                         parts.append(AWSEnginePluginPart(**part_source_config))
 
                     if part_config["type"] == "engine-plugin-azure":
-                        parts.append(
-                            AzureEnginePluginPart(**part_source_config)
-                        )
+                        parts.append(AzureEnginePluginPart(**part_source_config))
 
                     if part_config["type"] == "engine-plugin-cmdb":
                         parts.append(CMDBEnginePluginPart(**part_source_config))
 
                     if part_config["type"] == "executor-bash":
-                        parts.append(
-                            BashExecutorEnginePart(**part_source_config)
-                        )
+                        parts.append(BashExecutorEnginePart(**part_source_config))
 
                     if part_config["type"] == "wrapper":
                         parts.append(WrapperEnginePart(**part_source_config))
@@ -218,11 +199,11 @@ class EngineReader(ConfigFileReader):
 
                 yield engine
 
+
 class UserDefinedEngineLoader(EngineLoader):
     """
     Loads a user defined configuration file defining engines and their configuration
     """
-
 
     def __init__(self):
         super().__init__()

@@ -2,7 +2,7 @@ import click
 import os
 
 from click_configfile import ConfigFileReader, SectionSchema, matches_section
-from hamlet.env import HAMLET_HOME_DIR, HAMLET_CONFIG_DIR
+from hamlet.env import HAMLET_GLOBAL_CONFIG
 from hamlet.utils import ConfigParam
 
 
@@ -40,8 +40,8 @@ class ConfigReader(ConfigFileReader):
 
     config_files = ["config.ini", "config"]
     config_name = "standard"
-    config_searchpath = [HAMLET_HOME_DIR, HAMLET_CONFIG_DIR]
-    config_section_schemas = [ ConfigSchema.Profile]
+    config_searchpath = []
+    config_section_schemas = [ConfigSchema.Profile]
 
     @classmethod
     def select_config_schema_for(cls, section_name):
@@ -52,26 +52,13 @@ class ConfigReader(ConfigFileReader):
         return section_schema
 
     @classmethod
-    def get_storage_name_for(cls, section_name):
-        """Get storage name for a configuration section."""
-        if not section_name or section_name == "default":
-            return "default"
-        return section_name
-
-    @classmethod
-    def get_default_filepath(cls):
-        """Get the default filepath for the configuratin file."""
-        if not cls.config_files:
-            return None
-        if not cls.config_searchpath:
-            return None
-        filename = cls.config_files[0]
-        filepath = cls.config_searchpath[0]
-        return os.path.join(filepath, filename)
-
-    @classmethod
     def load_config(cls, opts, profile=None):
         """Load a configuration file into an options object."""
+
+        if os.path.exists(HAMLET_GLOBAL_CONFIG.config_dir):
+            if os.path.isdir(HAMLET_GLOBAL_CONFIG.config_dir):
+                cls.config_searchpath.insert(0, HAMLET_GLOBAL_CONFIG.config_dir)
+
         config = cls.read_config()
         values = config.get("default", {})
         cls._load_values_into_opts(opts, values)

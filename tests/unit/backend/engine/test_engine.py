@@ -138,41 +138,43 @@ def test_unicycle_engine_loading(container_repository):
         assert unicycle_engine.digest == expected_digest
 
 
-def test_user_engine_loading():
+@mock.patch("hamlet.backend.engine.loaders.user.HAMLET_GLOBAL_CONFIG")
+def test_user_engine_loading(global_config):
     """
     Tests the user engine loading process
     """
 
     with tempfile.TemporaryDirectory() as test_dir:
         with tempfile.TemporaryDirectory() as store_dir:
-            with tempfile.TemporaryDirectory() as config_dir:
-                with mock.patch(
-                    "hamlet.backend.engine.loaders.user.HAMLET_CONFIG_DIR", config_dir
-                ):
+            with tempfile.TemporaryDirectory() as cli_config_dir:
 
-                    with open(os.path.join(config_dir, "engine"), "w") as engine_file:
-                        engine_file.write(
-                            (
-                                "[engine:test]\n"
-                                "\tdescription = test engine\n"
-                                "\tsources = test_dir\n"
-                                "\tparts = bash\n"
-                                "\n"
-                                "[engine_source:test_dir]\n"
-                                "\ttype = local_dir\n"
-                                f"\tlocal_dir_path = {test_dir}\n"
-                                "\n"
-                                "[engine_part:bash]\n"
-                                "\ttype = executor-bash\n"
-                                "\tsource_name = test_dir\n"
-                            )
+                type(global_config).config_dir = mock.PropertyMock(
+                    return_value=cli_config_dir
+                )
+
+                with open(os.path.join(cli_config_dir, "engine"), "w") as engine_file:
+                    engine_file.write(
+                        (
+                            "[engine:test]\n"
+                            "\tdescription = test engine\n"
+                            "\tsources = test_dir\n"
+                            "\tparts = bash\n"
+                            "\n"
+                            "[engine_source:test_dir]\n"
+                            "\ttype = local_dir\n"
+                            f"\tlocal_dir_path = {test_dir}\n"
+                            "\n"
+                            "[engine_part:bash]\n"
+                            "\ttype = executor-bash\n"
+                            "\tsource_name = test_dir\n"
                         )
+                    )
 
-                    engine_store = EngineStore(store_dir=store_dir)
+                engine_store = EngineStore(store_dir=store_dir)
 
-                    engine_store.external_engine_loaders = [UserDefinedEngineLoader()]
+                engine_store.external_engine_loaders = [UserDefinedEngineLoader()]
 
-                    local_test_engine = engine_store.find_engine("test")
-                    local_test_engine.install()
+                local_test_engine = engine_store.find_engine("test")
+                local_test_engine.install()
 
-                    assert local_test_engine.name == "test"
+                assert local_test_engine.name == "test"

@@ -2,7 +2,7 @@ import os
 import subprocess
 import shutil
 
-from hamlet import env as global_env
+from hamlet.env import HAMLET_GLOBAL_CONFIG
 from .exceptions import BackendException
 
 
@@ -48,7 +48,7 @@ def run(
 ):
 
     env_overrides = {
-        **global_env.ENGINE_ENV,
+        **HAMLET_GLOBAL_CONFIG.engine_environment,
         **__env_params_to_envvars(env),
         **os.environ,
     }
