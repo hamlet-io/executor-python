@@ -9,7 +9,7 @@ from hamlet.backend.engine.exceptions import (
     HamletEngineInvalidVersion,
     EngineStoreMissingEngineException,
 )
-from hamlet.env import set_engine_env
+from hamlet.env import HAMLET_GLOBAL_CONFIG
 
 
 def setup_global_engine(engine_override):
@@ -67,7 +67,7 @@ def get_engine_env(engine_override):
     else:
         engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
 
-    set_engine_env(engine.environment)
+    HAMLET_GLOBAL_CONFIG.engine_environment = engine.environment
 
 
 def check_engine_update(engine_override, update_install, cache_timeout=0):
