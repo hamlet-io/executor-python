@@ -1,6 +1,30 @@
 # Changelog
 
-## latest (2021-07-16)
+## latest (2021-08-08)
+
+#### New Features
+
+* user defined engines
+* add local directory engine source
+* add district based deployment filters
+#### Fixes
+
+* clean engine argument handling
+* rename config file option to reflect reality
+#### Refactorings
+
+* config directory handling
+* move loaders to their own modules
+#### Docs
+
+* add basic class docs for the config files
+#### Others
+
+* linting fixes
+
+Full set of changes: [`9.4.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.4.0...latest)
+
+## 9.4.0 (2021-07-16)
 
 #### New Features
 
@@ -10,8 +34,11 @@
 * wrong function call for digest ([#215](https://github.com/hamlet-io/executor-python/issues/215))
 * add description
 * (ci): update repository url
+#### Others
 
-Full set of changes: [`9.3.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.3.0...latest)
+* changelog bump ([#212](https://github.com/hamlet-io/executor-python/issues/212))
+
+Full set of changes: [`9.3.0...9.4.0`](https://github.com/hamlet-io/executor-python/compare/9.3.0...9.4.0)
 
 ## 9.3.0 (2021-07-10)
 
