@@ -97,6 +97,6 @@ def check_engine_update(engine_override, update_install, cache_timeout=0):
             engine.install()
         else:
             click.secho(
-                f"[*] to install update run: hamlet engine install-engine {engine_name}",
+                f"[*] to install update run: hamlet engine install-engine {engine_name} --update",
                 fg="yellow",
             )

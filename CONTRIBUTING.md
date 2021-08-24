@@ -11,7 +11,7 @@ You will need an existing hamlet workspace with `python` and `make` available ( 
 2. Hop into the executor clone location and setup a python venv
 
     ```bash
-    cd hamlet/executor/python/hamlet
+    cd hamlet/executor/python
     python -m venv .venv
     . .venv/bin/activate
 
@@ -19,7 +19,7 @@ You will need an existing hamlet workspace with `python` and `make` available ( 
     pip install -r requirements/dev.txt
 
     # Install the hamlet into the venv in edit mode
-    pip install -e hamlet
+    pip install -e .
     ```
 
 When calling hamlet from within the venv the development installation will be used instead of the workspace installation

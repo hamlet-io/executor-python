@@ -221,6 +221,10 @@ def clean_engines(name):
 def install_engine(opts, name, force, update):
     """
     Install an engine
+
+    Installs are designed to be idempotent so once installed, the -u
+    or -f switches need to be used to install a more recent version
+    of an existing engine.
     """
 
     if name is None:
