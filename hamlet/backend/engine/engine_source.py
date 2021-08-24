@@ -114,12 +114,12 @@ class ContainerEngineSource(EngineSourceInterface):
 
     def pull(self, dst_dir):
 
-        pull_manifest = self._container_repository.pull(self.tag, dst_dir)
+        pull_digest = self._container_repository.pull(self.tag, dst_dir)
 
         return EngineSourcePullState(
             name=self.name,
             type=self.__class__.__name__,
-            digest=pull_manifest["config"]["digest"],
+            digest=pull_digest,
             source_metadata={
                 "registry_url": self.registry_url,
                 "repository": self.repository,
