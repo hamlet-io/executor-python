@@ -122,7 +122,7 @@ class ContainerRepository:
         ]
 
     def get_tag_digest(self, tag):
-        return self.get_tag_manifest(tag)["config"]["digest"]
+        return self.get_tag_manifest(tag).headers["docker-content-digest"]
 
     def get_tag_manifest(self, tag):
         manifest_response = self.registry_client.get(
@@ -138,10 +138,11 @@ class ContainerRepository:
 
             raise e
 
-        return manifest_response.json()
+        return manifest_response
 
     def pull(self, tag, dst_dir):
-        manifest = self.get_tag_manifest(tag)
+        manifest_response = self.get_tag_manifest(tag)
+        manifest = manifest_response.json()
 
         with tempfile.TemporaryDirectory() as extract_dir:
             with tempfile.TemporaryDirectory() as stage_dir:
@@ -193,4 +194,4 @@ class ContainerRepository:
                         shutil.rmtree(dst_dir)
                     shutil.copytree(extract_dir, dst_dir, symlinks=True)
 
-        return manifest
+        return manifest_response.headers["docker-content-digest"]

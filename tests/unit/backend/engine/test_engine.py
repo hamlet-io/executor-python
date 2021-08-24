@@ -18,15 +18,14 @@ def mock_container_registry():
         @mock.patch("hamlet.backend.engine.engine_source.ContainerRepository")
         def wrapper(container_repository, *args, **kwargs):
 
-            container_repository.return_value.get_tag_digest.return_value = (
-                "config_digest[1]"
-            )
+            container_repository.return_value.get_tag_digest.return_value = "digest[1]"
             container_repository.return_value.get_tag_manifest.return_value = {
-                "config": {"digest": "config_digest[1]"}
+                "schemaVersion": 2,
+                "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+                "config": {"digest": "config_digest[1]"},
+                "layers": [],
             }
-            container_repository.return_value.pull.return_value = {
-                "config": {"digest": "config_digest[1]"}
-            }
+            container_repository.return_value.pull.return_value = "digest[1]"
 
             return func(container_repository, *args, **kwargs)
 
@@ -130,7 +129,7 @@ def test_unicycle_engine_loading(container_repository):
 
         assert unicycle_engine.name == "unicycle"
 
-        container_digests = ["config_digest[1]"] * len(unicycle_engine.sources)
+        container_digests = ["digest[1]"] * len(unicycle_engine.sources)
         expected_digest = (
             "sha256:"
             + hashlib.sha256(":".join(container_digests).encode("utf-8")).hexdigest()
