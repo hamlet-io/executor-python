@@ -20,7 +20,13 @@ class TransferImageAutomationRunner(AutomationRunner):
         super().__init__(**kwargs)
 
         self._source_account = source_account
-        self._context_env = kwargs
+
+        self._context_env = {
+            "DEPLOYMENT_UNITS": deployment_unit,
+            "IMAGE_FORMATS": image_format,
+            "GIT_COMMIT": build_reference,
+            **kwargs,
+        }
 
         self._context_env["FROM_ACCOUNT"] = source_account
         self._context_env["FROM_ENVIRONMENT"] = source_environment
