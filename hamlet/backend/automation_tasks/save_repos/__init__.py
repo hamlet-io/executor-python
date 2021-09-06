@@ -1,0 +1,48 @@
+from hamlet.backend.automation_tasks.base import AutomationRunner
+from hamlet.backend.automation import (
+    set_automation_context,
+    construct_tree,
+    save_cmdb_repos
+)
+
+
+class SaveCMDBAutomationRunner(AutomationRunner):
+    def __init__(
+        self,
+        account_repos,
+        commit_message,
+        product_repos,
+        reference,
+        tag,
+        **kwargs
+    ):
+        super().__init__()
+
+        self._context_env = {
+            "DEFER_REPO_PUSH" : "false",
+            **kwargs,
+        }
+
+        self._script_list = [
+            {"func": set_automation_context.run, "args": {"_is_cli": True}},
+            {
+                "func": construct_tree.run,
+                "args": {
+                    "exclude_account_dirs": True,
+                    "exclude_product_dirs": True,
+                    "use_existing_tree": True,
+                    "_is_cli": True,
+                },
+            },
+            {
+                "func": save_cmdb_repos.run,
+                "args": {
+                    "account_repos": account_repos,
+                    "commit_message": commit_message,
+                    "product_repos": product_repos,
+                    "reference": reference,
+                    "tag": tag,
+                    "_is_cli": True
+                }
+            },
+        ]

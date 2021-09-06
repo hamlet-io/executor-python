@@ -1,0 +1,25 @@
+from hamlet.backend.common import runner
+
+
+def run(
+    account_repos=None,
+    product_repos=None,
+    commit_message=None,
+    reference=None,
+    tag=None,
+    log_level=None,
+    _is_cli=False,
+    env={},
+):
+
+    opts = {
+        "-a": account_repos,
+        "-m": commit_message,
+        "-p": product_repos,
+        "-r": reference,
+        "-t": tag
+    }
+    env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
+    runner.run(
+        "saveCMDBRepos.sh", [], opts, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+    )
