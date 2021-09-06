@@ -17,9 +17,14 @@ def run(
         "-m": commit_message,
         "-p": product_repos,
         "-r": reference,
-        "-t": tag
+        "-t": tag,
     }
     env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
     runner.run(
-        "saveCMDBRepos.sh", [], opts, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+        "saveCMDBRepos.sh",
+        [],
+        opts,
+        env,
+        _is_cli,
+        script_base_path_env="AUTOMATION_DIR",
     )

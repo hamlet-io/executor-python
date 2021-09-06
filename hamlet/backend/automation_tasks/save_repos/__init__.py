@@ -2,24 +2,18 @@ from hamlet.backend.automation_tasks.base import AutomationRunner
 from hamlet.backend.automation import (
     set_automation_context,
     construct_tree,
-    save_cmdb_repos
+    save_cmdb_repos,
 )
 
 
 class SaveCMDBAutomationRunner(AutomationRunner):
     def __init__(
-        self,
-        account_repos,
-        commit_message,
-        product_repos,
-        reference,
-        tag,
-        **kwargs
+        self, account_repos, commit_message, product_repos, reference, tag, **kwargs
     ):
         super().__init__()
 
         self._context_env = {
-            "DEFER_REPO_PUSH" : "false",
+            "DEFER_REPO_PUSH": "false",
             **kwargs,
         }
 
@@ -42,7 +36,7 @@ class SaveCMDBAutomationRunner(AutomationRunner):
                     "product_repos": product_repos,
                     "reference": reference,
                     "tag": tag,
-                    "_is_cli": True
-                }
+                    "_is_cli": True,
+                },
             },
         ]
