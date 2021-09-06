@@ -12,18 +12,19 @@ def group():
     Manage CMDBs
     """
 
+
 @group.command(
     "commit-changes", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
     "--accounts/--no-accounts",
     default=False,
-    help="Include account repostories in save"
+    help="Include account repostories in save",
 )
 @click.option(
     "--products/--no-products",
     default=True,
-    help="Include product repositories in save"
+    help="Include product repositories in save",
 )
 @click.option(
     "--commit-message",
@@ -50,8 +51,10 @@ def commit_changes(opts, accounts, products, commit_message, reference, tag, **k
         "commit_message": commit_message,
         "product_repos": products,
         "reference": reference,
-        "tag" : tag
+        "tag": tag,
     }
 
-    task = save_repos_backend.SaveCMDBAutomationRunner(**opts.opts, **kwargs, **command_args)
+    task = save_repos_backend.SaveCMDBAutomationRunner(
+        **opts.opts, **kwargs, **command_args
+    )
     task.run()
