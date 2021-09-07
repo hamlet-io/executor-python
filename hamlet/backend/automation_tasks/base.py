@@ -2,7 +2,6 @@ import os
 import tempfile
 from abc import ABC
 
-from hamlet.backend.automation.properties_file import get_automation_properties
 from configparser import ConfigParser
 
 

@@ -33,7 +33,10 @@ class TransferImageAutomationRunner(AutomationRunner):
         self._context_env["FROM_ENVIRONMENT"] = source_environment
 
         self._script_list = [
-            {"func" : properties_file.get_automation_properties, "args" : { **self._context_env}},
+            {
+                "func": properties_file.get_automation_properties,
+                "args": {**self._context_env},
+            },
             {
                 "func": set_automation_context.run,
                 "args": {"_is_cli": True, "release_mode": "promotion"},
