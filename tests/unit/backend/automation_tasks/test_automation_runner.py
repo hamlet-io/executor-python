@@ -3,8 +3,7 @@ from unittest import mock
 from hamlet.backend.automation_tasks.base import AutomationRunner
 
 
-@mock.patch("hamlet.backend.automation_tasks.base.get_automation_properties")
-def test_automation_runner_task(get_automation_properties):
+def test_automation_runner_task():
     """
     Tests that a task in the runner has been called
     """

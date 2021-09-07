@@ -44,7 +44,7 @@ class AutomationRunner(ABC):
 
                 result = script["func"](env=self._context_env, **script["args"])
 
-                if result is not None:
+                if isinstance(result, dict):
                     self._context_env.update(result)
 
                 script_context_envs = self._load_properties_to_context(
