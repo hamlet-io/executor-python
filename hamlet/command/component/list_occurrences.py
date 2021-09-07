@@ -13,7 +13,7 @@ LIST_OCCURRENCES_QUERY = (
     ".{"
     "TierId:Core.Tier.Id,"
     "ComponentId:Core.Component.RawId,"
-    "Name:Core.TypedRawName,"
+    "Name:Core.TypedName,"
     "Type:Core.Type"
     "}"
 )

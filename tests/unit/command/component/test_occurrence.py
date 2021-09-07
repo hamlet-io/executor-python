@@ -75,7 +75,7 @@ occurrence_state_data = {
             "Core": {
                 "Tier": {"Id": "TierId[1]"},
                 "Component": {"Id": "ComponentId[1]", "RawId": "ComponentRawId[1]"},
-                "TypedRawName": "CoreRawName[1]",
+                "TypedName": "CoreTypedName[1]",
                 "Type": "CoreType[1]",
             },
             "Configuration": {
@@ -93,7 +93,7 @@ occurrence_state_data = {
             "Core": {
                 "Tier": {"Id": "TierId[2]"},
                 "Component": {"Id": "ComponentId[2]", "RawId": "ComponentRawId[2]"},
-                "TypedRawName": "CoreRawName[2]",
+                "TypedName": "CoreTypedName[2]",
                 "Type": "CoreType[2]",
             },
             "Configuration": {
@@ -123,59 +123,59 @@ def test_list_occurrences(blueprint_mock, ContextClassMock):
     assert {
         "TierId": "TierId[1]",
         "ComponentId": "ComponentRawId[1]",
-        "Name": "CoreRawName[1]",
+        "Name": "CoreTypedName[1]",
         "Type": "CoreType[1]",
     } in result
     assert {
         "TierId": "TierId[2]",
         "ComponentId": "ComponentRawId[2]",
-        "Name": "CoreRawName[2]",
+        "Name": "CoreTypedName[2]",
         "Type": "CoreType[2]",
     } in result
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence(blueprint_mock, ContextClassMock):
 
     cli = CliRunner()
-    result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]"])
+    result = cli.invoke(describe_occurrence, ["--name", "CoreTypedName[1]"])
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == occurrence_state_data["Occurrences"][0]
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
 
     cli = CliRunner()
     result = cli.invoke(
         describe_occurrence,
-        ["--name", "CoreRawName[1]", "--query", "Configuration.Solution"],
+        ["--name", "CoreTypedName[1]", "--query", "Configuration.Solution"],
     )
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == {"deployment:Unit": "DeploymentUnit[1]"}
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
 
     cli = CliRunner()
-    result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "solution"])
+    result = cli.invoke(describe_occurrence, ["--name", "CoreTypedName[1]", "solution"])
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == {"deployment:Unit": "DeploymentUnit[1]"}
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
 
     cli = CliRunner()
-    result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "resources"])
+    result = cli.invoke(describe_occurrence, ["--name", "CoreTypedName[1]", "resources"])
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == {
@@ -183,20 +183,20 @@ def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
     }
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextClassMock):
 
     cli = CliRunner()
     result = cli.invoke(
-        describe_occurrence, ["--name", "CoreRawName[1]", "setting-namespaces"]
+        describe_occurrence, ["--name", "CoreTypedName[1]", "setting-namespaces"]
     )
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == [{"Key": "SettingNamespace[1]"}]
 
 
-@mock_describe_context("CoreRawName[1]")
+@mock_describe_context("CoreTypedName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
 
@@ -205,7 +205,7 @@ def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
         describe_occurrence,
         [
             "--name",
-            "CoreRawName[1]",
+            "CoreTypedName[1]",
             "attributes",
             "--output-format",
             "json",
