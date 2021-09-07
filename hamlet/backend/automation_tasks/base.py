@@ -37,16 +37,17 @@ class AutomationRunner(ABC):
 
         self._context_env["AUTOMATION_PROVIDER"] = "hamletcli"
 
-        automation_properties = get_automation_properties(**self._context_env)
-        self._context_env.update(automation_properties)
-
         with tempfile.TemporaryDirectory() as tmp_dir:
 
             self._context_env["AUTOMATION_DATA_DIR"] = tmp_dir
 
             for script in self._script_list:
 
-                script["func"](env=self._context_env, **script["args"])
+                result = script["func"](env=self._context_env, **script["args"])
+
+                if result is not None:
+                    self._context_env.update(result)
+
                 script_context_envs = self._load_properties_to_context(
                     os.path.join(tmp_dir, "context.properties")
                 )

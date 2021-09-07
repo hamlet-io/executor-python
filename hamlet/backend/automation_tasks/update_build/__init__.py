@@ -1,5 +1,6 @@
 from hamlet.backend.automation_tasks.base import AutomationRunner
 from hamlet.backend.automation import (
+    properties_file,
     set_automation_context,
     construct_tree,
     confirm_builds,
@@ -25,10 +26,12 @@ class UpdateBuildAutomationRunner(AutomationRunner):
             "CODE_TAGS": code_tag,
             "IMAGE_FORMATS": image_format,
             "REGISTRY_SCOPE": registry_scope,
+            "DEFER_REPO_PUSH": "true",
             **kwargs,
         }
 
         self._script_list = [
+            {"func" : properties_file.get_automation_properties, "args" : { **self._context_env}},
             {"func": set_automation_context.run, "args": {"_is_cli": True}},
             {
                 "func": construct_tree.run,
