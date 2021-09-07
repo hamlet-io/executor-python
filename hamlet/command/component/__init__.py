@@ -6,6 +6,9 @@ from hamlet.command.component.describe_occurrence import (
 from hamlet.command.component.list_occurrences import (
     list_occurrences as list_occurrences_command,
 )
+from hamlet.command.component.query_occurrences import (
+    query_occurrences as query_occurrences_command,
+)
 
 
 @cli.group("component", context_settings=dict(max_content_width=240))
@@ -18,3 +21,4 @@ def component_group():
 
 component_group.add_command(describe_occurrence_group)
 component_group.add_command(list_occurrences_command)
+component_group.add_command(query_occurrences_command)

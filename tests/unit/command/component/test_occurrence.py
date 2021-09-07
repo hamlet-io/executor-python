@@ -7,6 +7,7 @@ from click.testing import CliRunner
 
 from hamlet.command.component.describe_occurrence import describe_occurrence
 from hamlet.command.component.list_occurrences import list_occurrences
+from hamlet.command.component.query_occurrences import query_occurrences
 
 from hamlet.command.component.common import DescribeContext
 
@@ -214,3 +215,20 @@ def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
     print(result.exc_info)
     assert result.exit_code == 0, result.output
     assert json.loads(result.output) == {"ATTRIBUTE[1]": "AttributeValue[1]"}
+
+
+@mock_backend(occurrence_state_data)
+def test_query_occurrences(blueprint_mock, ContextClassMock):
+
+    cli = CliRunner()
+    result = cli.invoke(
+        query_occurrences,
+        [
+            "--query",
+            "Occurrences[0].{ComponentId:Core.Component.Id}",
+        ],
+    )
+
+    print(result.exc_info)
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.output) == {"ComponentId": "ComponentId[1]"}
