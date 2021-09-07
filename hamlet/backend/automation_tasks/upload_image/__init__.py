@@ -1,5 +1,6 @@
 from hamlet.backend.automation_tasks.base import AutomationRunner
 from hamlet.backend.automation import (
+    properties_file,
     set_automation_context,
     construct_tree,
     manage_images,
@@ -34,6 +35,7 @@ class UploadImageAutomationRunner(AutomationRunner):
         }
 
         self._script_list = [
+            {"func" : properties_file.get_automation_properties, "args" : { **self._context_env}},
             {"func": set_automation_context.run, "args": {"_is_cli": True}},
             {
                 "func": construct_tree.run,
