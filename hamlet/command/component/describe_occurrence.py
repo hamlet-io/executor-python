@@ -1,5 +1,8 @@
 import click
 import json
+import jmespath
+from jmespath.exceptions import JMESPathError
+from click.decorators import option
 
 from hamlet.command.common import config, exceptions
 from hamlet.command.common.display import json_or_table_option, table_from_dict
@@ -17,14 +20,22 @@ def query_occurrence_state(ctx, query=None):
     options_context = ctx.ensure_object(config.Options)
     describe_context = ctx.ensure_object(DescribeContext)
 
-    query_result = query_occurrences_state(
+    base_result = query_occurrences_state(
         options=options_context,
         query=DESCRIBE_OCCURRENCE_QUERY,
         query_params={"name": describe_context.name},
-        sub_query_text=query,
     )
 
-    return query_result
+    if base_result is None:
+        raise exceptions.BackendException(f"Could not find occurrence {describe_context.name}")
+
+    if query:
+        try:
+            return jmespath.search(query, base_result)
+        except JMESPathError as e:
+            raise exceptions.BackendException(f"JMESPath query error: {str(e)}") from e
+    else:
+        return base_result
 
 
 @click.group(
