@@ -2,7 +2,6 @@ import click
 import json
 import jmespath
 from jmespath.exceptions import JMESPathError
-from click.decorators import option
 
 from hamlet.command.common import config, exceptions
 from hamlet.command.common.display import json_or_table_option, table_from_dict
@@ -27,7 +26,9 @@ def query_occurrence_state(ctx, query=None):
     )
 
     if base_result is None:
-        raise exceptions.BackendException(f"Could not find occurrence {describe_context.name}")
+        raise exceptions.BackendException(
+            f"Could not find occurrence {describe_context.name}"
+        )
 
     if query:
         try:
