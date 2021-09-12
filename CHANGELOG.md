@@ -1,6 +1,30 @@
 # Changelog
 
-## latest (2021-08-08)
+## latest (2021-09-12)
+
+#### New Features
+
+* add cmdb save command
+* add occurrences query
+#### Fixes
+
+* handle user facing errors
+* tests and handle result types
+* provide details to set context for automation
+* use content digest as container digests
+#### Refactorings
+
+* only get properties if required
+#### Others
+
+* linting updates
+* linting fixes
+* linting fixes
+* update engine install documentation ([#222](https://github.com/hamlet-io/executor-python/issues/222))
+
+Full set of changes: [`9.5.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.5.0...latest)
+
+## 9.5.0 (2021-08-08)
 
 #### New Features
 
@@ -20,9 +44,10 @@
 * add basic class docs for the config files
 #### Others
 
+* changelog bump ([#216](https://github.com/hamlet-io/executor-python/issues/216))
 * linting fixes
 
-Full set of changes: [`9.4.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.4.0...latest)
+Full set of changes: [`9.4.0...9.5.0`](https://github.com/hamlet-io/executor-python/compare/9.4.0...9.5.0)
 
 ## 9.4.0 (2021-07-16)
 
