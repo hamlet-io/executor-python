@@ -1,6 +1,17 @@
 # Changelog
 
-## latest (2021-09-12)
+## latest (2021-09-14)
+
+#### Fixes
+
+* httpx package dep changes
+#### Others
+
+* changelog bump ([#219](https://github.com/hamlet-io/executor-python/issues/219))
+
+Full set of changes: [`9.6.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.0...latest)
+
+## 9.6.0 (2021-09-06)
 
 #### New Features
 
@@ -22,7 +33,7 @@
 * linting fixes
 * update engine install documentation ([#222](https://github.com/hamlet-io/executor-python/issues/222))
 
-Full set of changes: [`9.5.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.5.0...latest)
+Full set of changes: [`9.5.0...9.6.0`](https://github.com/hamlet-io/executor-python/compare/9.5.0...9.6.0)
 
 ## 9.5.0 (2021-08-08)
 
