@@ -113,6 +113,7 @@ class ContainerRepository:
             base_url=self.registry_url,
             auth=DockerRegistryV2Auth(self.repository, self.username, self.password),
             headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
+            follow_redirects=True,
         )
 
     @property
@@ -153,7 +154,6 @@ class ContainerRepository:
 
                         layer_url = self.registry_client.get(
                             url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
-                            allow_redirects=True,
                         ).url
 
                         with self.registry_client.stream(
