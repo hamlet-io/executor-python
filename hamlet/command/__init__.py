@@ -1,5 +1,6 @@
 import click
 import os
+import httpx
 
 from hamlet.command.common import decorators
 from hamlet.command.common.exceptions import backend_handler
@@ -55,15 +56,20 @@ def root(ctx, opts):
 
     if homeWritable:
         try:
-            setup_global_engine(opts.engine)
+            try:
+                setup_global_engine(opts.engine)
 
-        except HamletEngineInvalidVersion:
+            except HamletEngineInvalidVersion:
+                pass
+
+            if ctx.invoked_subcommand != "engine":
+
+                    check_engine_update(
+                        opts.engine, opts.engine_update_install, opts.engine_update_interval
+                    )
+
+        except httpx.HTTPError as e:
+            click.secho(f'[*] Could not check for updates - an error occurred accessing the registry', fg="yellow", error=True)
             pass
 
-        if ctx.invoked_subcommand != "engine":
-
-            check_engine_update(
-                opts.engine, opts.engine_update_install, opts.engine_update_interval
-            )
-
-        get_engine_env(opts.engine)
+    get_engine_env(opts.engine)
