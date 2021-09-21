@@ -64,12 +64,16 @@ def root(ctx, opts):
 
             if ctx.invoked_subcommand != "engine":
 
-                    check_engine_update(
-                        opts.engine, opts.engine_update_install, opts.engine_update_interval
-                    )
+                check_engine_update(
+                    opts.engine, opts.engine_update_install, opts.engine_update_interval
+                )
 
-        except httpx.HTTPError as e:
-            click.secho(f'[*] Could not check for updates - an error occurred accessing the registry', fg="yellow", error=True)
+        except httpx.HTTPError:
+            click.secho(
+                "[*] Could not check for updates - an error occurred accessing the registry",
+                fg="yellow",
+                error=True,
+            )
             pass
 
     get_engine_env(opts.engine)

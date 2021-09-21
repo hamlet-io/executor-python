@@ -68,7 +68,9 @@ class DockerRegistryV2Auth(httpx.Auth):
         except httpx.HTTPError as e:
             raise e
 
-        realm_token = json.loads(realm_response.text).get("access_token") or json.loads(realm_response.text).get("token")
+        realm_token = json.loads(realm_response.text).get("access_token") or json.loads(
+            realm_response.text
+        ).get("token")
         return f"Bearer {realm_token}"
 
     def _build_basic_auth_header(self, username, password) -> str:
