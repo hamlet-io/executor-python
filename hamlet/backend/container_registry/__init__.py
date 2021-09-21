@@ -6,6 +6,7 @@ import shutil
 import httpx
 import typing
 import www_authenticate
+import json
 
 from urllib import parse
 
@@ -60,9 +61,14 @@ class DockerRegistryV2Auth(httpx.Auth):
 
         realm_response = realm_client.get(
             self._build_realm_token_url(registry_response, repository, actions)
-        ).json()
-        realm_token = realm_response.get("access_token") or realm_response["token"]
+        )
 
+        try:
+            realm_response.raise_for_status()
+        except httpx.HTTPError as e:
+            raise e
+
+        realm_token = json.loads(realm_response.text).get("access_token") or json.loads(realm_response.text).get("token")
         return f"Bearer {realm_token}"
 
     def _build_basic_auth_header(self, username, password) -> str:
@@ -118,9 +124,13 @@ class ContainerRepository:
 
     @property
     def tags(self):
-        return self.registry_client.get(f"/v2/{self.repository}/tags/list").json()[
-            "tags"
-        ]
+        tag_response = self.registry_client.get(f"/v2/{self.repository}/tags/list")
+        try:
+            tag_response.raise_for_status()
+        except httpx.HTTPError as e:
+            raise e
+
+        return json.loads(tag_response.text).get("tags")
 
     def get_tag_digest(self, tag):
         return self.get_tag_manifest(tag).headers["docker-content-digest"]
@@ -152,12 +162,17 @@ class ContainerRepository:
                         dir=stage_dir, delete=False
                     ) as layer_file:
 
-                        layer_url = self.registry_client.get(
+                        layer_blob = self.registry_client.get(
                             url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
-                        ).url
+                        )
+
+                        try:
+                            layer_blob.raise_for_status()
+                        except httpx.HTTPError as e:
+                            raise e
 
                         with self.registry_client.stream(
-                            method="get", url=layer_url
+                            method="get", url=layer_blob.url
                         ) as r:
                             for chunk in r.iter_raw(chunk_size=(1024 * 1024 * 3)):
                                 layer_file.write(chunk)
