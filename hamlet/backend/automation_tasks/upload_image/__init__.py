@@ -36,19 +36,17 @@ class UploadImageAutomationRunner(AutomationRunner):
 
         self._script_list = [
             {
-                "func": properties_file.get_automation_properties,
-                "args": {**self._context_env},
-            },
-            {"func": set_automation_context.run, "args": {"_is_cli": True}},
-            {
                 "func": construct_tree.run,
                 "args": {
-                    "exclude_account_dirs": True,
-                    "exclude_product_dirs": True,
                     "use_existing_tree": True,
                     "_is_cli": True,
                 },
             },
+            {
+                "func": properties_file.get_automation_properties,
+                "args": {**self._context_env},
+            },
+            {"func": set_automation_context.run, "args": {"_is_cli": True}},
             {
                 "func": manage_images.run,
                 "args": {

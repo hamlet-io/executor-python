@@ -18,15 +18,19 @@ class SaveCMDBAutomationRunner(AutomationRunner):
         }
 
         self._script_list = [
-            {"func": set_automation_context.run, "args": {"_is_cli": True}},
             {
                 "func": construct_tree.run,
                 "args": {
-                    "exclude_account_dirs": True,
-                    "exclude_product_dirs": True,
                     "use_existing_tree": True,
                     "_is_cli": True,
                 },
+            },
+            {
+                "func": set_automation_context.run,
+                "args": {
+                    "_is_cli": True,
+                    "context_credentials": False
+                }
             },
             {
                 "func": save_cmdb_repos.run,
