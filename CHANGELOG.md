@@ -1,15 +1,29 @@
 # Changelog
 
-## latest (2021-09-14)
+## latest (2021-09-26)
+
+#### Fixes
+
+* determine tree before context
+* handle container registry update failures
+#### Others
+
+* linting updates
+* liniting fixes
+
+Full set of changes: [`9.6.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.1...latest)
+
+## 9.6.1 (2021-09-15)
 
 #### Fixes
 
 * httpx package dep changes
 #### Others
 
+* changelog bump ([#232](https://github.com/hamlet-io/executor-python/issues/232))
 * changelog bump ([#219](https://github.com/hamlet-io/executor-python/issues/219))
 
-Full set of changes: [`9.6.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.0...latest)
+Full set of changes: [`9.6.0...9.6.1`](https://github.com/hamlet-io/executor-python/compare/9.6.0...9.6.1)
 
 ## 9.6.0 (2021-09-06)
 
