@@ -27,10 +27,7 @@ class SaveCMDBAutomationRunner(AutomationRunner):
             },
             {
                 "func": set_automation_context.run,
-                "args": {
-                    "_is_cli": True,
-                    "context_credentials": False
-                }
+                "args": {"_is_cli": True, "context_credentials": False},
             },
             {
                 "func": save_cmdb_repos.run,

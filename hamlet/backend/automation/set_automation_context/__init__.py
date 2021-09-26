@@ -16,8 +16,8 @@ def run(
 ):
     env = {
         "AUTOMATION_LOG_LEVEL": log_level,
-        "AUTOMATION_CONTEXT_CREDENTIALS" : context_credentials,
-        **env
+        "AUTOMATION_CONTEXT_CREDENTIALS": context_credentials,
+        **env,
     }
     opts = {
         "-t": tenant,
