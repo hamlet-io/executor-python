@@ -10,10 +10,15 @@ def run(
     product=None,
     environment=None,
     segment=None,
+    context_credentials=None,
     _is_cli=False,
     env={},
 ):
-    env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
+    env = {
+        "AUTOMATION_LOG_LEVEL": log_level,
+        "AUTOMATION_CONTEXT_CREDENTIALS" : context_credentials,
+        **env
+    }
     opts = {
         "-t": tenant,
         "-a": account,
