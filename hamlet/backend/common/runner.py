@@ -37,7 +37,7 @@ def __env_params_to_envvars(env=None):
             if isinstance(value, tuple):
                 cmd_env[key.upper()] = ",".join(value)
             elif isinstance(value, bool):
-                cmd_env[key.upper()] = str(bool).lower()
+                cmd_env[key.upper()] = str(value).lower()
             else:
                 cmd_env[key.upper()] = str(value)
     return cmd_env
