@@ -7,6 +7,7 @@ def run(
     commit_message=None,
     reference=None,
     tag=None,
+    defer_push=None,
     log_level=None,
     _is_cli=False,
     env={},
@@ -19,7 +20,7 @@ def run(
         "-r": reference,
         "-t": tag,
     }
-    env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
+    env = {"AUTOMATION_LOG_LEVEL": log_level, "DEFER_REPO_PUSH": defer_push, **env}
     runner.run(
         "saveCMDBRepos.sh",
         [],
