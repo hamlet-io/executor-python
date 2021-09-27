@@ -8,12 +8,18 @@ from hamlet.backend.automation import (
 
 class SaveCMDBAutomationRunner(AutomationRunner):
     def __init__(
-        self, account_repos, commit_message, product_repos, reference, tag, **kwargs
+        self,
+        account_repos,
+        commit_message,
+        product_repos,
+        reference,
+        tag,
+        defer_push,
+        **kwargs
     ):
         super().__init__()
 
         self._context_env = {
-            "DEFER_REPO_PUSH": "false",
             **kwargs,
         }
 
@@ -36,6 +42,7 @@ class SaveCMDBAutomationRunner(AutomationRunner):
                     "commit_message": commit_message,
                     "product_repos": product_repos,
                     "reference": reference,
+                    "defer_push": defer_push,
                     "tag": tag,
                     "_is_cli": True,
                 },
