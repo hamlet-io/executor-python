@@ -1,6 +1,23 @@
 # Changelog
 
-## latest (2021-09-26)
+## latest (2021-09-28)
+
+#### New Features
+
+* extend commit message support
+#### Fixes
+
+* (runner): boolean string conversion
+#### Refactorings
+
+* allow for overriding defer_push
+#### Others
+
+* changelog bump ([#234](https://github.com/hamlet-io/executor-python/issues/234))
+
+Full set of changes: [`9.6.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.2...latest)
+
+## 9.6.2 (2021-09-26)
 
 #### Fixes
 
@@ -11,7 +28,7 @@
 * linting updates
 * liniting fixes
 
-Full set of changes: [`9.6.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.1...latest)
+Full set of changes: [`9.6.1...9.6.2`](https://github.com/hamlet-io/executor-python/compare/9.6.1...9.6.2)
 
 ## 9.6.1 (2021-09-15)
 
