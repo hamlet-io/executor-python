@@ -198,26 +198,6 @@ class Options:
         self._set_option("engine", value)
 
     @property
-    def engine_update_install(self):
-        """Handle how engine updates are handled"""
-        return self._get_option("engine_update_install")
-
-    @engine_update_install.setter
-    def engine_update_install(self, value):
-        """Set the engine_update_install setting"""
-        self._set_option("engine_update_install", value)
-
-    @property
-    def engine_update_interval(self):
-        """How often to check for updates to active engine"""
-        return self._get_option("engine_update_interval")
-
-    @engine_update_interval.setter
-    def engine_update_interval(self, value):
-        """How often to check for updates to active engine"""
-        self._set_option("engine_update_interval", value)
-
-    @property
     def generation_framework(self):
         """Get the generation_framework setting"""
         return self._get_option("generation_framework")

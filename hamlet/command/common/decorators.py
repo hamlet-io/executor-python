@@ -75,21 +75,6 @@ def common_engine_options(func):
         help="The name of the engine to use",
         show_envvar=True,
     )
-    @click.option(
-        "--engine-update-install/--engine-update-check",
-        envvar="HAMLET_ENGINE_INSTALL_UPDATE",
-        default=False,
-        help="Check or install engine updates",
-        show_envvar=True,
-    )
-    @click.option(
-        "--engine-update-interval",
-        envvar="HAMLET_ENGINE_UPDATE_INTERVAL",
-        type=click.INT,
-        default=3600,
-        help="How often in seconds to check for engine updates",
-        show_envvar=True,
-    )
     @click.pass_context
     @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
@@ -98,8 +83,6 @@ def common_engine_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.engine = kwargs.pop("engine")
-        opts.engine_update_install = kwargs.pop("engine_update_install")
-        opts.engine_update_interval = kwargs.pop("engine_update_interval")
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 

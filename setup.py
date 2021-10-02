@@ -2,6 +2,7 @@ import subprocess
 
 from setuptools import setup, find_packages
 from setuptools.command.install import install
+from setuptools.command.develop import develop
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -16,11 +17,24 @@ packages = find_packages(exclude=["tests.*", "tests"])
 class InstallCommand(install):
     def __post_install(self, dir):
         subprocess.call(["./setup-autocomplete.sh"])
+        subprocess.call(["./setup-hamlet.sh"])
 
     def run(self):
         install.run(self)
         self.execute(
-            self.__post_install, (self.install_lib,), msg="Setting up autocomplete..."
+            self.__post_install, (self.install_lib,), msg="Setting up hamlet..."
+        )
+
+
+class DevelopCommand(develop):
+    def __post_install(self, dir):
+        subprocess.call(["./setup-autocomplete.sh"])
+        subprocess.call(["./setup-hamlet.sh"])
+
+    def run(self):
+        develop.run(self)
+        self.execute(
+            self.__post_install, (self.install_lib,), msg="Setting up hamlet..."
         )
 
 
@@ -61,7 +75,10 @@ setup(
     include_package_data=True,
     python_requires=">=3.6",
     entry_points={"console_scripts": ["hamlet=hamlet:command.root"]},
-    cmdclass={"install": InstallCommand},
+    cmdclass={
+        "install": InstallCommand,
+        "develop": DevelopCommand,
+    },
     classifiers=[
         "Natural Language :: English",
         "Intended Audience :: Developers",
