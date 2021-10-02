@@ -28,15 +28,6 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6
-
-      - name: install extras deps
-        run: |
-          gem install cfn-nag
-
       - name: install reqs
         run: |
           pip install -r requirements/dev.txt
