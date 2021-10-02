@@ -70,9 +70,10 @@ setup(
         # Template testing
         "pytest>=6.0.0,<7.0.0",
         # AWS testing dependencies
-        "boto3>=1.17.0,<2.0.0",
-        "botocore>=1.21.53,<2.0.0",
-        "cfn-lint>=0.51.0,<1.0.0",
+        # - boto3 locked to support checkov current requirements
+        "boto3>=1.17.111,<1.18.0",
+        "botocore>=1.20.112,<2.0.0",
+        "cfn-lint>=0.54.1,<1.0.0",
         "cfn-flip>=1.2.0,<2.0.0",
         "checkov>=2.0.461,<3.0.0",
         "six>=1.15.0,<2.0.0",
