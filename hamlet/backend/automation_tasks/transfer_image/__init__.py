@@ -5,7 +5,6 @@ from hamlet.backend.automation import (
     manage_build_references,
     construct_tree,
 )
-from hamlet.backend.automation.properties_file import get_automation_properties
 
 
 class TransferImageAutomationRunner(AutomationRunner):
@@ -20,17 +19,14 @@ class TransferImageAutomationRunner(AutomationRunner):
     ):
         super().__init__(**kwargs)
 
-        self._source_account = source_account
-
         self._context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,
             "IMAGE_FORMATS": image_format,
             "GIT_COMMIT": build_reference,
+            "FROM_ACCOUNT": source_account,
+            "FROM_ENVIRONMENT": source_environment,
             **kwargs,
         }
-
-        self._context_env["FROM_ACCOUNT"] = source_account
-        self._context_env["FROM_ENVIRONMENT"] = source_environment
 
         self._script_list = [
             {
@@ -43,6 +39,14 @@ class TransferImageAutomationRunner(AutomationRunner):
             {
                 "func": properties_file.get_automation_properties,
                 "args": {**self._context_env},
+            },
+            {
+                "func": properties_file.get_automation_properties,
+                "args": {
+                    **self._context_env,
+                    "account": source_account,
+                    "environment": source_environment,
+                },
             },
             {
                 "func": set_automation_context.run,
@@ -59,16 +63,3 @@ class TransferImageAutomationRunner(AutomationRunner):
                 },
             },
         ]
-
-    def run(self):
-
-        source_args = {
-            **self._context_env,
-            **{
-                "account": self._source_account,
-            },
-        }
-        source_automation_properties = get_automation_properties(**source_args)
-        self._context_env.update(source_automation_properties)
-
-        return super().run()
