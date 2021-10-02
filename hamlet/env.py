@@ -15,6 +15,9 @@ class GlobalEnvironmentConfig:
         self._config_dir = os.environ.get(
             "HAMLET_CLI_CONFIG_DIR", os.path.join(self._home_dir, "config")
         )
+        self._cli_cache_dir = os.environ.get(
+            "HAMLET_CLI_CACHE_DIR", os.path.join(self._home_dir, "cli_cache")
+        )
 
         self._engine = None
         self._engine_env = {"GENERATION_DIR": os.environ.get("GENERATION_DIR")}
@@ -26,6 +29,10 @@ class GlobalEnvironmentConfig:
     @property
     def config_dir(self):
         return self._config_dir
+
+    @property
+    def cli_cache_dir(self):
+        return self._cli_cache_dir
 
     @property
     def engine(self):

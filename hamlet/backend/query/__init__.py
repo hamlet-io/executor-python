@@ -5,6 +5,7 @@ import tempfile
 import jmespath
 
 from jmespath.exceptions import JMESPathError
+from hamlet.env import HAMLET_GLOBAL_CONFIG
 from hamlet.backend.create import template
 from hamlet.backend.common import context
 from hamlet.backend.common import exceptions
@@ -162,7 +163,11 @@ class Query:
             tempdir = tempfile.gettempdir()
             output_dir = os.path.join(tempdir, "hamlet", "query", "mock")
         else:
-            ctx = context.Context(directory=cwd, root_dir=root_dir)
+            ctx = context.Context(
+                directory=cwd,
+                root_dir=root_dir,
+                cache_dir=HAMLET_GLOBAL_CONFIG.cli_cache_dir,
+            )
             output_dir = os.path.join(ctx.cache_dir, "query", ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
         if not os.path.isfile(output_filepath) or not use_cache:

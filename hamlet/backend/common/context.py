@@ -86,7 +86,7 @@ class Context:
     # Cache dir path
     @property
     def cache_dir(self):
-        return os.path.join(self.__root_dir, "cache")
+        return self.__cache_dir
 
     @property
     def account_dir(self):
@@ -112,7 +112,13 @@ class Context:
         hash_str = f"{self.level_name}:{self.level_file}:{self.directory}:{json.dumps(self.config)}"
         return hashlib.md5(hash_str.encode()).hexdigest()
 
-    def __init__(self, directory: str, root_dir: str = None, config: dict = None):
+    def __init__(
+        self,
+        directory: str,
+        root_dir: str = None,
+        config: dict = None,
+        cache_dir: str = None,
+    ):
         config = config or {}
         self.config = config
         self.props = {}
@@ -127,6 +133,11 @@ class Context:
             self.__root_dir = root_dir
         else:
             self.__try_to_find_root()
+
+        if cache_dir is not None:
+            self.__cache_dir = cache_dir
+        else:
+            self.__cache_dir = os.path.join(self.__root_dir, "cache")
 
         if self.ACCOUNT_REQUIRED or self.TENANT_REQUIRED:
             self.__try_to_set_tenant()
