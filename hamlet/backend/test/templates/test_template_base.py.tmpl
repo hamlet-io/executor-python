@@ -3,10 +3,10 @@
 
 {% include 'cfn_lint_test_func_block.py' %}
 {% endif %}
-{% if cfn_nag_test %}
+{% if checkov_test %}
 
 
-{% include 'cfn_nag_test_func_block.py' %}
+{% include 'checkov_test_func_block.py' %}
 {% endif %}
 {% if json_validation_test %}
 

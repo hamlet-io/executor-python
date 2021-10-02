@@ -1,8 +1,10 @@
 {
     "structureBad": {
       "filename": "tests/data/integration/backend/test/cf/valid-syntax.json",
-      "cfn_nag": true,
-      "cfn_lint": true,
+      "checkov": {
+        "framework" : "cloudformation"
+      },
+      "cfn_lint": {},
       "json_structure": {
         "exists": [
           {
