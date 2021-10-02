@@ -6,7 +6,7 @@ from hamlet.backend.test.templates.json_validator_obj_block import JSONValidator
 from hamlet.backend.test.templates.json_structure_obj_block import JSONStructure
 from hamlet.backend.test.templates.cfn_structure_obj_block import CFNStructure
 from hamlet.backend.test.templates.cfn_lint_test_func_block import cfn_lint_test
-from hamlet.backend.test.templates.cfn_nag_test_func_block import cfn_nag_test
+from hamlet.backend.test.templates.checkov_test_func_block import checkov_test
 from hamlet.backend.test.testcase_schema import Testcase
 from .conftest import DATA_DIR
 
@@ -15,10 +15,10 @@ CFNStructure = CFNStructure(JSONValidator)
 JSONStructure = JSONStructure(JSONValidator)
 
 
-def test_cfn_nag_test():
-    cfn_nag_test(os.path.join(CF_TEMPLATES_PATH, "secure.json"))
+def test_checkov_test():
+    checkov_test(os.path.join(CF_TEMPLATES_PATH, "secure.json"), "cloudformation")
     with pytest.raises(AssertionError):
-        cfn_nag_test(os.path.join(CF_TEMPLATES_PATH, "insecure.json"))
+        checkov_test(os.path.join(CF_TEMPLATES_PATH, "insecure.json"), "cloudformation")
 
 
 def test_cfn_lint_test():
@@ -137,8 +137,8 @@ def test_testcase_schema():
     Testcase().load(
         {
             "filename": "Test",
-            "cfn_lint": True,
-            "cfn_nag": False,
+            "cfn_lint": {},
+            "checkov": {"framework": "cloudformation"},
             "json_structure": {
                 "match": [{"path": "testpath", "value": ["TestValue"]}],
                 "exists": [{"path": "testpath"}],

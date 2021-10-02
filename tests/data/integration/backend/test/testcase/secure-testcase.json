@@ -1,6 +1,9 @@
 {
     "secure": {
       "filename": "tests/data/integration/backend/test/cf/secure.json",
-      "cfn_nag": true
+      "checkov": {
+        "framework" : "cloudformation",
+        "skip_checks" : [ "CKV_AWS_20", "CKV_AWS_21" ]
+      }
     }
 }

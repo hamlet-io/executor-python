@@ -1,6 +1,8 @@
 {
     "insecure": {
       "filename": "tests/data/integration/backend/test/cf/insecure.json",
-      "cfn_nag": true
+      "checkov": {
+        "framework" : "cloudformation"
+      }
     }
 }

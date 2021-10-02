@@ -34,9 +34,16 @@ class JSONStructure(Schema):
     not_empty = fields.List(fields.Nested(NotEmpty))
 
 
+class CheckovStructure(Schema):
+    framework = fields.Str()
+    skip_checks = fields.List(fields.Str())
+
+class CFNLintStructure(Schema):
+    ignore_checks = fields.List(fields.Str())
+
 class Testcase(Schema):
     filename = fields.Str(required=True)
-    cfn_lint = fields.Bool(truthy=[True], falsy=[False])
-    cfn_nag = fields.Bool(truthy=[True], falsy=[False])
+    cfn_lint = fields.Nested(CFNLintStructure)
+    checkov = fields.Nested(CheckovStructure)
     cfn_structure = fields.Nested(CFNStructure)
     json_structure = fields.Nested(JSONStructure)

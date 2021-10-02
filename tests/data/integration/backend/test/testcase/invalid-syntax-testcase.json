@@ -1,6 +1,6 @@
 {
     "invalidSyntax": {
       "filename": "tests/data/integration/backend/test/cf/invalid-syntax.json",
-      "cfn_lint": true
+      "cfn_lint": {}
     }
 }
