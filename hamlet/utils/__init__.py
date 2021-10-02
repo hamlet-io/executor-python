@@ -1,6 +1,4 @@
 import click
-import tempfile
-import errno
 import os
 
 from click_configfile import Param
@@ -67,18 +65,6 @@ def dynamic_option(*args, **kwargs):
         return click.option(*args, **kwargs, cls=DynamicOption)(func)
 
     return decorator
-
-
-def isWriteable(path):
-    try:
-        testfile = tempfile.TemporaryFile(dir=path)
-        testfile.close()
-    except (OSError, IOError) as e:
-        if e.errno == errno.EACCES or e.errno == errno.EEXIST:
-            return False
-        e.filename = path
-        raise
-    return True
 
 
 class ConfigParam(Param):
