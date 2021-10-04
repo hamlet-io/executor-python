@@ -14,7 +14,6 @@ from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
 from hamlet.backend.engine.exceptions import (
     HamletEngineInvalidVersion,
-    EngineStoreMissingEngineException,
 )
 
 
@@ -272,20 +271,10 @@ def set_engine(opts, name):
     Sets the global engine used
     """
     name = name or opts.engine
+    engine = engine_store.get_engine(name)
 
-    try:
-        engine = engine_store.get_engine(name)
-
-    except EngineStoreMissingEngineException:
-
-        engine = engine_store.find_engine(name, cache_timeout=0)
-
-        if not engine.installed:
-            click.echo("[*] installing engine")
-            engine.install()
-
-    click.echo(f"[*] global engine set to {name}")
-    engine_store.global_engine = name
+    click.echo(f"[*] global engine set to {engine.name}")
+    engine_store.global_engine = engine.name
 
 
 @group.command(
