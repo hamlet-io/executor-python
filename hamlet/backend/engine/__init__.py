@@ -123,7 +123,11 @@ class EngineStore:
 
         if not allow_missing and not result:
             raise EngineStoreMissingEngineException(
-                f"Could not find engine {name} in engine store"
+                (
+                    f"[!] Could not find engine {name} in local engine store\n"
+                    "[!] Check that the engine is installed and the name is correct\n"
+                    f"[!] Run hamlet engine install-engine {name} to install it\n"
+                )
             )
 
         return result
@@ -144,7 +148,11 @@ class EngineStore:
 
         if not allow_missing and not result:
             raise EngineStoreMissingEngineException(
-                f"Could not find engine {name} in engine store"
+                (
+                    f"[!] Could not find an engine matching engine the name {name}\n"
+                    "[!] Check that the name of the engine is right\n"
+                    "[!] Run hamlet engine list-engines for available engines\n"
+                )
             )
 
         return result

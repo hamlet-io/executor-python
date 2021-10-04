@@ -37,6 +37,7 @@ def setup_global_engine(engine_override):
 
         try:
             engine_store.get_engine(default_engine)
+
         except EngineStoreMissingEngineException:
             engine_store.find_engine(default_engine).install()
 
