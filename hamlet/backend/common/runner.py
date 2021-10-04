@@ -49,8 +49,8 @@ def run(
 
     env_overrides = {
         **HAMLET_GLOBAL_CONFIG.engine_environment,
-        **__env_params_to_envvars(env),
         **os.environ,
+        **__env_params_to_envvars(env),
     }
     try:
         os.path.isdir(env_overrides[script_base_path_env])
