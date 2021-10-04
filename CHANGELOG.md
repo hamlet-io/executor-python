@@ -1,6 +1,29 @@
 # Changelog
 
-## latest (2021-09-28)
+## latest (2021-10-04)
+
+#### New Features
+
+* extend testing tooling
+#### Fixes
+
+* lock boto3 version
+* lock boto deps
+* formatting
+* run automation properties after construct
+#### Refactorings
+
+* remove cfn_nag from CI pipeline
+* move the cli cache dir to hamlet home
+* make missing home dir fatal
+* remove updating checking
+#### Docs
+
+* reference install guide for hamlet
+
+Full set of changes: [`9.6.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.3...latest)
+
+## 9.6.3 (2021-09-30)
 
 #### New Features
 
@@ -13,9 +36,10 @@
 * allow for overriding defer_push
 #### Others
 
+* changelog bump ([#237](https://github.com/hamlet-io/executor-python/issues/237))
 * changelog bump ([#234](https://github.com/hamlet-io/executor-python/issues/234))
 
-Full set of changes: [`9.6.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.6.2...latest)
+Full set of changes: [`9.6.2...9.6.3`](https://github.com/hamlet-io/executor-python/compare/9.6.2...9.6.3)
 
 ## 9.6.2 (2021-09-26)
 
