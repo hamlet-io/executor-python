@@ -62,21 +62,19 @@ setup(
         "cookiecutter>=1.7.0,<2.0.0",
         "tabulate>=0.8.0,<1.0.0",
         "Jinja2>=2.11.0,<3.0.0",
-        "jmespath>=0.10.0<1.0.0",
-        "importlib-resources>=5.2.0<6.0.0",
-        "www-authenticate>=0.9.2<1.0.0",
-        "httpx>=0.19.0<0.20.0",
+        "jmespath>=0.10.0,<1.0.0",
+        "importlib-resources>=5.2.0,<6.0.0",
+        "www-authenticate>=0.9.2,<1.0.0",
+        "httpx>=0.19.0,<0.20.0",
         "marshmallow>=3.7.0,<4.0.0",
         # Template testing
         "pytest>=6.0.0,<7.0.0",
         # AWS testing dependencies
+        "cfn-lint>=0.54.1,<1.0.0",
         # - boto3 locked to support checkov current requirements
+        "checkov>=2.0.461,<3.0.0",
         "boto3>=1.17.111,<1.18.0",
         "botocore>=1.20.112,<2.0.0",
-        "cfn-lint>=0.54.1,<1.0.0",
-        "cfn-flip>=1.2.0,<2.0.0",
-        "checkov>=2.0.461,<3.0.0",
-        "six>=1.15.0,<2.0.0",
         # Diagrams
         "diagrams>=0.18.0,<1.0.0",
     ],
