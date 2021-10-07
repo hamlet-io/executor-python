@@ -121,12 +121,13 @@ class ContainerRepository:
             base_url=self.registry_url,
             auth=DockerRegistryV2Auth(self.repository, self.username, self.password),
             headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
-            follow_redirects=True,
         )
 
     @property
     def tags(self):
-        tag_response = self.registry_client.get(f"/v2/{self.repository}/tags/list")
+        tag_response = self.registry_client.get(
+            f"/v2/{self.repository}/tags/list", allow_redirects=True
+        )
         try:
             tag_response.raise_for_status()
         except httpx.HTTPError as e:
@@ -139,7 +140,7 @@ class ContainerRepository:
 
     def get_tag_manifest(self, tag):
         manifest_response = self.registry_client.get(
-            f"/v2/{self.repository}/manifests/{tag}"
+            f"/v2/{self.repository}/manifests/{tag}", allow_redirects=True
         )
 
         try:
@@ -166,6 +167,7 @@ class ContainerRepository:
 
                         layer_blob = self.registry_client.get(
                             url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
+                            allow_redirects=True,
                         )
 
                         try:
@@ -174,7 +176,8 @@ class ContainerRepository:
                             raise e
 
                         with self.registry_client.stream(
-                            method="get", url=layer_blob.url
+                            method="get",
+                            url=layer_blob.url,
                         ) as r:
                             for chunk in r.iter_raw(chunk_size=(1024 * 1024 * 3)):
                                 layer_file.write(chunk)
