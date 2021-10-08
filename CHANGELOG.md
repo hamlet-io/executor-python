@@ -1,13 +1,24 @@
 # Changelog
 
-## latest (2021-10-04)
+## latest (2021-10-08)
+
+#### Fixes
+
+* package dependency updates
+
+Full set of changes: [`9.7.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.7.1...latest)
+
+## 9.7.1 (2021-10-05)
 
 #### Fixes
 
 * env preference order for runner
 * require install of engine before set
+#### Others
 
-Full set of changes: [`9.7.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.7.0...latest)
+* changelog bump ([#246](https://github.com/hamlet-io/executor-python/issues/246))
+
+Full set of changes: [`9.7.0...9.7.1`](https://github.com/hamlet-io/executor-python/compare/9.7.0...9.7.1)
 
 ## 9.7.0 (2021-10-04)
 
