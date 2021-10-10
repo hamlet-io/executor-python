@@ -20,7 +20,7 @@ def group():
     pass
 
 
-LIST_ENTRANCES_QUERY = "Entrances[]" ".{" "Type:Type," "Description:Description" "}"
+LIST_ENTRANCES_QUERY = "Entrances[].{Type:Type,Description:Description}"
 
 
 def entrances_table(data):
