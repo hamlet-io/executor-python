@@ -4,12 +4,14 @@ from hamlet.backend.common import runner
 def run(
     deployment_unit=None,
     run_setup=None,
-    binary_expiration=None,
     force_binary_build=None,
     submit_binary=None,
-    disable_ota=None,
     binary_build_process=None,
-    qr_build_formats=None,
+    build_logs=None,
+    environment_badge=None,
+    environment_badge_content=None,
+    node_package_manager=None,
+    app_version_source=None,
     log_level=None,
     root_dir=None,
     tenant=None,
@@ -21,14 +23,16 @@ def run(
     **kwargs
 ):
     options = {
-        "-u": deployment_unit,
-        "-s": run_setup,
-        "-t": binary_expiration,
-        "-f": force_binary_build,
-        "-m": submit_binary,
-        "-o": disable_ota,
         "-b": binary_build_process,
-        "-q": qr_build_formats,
+        "-d": environment_badge_content,
+        "-e": environment_badge,
+        "-f": force_binary_build,
+        "-l": build_logs,
+        "-m": submit_binary,
+        "-n": node_package_manager,
+        "-s": run_setup,
+        "-u": deployment_unit,
+        "-v": app_version_source,
     }
     env = {
         "GENERATION_LOG_LEVEL": log_level,
