@@ -20,6 +20,7 @@ ALL_VALID_OPTIONS["-d,--environment-badge-content"] = "environment"
 ALL_VALID_OPTIONS["-n,--node-package-manager"] = "yarn"
 ALL_VALID_OPTIONS["-v,--app-version-source"] = "cmdb"
 
+
 @mock.patch("hamlet.command.run.expo_app_publish.run_expo_app_publish_backend")
 def test_input_valid(run_expo_app_publish_backend):
     run_options_test(
