@@ -14,69 +14,69 @@ from hamlet.command.common.config import pass_options
     "--deployment-unit",
     required=True,
     help="mobile app deployment unit",
-    envvar="DEPLOYMENT_UNIT"
+    envvar="DEPLOYMENT_UNIT",
 )
 @click.option(
     "-s",
     "--run-setup",
     is_flag=True,
     help="run setup installation to prepare",
-    envvar="RUN_SETUP"
+    envvar="RUN_SETUP",
 )
 @click.option(
     "-f",
     "--force-binary-build",
     help="force the build of binary images",
     is_flag=True,
-    envvar="FORCE_BINARY_BUILD"
+    envvar="FORCE_BINARY_BUILD",
 )
 @click.option(
     "-m",
     "--submit-binary",
     help="submit the binary for testing",
     is_flag=True,
-    envvar="SUBMIT_BINARY"
+    envvar="SUBMIT_BINARY",
 )
 @click.option(
     "-b",
     "--binary-build-process",
     help="sets the build process to create the binary",
-    type=click.Choice(['fastlane', 'turtle']),
-    envvar="BINARY_BUILD_PROCESS"
+    type=click.Choice(["fastlane", "turtle"]),
+    envvar="BINARY_BUILD_PROCESS",
 )
 @click.option(
     "-l",
     "--build-logs",
     help="Show the full build logs",
     is_flag=True,
-    envvar="BUILD_LOGS"
+    envvar="BUILD_LOGS",
 )
 @click.option(
     "-e",
     "--environment-badge",
     help="Add a badge to the app icons for the environment",
     is_flag=True,
-    envvar="ENVIRONMENT_BADGE"
+    envvar="ENVIRONMENT_BADGE",
 )
 @click.option(
     "-d",
     "--environment-badge-content",
     help="An override to the environment badge content",
-    envvar="ENVIRONMENT_BADGE_CONTENT"
+    envvar="ENVIRONMENT_BADGE_CONTENT",
 )
 @click.option(
     "-n",
     "--node-package-manager",
     help="The node package manager to use for builds",
     type=click.Choice(["yarn", "npm"]),
-    envvar="NODE_PACKAGE_MANAGER"
+    envvar="NODE_PACKAGE_MANAGER",
 )
 @click.option(
     "-v",
     "--app-version-source",
     help="The method to use to source the app version",
     type=click.Choice(["cmdb", "manifest"]),
-    envvar="APP_VERSION_SOURCE"
+    envvar="APP_VERSION_SOURCE",
 )
 @exceptions.backend_handler()
 @pass_options
