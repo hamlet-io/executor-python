@@ -1,6 +1,6 @@
 def test_{{casename}}():
     filename = "{{case.filename}}"
-    {% if case.cfn_lint %}
+    {% if 'cfn_lint' in case %}
 
     cfn_lint_test(filename, {{case.cfn_lint.ignore_checks}})
     {% endif %}
@@ -53,7 +53,7 @@ def test_{{casename}}():
 
     cfn_structure.assert_structure()
     {% endif %}
-    {% if case.checkov %}
+    {% if 'checkov' in case %}
 
     checkov_test(filename, "{{case.checkov.framework}}", {{case.checkov.skip_checks}} )
     {% endif %}
