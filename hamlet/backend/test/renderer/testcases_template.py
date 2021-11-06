@@ -33,12 +33,10 @@ def prepare_context(cases):
             type = "cf"
         if type == "cf":
             prepare_cf_testcase_context(data)
-            cfn_lint_test = cfn_lint_test or data.get("cfn_lint", False)
-            checkov_test = checkov_test or data.get("checkov", False)
-            cfn_structure_test = cfn_structure_test or data.get("cfn_structure", False)
-            json_structure_test = json_structure_test or data.get(
-                "json_structure", False
-            )
+            cfn_lint_test = cfn_lint_test or "cfn_lint" in data
+            checkov_test = checkov_test or "checkov" in data
+            cfn_structure_test = cfn_structure_test or "cfn_structure" in data
+            json_structure_test = json_structure_test or "json_structure" in data
         prepared_cases.append((casename, data, type))
     return {
         "checkov_test": checkov_test,
