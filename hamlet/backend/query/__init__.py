@@ -21,7 +21,6 @@ def run(
     output_filename=None,
     use_cache=None,
     query_text=None,
-    query_name=None,
     query_params=None,
     sub_query_text=None,
     log_level=None,
@@ -51,9 +50,7 @@ def run(
         environment=environment,
         segment=segment,
     )
-    if query_name is not None:
-        result = query.query_by_name(query_name, query_params or {})
-    elif query_text is not None:
+    if query_text is not None:
         result = query.query(query_text, query_params or {})
     else:
         raise exceptions.BackendException("Query unspecified")
@@ -62,83 +59,7 @@ def run(
     return result
 
 
-def mark_query(func):
-    func.query_mark = True
-    return func
-
-
 class Query:
-    LIST_TIERS_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[].Tiers[]"
-        ".{"
-        "Id:Id,"
-        "Name:Configuration.Name,"
-        "Description:Configuration.Description,"
-        "NetworkEnabledState:Configuration.Network.Enabled"
-        "}"
-    )
-
-    LIST_COMPONENTS_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[].Tiers[]"
-        ".{"
-        "TierId:Id,"
-        "Components:Components[].{Id: Id, Name:Name, Type:Type}"
-        "}"
-    )
-
-    LIST_OCCURRENCES_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[]"
-        ".{{"
-        "InstanceId:Core.Instance.RawId,"
-        "VersionId:Core.Version.RawId,"
-        "FullName:Core.FullName,"
-        "DeploymentUnits:Configuration.Solution.DeploymentUnits,"
-        "Enabled:Configuration.Solution.Enabled"
-        "}}"
-    )
-
-    DESCRIBE_OCCURRENCE_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.RawId=={instance_id} && Core.Version.RawId=={version_id}][]"
-    )
-
-    DESCRIBE_OCCURRENCE_ATTRIBUTES_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.RawId=={instance_id} && Core.Version.RawId=={version_id}][]"
-        ".State.ResourceGroups.*[].Attributes[]"
-    )
-
-    DESCRIBE_OCCURRENCE_SOLUTION_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.RawId=={instance_id} && Core.Version.RawId=={version_id}][]"
-        ".Configuration.Solution"
-    )
-
-    DESCRIBE_OCCURRENCE_SETTINGS_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.RawId=={instance_id} && Core.Version.RawId=={version_id}][]"
-        ".Configuration.Settings"
-    )
-
-    DESCRIBE_OCCURRENCE_RESOURCES_QUERY = (
-        "Tenants[].Products[].Environments[].Segments[]"
-        ".Tiers[?Id=={tier_id}][]"
-        ".Components[?Id=={component_id}][]"
-        ".Occurrences[?Core.Instance.RawId=={instance_id} && Core.Version.RawId=={version_id}][]"
-        ".State.Resources"
-    )
-
     def __init__(
         self,
         cwd,
@@ -189,73 +110,6 @@ class Query:
         with open(output_filepath, "rt") as f:
             self.blueprint_data = json.load(f)
 
-    @mark_query
-    def list_tiers(self, **params):
-        return self.query(self.LIST_TIERS_QUERY)
-
-    @mark_query
-    def list_components(self, **params):
-        raw_result = self.query(self.LIST_COMPONENTS_QUERY)
-        result = []
-        for item in raw_result:
-            components = item["Components"]
-            for component in components:
-                result.append({**component, "TierId": item["TierId"]})
-        return result
-
-    @mark_query
-    def list_occurrences(self, **params):
-        return self.query(
-            self.LIST_OCCURRENCES_QUERY,
-            params=params,
-            require=["tier_id", "component_id"],
-        )
-
-    @mark_query
-    def describe_occurrence(self, **params):
-        return self.query(
-            self.DESCRIBE_OCCURRENCE_QUERY,
-            params=params,
-            require=["tier_id", "component_id", "instance_id", "version_id"],
-        )
-
-    @mark_query
-    def describe_occurrence_attributes(self, **params):
-        raw_result = self.query(
-            self.DESCRIBE_OCCURRENCE_ATTRIBUTES_QUERY,
-            params=params,
-            require=["tier_id", "component_id", "instance_id", "version_id"],
-        )
-        result = []
-        for obj in raw_result:
-            for key, value in obj.items():
-                result.append({"Key": key, "Value": value})
-        return result
-
-    @mark_query
-    def describe_occurrence_solution(self, **params):
-        return self.query(
-            self.DESCRIBE_OCCURRENCE_SOLUTION_QUERY,
-            params=params,
-            require=["tier_id", "component_id", "instance_id", "version_id"],
-        )
-
-    @mark_query
-    def describe_occurrence_settings(self, **params):
-        return self.query(
-            self.DESCRIBE_OCCURRENCE_SETTINGS_QUERY,
-            params=params,
-            require=["tier_id", "component_id", "instance_id", "version_id"],
-        )
-
-    @mark_query
-    def describe_occurrence_resources(self, **params):
-        return self.query(
-            self.DESCRIBE_OCCURRENCE_RESOURCES_QUERY,
-            params=params,
-            require=["tier_id", "component_id", "instance_id", "version_id"],
-        )
-
     def query(self, query, params=None, require=None):
         require = require or []
         params = params or {}
@@ -287,11 +141,3 @@ class Query:
             return jmespath.search(query, data)
         except JMESPathError as e:
             raise exceptions.BackendException(f"JMESPath query error: {str(e)}") from e
-
-    def query_by_name(self, name, params):
-        try:
-            query = getattr(self, name)
-            query.query_mark
-            return query(**params)
-        except AttributeError:
-            raise exceptions.BackendException(f'Query:"{name}" does not exist')
