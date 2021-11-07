@@ -2,6 +2,14 @@
 
 ## latest (2021-11-07)
 
+#### Fixes
+
+* (docs): updates to README
+
+Full set of changes: [`9.8.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.8.0...latest)
+
+## 9.8.0 (2021-11-07)
+
 #### New Features
 
 * extend expo publish command options
@@ -14,8 +22,11 @@
 #### Refactorings
 
 * remove query command
+#### Others
 
-Full set of changes: [`9.7.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.7.2...latest)
+* changelog bump ([#251](https://github.com/hamlet-io/executor-python/issues/251))
+
+Full set of changes: [`9.7.2...9.8.0`](https://github.com/hamlet-io/executor-python/compare/9.7.2...9.8.0)
 
 ## 9.7.2 (2021-10-08)
 
