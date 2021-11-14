@@ -34,9 +34,9 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
         assert tenant_dir == ct.find_gen3_tenant_dir(root_dir, tenant_name)
         account_base_dir = os.path.join(root_dir, "accounts", account_name)
         account_dir = os.path.join(account_base_dir, "config")
-        account_infr_dir = os.path.join(account_base_dir, "infrastructure")
+        account_state_dir = os.path.join(account_base_dir, "infrastructure")
         assert account_dir == ct.find_gen3_account_dir(root_dir, account_name)
-        assert account_infr_dir == ct.find_gen3_account_infrastructure_dir(
+        assert account_state_dir == ct.find_gen3_account_state_dir(
             root_dir, account_name
         )
         product_base_dir = os.path.join(root_dir, product_name)
@@ -64,9 +64,9 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
         assert e.TENANT_DIR == tenant_dir
 
         assert e.ACCOUNT_DIR == account_dir
-        assert e.ACCOUNT_INFRASTRUCTURE_DIR == account_infr_dir
+        assert e.ACCOUNT_STATE_DIR == account_state_dir
         assert e.ACCOUNT_SETTINGS_DIR == os.path.join(account_dir, "settings")
-        assert e.ACCOUNT_OPERATIONS_DIR == os.path.join(account_infr_dir, "operations")
+        assert e.ACCOUNT_OPERATIONS_DIR == os.path.join(account_state_dir, "operations")
         product_settings_dir = os.path.join(product_dir, "settings")
         product_operations_dir = os.path.join(product_infr_dir, "operations")
         product_solutions_dir = os.path.join(product_dir, "solutionsv2")
