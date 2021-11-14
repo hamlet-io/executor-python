@@ -96,7 +96,7 @@ def find_gen3_account_dir(root_dir, account):
 
 def find_gen3_account_state_dir(root_dir, account):
     patterns = [
-        os.path.join("**", account, "state" ),
+        os.path.join("**", account, "state"),
         os.path.join("**", "state", "**", account),
         os.path.join("**", "infrastructure", "**", account),
         os.path.join("**", account, "infrastructure"),
