@@ -94,8 +94,10 @@ def find_gen3_account_dir(root_dir, account):
     return matches[0]
 
 
-def find_gen3_account_infrastructure_dir(root_dir, account):
+def find_gen3_account_state_dir(root_dir, account):
     patterns = [
+        os.path.join("**", account, "state" ),
+        os.path.join("**", "state", "**", account),
         os.path.join("**", "infrastructure", "**", account),
         os.path.join("**", account, "infrastructure"),
     ]
@@ -170,15 +172,15 @@ def find_gen3_dirs(
     set_gen3_env_dir(e, "ACCOUNT_DIR", prefix, find_gen3_account_dir(root_dir, account))
     set_gen3_env_dir(
         e,
-        "ACCOUNT_INFRASTRUCTURE_DIR",
+        "ACCOUNT_STATE_DIR",
         prefix,
-        find_gen3_account_infrastructure_dir(root_dir, account),
+        find_gen3_account_state_dir(root_dir, account),
     )
     e[prefix + "ACCOUNT_SETTINGS_DIR"] = os.path.join(
         get_gen3_env(e, "ACCOUNT_DIR", prefix), "settings"
     )
     e[prefix + "ACCOUNT_OPERATIONS_DIR"] = os.path.join(
-        get_gen3_env(e, "ACCOUNT_INFRASTRUCTURE_DIR", prefix), "operations"
+        get_gen3_env(e, "ACCOUNT_STATE_DIR", prefix), "operations"
     )
 
     if product:
