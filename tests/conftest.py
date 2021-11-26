@@ -3,7 +3,6 @@ import shutil
 import pytest
 from hamlet.loggers import logging, root
 from hamlet.backend.engine import EngineStore
-from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 
 
 root.setLevel(logging.DEBUG)
@@ -97,8 +96,3 @@ def __clear_engine(*args):
 @pytest.fixture(scope="session")
 def clear_engine():
     return __clear_engine
-
-
-@pytest.fixture(scope="session")
-def global_engine_env():
-    return __EngineContext.engine_store.get_engine(ENGINE_GLOBAL_NAME).environment

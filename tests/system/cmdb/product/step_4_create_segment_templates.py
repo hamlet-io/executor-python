@@ -2,6 +2,7 @@ import os
 import json
 from unittest import mock
 
+from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.deploy import create_deployment as create_deployment_backend
 from .conftest import conf
 
@@ -26,7 +27,8 @@ LEVEL = "segment"
         "SEGMENT": SEGMENT,
     },
 )
-def run(cmdb, global_engine_env):
+def run(cmdb, engine):
+    global_engine_env = engine.engine_store.get_engine(ENGINE_GLOBAL_NAME).environment
     with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR, **global_engine_env}):
 
         create_deployment_backend(
