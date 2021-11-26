@@ -25,39 +25,21 @@ class DynamicOption(click.Option):
             if name.startswith("_"):
                 return object.__getattribute__(self, name)
             else:
-                return object.__getattribute__(self, "_ctx").params[name]
+                return object.__getattribute__(self, "_ctx").params.get(name, None)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **{"show_default": True, **kwargs})
+    def get_default(self, ctx, call=True):
+        value = ctx.lookup_default(self.name, call=False)
 
-    def get_default(self, ctx):
-        if callable(self.default):
-            return self.default(self.ContextValuesGetter(ctx))
-        return self.default
-
-    @property
-    def prompt(self):
-        try:
-            if not self.ctx.params.get("no_prompt"):
-                if self.ctx.params.get("use_default") and self.default is not None:
-                    return None
-                if callable(self.__prompt) and not self.__prompt(
-                    self.ContextValuesGetter(self.ctx)
-                ):
-                    return None
-                return "[?] %s" % self.human_readable_name.replace("_", " ")
+        if value is None:
+            if callable(self.default):
+                value = self.default(self.ContextValuesGetter(ctx))
             else:
-                return None
-        except (AttributeError, KeyError):
-            return self.__prompt
+                value = self.default
 
-    @prompt.setter
-    def prompt(self, value):
-        self.__prompt = value
+        if call and callable(value):
+            return value()
 
-    def full_process_value(self, ctx, value):
-        self.ctx = ctx
-        return super().full_process_value(ctx, value)
+        return value
 
 
 def dynamic_option(*args, **kwargs):
