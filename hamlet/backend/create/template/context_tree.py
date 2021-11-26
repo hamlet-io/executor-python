@@ -60,14 +60,20 @@ def parse_stack_filename(filename):
 
 
 def find_gen3_root_dir(dirname):
+
+    if os.environ.get("ROOT_DIR"):
+        return os.environ.get("ROOT_DIR")
+
     marked_root_dir = Search.upwards(dirname, "root.json")
     if marked_root_dir is not None:
         return os.path.dirname(marked_root_dir)
+
     config_root_dir = os.path.dirname(Search.upwards(dirname, "config"))
     infrastructure_root_dir = os.path.dirname(Search.upwards(dirname, "infrastructure"))
     root_dir = config_root_dir or infrastructure_root_dir
     if Search.isdir(root_dir, "config") and Search.isdir(root_dir, "infrastructure"):
         return root_dir
+
     return None
 
 

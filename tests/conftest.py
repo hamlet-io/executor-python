@@ -2,6 +2,8 @@ import os
 import shutil
 import pytest
 from hamlet.loggers import logging, root
+from hamlet.backend.engine import EngineStore
+from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 
 
 root.setLevel(logging.DEBUG)
@@ -67,3 +69,36 @@ def cmdb():
 @pytest.fixture(scope="session")
 def clear_cmdb():
     return __clear_cmdb
+
+
+class __EngineContext:
+
+    if os.getenv("TEST_ENGINE_STORE_DIR", None) is not None:
+        ENGINE_STORE_DIR = os.getenv("TEST_ENGINE_STORE_DIR")
+    else:
+        ENGINE_STORE_DIR = os.getcwd() + "/.engine_store"
+        os.makedirs(ENGINE_STORE_DIR, exist_ok=True)
+
+    engine_store = EngineStore(store_dir=ENGINE_STORE_DIR)
+
+
+@pytest.fixture(scope="session")
+def engine():
+    return __EngineContext
+
+
+def __clear_engine(*args):
+    if os.path.exists(__EngineContext.ENGINE_STORE_DIR) and os.path.isdir(
+        __EngineContext.ENGINE_STORE_DIR
+    ):
+        shutil.rmtree(__EngineContext.ENGINE_STORE_DIR)
+
+
+@pytest.fixture(scope="session")
+def clear_engine():
+    return __clear_engine
+
+
+@pytest.fixture(scope="session")
+def global_engine_env():
+    return __EngineContext.engine_store.get_engine(ENGINE_GLOBAL_NAME).environment
