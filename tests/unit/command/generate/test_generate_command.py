@@ -148,7 +148,6 @@ def run_generate_command_test(runner, cmd, cmd_backend_run, options):
     # only required prompt
     # all prompt
     for case in __generate_testcases(options):
-        print(case["options"])
         cmd_backend_run.reset_mock()
         __log_testcase(case, cmd)
         result = runner.invoke(cmd, case["options"], input=case["input"])
