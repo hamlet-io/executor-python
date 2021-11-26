@@ -1,5 +1,6 @@
 .cmdb/**
 .hamlet/**
+.engine_store/**
 
 **/.venv
 **/__pycache__
