@@ -51,9 +51,6 @@ def __generate_prompt_options_testcase(template):
     for required_only in [True, False]:
         options = []
         options_str = []
-        if required_only:
-            options.append("--use-default")
-            options_str.append(options[-1])
         input = []
         expected = {}
         for keys, values in template.items():
@@ -151,6 +148,7 @@ def run_generate_command_test(runner, cmd, cmd_backend_run, options):
     # only required prompt
     # all prompt
     for case in __generate_testcases(options):
+        print(case["options"])
         cmd_backend_run.reset_mock()
         __log_testcase(case, cmd)
         result = runner.invoke(cmd, case["options"], input=case["input"])
