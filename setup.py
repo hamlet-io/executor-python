@@ -16,7 +16,6 @@ packages = find_packages(exclude=["tests.*", "tests"])
 
 class InstallCommand(install):
     def __post_install(self, dir):
-        subprocess.call(["./setup-autocomplete.sh"])
         subprocess.call(["./setup-hamlet.sh"])
 
     def run(self):
@@ -28,7 +27,6 @@ class InstallCommand(install):
 
 class DevelopCommand(develop):
     def __post_install(self, dir):
-        subprocess.call(["./setup-autocomplete.sh"])
         subprocess.call(["./setup-hamlet.sh"])
 
     def run(self):
