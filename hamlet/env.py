@@ -20,7 +20,7 @@ class GlobalEnvironmentConfig:
         )
 
         self._engine = None
-        self._engine_env = {"GENERATION_DIR": os.environ.get("GENERATION_DIR")}
+        self._engine_env = {}
 
     @property
     def home_dir(self):
