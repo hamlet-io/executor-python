@@ -27,14 +27,14 @@ def test_context_basics():
 
         # setting fake cmdb
         os.mkdir(cmdb())
-        os.mknod(cmdb("root.json"))
+        open(cmdb("root.json"), "w").close()
         os.makedirs(cmdb("accounts"))
         os.makedirs(cmdb("accounts", "tenant"))
         os.makedirs(cmdb("accounts", "tenant-second"))
         os.makedirs(cmdb("accounts", "account-name-1", "config"))
         os.makedirs(cmdb("accounts", "account-name-2", "config"))
-        os.mknod(cmdb("accounts", "tenant", "tenant.json"))
-        os.mknod(cmdb("accounts", "tenant-second", "tenant.json"))
+        open(cmdb("accounts", "tenant", "tenant.json"), "w").close()
+        open(cmdb("accounts", "tenant-second", "tenant.json"), "w").close()
         os.makedirs(cmdb("product", "config"))
         os.makedirs(cmdb("product", "config", "solutions", "environment"))
         os.makedirs(cmdb("product", "config", "solutions", "environment", "segment"))

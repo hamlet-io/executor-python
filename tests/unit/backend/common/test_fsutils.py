@@ -20,9 +20,9 @@ def test_search():
         test_filename_2_fullpath = os.path.join(test_directory_2_fullpath, "node-2")
         os.makedirs(test_directory_1_fullpath)
         os.makedirs(test_directory_2_fullpath)
-        os.mknod(test_filename_fullpath)
-        os.mknod(test_filename_1_fullpath)
-        os.mknod(test_filename_2_fullpath)
+        open(test_filename_fullpath, "w").close()
+        open(test_filename_1_fullpath, "w").close()
+        open(test_filename_2_fullpath, "w").close()
 
         assert os.path.exists(test_filename_fullpath)
         assert os.path.exists(test_filename_1_fullpath)
@@ -201,7 +201,7 @@ def test_fs_interface():
 
     with tempfile.TemporaryDirectory() as temp_dir:
         for i in range(10):
-            os.mknod(os.path.join(temp_dir, f"{i}-file"))
+            open(os.path.join(temp_dir, f"{i}-file"), "w").close()
             os.mkdir(os.path.join(temp_dir, f"{i}-directory"))
         directory = Directory(temp_dir)
         c = 0
