@@ -57,7 +57,7 @@ setup(
         "local_scheme": "no-local-version",
     },
     install_requires=[
-        "click>=7.0.0,<8.0.0",
+        "click>=8.0.3,<9.0.0",
         "click-configfile>=0.2.3,<1.0.0",
         "cookiecutter>=1.7.0,<2.0.0",
         "tabulate>=0.8.0,<1.0.0",

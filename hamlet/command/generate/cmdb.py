@@ -6,7 +6,6 @@ from hamlet.backend.generate.cmdb import account as generate_account_backend
 from hamlet.backend.generate.cmdb import tenant as generate_tenant_backend
 from hamlet.backend.generate.cmdb import product as generate_product_backend
 from hamlet.utils import dynamic_option, DynamicCommand
-from hamlet.command.generate import utils
 from hamlet.command.generate import decorators
 from hamlet.command.common.exceptions import CommandError
 
@@ -17,6 +16,8 @@ from hamlet.command.common.exceptions import CommandError
 @dynamic_option(
     "--tenant-id",
     help="The unique Id for the tenant",
+    prompt=True,
+    prompt_required=True,
     required=True,
 )
 @dynamic_option(
@@ -42,18 +43,16 @@ from hamlet.command.common.exceptions import CommandError
     default=90,
 )
 @decorators.common_generate_options
-@click.pass_context
-def generate_tenant(ctx, prompt=None, use_default=None, **kwargs):
+def generate_tenant(**kwargs):
     """
     Creates a tenant cmdb.
     This should be run from the root of an accounts repository.
     """
-    if not prompt or utils.confirm(kwargs):
-        try:
-            generate_tenant_backend.run(**kwargs)
+    try:
+        generate_tenant_backend.run(**kwargs)
 
-        except OutputDirExistsException as e:
-            raise CommandError(e)
+    except OutputDirExistsException as e:
+        raise CommandError(e)
 
 
 @click.command(
@@ -62,6 +61,8 @@ def generate_tenant(ctx, prompt=None, use_default=None, **kwargs):
 @dynamic_option(
     "--account-id",
     help="The unique id for the account",
+    prompt=True,
+    prompt_required=False,
     required=True,
 )
 @dynamic_option(
@@ -89,22 +90,22 @@ def generate_tenant(ctx, prompt=None, use_default=None, **kwargs):
     "--provider-id",
     help="The cloud provider Id for for the account (AWS Account Id or Azure Subscription)",
     required=True,
+    prompt=True,
+    prompt_required=False,
 )
 @decorators.common_generate_options
-@click.pass_context
-def generate_account(ctx, prompt=None, use_default=None, **kwargs):
+def generate_account(**kwargs):
     """
     Creates an account cmdb within a tenant cmdb.
 
     The account template can be reused to create multiple accounts within a Tenant.
     This template should be run from a tenant directory
     """
-    if not prompt or utils.confirm(kwargs):
-        try:
-            generate_account_backend.run(**kwargs)
+    try:
+        generate_account_backend.run(**kwargs)
 
-        except OutputDirExistsException as e:
-            raise CommandError(e)
+    except OutputDirExistsException as e:
+        raise CommandError(e)
 
 
 @click.command(
@@ -113,6 +114,8 @@ def generate_account(ctx, prompt=None, use_default=None, **kwargs):
 @dynamic_option(
     "--product-id",
     help="The Id of your product",
+    prompt=True,
+    prompt_required=False,
     required=True,
 )
 @dynamic_option(
@@ -146,14 +149,12 @@ def generate_account(ctx, prompt=None, use_default=None, **kwargs):
     default=lambda p: p.segment_id,
 )
 @decorators.common_generate_options
-@click.pass_context
-def generate_product(ctx, prompt=None, use_default=None, **kwargs):
+def generate_product(**kwargs):
     """
     Creates a product cmdb.
     This template should be run from the root of an empty product directory.
     """
-    if not prompt or utils.confirm(kwargs):
-        try:
-            generate_product_backend.run(**kwargs)
-        except OutputDirExistsException as e:
-            raise CommandError(e)
+    try:
+        generate_product_backend.run(**kwargs)
+    except OutputDirExistsException as e:
+        raise CommandError(e)

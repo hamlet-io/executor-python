@@ -8,16 +8,6 @@ def common_generate_options(f):
 
     @functools.wraps(f)
     @click.option(
-        "--use-default",
-        help="If a default value is set, skip prompt for the value",
-        is_flag=True,
-    )
-    @click.option(
-        "--no-prompt",
-        help="Disable prompting for missing inputs and error on missing values",
-        is_flag=True,
-    )
-    @click.option(
         "--output-dir",
         "-o",
         help="The directory to save the generated content",
