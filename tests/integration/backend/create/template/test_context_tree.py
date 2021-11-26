@@ -19,110 +19,117 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
     segment_name = conf["cmdb"]["product"]["segment_name"]
     environment_name = conf["cmdb"]["product"]["environment_name"]
 
-    with cmdb() as path:
-        os.mknod("root.json")
-        tenant.run(**conf["cmdb"]["tenant"], output_dir=path())
-    with cmdb("accounts") as path:
-        account.run(**conf["cmdb"]["account"], output_dir=path())
-    with cmdb() as path:
-        product.run(**conf["cmdb"]["product"], output_dir=path())
+    with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):
 
-    with cmdb() as path:
-        root_dir = path()
-        assert root_dir == ct.find_gen3_root_dir(path())
-        tenant_dir = os.path.join(root_dir, "accounts", tenant_name)
-        assert tenant_dir == ct.find_gen3_tenant_dir(root_dir, tenant_name)
-        account_base_dir = os.path.join(root_dir, "accounts", account_name)
-        account_dir = os.path.join(account_base_dir, "config")
-        account_state_dir = os.path.join(account_base_dir, "infrastructure")
-        assert account_dir == ct.find_gen3_account_dir(root_dir, account_name)
-        assert account_state_dir == ct.find_gen3_account_state_dir(
-            root_dir, account_name
-        )
-        product_base_dir = os.path.join(root_dir, product_name)
-        product_dir = os.path.join(product_base_dir, "config")
-        product_infr_dir = os.path.join(product_base_dir, "infrastructure")
-        environment_dir = os.path.join(product_dir, "solutionsv2", environment_name)
-        assert product_dir == ct.find_gen3_product_dir(root_dir, product_name)
-        assert product_infr_dir == ct.find_gen3_product_infrastructure_dir(
-            root_dir, product_name
-        )
-        assert environment_dir == ct.find_gen3_environment_dir(
-            root_dir, product_name, environment_name
-        )
-        e = Environment()
-        ct.find_gen3_dirs(
-            e,
-            root_dir,
-            tenant=tenant_name,
-            account=account_name,
-            product=product_name,
-            environment=environment_name,
-            segment=segment_name,
-        )
-        assert e.ROOT_DIR == root_dir
-        assert e.TENANT_DIR == tenant_dir
+        with cmdb() as path:
+            tenant.run(**conf["cmdb"]["tenant"], output_dir=path())
+        with cmdb("accounts") as path:
+            account.run(**conf["cmdb"]["account"], output_dir=path())
+        with cmdb() as path:
+            product.run(**conf["cmdb"]["product"], output_dir=path())
 
-        assert e.ACCOUNT_DIR == account_dir
-        assert e.ACCOUNT_STATE_DIR == account_state_dir
-        assert e.ACCOUNT_SETTINGS_DIR == os.path.join(account_dir, "settings")
-        assert e.ACCOUNT_OPERATIONS_DIR == os.path.join(account_state_dir, "operations")
-        product_settings_dir = os.path.join(product_dir, "settings")
-        product_operations_dir = os.path.join(product_infr_dir, "operations")
-        product_solutions_dir = os.path.join(product_dir, "solutionsv2")
-        environment_shared_operations_dir = os.path.join(
-            product_infr_dir, "operations", environment_name
-        )
-        environment_shared_settings_dir = os.path.join(
-            product_dir, "settings", environment_name
-        )
-        environment_shared_solutions_dir = os.path.join(
-            product_dir, "solutionsv2", environment_name
-        )
-        segment_solutions_dir = os.path.join(
-            product_dir, "solutionsv2", environment_name, segment_name
-        )
-        segment_settings_dir = os.path.join(
-            product_dir, "settings", environment_name, segment_name
-        )
-        segment_operations_dir = os.path.join(
-            product_infr_dir, "operations", environment_name, segment_name
-        )
-        segment_builds_dir = segment_settings_dir
-        segment_shared_settings_dir = os.path.join(
-            product_dir, "settings", "shared", segment_name
-        )
-        segment_shared_solutions_dir = os.path.join(
-            product_dir, "solutionsv2", "shared", segment_name
-        )
-        segment_shared_operations_dir = os.path.join(
-            product_infr_dir, "operations", "shared", segment_name
-        )
-        assert e.PRODUCT_DIR == product_dir
-        assert e.PRODUCT_SETTINGS_DIR == product_settings_dir
-        assert e.PRODUCT_INFRASTRUCTURE_DIR == product_infr_dir
-        assert e.PRODUCT_OPERATIONS_DIR == product_operations_dir
-        assert e.PRODUCT_SOLUTIONS_DIR == product_solutions_dir
-        assert e.PRODUCT_SHARED_SETTINGS_DIR == os.path.join(
-            product_settings_dir, "shared"
-        )
-        assert e.PRODUCT_SHARED_OPERATIONS_DIR == os.path.join(
-            product_operations_dir, "shared"
-        )
-        assert e.PRODUCT_SHARED_SOLUTIONS_DIR == os.path.join(
-            product_solutions_dir, "shared"
-        )
-        assert e.ENVIRONMENT_SHARED_SETTINGS_DIR == environment_shared_settings_dir
-        assert e.ENVIRONMENT_SHARED_SOLUTIONS_DIR == environment_shared_solutions_dir
-        assert e.ENVIRONMENT_SHARED_OPERATIONS_DIR == environment_shared_operations_dir
-        assert e.SEGMENT_SOLUTIONS_DIR == segment_solutions_dir
-        assert e.SEGMENT_SETTINGS_DIR == segment_settings_dir
-        assert e.SEGMENT_OPERATIONS_DIR == segment_operations_dir
-        assert e.SEGMENT_BUILDS_DIR == segment_builds_dir
-        assert e.SEGMENT_SHARED_SETTINGS_DIR == segment_shared_settings_dir
-        assert e.SEGMENT_SHARED_SOLUTIONS_DIR == segment_shared_solutions_dir
-        assert e.SEGMENT_SHARED_OPERATIONS_DIR == segment_shared_operations_dir
-        print(e)
+        with cmdb() as path:
+            root_dir = path()
+            assert root_dir == ct.find_gen3_root_dir(path())
+            tenant_dir = os.path.join(root_dir, "accounts", tenant_name)
+            assert tenant_dir == ct.find_gen3_tenant_dir(root_dir, tenant_name)
+            account_base_dir = os.path.join(root_dir, "accounts", account_name)
+            account_dir = os.path.join(account_base_dir, "config")
+            account_state_dir = os.path.join(account_base_dir, "infrastructure")
+            assert account_dir == ct.find_gen3_account_dir(root_dir, account_name)
+            assert account_state_dir == ct.find_gen3_account_state_dir(
+                root_dir, account_name
+            )
+            product_base_dir = os.path.join(root_dir, product_name)
+            product_dir = os.path.join(product_base_dir, "config")
+            product_infr_dir = os.path.join(product_base_dir, "infrastructure")
+            environment_dir = os.path.join(product_dir, "solutionsv2", environment_name)
+            assert product_dir == ct.find_gen3_product_dir(root_dir, product_name)
+            assert product_infr_dir == ct.find_gen3_product_infrastructure_dir(
+                root_dir, product_name
+            )
+            assert environment_dir == ct.find_gen3_environment_dir(
+                root_dir, product_name, environment_name
+            )
+            e = Environment()
+            ct.find_gen3_dirs(
+                e,
+                root_dir,
+                tenant=tenant_name,
+                account=account_name,
+                product=product_name,
+                environment=environment_name,
+                segment=segment_name,
+            )
+            assert e.ROOT_DIR == root_dir
+            assert e.TENANT_DIR == tenant_dir
+
+            assert e.ACCOUNT_DIR == account_dir
+            assert e.ACCOUNT_STATE_DIR == account_state_dir
+            assert e.ACCOUNT_SETTINGS_DIR == os.path.join(account_dir, "settings")
+            assert e.ACCOUNT_OPERATIONS_DIR == os.path.join(
+                account_state_dir, "operations"
+            )
+            product_settings_dir = os.path.join(product_dir, "settings")
+            product_operations_dir = os.path.join(product_infr_dir, "operations")
+            product_solutions_dir = os.path.join(product_dir, "solutionsv2")
+            environment_shared_operations_dir = os.path.join(
+                product_infr_dir, "operations", environment_name
+            )
+            environment_shared_settings_dir = os.path.join(
+                product_dir, "settings", environment_name
+            )
+            environment_shared_solutions_dir = os.path.join(
+                product_dir, "solutionsv2", environment_name
+            )
+            segment_solutions_dir = os.path.join(
+                product_dir, "solutionsv2", environment_name, segment_name
+            )
+            segment_settings_dir = os.path.join(
+                product_dir, "settings", environment_name, segment_name
+            )
+            segment_operations_dir = os.path.join(
+                product_infr_dir, "operations", environment_name, segment_name
+            )
+            segment_builds_dir = segment_settings_dir
+            segment_shared_settings_dir = os.path.join(
+                product_dir, "settings", "shared", segment_name
+            )
+            segment_shared_solutions_dir = os.path.join(
+                product_dir, "solutionsv2", "shared", segment_name
+            )
+            segment_shared_operations_dir = os.path.join(
+                product_infr_dir, "operations", "shared", segment_name
+            )
+            assert e.PRODUCT_DIR == product_dir
+            assert e.PRODUCT_SETTINGS_DIR == product_settings_dir
+            assert e.PRODUCT_INFRASTRUCTURE_DIR == product_infr_dir
+            assert e.PRODUCT_OPERATIONS_DIR == product_operations_dir
+            assert e.PRODUCT_SOLUTIONS_DIR == product_solutions_dir
+            assert e.PRODUCT_SHARED_SETTINGS_DIR == os.path.join(
+                product_settings_dir, "shared"
+            )
+            assert e.PRODUCT_SHARED_OPERATIONS_DIR == os.path.join(
+                product_operations_dir, "shared"
+            )
+            assert e.PRODUCT_SHARED_SOLUTIONS_DIR == os.path.join(
+                product_solutions_dir, "shared"
+            )
+            assert e.ENVIRONMENT_SHARED_SETTINGS_DIR == environment_shared_settings_dir
+            assert (
+                e.ENVIRONMENT_SHARED_SOLUTIONS_DIR == environment_shared_solutions_dir
+            )
+            assert (
+                e.ENVIRONMENT_SHARED_OPERATIONS_DIR == environment_shared_operations_dir
+            )
+            assert e.SEGMENT_SOLUTIONS_DIR == segment_solutions_dir
+            assert e.SEGMENT_SETTINGS_DIR == segment_settings_dir
+            assert e.SEGMENT_OPERATIONS_DIR == segment_operations_dir
+            assert e.SEGMENT_BUILDS_DIR == segment_builds_dir
+            assert e.SEGMENT_SHARED_SETTINGS_DIR == segment_shared_settings_dir
+            assert e.SEGMENT_SHARED_SOLUTIONS_DIR == segment_shared_solutions_dir
+            assert e.SEGMENT_SHARED_OPERATIONS_DIR == segment_shared_operations_dir
+            print(e)
 
 
 class FSNode:
@@ -146,9 +153,9 @@ class FSNode:
         os.makedirs(self.path, exist_ok=True)
         return self
 
-    def mknod(self):
+    def touchfile(self):
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
-        os.mknod(self.path)
+        open(self.path, "w").close()
         return self
 
     def mkfile(self, data):
@@ -243,14 +250,14 @@ def test_upgrade_version_1_1_0():
         root = FSNode(root)
 
         appsettings = root["appsettings"]
-        appsettings["appsettings-file.json"].mknod()
+        appsettings["appsettings-file.json"].touchfile()
         appsettings["appsettings-env"]["subdir"][
             "appsettings-env-sub-file.json"
-        ].mknod()
-        appsettings["appsettings-env"]["appsettings-env-file.json"].mknod()
+        ].touchfile()
+        appsettings["appsettings-env"]["appsettings-env-file.json"].touchfile()
 
         solutions = root["solutions"]
-        solutions["solutions-file.json"].mknod()
+        solutions["solutions-file.json"].touchfile()
         solutions["segment.json"] = {
             "Segment": {
                 "Environment": "solutions",
@@ -260,8 +267,8 @@ def test_upgrade_version_1_1_0():
                 "NonLegacyKey": "NonLegacyKey",
             }
         }
-        solutions["solutions-env"]["subdir"]["solutions-env-sub-file.json"].mknod()
-        solutions["solutions-env"]["solutions-env-file.json"].mknod()
+        solutions["solutions-env"]["subdir"]["solutions-env-sub-file.json"].touchfile()
+        solutions["solutions-env"]["solutions-env-file.json"].touchfile()
         solutions["solutions-env"]["segment.json"] = {
             "Segment": {
                 "Environment": "solutions-env",
@@ -273,21 +280,21 @@ def test_upgrade_version_1_1_0():
         }
 
         credentials = root["credentials"]
-        credentials["credentials-file.json"].mknod()
-        credentials["aws-ssh.pem"].mknod()
+        credentials["credentials-file.json"].touchfile()
+        credentials["aws-ssh.pem"].touchfile()
         credentials["credentials-env"]["subdir"][
             "credentials-env-sub-file.json"
-        ].mknod()
-        credentials["credentials-env"]["credentials-env-file.json"].mknod()
+        ].touchfile()
+        credentials["credentials-env"]["credentials-env-file.json"].touchfile()
         credentials["credentials-env"][".gitignore"] = "test"
-        credentials["credentials-env"]["aws-ssh-env.pem"].mknod()
+        credentials["credentials-env"]["aws-ssh-env.pem"].touchfile()
 
         aws = root["aws"]
-        aws["aws-file.json"].mknod()
-        aws["cf"]["aws-cf-file.json"].mknod()
-        aws["aws-env"]["subdir"]["aws-env-sub-file.json"].mknod()
-        aws["aws-env"]["cf"]["aws-env-cf-file.json"].mknod()
-        aws["aws-env"]["cf"]["subdir"]["aws-env-cf-sub-file.json"].mknod()
+        aws["aws-file.json"].touchfile()
+        aws["cf"]["aws-cf-file.json"].touchfile()
+        aws["aws-env"]["subdir"]["aws-env-sub-file.json"].touchfile()
+        aws["aws-env"]["cf"]["aws-env-cf-file.json"].touchfile()
+        aws["aws-env"]["cf"]["subdir"]["aws-env-cf-sub-file.json"].touchfile()
 
     def assert_post_upgrade_structure(root):
         root = FSNode(root)
@@ -580,24 +587,24 @@ def test_upgrade_version_2_0_0():
 
         product = root["product"]
         config = product["config"].mkdir()
-        config["config.json"].mknod()
+        config["config.json"].touchfile()
         settings = config["settings"].mkdir()
-        settings["build.json"].mknod()
-        settings["shared-build.json"].mknod()
-        settings["not-a-build-file.json"].mknod()
+        settings["build.json"].touchfile()
+        settings["shared-build.json"].touchfile()
+        settings["not-a-build-file.json"].touchfile()
         solutionsv2 = config["solutionsv2"].mkdir()
-        solutionsv2["solution.json"].mknod()
+        solutionsv2["solution.json"].touchfile()
         infrastructure = product["infrastructure"].mkdir()
         infrastructure_cf = infrastructure["cf"].mkdir()
-        infrastructure_cf["cf.json"].mknod()
+        infrastructure_cf["cf.json"].touchfile()
         infrastructure_cot = infrastructure["cot"].mkdir()
-        infrastructure_cot["cot.json"].mknod()
+        infrastructure_cot["cot.json"].touchfile()
         infrastructure_operations = infrastructure["operations"].mkdir()
-        infrastructure_operations["infrastructure-operations.json"].mknod()
+        infrastructure_operations["infrastructure-operations.json"].touchfile()
         state = product["state"].mkdir()
-        state["state.json"].mknod()
+        state["state.json"].touchfile()
         operations = product["operations"].mkdir()
-        operations["operations.json"].mknod()
+        operations["operations.json"].touchfile()
 
         assert ct.upgrade_cmdb_repo_to_v2_0_0(root.path, "")
         assert ct.cleanup_cmdb_repo_to_v2_0_0(root.path, "")
@@ -630,22 +637,22 @@ def test_upgrade_version_2_0_1():
         state = root["state"].mkdir()
         cf = state["cf"].mkdir()
 
-        cf["level-deploymentunit-aa-us-east-1-suffix.json"].mknod()
+        cf["level-deploymentunit-aa-us-east-1-suffix.json"].touchfile()
         # definition file should be removed
-        cf["defn-deploymentunit-aa-eastus-suffix.json"].mknod()
+        cf["defn-deploymentunit-aa-eastus-suffix.json"].touchfile()
         # level account
-        cf["account-deploymentunit-us-east-2-suffix.json"].mknod()
+        cf["account-deploymentunit-us-east-2-suffix.json"].touchfile()
         # level acccount dunit s3
-        cf["account-us-east-1-suffix.json"].mknod()
+        cf["account-us-east-1-suffix.json"].touchfile()
         # level product dunit cmk
-        cf["product-us-east-1-suffix.json"].mknod()
+        cf["product-us-east-1-suffix.json"].touchfile()
         # level seg dunit cmk
-        cf["seg-key-us-east-1-suffix.json"].mknod()
+        cf["seg-key-us-east-1-suffix.json"].touchfile()
         # level seg
-        cf["cont-deploymentunit-us-east-1-suffix.json"].mknod()
+        cf["cont-deploymentunit-us-east-1-suffix.json"].touchfile()
         # already moved
         # level product dunit cmk
-        cf["cmk"]["default"]["product-us-east-9-suffix.json"].mknod()
+        cf["cmk"]["default"]["product-us-east-9-suffix.json"].touchfile()
         assert ct.upgrade_cmdb_repo_to_v2_0_1(root.path, "")
 
         assert not cf["defn-deploymentunit-aa-eastus-suffix.json"].exists()

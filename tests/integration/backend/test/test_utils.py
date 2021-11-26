@@ -105,7 +105,7 @@ def test_json_validator_object():
             JSONValidator.from_file(template_filename)
         assert str(einfo.value) == f"{template_filename} not found"
 
-        os.mknod(template_filename)
+        open(template_filename, "w").close()
         with pytest.raises(AssertionError) as einfo:
             JSONValidator.from_file(template_filename)
         assert str(einfo.value) == f"{template_filename} is not a valid JSON"

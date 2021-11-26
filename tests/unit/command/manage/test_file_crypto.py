@@ -1,4 +1,3 @@
-import os
 import collections
 from unittest import mock
 from click.testing import CliRunner
@@ -20,7 +19,7 @@ ALL_VALID_OPTIONS["-u,--update"] = [True, False]
 def test_input_valid(manage_file_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
-        os.mknod("crypto_file")
+        open("crypto_file", "w").close()
         run_options_test(
             runner,
             manage_file_crypto,
@@ -33,7 +32,7 @@ def test_input_valid(manage_file_crypto_backend):
 def test_input_validation(manage_file_crypto_backend):
     runner = CliRunner()
     with runner.isolated_filesystem():
-        os.mknod("crypto_file")
+        open("crypto_file", "w").close()
         run_validatable_option_test(
             runner,
             manage_file_crypto,
