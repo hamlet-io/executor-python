@@ -1,12 +1,37 @@
 # Changelog
 
-## latest (2021-11-07)
+## latest (2021-11-27)
+
+#### New Features
+
+* (testing): enable full scenario testing
+* extend autocomplete support
+* update to click 8.x
+* add layer and component type info
+#### Fixes
+
+* use engine fixture
+* tests with command update
+#### Refactorings
+
+* osx support for testing
+* align account infra to state dir
+#### Others
+
+* fix formatting
+
+Full set of changes: [`9.8.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.8.1...latest)
+
+## 9.8.1 (2021-11-07)
 
 #### Fixes
 
 * (docs): updates to README
+#### Others
 
-Full set of changes: [`9.8.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.8.0...latest)
+* changelog bump ([#256](https://github.com/hamlet-io/executor-python/issues/256))
+
+Full set of changes: [`9.8.0...9.8.1`](https://github.com/hamlet-io/executor-python/compare/9.8.0...9.8.1)
 
 ## 9.8.0 (2021-11-07)
 
