@@ -7,7 +7,7 @@ import collections
 from unittest import mock
 from click.testing import CliRunner
 
-from hamlet.command.reference import list_reference_types, list_references
+from hamlet.command.layer import list_layers, list_layer_types
 from hamlet.command.common.config import Options
 from tests.unit.command.test_option_generation import (
     run_options_test,
@@ -15,30 +15,32 @@ from tests.unit.command.test_option_generation import (
 
 
 info_mock_output = {
-    "ReferenceTypes": [
+    "LayerTypes": [
         {
-            "Type": "ReferenceType[1]",
-            "Description": "ReferenceDescription[1]",
+            "Type": "LayerType[1]",
+            "Description": "LayerDescription[1]",
             "Attributes": [{"Names": "Attribute[1]", "Types": ["string"]}],
-            "PluralType": "ReferencePluralType[1]",
+            "ReferenceLookupType": "LayerReferenceLookupType[1]",
         },
         {
-            "Type": "ReferenceType[2]",
-            "Description": "ReferenceDescription[2]",
+            "Type": "LayerType[2]",
+            "Description": "LayerDescription[2]",
             "Attributes": [{"Names": "Attribute[2]", "Types": ["string"]}],
-            "PluralType": "ReferencePluralType[2]",
+            "ReferenceLookupType": "LayerReferenceLookupType[2]",
         },
     ],
-    "ReferenceData": [
+    "LayerData": [
         {
-            "Type": "ReferenceType[1]",
-            "Id": "ReferenceDataId[1]",
-            "Properties": {"ReferenceProperty[1]": "ReferencePropertyValue[1]"},
+            "Type": "LayerType[1]",
+            "Id": "LayerDataId[1]",
+            "Name": "LayerDataName[1]",
+            "Properties": {"LayerProperty[1]": "LayerPropertyValue[1]"},
         },
         {
-            "Type": "ReferenceType[2]",
-            "Id": "ReferenceDataId[2]",
-            "Properties": {"ReferenceProperty[2]": "ReferencePropertyValue[2]"},
+            "Type": "LayerType[2]",
+            "Id": "LayerDataId[2]",
+            "Name": "LayerDataName[2]",
+            "Properties": {"LayerProperty[2]": "LayerPropertyValue[2]"},
         },
     ],
 }
@@ -96,61 +98,71 @@ LIST_TYPES_VALID_OPTIONS["--output-format"] = "json"
 
 
 @mock_backend(info_mock_output)
-def test_list_reference_types_input_valid(
+def test_list_layer_types_input_valid(
     blueprint_mock,
     ContextClassMock,
 ):
     run_options_test(
-        CliRunner(), list_reference_types, LIST_TYPES_VALID_OPTIONS, blueprint_mock.run
+        CliRunner(), list_layer_types, LIST_TYPES_VALID_OPTIONS, blueprint_mock.run
     )
 
 
 @mock_backend(info_mock_output)
-def test_list_reference_types(blueprint_mock, ContextClassMock):
+def test_list_layer_types(blueprint_mock, ContextClassMock):
     obj = Options()
 
     cli = CliRunner()
-    result = cli.invoke(list_reference_types, ["--output-format", "json"], obj=obj)
+    result = cli.invoke(list_layer_types, ["--output-format", "json"], obj=obj)
     print(result.exc_info)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 2
     assert {
-        "Type": "ReferenceType[1]",
-        "PluralType": "ReferencePluralType[1]",
-        "Description": "ReferenceDescription[1]",
+        "Type": "LayerType[1]",
+        "ReferenceLookupType": "LayerReferenceLookupType[1]",
+        "Description": "LayerDescription[1]",
     } in result
     assert {
-        "Type": "ReferenceType[2]",
-        "PluralType": "ReferencePluralType[2]",
-        "Description": "ReferenceDescription[2]",
+        "Type": "LayerType[2]",
+        "ReferenceLookupType": "LayerReferenceLookupType[2]",
+        "Description": "LayerDescription[2]",
     } in result
 
 
-LIST_REFERENCES_VALID_OPTIONS = collections.OrderedDict()
-LIST_REFERENCES_VALID_OPTIONS["-q,--query"] = "[]"
-LIST_REFERENCES_VALID_OPTIONS["--output-format"] = "json"
+LIST_LAYERS_VALID_OPTIONS = collections.OrderedDict()
+LIST_LAYERS_VALID_OPTIONS["-q,--query"] = "[]"
+LIST_LAYERS_VALID_OPTIONS["--output-format"] = "json"
 
 
 @mock_backend(info_mock_output)
-def test_list_references_input_valid(
+def test_list_layers_input_valid(
     blueprint_mock,
     ContextClassMock,
 ):
     run_options_test(
-        CliRunner(), list_references, LIST_REFERENCES_VALID_OPTIONS, blueprint_mock.run
+        CliRunner(), list_layers, LIST_LAYERS_VALID_OPTIONS, blueprint_mock.run
     )
 
 
 @mock_backend(info_mock_output)
-def test_list_references(blueprint_mock, ContextClassMock):
+def test_list_layers(blueprint_mock, ContextClassMock):
     obj = Options()
 
     cli = CliRunner()
-    result = cli.invoke(list_references, ["--output-format", "json"], obj=obj)
+    result = cli.invoke(list_layers, ["--output-format", "json"], obj=obj)
     print(result.exc_info)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 2
-    assert {"Id": "ReferenceDataId[1]", "Type": "ReferenceType[1]"} in result
-    assert {"Id": "ReferenceDataId[2]", "Type": "ReferenceType[2]"} in result
+    assert {
+        "Id": "LayerDataId[1]",
+        "Name": "LayerDataName[1]",
+        "Active": None,
+        "Type": "LayerType[1]",
+    } in result
+    assert {
+        "Id": "LayerDataId[2]",
+        "Name": "LayerDataName[2]",
+        "Active": None,
+        "Type": "LayerType[2]",
+    } in result

@@ -123,11 +123,15 @@ def layer_list_data_table(data):
     for row in data:
         tablerows.append(
             [
+                wrap_text(row["Name"]),
                 wrap_text(row["Id"]),
                 wrap_text(row["Type"]),
+                wrap_text(row["Active"]),
             ]
         )
-    return tabulate(tablerows, headers=["Id", "Type"], tablefmt="github")
+    return tabulate(
+        tablerows, headers=["Name", "Id", "Type", "Active"], tablefmt="github"
+    )
 
 
 @group.command(
@@ -142,7 +146,7 @@ def list_layers(options, query):
     Lists the layers available
     """
 
-    LIST_LAYERS_QUERY = "LayerData[].{Id:Id,Type:Type}"
+    LIST_LAYERS_QUERY = "LayerData[].{Name:Name,Id:Id,Type:Type,Active:Active}"
 
     return query_info_output(options, LIST_LAYERS_QUERY, {}, query)
 
@@ -151,20 +155,20 @@ def list_layers(options, query):
     "describe-layer", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option("-t", "--type", required=True, help="The type of the layer to describe")
-@click.option("-i", "--id", required=True, help="The id of the layer to describe")
+@click.option("-n", "--name", required=True, help="The name of the layer to describe")
 @click.option("-q", "--query", help="a query on the describe result")
 @exceptions.backend_handler()
 @pass_options
-def describe_layer(options, type, id, query):
+def describe_layer(options, type, name, query):
     """
     Describes a specific layer
     """
-    DESCRIBE_LAYER_QUERY = "LayerData[?Type=={type} && Id=={id}] | [0]"
+    DESCRIBE_LAYER_QUERY = "LayerData[?Type=={type} && Name=={name}] | [0]"
 
     click.echo(
         json.dumps(
             query_info_output(
-                options, DESCRIBE_LAYER_QUERY, {"type": type, "id": id}, query
+                options, DESCRIBE_LAYER_QUERY, {"type": type, "name": name}, query
             ),
             indent=2,
         )

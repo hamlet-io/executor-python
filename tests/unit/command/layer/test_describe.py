@@ -33,11 +33,13 @@ info_mock_output = {
         {
             "Type": "LayerType[1]",
             "Id": "LayerDataId[1]",
+            "Name": "LayerDataName[1]",
             "Properties": {"LayerProperty[1]": "LayerPropertyValue[1]"},
         },
         {
             "Type": "LayerType[2]",
             "Id": "LayerDataId[2]",
+            "Name": "LayerDataName[2]",
             "Properties": {"LayerProperty[2]": "LayerPropertyValue[2]"},
         },
     ],
@@ -127,7 +129,7 @@ def test_describe_layer_type(blueprint_mock, ContextClassMock):
 
 DECSCRIBE_LAYER_VALID_OPTIONS = collections.OrderedDict()
 DECSCRIBE_LAYER_VALID_OPTIONS["!-t,--type"] = "LayerType[1]"
-DECSCRIBE_LAYER_VALID_OPTIONS["!-i,--id"] = "LayerDataId[1]"
+DECSCRIBE_LAYER_VALID_OPTIONS["!-n,--name"] = "LayerDataName[1]"
 DECSCRIBE_LAYER_VALID_OPTIONS["-q,--query"] = "[]"
 
 
@@ -151,7 +153,7 @@ def test_describe_layer(blueprint_mock, ContextClassMock):
     cli = CliRunner()
     result = cli.invoke(
         describe_layer,
-        ["--type", "LayerType[1]", "--id", "LayerDataId[1]"],
+        ["--type", "LayerType[1]", "--name", "LayerDataName[1]"],
         obj=obj,
     )
     print(result.exc_info)
@@ -160,5 +162,6 @@ def test_describe_layer(blueprint_mock, ContextClassMock):
     assert {
         "Type": "LayerType[1]",
         "Id": "LayerDataId[1]",
+        "Name": "LayerDataName[1]",
         "Properties": {"LayerProperty[1]": "LayerPropertyValue[1]"},
     } == result
