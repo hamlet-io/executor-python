@@ -7,37 +7,39 @@ import collections
 from unittest import mock
 from click.testing import CliRunner
 
-from hamlet.command.reference import query_reference_types, query_references
+from hamlet.command.layer import query_layer_types, query_layers
 from hamlet.command.common.config import Options
 from tests.unit.command.test_option_generation import (
     run_options_test,
 )
 
 info_mock_output = {
-    "ReferenceTypes": [
+    "LayerTypes": [
         {
-            "Type": "ReferenceType[1]",
-            "Description": "ReferenceDescription[1]",
+            "Type": "LayerType[1]",
+            "Description": "LayerDescription[1]",
             "Attributes": [{"Names": "Attribute[1]", "Types": ["string"]}],
-            "PluralType": "ReferencePluralType[1]",
+            "ReferenceLookupType": "LayerReferenceLookupType[1]",
         },
         {
-            "Type": "ReferenceType[2]",
-            "Description": "ReferenceDescription[2]",
+            "Type": "LayerType[2]",
+            "Description": "LayerDescription[2]",
             "Attributes": [{"Names": "Attribute[2]", "Types": ["string"]}],
-            "PluralType": "ReferencePluralType[2]",
+            "ReferenceLookupType": "LayerReferenceLookupType[2]",
         },
     ],
-    "ReferenceData": [
+    "LayerData": [
         {
-            "Type": "ReferenceType[1]",
-            "Id": "ReferenceDataId[1]",
-            "Properties": {"ReferenceProperty[1]": "ReferencePropertyValue[1]"},
+            "Type": "LayerType[1]",
+            "Id": "LayerDataId[1]",
+            "Name": "LayerDataName[1]",
+            "Properties": {"LayerProperty[1]": "LayerPropertyValue[1]"},
         },
         {
-            "Type": "ReferenceType[2]",
-            "Id": "ReferenceDataId[2]",
-            "Properties": {"ReferenceProperty[2]": "ReferencePropertyValue[2]"},
+            "Type": "LayerType[2]",
+            "Id": "LayerDataId[2]",
+            "Name": "LayerDataName[2]",
+            "Properties": {"LayerProperty[2]": "LayerPropertyValue[2]"},
         },
     ],
 }
@@ -94,63 +96,63 @@ QUERY_TYPES_VALID_OPTIONS["-q,--query"] = "[]"
 
 
 @mock_backend(info_mock_output)
-def test_query_reference_types_input_valid(
+def test_query_layer_types_input_valid(
     blueprint_mock,
     ContextClassMock,
 ):
     run_options_test(
         CliRunner(),
-        query_reference_types,
+        query_layer_types,
         QUERY_TYPES_VALID_OPTIONS,
         blueprint_mock.run,
     )
 
 
 @mock_backend(info_mock_output)
-def test_query_reference_types(blueprint_mock, ContextClassMock):
+def test_query_layer_types(blueprint_mock, ContextClassMock):
     obj = Options()
 
     cli = CliRunner()
     result = cli.invoke(
-        query_reference_types, ["--query", "[?Type==`ReferenceType[1]`]"], obj=obj
+        query_layer_types, ["--query", "[?Type==`LayerType[1]`]"], obj=obj
     )
     print(result.exc_info)
     assert result.exit_code == 0
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
-        "Type": "ReferenceType[1]",
-        "Description": "ReferenceDescription[1]",
+        "Type": "LayerType[1]",
+        "Description": "LayerDescription[1]",
         "Attributes": [{"Names": "Attribute[1]", "Types": ["string"]}],
-        "PluralType": "ReferencePluralType[1]",
+        "ReferenceLookupType": "LayerReferenceLookupType[1]",
     } in result
 
 
-QUERY_REFERENCES_VALID_OPTIONS = collections.OrderedDict()
-QUERY_REFERENCES_VALID_OPTIONS["-q,--query"] = "[]"
+QUERY_LAYERS_VALID_OPTIONS = collections.OrderedDict()
+QUERY_LAYERS_VALID_OPTIONS["-q,--query"] = "[]"
 
 
 @mock_backend(info_mock_output)
-def test_query_references_input_valid(
+def test_query_layers_input_valid(
     blueprint_mock,
     ContextClassMock,
 ):
     run_options_test(
         CliRunner(),
-        query_references,
-        QUERY_REFERENCES_VALID_OPTIONS,
+        query_layers,
+        QUERY_LAYERS_VALID_OPTIONS,
         blueprint_mock.run,
     )
 
 
 @mock_backend(info_mock_output)
-def test_query_references(blueprint_mock, ContextClassMock):
+def test_query_layers(blueprint_mock, ContextClassMock):
     obj = Options()
 
     cli = CliRunner()
     result = cli.invoke(
-        query_references,
-        ["--query", "[?Id==`ReferenceDataId[1]`]"],
+        query_layers,
+        ["--query", "[?Id==`LayerDataId[1]`]"],
         obj=obj,
     )
     print(result.exc_info)
@@ -158,7 +160,8 @@ def test_query_references(blueprint_mock, ContextClassMock):
     result = json.loads(result.output)
     assert len(result) == 1
     assert {
-        "Type": "ReferenceType[1]",
-        "Id": "ReferenceDataId[1]",
-        "Properties": {"ReferenceProperty[1]": "ReferencePropertyValue[1]"},
+        "Type": "LayerType[1]",
+        "Id": "LayerDataId[1]",
+        "Name": "LayerDataName[1]",
+        "Properties": {"LayerProperty[1]": "LayerPropertyValue[1]"},
     } in result
