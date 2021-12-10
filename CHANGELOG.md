@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2021-11-27)
+## latest (2021-12-08)
+
+#### New Features
+
+* layer info updates
+
+Full set of changes: [`9.9.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.9.0...latest)
+
+## 9.9.0 (2021-11-29)
 
 #### New Features
 
@@ -18,9 +26,10 @@
 * align account infra to state dir
 #### Others
 
+* changelog bump ([#258](https://github.com/hamlet-io/executor-python/issues/258))
 * fix formatting
 
-Full set of changes: [`9.8.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.8.1...latest)
+Full set of changes: [`9.8.1...9.9.0`](https://github.com/hamlet-io/executor-python/compare/9.8.1...9.9.0)
 
 ## 9.8.1 (2021-11-07)
 
