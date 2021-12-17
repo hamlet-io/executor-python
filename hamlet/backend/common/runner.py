@@ -5,6 +5,7 @@ import shutil
 from hamlet.env import HAMLET_GLOBAL_CONFIG
 from .exceptions import BackendException
 
+
 def __cli_params_to_script_call(
     script_path,
     script_name,
