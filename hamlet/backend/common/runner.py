@@ -5,7 +5,6 @@ import shutil
 from hamlet.env import HAMLET_GLOBAL_CONFIG
 from .exceptions import BackendException
 
-
 def __cli_params_to_script_call(
     script_path,
     script_name,
@@ -22,7 +21,7 @@ def __cli_params_to_script_call(
             elif isinstance(value, tuple):
                 for instance in value:
                     options_list.append(str(key))
-                    options_list.append(str(instance))
+                    options_list.append(str(f"'{instance}'"))
             else:
                 options_list.append(str(key))
                 options_list.append(str(f"'{value}'"))
