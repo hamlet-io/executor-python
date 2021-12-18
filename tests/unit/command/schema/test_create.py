@@ -14,14 +14,13 @@ from tests.unit.command.test_option_generation import (
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["!-o,--output-dir"] = "output_dir"
-ALL_VALID_OPTIONS["-t,--schema-type"] = "SchemaType1"
-ALL_VALID_OPTIONS["-i,--schema-instance"] = "SchemaInstance1"
+ALL_VALID_OPTIONS["-s,--schema"] = "Schema"
 
 
 def template_backend_run_mock(data):
     def run(
-        entrance="schemaset",
-        output_filename="schemaset-schemacontract.json",
+        entrance="schemalist",
+        output_filename="schemalist-schemacontract.json",
         deployment_mode=None,
         output_dir=None,
         generation_input_source=None,
@@ -34,6 +33,7 @@ def template_backend_run_mock(data):
         product=None,
         environment=None,
         segment=None,
+        entrance_parameters=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         unitlist_filename = os.path.join(output_dir, output_filename)
@@ -43,7 +43,7 @@ def template_backend_run_mock(data):
     return run
 
 
-def mock_backend(schemaset=None):
+def mock_backend(schemalist=None):
     def decorator(func):
         @mock.patch("hamlet.command.schema.create_template_backend")
         @mock.patch("hamlet.backend.query.context.Context")
@@ -55,11 +55,11 @@ def mock_backend(schemaset=None):
 
                 ContextObjectMock = ContextClassMock()
                 ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(schemaset).encode()).hexdigest()
+                    hashlib.md5(str(schemalist).encode()).hexdigest()
                 )
                 ContextObjectMock.cache_dir = temp_cache_dir
 
-                blueprint_mock.run.side_effect = template_backend_run_mock(schemaset)
+                blueprint_mock.run.side_effect = template_backend_run_mock(schemalist)
 
                 return func(
                     blueprint_mock,
@@ -74,7 +74,7 @@ def mock_backend(schemaset=None):
     return decorator
 
 
-schema_set = {
+schema_list = {
     "Stages": [
         {
             "Id": "StageId1",
@@ -82,15 +82,13 @@ schema_set = {
                 {
                     "Id": "StepId1",
                     "Parameters": {
-                        "SchemaType": "SchemaType1",
-                        "SchemaInstance": "SchemaInstance1",
+                        "Schema": "Schema1",
                     },
                 },
                 {
                     "Id": "StepId2",
                     "Parameters": {
-                        "SchemaType": "SchemaType2",
-                        "SchemaInstance": "SchemaInstance2",
+                        "Schema": "Schema2",
                     },
                 },
             ],
@@ -99,18 +97,18 @@ schema_set = {
 }
 
 
-@mock_backend(schema_set)
+@mock_backend(schema_list)
 def test_input_valid(blueprint_mock, ContextClassMock, create_template_backend):
     run_options_test(CliRunner(), create_schemas, ALL_VALID_OPTIONS, blueprint_mock.run)
 
 
-@mock_backend(schema_set)
+@mock_backend(schema_list)
 def test_input_validation(blueprint_mock, ContextClassMock, create_template_backend):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         create_schemas,
         create_template_backend.run,
-        {"-t": "SchemaType1", "-i": "SchemaInstance1", "-o": "."},
+        {"-s": "Schema1", "-o": "."},
         [],
     )
