@@ -64,15 +64,11 @@ def mock_backend(schemalist=None):
                 "Steps": [
                     {
                         "Id": "StepId1",
-                        "Parameters": {
-                            "Schema": "Schema1"
-                        },
+                        "Parameters": {"Schema": "Schema1"},
                     },
                     {
                         "Id": "StepId2",
-                        "Parameters": {
-                            "Schema": "Schema2"
-                        },
+                        "Parameters": {"Schema": "Schema2"},
                     },
                 ],
             },
@@ -81,15 +77,11 @@ def mock_backend(schemalist=None):
                 "Steps": [
                     {
                         "Id": "StepId3",
-                        "Parameters": {
-                            "Schema": "Schema3"
-                        },
+                        "Parameters": {"Schema": "Schema3"},
                     },
                     {
                         "Id": "StepId4",
-                        "Parameters": {
-                            "Schema": "Schema4"
-                        },
+                        "Parameters": {"Schema": "Schema4"},
                     },
                 ],
             },

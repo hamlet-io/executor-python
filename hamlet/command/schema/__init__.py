@@ -12,7 +12,7 @@ from hamlet.backend import query as query_backend
 from hamlet.backend.create import template as create_template_backend
 
 
-def find_schemas_from_options(options, schema_set):
+def find_schemas_from_options(options, schema):
     query_args = {
         **options.opts,
         "deployment_mode": None,
@@ -26,9 +26,9 @@ def find_schemas_from_options(options, schema_set):
 
     schemas = []
 
-    for schema in available_schemas:
-        if re.fullmatch(schema_set, schema["Schema"]):
-            schemas.append(schema)
+    for available_schema in available_schemas:
+        if re.fullmatch(schema, available_schema["Schema"]):
+            schemas.append(available_schema)
     return schemas
 
 
@@ -104,18 +104,17 @@ def create_schemas(options, schema, output_dir, **kwargs):
     Create the JSON schema files available
     """
 
-    schemas = find_schemas_from_options(options, schema)
+    schema_list = find_schemas_from_options(options, schema)
 
-    if len(schemas) == 0:
+    if len(schema_list) == 0:
         raise exceptions.CommandError("No schemas found")
 
-    for schema in schemas:
-        schema = schema["schema"]
+    for schema_task in schema_list:
         click.echo("")
         click.echo(
             (
                 click.style(
-                    f"[*] Schema: {schema}",
+                    f"[*] Schema: {schema_task['Schema']}",
                     bold=True,
                     fg="green",
                 )
@@ -127,7 +126,7 @@ def create_schemas(options, schema, output_dir, **kwargs):
             **options.opts,
             "entrance": "schema",
             "output_dir": output_dir,
-            "entrance_parameters": f"Schema={schema}",
+            "entrance_parameters": f"Schema={schema_task['Schema']}",
         }
 
         create_template_backend.run(**template_args, _is_cli=True)
