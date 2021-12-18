@@ -14,7 +14,7 @@ from tests.unit.command.test_option_generation import (
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["!-o,--output-dir"] = "output_dir"
-ALL_VALID_OPTIONS["-s,--schema"] = "Schema"
+ALL_VALID_OPTIONS["-s,--schema"] = "Schema1"
 
 
 def template_backend_run_mock(data):
