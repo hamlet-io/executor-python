@@ -1,12 +1,23 @@
 # Changelog
 
-## latest (2021-12-08)
+## latest (2021-12-17)
+
+#### Fixes
+
+* quoting for shell params ([#268](https://github.com/hamlet-io/executor-python/issues/268))
+
+Full set of changes: [`9.10.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.0...latest)
+
+## 9.10.0 (2021-12-10)
 
 #### New Features
 
 * layer info updates
+#### Others
 
-Full set of changes: [`9.9.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.9.0...latest)
+* changelog bump ([#265](https://github.com/hamlet-io/executor-python/issues/265))
+
+Full set of changes: [`9.9.0...9.10.0`](https://github.com/hamlet-io/executor-python/compare/9.9.0...9.10.0)
 
 ## 9.9.0 (2021-11-29)
 
