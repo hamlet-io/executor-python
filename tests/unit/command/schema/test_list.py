@@ -11,8 +11,8 @@ from hamlet.command.common.config import Options
 
 def template_backend_run_mock(data):
     def run(
-        entrance="schemaset",
-        output_filename="schemaset-schemacontract.json",
+        entrance="schemalist",
+        output_filename="schemalist-schemacontract.json",
         deployment_mode=None,
         output_dir=None,
         generation_input_source=None,
@@ -34,7 +34,7 @@ def template_backend_run_mock(data):
     return run
 
 
-def mock_backend(schemaset=None):
+def mock_backend(schemalist=None):
     def decorator(func):
         @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
@@ -43,11 +43,11 @@ def mock_backend(schemaset=None):
 
                 ContextObjectMock = ContextClassMock()
                 ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(schemaset).encode()).hexdigest()
+                    hashlib.md5(str(schemalist).encode()).hexdigest()
                 )
                 ContextObjectMock.cache_dir = temp_cache_dir
 
-                blueprint_mock.run.side_effect = template_backend_run_mock(schemaset)
+                blueprint_mock.run.side_effect = template_backend_run_mock(schemalist)
 
                 return func(blueprint_mock, ContextClassMock, *args, **kwargs)
 
@@ -65,15 +65,13 @@ def mock_backend(schemaset=None):
                     {
                         "Id": "StepId1",
                         "Parameters": {
-                            "SchemaType": "SchemaType1",
-                            "SchemaInstance": "SchemaInstance1",
+                            "Schema": "Schema1"
                         },
                     },
                     {
                         "Id": "StepId2",
                         "Parameters": {
-                            "SchemaType": "SchemaType2",
-                            "SchemaInstance": "SchemaInstance2",
+                            "Schema": "Schema2"
                         },
                     },
                 ],
@@ -84,15 +82,13 @@ def mock_backend(schemaset=None):
                     {
                         "Id": "StepId3",
                         "Parameters": {
-                            "SchemaType": "SchemaType3",
-                            "SchemaInstance": "SchemaInstance3",
+                            "Schema": "Schema3"
                         },
                     },
                     {
                         "Id": "StepId4",
                         "Parameters": {
-                            "SchemaType": "SchemaType4",
-                            "SchemaInstance": "SchemaInstance4",
+                            "Schema": "Schema4"
                         },
                     },
                 ],
@@ -110,18 +106,14 @@ def test_query_list_schemas(blueprint_mock, ContextClassMock):
     result = json.loads(result.output)
     assert len(result) == 4
     assert {
-        "SchemaType": "SchemaType1",
-        "SchemaInstance": "SchemaInstance1",
+        "Schema": "Schema1",
     } in result
     assert {
-        "SchemaType": "SchemaType2",
-        "SchemaInstance": "SchemaInstance2",
+        "Schema": "Schema2",
     } in result
     assert {
-        "SchemaType": "SchemaType3",
-        "SchemaInstance": "SchemaInstance3",
+        "Schema": "Schema3",
     } in result
     assert {
-        "SchemaType": "SchemaType4",
-        "SchemaInstance": "SchemaInstance4",
+        "Schema": "Schema4",
     } in result
