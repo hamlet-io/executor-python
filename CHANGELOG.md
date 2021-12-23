@@ -1,12 +1,26 @@
 # Changelog
 
-## latest (2021-12-17)
+## latest (2021-12-22)
+
+#### Fixes
+
+* variable naming for schema
+#### Refactorings
+
+* schema generation commands
+
+Full set of changes: [`9.10.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.1...latest)
+
+## 9.10.1 (2021-12-18)
 
 #### Fixes
 
 * quoting for shell params ([#268](https://github.com/hamlet-io/executor-python/issues/268))
+#### Others
 
-Full set of changes: [`9.10.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.0...latest)
+* changelog bump ([#267](https://github.com/hamlet-io/executor-python/issues/267))
+
+Full set of changes: [`9.10.0...9.10.1`](https://github.com/hamlet-io/executor-python/compare/9.10.0...9.10.1)
 
 ## 9.10.0 (2021-12-10)
 
