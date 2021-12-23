@@ -38,6 +38,7 @@ def image_options(func):
                 "rdssnapshot",
                 "docker",
                 "lambda",
+                "lambda_jar",
                 "pipeline",
                 "scripts",
                 "openapi",
