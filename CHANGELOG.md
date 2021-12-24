@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2021-12-22)
+## latest (2021-12-24)
+
+#### New Features
+
+* add support for new lambda_jar image format ([#271](https://github.com/hamlet-io/executor-python/issues/271))
+
+Full set of changes: [`9.10.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.2...latest)
+
+## 9.10.2 (2021-12-24)
 
 #### Fixes
 
@@ -8,8 +16,11 @@
 #### Refactorings
 
 * schema generation commands
+#### Others
 
-Full set of changes: [`9.10.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.1...latest)
+* changelog bump ([#269](https://github.com/hamlet-io/executor-python/issues/269))
+
+Full set of changes: [`9.10.1...9.10.2`](https://github.com/hamlet-io/executor-python/compare/9.10.1...9.10.2)
 
 ## 9.10.1 (2021-12-18)
 
