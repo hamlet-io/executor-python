@@ -15,6 +15,7 @@ def run(
     cwd,
     deployment_mode=None,
     generation_entrance=None,
+    generation_entrance_parameter=None,
     generation_input_source=None,
     generation_provider=None,
     generation_framework=None,
@@ -37,6 +38,7 @@ def run(
         cwd,
         deployment_mode=deployment_mode,
         generation_entrance=generation_entrance,
+        generation_entrance_parameter=generation_entrance_parameter,
         generation_input_source=generation_input_source,
         generation_provider=generation_provider,
         generation_framework=generation_framework,
@@ -50,10 +52,10 @@ def run(
         environment=environment,
         segment=segment,
     )
-    if query_text is not None:
-        result = query.query(query_text, query_params or {})
+    if query_text is None:
+        result = query.blueprint_data
     else:
-        raise exceptions.BackendException("Query unspecified")
+        result = query.query(query_text, query_params or {})
     if sub_query_text is not None:
         result = query.perform_query(sub_query_text, result)
     return result
@@ -65,6 +67,7 @@ class Query:
         cwd,
         deployment_mode,
         generation_entrance=None,
+        generation_entrance_parameter=None,
         generation_input_source=None,
         generation_provider=None,
         generation_framework=None,
@@ -96,6 +99,7 @@ class Query:
                 output_dir=output_dir,
                 deployment_mode=deployment_mode,
                 entrance=generation_entrance,
+                entrance_parameter=generation_entrance_parameter,
                 generation_input_source=generation_input_source,
                 generation_provider=generation_provider,
                 generation_framework=generation_framework,

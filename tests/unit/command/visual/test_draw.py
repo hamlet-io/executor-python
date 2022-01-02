@@ -23,6 +23,7 @@ ALL_VALID_OPTIONS["-s,--src-dir"] = "./"
 def template_backend_run_mock(data):
     def run(
         entrance="diagraminfo",
+        entrance_parameter=None,
         output_filename="diagraminfo.json",
         deployment_mode=None,
         output_dir=None,

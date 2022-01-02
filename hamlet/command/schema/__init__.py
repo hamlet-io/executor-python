@@ -126,7 +126,7 @@ def create_schemas(options, schema, output_dir, **kwargs):
             **options.opts,
             "entrance": "schema",
             "output_dir": output_dir,
-            "entrance_parameters": f"Schema={schema_task['Schema']}",
+            "entrance_parameter": f"Schema={schema_task['Schema']}",
         }
 
         create_template_backend.run(**template_args, _is_cli=True)

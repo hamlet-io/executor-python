@@ -13,6 +13,7 @@ from hamlet.command.visual import list_diagram_types as list_diagram_types
 def template_backend_run_mock(data):
     def run(
         entrance="diagraminfo",
+        entrance_parameter=None,
         output_filename="diagraminfo.json",
         output_dir=None,
         generation_input_source=None,

@@ -46,6 +46,7 @@ info_mock_output = {
 def template_backend_run_mock(data):
     def run(
         entrance="info",
+        entrance_parameter=None,
         output_filename="info.json",
         deployment_mode=None,
         output_dir=None,

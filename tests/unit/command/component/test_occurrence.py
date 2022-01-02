@@ -15,6 +15,7 @@ from hamlet.command.component.common import DescribeContext
 def template_backend_run_mock(data):
     def run(
         entrance="occurrences",
+        entrance_parameter=None,
         output_filename="occurrences-state.json",
         output_dir=None,
         deployment_mode=None,
