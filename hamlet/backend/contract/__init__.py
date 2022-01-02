@@ -50,7 +50,6 @@ def run(contract, **kwargs):
                 else:
                     raise e
 
-
     contract["Properties"] = properties
 
     return contract
