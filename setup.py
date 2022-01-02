@@ -71,8 +71,10 @@ setup(
         "cfn-lint>=0.54.1,<1.0.0",
         # - boto3 locked to support checkov current requirements
         "checkov>=2.0.461,<3.0.0",
+        # contract execution
         "boto3>=1.17.111,<1.18.0",
         "botocore>=1.20.112,<2.0.0",
+        "fabric>=2.6.0,<3.0.0",
         # Diagrams
         "diagrams>=0.18.0,<1.0.0",
     ],
