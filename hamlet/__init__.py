@@ -15,5 +15,6 @@ import hamlet.command.release  # noqa
 import hamlet.command.run  # noqa
 import hamlet.command.schema  # noqa
 import hamlet.command.setup  # noqa
+import hamlet.command.task  # noqa
 import hamlet.command.test  # noqa
 import hamlet.command.visual  # noqa

@@ -30,7 +30,7 @@ except ImportError:
 @backend_handler()
 def root(ctx, opts):
     """
-    hamlet deploy
+    hamlet
     """
 
     try:
