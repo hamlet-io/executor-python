@@ -16,7 +16,7 @@ def run(
     generation_input_source=None,
     output_dir=None,
     disable_output_cleanup=None,
-    entrance_parameters=None,
+    entrance_parameter=None,
     log_level=None,
     root_dir=None,
     tenant=None,
@@ -42,7 +42,7 @@ def run(
         "-i": generation_input_source,
         "-o": output_dir,
         "-x": disable_output_cleanup,
-        "-y": entrance_parameters,
+        "-y": entrance_parameter,
     }
     env = {
         "GENERATION_LOG_LEVEL": log_level,

@@ -27,6 +27,7 @@ ALL_VALID_OPTIONS["--dryrun"] = True
 def template_backend_run_mock(data):
     def run(
         entrance="unitlist",
+        entrance_parameter=None,
         output_filename="unitlist-managementcontract.json",
         deployment_mode=None,
         output_dir=None,
@@ -56,7 +57,12 @@ def mock_backend(unitlist=None):
         @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
         def wrapper(
-            blueprint_mock, ContextClassMock, create_template_backend, *args, **kwargs
+            blueprint_mock,
+            ContextClassMock,
+            create_deployment_backend,
+            run_deployment_backend,
+            *args,
+            **kwargs
         ):
             with tempfile.TemporaryDirectory() as temp_cache_dir:
 
@@ -71,7 +77,8 @@ def mock_backend(unitlist=None):
                 return func(
                     blueprint_mock,
                     ContextClassMock,
-                    create_template_backend,
+                    create_deployment_backend,
+                    run_deployment_backend,
                     *args,
                     **kwargs
                 )
@@ -116,7 +123,7 @@ unit_list = {
 
 @mock_backend(unit_list)
 def test_input_valid(
-    blueprint_mock, ContextClassMock, create_template_backend, manage_stack_backend
+    blueprint_mock, ContextClassMock, create_deployment_backend, run_deployment_backend
 ):
     run_options_test(
         CliRunner(), run_deployments, ALL_VALID_OPTIONS, blueprint_mock.run
@@ -125,13 +132,13 @@ def test_input_valid(
 
 @mock_backend(unit_list)
 def test_input_validation(
-    blueprint_mock, ContextClassMock, create_template_backend, manage_stack_backend
+    blueprint_mock, ContextClassMock, create_deployment_backend, run_deployment_backend
 ):
     runner = CliRunner()
     run_validatable_option_test(
         runner,
         run_deployments,
-        create_template_backend.run,
+        create_deployment_backend.run,
         {
             "-m": "DeploymentMode1",
             "-l": "DeploymentGroup1",

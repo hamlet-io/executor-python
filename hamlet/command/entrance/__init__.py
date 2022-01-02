@@ -71,6 +71,12 @@ def list_entrances(options):
     required=True,
 )
 @click.option(
+    "-y",
+    "--entrance-parameter",
+    multiple=True,
+    help="key=value pairs that are passed to to the entrance",
+)
+@click.option(
     "-l",
     "--deployment-group",
     help="deployment group the deployment unit belongs to",

@@ -11,6 +11,7 @@ from tests.unit.command.test_option_generation import (
 ALL_VALID_OPTIONS = collections.OrderedDict()
 
 ALL_VALID_OPTIONS["!-e,--entrance"] = "entrance"
+ALL_VALID_OPTIONS["-y,--entrance-parameter"] = "entrance_parameter"
 ALL_VALID_OPTIONS["-l,--deployment-group"] = "deployment_group"
 ALL_VALID_OPTIONS["-u,--deployment-unit"] = "deployment_unit"
 ALL_VALID_OPTIONS["-z,--deployment-unit-subset"] = "deployment_unit_subset"

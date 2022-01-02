@@ -12,6 +12,7 @@ from hamlet.command.common.config import Options
 def template_backend_run_mock(data):
     def run(
         entrance="schemalist",
+        entrance_parameter=None,
         output_filename="schemalist-schemacontract.json",
         deployment_mode=None,
         output_dir=None,

@@ -25,6 +25,7 @@ ALL_VALID_OPTIONS["-s,--silent"] = False
 def template_backend_run_mock(data):
     def run(
         entrance="unitlist",
+        entrance_parameter=None,
         output_filename="unitlist-managementcontract.json",
         deployment_mode=None,
         output_dir=None,

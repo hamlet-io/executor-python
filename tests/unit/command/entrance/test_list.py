@@ -10,6 +10,7 @@ from hamlet.command.entrance import list_entrances as list_entrances
 def template_backend_run_mock(data):
     def run(
         entrance="info",
+        entrance_parameter=None,
         output_filename="info.json",
         output_dir=None,
         generation_input_source=None,

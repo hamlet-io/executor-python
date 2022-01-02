@@ -10,6 +10,7 @@ from hamlet.command.deploy.list import list_deployments
 def template_backend_run_mock(data):
     def run(
         entrance="unitlist",
+        entrance_parameter=None,
         deployment_mode="update",
         output_filename="unitlist-managementcontract.json",
         output_dir=None,
