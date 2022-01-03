@@ -1,12 +1,31 @@
 # Changelog
 
-## latest (2021-12-24)
+## latest (2022-01-03)
+
+#### New Features
+
+* (task): add ssh copy file implementation
+* add support for runbook execution through cli
+* contract execution
+* add entrance parameter support
+#### Fixes
+
+* formatting
+* add fabric as dependency ([#278](https://github.com/hamlet-io/executor-python/issues/278))
+* formatting
+
+Full set of changes: [`9.11.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.11.0...latest)
+
+## 9.11.0 (2021-12-24)
 
 #### New Features
 
 * add support for new lambda_jar image format ([#271](https://github.com/hamlet-io/executor-python/issues/271))
+#### Others
 
-Full set of changes: [`9.10.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.10.2...latest)
+* changelog bump ([#272](https://github.com/hamlet-io/executor-python/issues/272))
+
+Full set of changes: [`9.10.2...9.11.0`](https://github.com/hamlet-io/executor-python/compare/9.10.2...9.11.0)
 
 ## 9.10.2 (2021-12-24)
 
