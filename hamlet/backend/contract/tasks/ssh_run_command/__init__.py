@@ -7,11 +7,9 @@ from socket import timeout as socket_timeout
 from hamlet.backend.contract.tasks.exceptions import TaskFailureException
 
 
-def run(Host, Port, Username, Password=None, SSHKey=None, Shell=None, env={}):
+def run(Host, Port, Username, Password=None, SSHKey=None, Command=None, env={}):
     """
-    Open an interactive shell with a remote host using ssh
-    Provide either a password or ssh key that will be used to open the
-    shell
+    Run a command on a remote ssh host with an interactive shell
     """
 
     connect_kwargs = {"allow_agent": False, "look_for_keys": False}
@@ -37,9 +35,8 @@ def run(Host, Port, Username, Password=None, SSHKey=None, Shell=None, env={}):
         connect_kwargs=connect_kwargs,
         connect_timeout=10,
     ) as ssh_con:
-
         try:
-            ssh_con.run(Shell, pty=True)
+            ssh_con.run(Command, pty=True)
         except socket_timeout as e:
             raise TaskFailureException(str(e))
         except UnexpectedExit:
