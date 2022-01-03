@@ -7,7 +7,17 @@ from socket import timeout as socket_timeout
 from hamlet.backend.contract.tasks.exceptions import TaskFailureException
 
 
-def run(Host, Port, Username, Password=None, SSHKey=None, Direction=None, RemotePath=None, LocalPath=None, env={}):
+def run(
+    Host,
+    Port,
+    Username,
+    Password=None,
+    SSHKey=None,
+    Direction=None,
+    RemotePath=None,
+    LocalPath=None,
+    env={},
+):
     """
     Copy a file betwen a remote host and local host over ssh
     """
