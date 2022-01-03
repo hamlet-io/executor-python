@@ -31,7 +31,10 @@ def run(contract, **kwargs):
                     for substitution in substitutions:
                         if substitution.startswith("Properties:"):
                             property = substitution.split(":", 1)[1]
-                            parameters[k] = v.replace(f"__Properties:{property}__", properties.get(property, ""))
+                            parameters[k] = v.replace(
+                                f"__Properties:{property}__",
+                                properties.get(property, ""),
+                            )
 
             parameters["env"] = kwargs
             try:
