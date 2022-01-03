@@ -27,20 +27,19 @@ def run(contract, **kwargs):
 
             for k, v in parameters.items():
                 if isinstance(v, str):
-                    if v.startswith(":property:"):
-                        parameters[k] = properties[v.replace(":property:", "", 1)]
-
-                    elif v.startswith(":output:"):
-                        parameters[k] = properties[v]
+                    substitutions = v.split("__")
+                    for substitution in substitutions:
+                        if substitution.startswith("Properties:"):
+                            property = substitution.split(":", 1)[1]
+                            parameters[k] = v.replace(f"__Properties:{property}__", properties.get(property, ""))
 
             parameters["env"] = kwargs
-
             try:
                 task_result = task.run(**parameters)
 
                 try:
                     for k, v in task_result["Properties"].items():
-                        properties[f":output:{step['Id']}:{k}"] = v
+                        properties[f"output:{step['Id']}:{k}"] = v
                 except KeyError:
                     pass
 
