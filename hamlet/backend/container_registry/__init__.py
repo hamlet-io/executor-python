@@ -117,30 +117,53 @@ class ContainerRepository:
         self.username = username
         self.password = password
 
+        transport = httpx.HTTPTransport(retries=3)
         self.registry_client = httpx.Client(
             base_url=self.registry_url,
             auth=DockerRegistryV2Auth(self.repository, self.username, self.password),
             headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
+            follow_redirects=True,
+            transport=transport,
         )
 
     @property
     def tags(self):
-        tag_response = self.registry_client.get(
-            f"/v2/{self.repository}/tags/list", allow_redirects=True
-        )
-        try:
-            tag_response.raise_for_status()
-        except httpx.HTTPError as e:
-            raise e
 
-        return json.loads(tag_response.text).get("tags")
+        tags = []
+        query_params = {"n": 20}
+        links_complete = False
+
+        while True:
+            tag_response = self.registry_client.get(
+                f"/v2/{self.repository}/tags/list",
+                params=query_params,
+            )
+            try:
+                tag_response.raise_for_status()
+            except httpx.HTTPError as e:
+                raise e
+
+            link = tag_response.headers.get("Link", None)
+            if link is not None:
+                query_params = parse.urlparse(
+                    (link.split(";")[0]).strip("<").rstrip(">")
+                ).query
+            else:
+                links_complete = True
+
+            tags += json.loads(tag_response.text).get("tags")
+
+            if links_complete:
+                break
+
+        return tags
 
     def get_tag_digest(self, tag):
         return self.get_tag_manifest(tag).headers["docker-content-digest"]
 
     def get_tag_manifest(self, tag):
         manifest_response = self.registry_client.get(
-            f"/v2/{self.repository}/manifests/{tag}", allow_redirects=True
+            f"/v2/{self.repository}/manifests/{tag}"
         )
 
         try:
@@ -167,7 +190,6 @@ class ContainerRepository:
 
                         layer_blob = self.registry_client.get(
                             url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
-                            allow_redirects=True,
                         )
 
                         try:
