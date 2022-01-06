@@ -1,4 +1,5 @@
 import typing
+import datetime
 
 from hamlet.backend.engine.engine_loader import EngineLoader
 
@@ -66,7 +67,13 @@ class TramEngineLoader(EngineLoader):
         )
 
         for tag in container_repo.tags:
-            if tag.startswith("schedule-"):
+            if tag.startswith(
+                "schedule-"
+            ) and datetime.datetime.now() - datetime.datetime.strptime(
+                tag.split("-")[1], "%Y%m%d"
+            ) <= datetime.timedelta(
+                days=90
+            ):
 
                 engine_sources = [
                     ContainerEngineSource(
