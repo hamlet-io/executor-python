@@ -24,21 +24,23 @@ def run(contract, **kwargs):
                 raise TaskFailureException(str(e))
 
             parameters = step["Parameters"]
+            replaced_params = {}
 
             for k, v in parameters.items():
+                replaced_params[k] = v
                 if isinstance(v, str):
                     substitutions = v.split("__")
                     for substitution in substitutions:
                         if substitution.startswith("Properties:"):
                             property = substitution.split(":", 1)[1]
-                            parameters[k] = v.replace(
+                            replaced_params[k] = replaced_params[k].replace(
                                 f"__Properties:{property}__",
                                 properties.get(property, ""),
                             )
 
             parameters["env"] = kwargs
             try:
-                task_result = task.run(**parameters)
+                task_result = task.run(**replaced_params)
 
                 try:
                     for k, v in task_result["Properties"].items():
