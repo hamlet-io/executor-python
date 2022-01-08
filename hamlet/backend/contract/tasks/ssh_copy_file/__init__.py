@@ -7,6 +7,24 @@ from socket import timeout as socket_timeout
 from hamlet.backend.contract.tasks.exceptions import TaskFailureException
 
 
+def get_connect_args(password, ssh_key):
+    connect_kwargs = {"allow_agent": False, "look_for_keys": False}
+
+    if password is not None:
+        connect_kwargs["password"] = password
+
+    if ssh_key is not None:
+
+        if isinstance(ssh_key, str):
+            private_key = RSAKey.from_private_key(io.StringIO(ssh_key))
+        else:
+            private_key = RSAKey.from_private_key(ssh_key)
+
+        connect_kwargs["pkey"] = private_key
+
+    return connect_kwargs
+
+
 def run(
     Host,
     Port,
@@ -16,32 +34,35 @@ def run(
     Direction=None,
     RemotePath=None,
     LocalPath=None,
+    BastionHost=None,
+    BastionPort=None,
+    BastionUsername=None,
+    BastionPassword=None,
+    BastionSSHKey=None,
     env={},
 ):
     """
     Copy a file betwen a remote host and local host over ssh
     """
 
-    connect_kwargs = {"allow_agent": False, "look_for_keys": False}
+    gateway_connection = None
 
-    if Password is not None:
-        connect_kwargs["password"] = Password
-
-    if SSHKey is not None:
-
-        if isinstance(SSHKey, str):
-            private_key = RSAKey.from_private_key(io.StringIO(SSHKey))
-        else:
-            private_key = RSAKey.from_private_key(SSHKey)
-
-        connect_kwargs["pkey"] = private_key
+    if BastionHost is not None:
+        gateway_connection = Connection(
+            host=BastionHost,
+            port=BastionPort,
+            user=BastionUsername,
+            connect_kwargs=get_connect_args(BastionPassword, BastionSSHKey),
+            connect_timeout=10,
+        )
 
     with Connection(
         host=Host,
         user=Username,
         port=Port,
-        connect_kwargs=connect_kwargs,
+        connect_kwargs=get_connect_args(Password, SSHKey),
         connect_timeout=10,
+        gateway=gateway_connection,
     ) as ssh_con:
 
         try:
