@@ -41,5 +41,8 @@ def root(ctx, opts):
     except OSError as e:
         raise HamletHomeDirUnavailableException(str(e))
 
-    setup_global_engine(opts.engine)
-    get_engine_env(opts.engine)
+    # Pass the global engine setup to the engine command
+    # so we can skip it for certain commands
+    if ctx.invoked_subcommand != "engine":
+        setup_global_engine(opts.engine)
+        get_engine_env(opts.engine)

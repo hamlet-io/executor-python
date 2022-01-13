@@ -1,6 +1,7 @@
 import click
 import os
 import json
+from click.exceptions import BadParameter
 
 from tabulate import tabulate
 
@@ -8,13 +9,12 @@ from hamlet.command import root as cli
 from hamlet.command.common import exceptions, config
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common.config import pass_options
+from hamlet.command.common.engine_setup import setup_global_engine, get_engine_env
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
-from hamlet.backend.engine.exceptions import (
-    HamletEngineInvalidVersion,
-)
+from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
 
 
 def engines_table(data):
@@ -25,22 +25,31 @@ def engines_table(data):
                 wrap_text(row["name"]),
                 wrap_text(row["description"]),
                 wrap_text(row["installed"]),
-                wrap_text(row["global"]),
                 wrap_text(row["update_available"]),
             ]
         )
     return tabulate(
         tablerows,
-        headers=["Name", "Description", "Installed", "Global", "Update Available"],
+        headers=["Name", "Description", "Installed", "Update Available"],
         tablefmt="github",
     )
 
 
 @cli.group("engine", context_settings=dict(max_content_width=240))
-def group():
+@config.pass_options
+@click.pass_context
+@exceptions.backend_handler()
+def group(ctx, opts):
     """
     Manage the engine used by the executor
     """
+    if ctx.invoked_subcommand not in [
+        "install-engine",
+        "clean-engines",
+        "list-engines",
+    ]:
+        setup_global_engine(opts.engine)
+        get_engine_env(opts.engine)
 
 
 @group.command(
@@ -59,7 +68,9 @@ def list_engines(show_hidden):
     """
     data = []
 
-    for engine in engine_store.find_engines(cache_timeout=0):
+    for engine in engine_store.get_engines() + engine_store.find_engines(
+        cache_timeout=0
+    ):
 
         update_available = None
         if (show_hidden and engine.hidden) or not engine.hidden:
@@ -71,27 +82,32 @@ def list_engines(show_hidden):
                         update_available = True
                 except BaseException as e:
                     click.secho(
-                        f"[!]engine update failed for {engine.name}", fg="red", err=True
+                        f"[!] engine update failed for {engine.name}",
+                        fg="red",
+                        err=True,
                     )
                     click.secho(f"[!]  {e}", fg="red", err=True)
 
-            data.append(
-                {
-                    "name": engine.name,
-                    "description": engine.description,
-                    "installed": engine.installed,
-                    "digest": engine.digest,
-                    "global": True
-                    if engine.name == engine_store.global_engine
-                    else False,
-                    "update_available": update_available,
-                }
-            )
+            if True not in [e["name"] == engine.name for e in data]:
+                data.append(
+                    {
+                        "name": engine.name,
+                        "description": engine.description,
+                        "installed": engine.installed,
+                        "digest": engine.digest,
+                        "update_available": update_available,
+                    }
+                )
     return data
 
 
 @group.command(
     "describe-engine", short_help="", context_settings=dict(max_content_width=240)
+)
+@click.option(
+    "-n",
+    "--name",
+    help="The name of the engine",
 )
 @click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
@@ -194,9 +210,13 @@ def clean_engines(name):
             click.echo(f"[*] cleaning {engine} from {engine_store.store_dir}")
             engine_store.clean_engine(engine)
 
+            if engine_store.global_engine == name:
+                engine_store.global_engine = None
+
     else:
         click.echo(f"[*] cleaning all engines from {engine_store.store_dir}")
         engine_store.clean_engines()
+        engine_store.global_engine = None
 
 
 @group.command(
@@ -214,9 +234,10 @@ def clean_engines(name):
     is_flag=True,
     help="Force reinstall of engine",
 )
+@click.option("-n", "--name", help="The name of the engine to install")
 @click.argument("name", required=False, type=click.STRING)
-@exceptions.backend_handler()
 @pass_options
+@exceptions.backend_handler()
 def install_engine(opts, name, force, update):
     """
     Install an engine
@@ -227,7 +248,9 @@ def install_engine(opts, name, force, update):
     """
 
     if name is None:
-        name = opts.engine or engine_store.global_engine
+        raise BadParameter(
+            "Engine name missing - use either -n or provide an argument with the engine name"
+        )
 
     try:
         engine = engine_store.find_engine(name, cache_timeout=0)
@@ -246,10 +269,10 @@ def install_engine(opts, name, force, update):
         raise e
 
     if not engine.installed or force:
-        click.echo(
-            f"[*] installing engine | {name} | digest: {engine.get_latest_digest()}"
-        )
+        click.echo(f"[*] installing engine | {name}")
         engine.install()
+        click.echo(f"digest: {engine.digest}")
+
     elif not engine.up_to_date() and update:
         click.echo(f"[*] updating engine | {name}")
         click.echo(
