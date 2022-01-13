@@ -60,22 +60,26 @@ class EngineStore:
         Setting the global engine will locate the provided engine then update
         its symlinks to point to the provided engine.
         """
-        global_engine = self.get_engine(ENGINE_GLOBAL_NAME)
-        engine = self.get_engine(name)
+        if name is None:
+            self._global_engine = None
 
-        for type, path in global_engine.part_paths.items():
-            if os.path.islink(path):
-                os.unlink(path)
+        else:
+            global_engine = self.get_engine(ENGINE_GLOBAL_NAME)
+            engine = self.get_engine(name)
 
-            if os.path.isdir(path):
-                os.rmdir(path)
+            for type, path in global_engine.part_paths.items():
+                if os.path.islink(path):
+                    os.unlink(path)
 
-            if engine.part_paths.get(type, None):
-                os.symlink(engine.part_paths[type], path, target_is_directory=True)
-            else:
-                os.makedirs(path)
+                if os.path.isdir(path):
+                    os.rmdir(path)
 
-        self._global_engine = engine.name
+                if engine.part_paths.get(type, None):
+                    os.symlink(engine.part_paths[type], path, target_is_directory=True)
+                else:
+                    os.makedirs(path)
+
+            self._global_engine = engine.name
 
         self.store_state = {"global_engine": self.global_engine}
         self.save_store_state()
