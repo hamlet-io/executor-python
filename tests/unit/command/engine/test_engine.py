@@ -47,9 +47,6 @@ def mock_backend():
 
             mock_engine_store.get_engines.return_value = mock_engines
             mock_engine_store.find_engines.return_value = mock_engines
-            type(mock_engine_store).global_engine = mock.PropertyMock(
-                return_value="Name[2]"
-            )
 
             return func(mock_engine_store, *args, **kwargs)
 
@@ -72,7 +69,6 @@ def test_list_engines(mock_engine_store):
         "description": "Description[1]",
         "digest": "",
         "installed": False,
-        "global": False,
         "update_available": None,
     } in result
 
