@@ -1,6 +1,25 @@
 # Changelog
 
-## latest (2022-01-03)
+## latest (2022-01-13)
+
+#### New Features
+
+* add local bash command run task
+* add support for ssm sessions
+* add simple-term-menu dep
+* add selection menu tasks for ec2 and ecs
+* add support for proxy tunnels on ssh
+* limit tram engine loading
+#### Fixes
+
+* tests
+* engine override install process
+* substitution processing for contract params
+* pagination for container tags
+
+Full set of changes: [`9.12.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.12.0...latest)
+
+## 9.12.0 (2022-01-06)
 
 #### New Features
 
@@ -13,8 +32,11 @@
 * formatting
 * add fabric as dependency ([#278](https://github.com/hamlet-io/executor-python/issues/278))
 * formatting
+#### Others
 
-Full set of changes: [`9.11.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.11.0...latest)
+* changelog bump ([#273](https://github.com/hamlet-io/executor-python/issues/273))
+
+Full set of changes: [`9.11.0...9.12.0`](https://github.com/hamlet-io/executor-python/compare/9.11.0...9.12.0)
 
 ## 9.11.0 (2021-12-24)
 
