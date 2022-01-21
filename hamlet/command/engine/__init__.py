@@ -1,20 +1,35 @@
 import click
 import os
 import json
-from click.exceptions import BadParameter
-
 from tabulate import tabulate
 
 from hamlet.command import root as cli
 from hamlet.command.common import exceptions, config
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.config import pass_options
-from hamlet.command.common.engine_setup import setup_global_engine, get_engine_env
 
 from hamlet.backend.engine import engine_store
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
-from hamlet.backend.engine.exceptions import HamletEngineInvalidVersion
+from hamlet.backend.engine.exceptions import (
+    HamletEngineInvalidVersion,
+    EngineStoreMissingEngineException,
+)
+
+
+def engine_locations_table(data):
+    tablerows = []
+    for row in data:
+        tablerows.append(
+            [
+                wrap_text(row["name"]),
+                wrap_text(row["description"]),
+            ]
+        )
+    return tabulate(
+        tablerows,
+        headers=["Name", "Description"],
+        tablefmt="github",
+    )
 
 
 def engines_table(data):
@@ -23,133 +38,137 @@ def engines_table(data):
         tablerows.append(
             [
                 wrap_text(row["name"]),
+                wrap_text(row["location"]),
                 wrap_text(row["description"]),
-                wrap_text(row["installed"]),
-                wrap_text(row["update_available"]),
+                wrap_text(row["short_digest"]),
             ]
         )
     return tabulate(
         tablerows,
-        headers=["Name", "Description", "Installed", "Update Available"],
+        headers=["Name", "Location", "Description", "Short Digest"],
         tablefmt="github",
     )
 
 
 @cli.group("engine", context_settings=dict(max_content_width=240))
-@config.pass_options
-@click.pass_context
-@exceptions.backend_handler()
-def group(ctx, opts):
+def group():
     """
     Manage the engine used by the executor
     """
-    if ctx.invoked_subcommand not in [
-        "install-engine",
-        "clean-engines",
-        "list-engines",
-    ]:
-        setup_global_engine(opts.engine)
-        get_engine_env(opts.engine)
+    pass
+
+
+@group.command(
+    "list-engine-locations", short_help="", context_settings=dict(max_content_width=240)
+)
+@json_or_table_option(engine_locations_table)
+@exceptions.backend_handler()
+def list_engine_locations():
+    """
+    Lists the engine locations
+    """
+    data = []
+    for k, location in engine_store.engine_locations.items():
+        data.append(
+            {
+                "name": k,
+                "description": location["description"],
+            }
+        )
+
+    return data
 
 
 @group.command(
     "list-engines", short_help="", context_settings=dict(max_content_width=240)
 )
 @click.option(
-    "--show-hidden/--hide-hidden",
-    default=False,
-    help="Control visibility of hidden engines",
+    "-l",
+    "--location",
+    multiple=True,
+    help="The location of the engine to look for the engine",
+    default=["installed", "local", "remote"],
 )
 @json_or_table_option(engines_table)
 @exceptions.backend_handler()
-def list_engines(show_hidden):
+def list_engines(location):
     """
-    Lists the available engines
+    Lists the engines available
     """
+
+    engine_store.load_engines(locations=location, refresh=True)
     data = []
+    for engine in engine_store.get_engines(locations=location):
+        data.append(
+            {
+                "name": engine.name,
+                "location": engine.location,
+                "description": engine.description,
+                "short_digest": engine.short_digest,
+                "digest": engine.digest,
+            }
+        )
 
-    for engine in engine_store.get_engines() + engine_store.find_engines(
-        cache_timeout=0
-    ):
-
-        update_available = None
-        if (show_hidden and engine.hidden) or not engine.hidden:
-            if engine.installed:
-                try:
-                    if engine.up_to_date():
-                        update_available = False
-                    else:
-                        update_available = True
-                except BaseException as e:
-                    click.secho(
-                        f"[!] engine update failed for {engine.name}",
-                        fg="red",
-                        err=True,
-                    )
-                    click.secho(f"[!]  {e}", fg="red", err=True)
-
-            if True not in [e["name"] == engine.name for e in data]:
-                data.append(
-                    {
-                        "name": engine.name,
-                        "description": engine.description,
-                        "installed": engine.installed,
-                        "digest": engine.digest,
-                        "update_available": update_available,
-                    }
-                )
     return data
 
 
 @group.command(
     "describe-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.option(
-    "-n",
-    "--name",
-    help="The name of the engine",
-)
+@click.option("-l", "--location", help="The location of the engine to describe")
 @click.argument("name", required=False, type=click.STRING)
 @exceptions.backend_handler()
 @config.pass_options
-def describe_engine(opts, name):
+def describe_engine(opts, name, location):
     """
     Provides a detailed description of an engine
     """
+
+    location = None if not location else [location]
+
     if name:
         engine_name = name
+
     elif opts.engine:
         engine_name = opts.engine
+        location = ["installed"]
     else:
         engine_name = engine_store.global_engine
+        location = ["installed"]
 
-    engine = engine_store.find_engine(engine_name)
+    engine_store.load_engines(locations=location, refresh=True)
+    engines = [
+        engine
+        for engine in engine_store.get_engines(locations=location)
+        if engine.name == engine_name
+    ]
+    if len(engines) > 1:
 
-    try:
-
-        up_to_date = engine.up_to_date()
-        latest_digest = engine.get_latest_digest()
-
-    except BaseException as e:
-        click.secho(
-            f"[!] Engine update check failed for {engine.name}", fg="red", err=True
+        extra_engines = "\n".join(
+            [
+                f" - name: {engine.name} - location: {engine.location}"
+                for engine in engines
+            ]
         )
-        click.secho(f"[!]  {e}", fg="red", err=True)
 
-        up_to_date = None
-        latest_digest = None
-        pass
+        raise click.exceptions.UsageError(
+            (
+                f"Multiple Engines found for the provided name: {engine_name}\n"
+                f"{extra_engines}\n"
+                "run the command with the --location option to pick an engine"
+            )
+        )
+
+    else:
+        engine = engine_store.get_engine(engine_name, locations=location)
 
     engine_details = {
         "engine": {
             "name": engine.name,
             "description": engine.description,
-            "hidden": engine.hidden,
-            "installed": engine.installed,
+            "location": engine.location,
             "engine_dir": engine.engine_dir,
-            "up_to_date": up_to_date,
-            "current_digest": engine.digest,
-            "latest_digest": latest_digest,
+            "digest": engine.digest,
         },
         "environment": engine.environment,
         "install_state": engine.install_state,
@@ -226,34 +245,35 @@ def clean_engines(name):
     "-u",
     "--update",
     is_flag=True,
-    help="Update the engine",
+    help="Update the engine if it is installed",
 )
 @click.option(
-    "-f",
-    "--force",
-    is_flag=True,
-    help="Force reinstall of engine",
+    "-l",
+    "--location",
+    multiple=True,
+    help="The location of the engine to install",
+    default=["local", "remote", "hidden"],
 )
-@click.option("-n", "--name", help="The name of the engine to install")
 @click.argument("name", required=False, type=click.STRING)
-@pass_options
 @exceptions.backend_handler()
-def install_engine(opts, name, force, update):
+@config.pass_options
+def install_engine(opts, name, location, update):
     """
     Install an engine
-
-    Installs are designed to be idempotent so once installed, the -u
-    or -f switches need to be used to install a more recent version
-    of an existing engine.
     """
 
+    engine_store.load_engines(locations=location, refresh=True)
+
+    if name is None and opts.engine:
+        name = opts.engine
+
     if name is None:
-        raise BadParameter(
-            "Engine name missing - use either -n or provide an argument with the engine name"
+        raise click.exceptions.BadParameter(
+            "Engine name missing - provide name with HAMLET_ENGINE or as an argument"
         )
 
     try:
-        engine = engine_store.find_engine(name, cache_timeout=0)
+        engine = engine_store.get_engine(name, locations=location)
 
     except HamletEngineInvalidVersion as e:
         click.secho(
@@ -268,36 +288,35 @@ def install_engine(opts, name, force, update):
         )
         raise e
 
-    if not engine.installed or force:
-        click.echo(f"[*] installing engine | {name}")
-        engine.install()
-        click.echo(f"digest: {engine.digest}")
+    try:
+        installed_engine = engine_store.get_engine(name, locations=["installed"])
+    except EngineStoreMissingEngineException:
+        installed_engine = False
+        pass
 
-    elif not engine.up_to_date() and update:
-        click.echo(f"[*] updating engine | {name}")
-        click.echo(
-            f"[*] current digest: {engine.digest} | latest digest: {engine.get_latest_digest()}"
-        )
+    if installed_engine and update:
         engine.install()
+        click.echo(f"[*] updating engine | {name} | digest: {engine.digest}")
+    elif not installed_engine:
+        engine.install()
+        click.echo(f"[*] installing engine | {name} | digest: {engine.digest}")
     else:
-        click.echo(f"[*] engine installed | {name} | digest: {engine.digest}")
+        click.echo(f"[*] skipping engine update | {name} | digest: {engine.digest}")
 
 
 @group.command(
     "set-engine", short_help="", context_settings=dict(max_content_width=240)
 )
-@click.argument("name", required=False, type=click.STRING)
+@click.argument("name", required=True, type=click.STRING)
 @exceptions.backend_handler()
-@config.pass_options
-def set_engine(opts, name):
+def set_engine(name):
     """
-    Sets the global engine used
+    Sets the global engine
     """
-    name = name or opts.engine
-    engine = engine_store.get_engine(name)
+    engine = engine_store.get_engine(name, locations=["installed"])
+    engine_store.global_engine = engine.name
 
     click.echo(f"[*] global engine set to {engine.name}")
-    engine_store.global_engine = engine.name
 
 
 @group.command(
@@ -309,8 +328,8 @@ def get_engine(opts):
     """
     Gets the current global engine
     """
-    name = opts.engine or engine_store.global_engine
-    click.echo(engine_store.get_engine(name).name)
+    name = opts.engine if opts.engine else engine_store.global_engine
+    click.echo(engine_store.get_engine(name, locations=["installed"]).name)
 
 
 @group.command("env", short_help="", context_settings=dict(max_content_width=240))
@@ -326,10 +345,8 @@ def env(opts, environment_variable):
     Get the environment variables for the current engine
     """
 
-    if opts.engine is None:
-        engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
-    else:
-        engine = engine_store.get_engine(opts.engine)
+    engine_name = opts.engine if opts.engine else ENGINE_GLOBAL_NAME
+    engine = engine_store.get_engine(engine_name, locations=["installed"])
 
     if environment_variable is None:
         click.echo("# run eval $(hamlet engine env) to set variables")

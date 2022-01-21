@@ -3,7 +3,6 @@ import json
 import shutil
 import hashlib
 
-from datetime import datetime
 from abc import ABC, abstractmethod
 
 from hamlet.backend.common.exceptions import BackendException
@@ -15,48 +14,24 @@ from .exceptions import HamletEngineInvalidVersion
 
 
 class EngineInterface(ABC):
-    def __init__(self, name, description, hidden=False):
+    def __init__(self, name, description):
         self.name = name
         self.description = description
-        self.hidden = hidden
-
         self._engine_state_filename = ENGINE_STATE_FILE_NAME
+
+        self._location = None
+        self._digest = None
 
         self._engine_dir = None
         self._engine_state = {
             "name": self.name,
             "description": self.description,
-            "hidden": self.hidden,
         }
 
         self._parts = {}
         self._sources = {}
 
-    _environment = {
-        "GENERATION_ENGINE_DIR": [{"part_type": "core-engine", "env_path": ""}],
-        "GENERATION_PLUGIN_DIRS": [
-            {"part_type": "engine-plugin-aws", "env_path": ""},
-            {"part_type": "engine-plugin-azure", "env_path": ""},
-        ],
-        "GENERATION_WRAPPER_JAR_FILE": [
-            {"part_type": "engine-wrapper", "env_path": "freemarker-wrapper.jar"}
-        ],
-        "GENERATION_BASE_DIR": [{"part_type": "executor-bash", "env_path": ""}],
-        "GENERATION_DIR": [{"part_type": "executor-bash", "env_path": "cli"}],
-        "AUTOMATION_DIR": [
-            {"part_type": "executor-bash", "env_path": "automation/jenkins/aws"}
-        ],
-        "AUTOMATION_BASE_DIR": [
-            {"part_type": "executor-bash", "env_path": "automation"}
-        ],
-    }
-
-    @property
-    def installed(self):
-        """
-        Check to see if the engine has been installed locally
-        """
-        return True if self.digest is not None else False
+    _environment = {}
 
     @property
     def engine_dir(self):
@@ -64,6 +39,20 @@ class EngineInterface(ABC):
         The engine dir defines the base folder where engines are kept
         """
         return self._engine_dir
+
+    @property
+    def location(self):
+        """
+        The location of engine
+        """
+        return self._location
+
+    @location.setter
+    def location(self, location):
+        """
+        Set the location of this engine ( defined at load time )
+        """
+        self._location = location
 
     @engine_dir.setter
     def engine_dir(self, engine_dir):
@@ -92,22 +81,12 @@ class EngineInterface(ABC):
         """
         The install state contains the details about the installation
         """
-        self._load_engine_state()
-        return self._engine_state.get("install", None)
-
-    @property
-    def updater_state(self):
-        """
-        Return the state of the engine updater
-        """
-        self._load_engine_state()
-        return self._engine_state.get("updater", None)
+        return None
 
     def update_install_state(self, source_install_state=None):
         """
         Builds the internal state and saves it to the persistent store
         """
-
         source_digests = []
         source_install_details = {}
         if source_install_state is not None:
@@ -122,56 +101,21 @@ class EngineInterface(ABC):
 
         self._engine_state["version"] = ENGINE_STATE_VERSION
         self._engine_state["install"] = install_state
-        self._update_updater_state()
-        self._save_engine_state()
-
-    def _update_updater_state(self):
-        updater_state = {
-            "last_check": datetime.now().isoformat(timespec="seconds"),
-            "latest_digest": self._format_engine_digest(
-                [s.digest for s in self.sources]
-            ),
-        }
-        self._engine_state["updater"] = updater_state
         self._save_engine_state()
 
     @property
     def digest(self):
         """
-        returns the digests of the current installed sources
+        returns the digest of the engine
         """
-        if self.install_state is not None:
-            return self.install_state["digest"]
-        else:
-            return None
+        if self._digest is None:
+            self._digest = self._format_engine_digest([s.digest for s in self.sources])
 
-    def get_latest_digest(self, cache_timeout=0):
-        """
-        return the digest of the engine sources
-        """
-        if self.installed:
-            if self.updater_state:
-                if (
-                    datetime.now()
-                    - datetime.strptime(
-                        self.updater_state["last_check"], "%Y-%m-%dT%H:%M:%S"
-                    )
-                ).seconds > cache_timeout:
-                    self._update_updater_state()
-            else:
-                self._update_updater_state()
+        return self._digest
 
-            self._load_engine_state()
-            return self.updater_state.get("latest_digest", None)
-
-    def up_to_date(self, cache_timeout=0):
-        """
-        Is an update available for the engine
-        """
-        if self.digest:
-            return self.digest == self.get_latest_digest(cache_timeout=cache_timeout)
-        else:
-            return False
+    @property
+    def short_digest(self):
+        return self.digest[len("sha256:") : 15]
 
     @property
     def parts(self):
@@ -331,10 +275,29 @@ class EngineInterface(ABC):
 
 
 class InstalledEngine(EngineInterface):
-    def __init__(self, name, description, digest, hidden, state_version):
-        super().__init__(name, description, hidden=hidden)
+    def __init__(self, name, description, digest, state_version):
+        super().__init__(name, description)
         self._installed_digest = digest
         self._engine_state["version"] = state_version
+
+    _environment = {
+        "GENERATION_ENGINE_DIR": [{"part_type": "core-engine", "env_path": ""}],
+        "GENERATION_PLUGIN_DIRS": [
+            {"part_type": "engine-plugin-aws", "env_path": ""},
+            {"part_type": "engine-plugin-azure", "env_path": ""},
+        ],
+        "GENERATION_WRAPPER_JAR_FILE": [
+            {"part_type": "engine-wrapper", "env_path": "freemarker-wrapper.jar"}
+        ],
+        "GENERATION_BASE_DIR": [{"part_type": "executor-bash", "env_path": ""}],
+        "GENERATION_DIR": [{"part_type": "executor-bash", "env_path": "cli"}],
+        "AUTOMATION_DIR": [
+            {"part_type": "executor-bash", "env_path": "automation/jenkins/aws"}
+        ],
+        "AUTOMATION_BASE_DIR": [
+            {"part_type": "executor-bash", "env_path": "automation"}
+        ],
+    }
 
     @property
     def digest(self):
@@ -342,6 +305,14 @@ class InstalledEngine(EngineInterface):
 
     def install(self):
         self.update_install_state()
+
+    @property
+    def install_state(self):
+        """
+        The install state contains the details about the installation
+        """
+        self._load_engine_state()
+        return self._engine_state.get("install", None)
 
 
 class GlobalEngine(EngineInterface):

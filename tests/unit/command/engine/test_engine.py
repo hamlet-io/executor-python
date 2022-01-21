@@ -13,13 +13,13 @@ from hamlet.command.engine import (
 )
 
 
-def mock_engine(name, description, installed, digest="", hidden=False):
+def mock_engine(name, description, location, digest=""):
     mock_engine = mock.Mock()
     mock_engine.name = name
     mock_engine.description = description
     mock_engine.digest = digest
-    mock_engine.hidden = hidden
-    type(mock_engine).installed = mock.PropertyMock(return_value=installed)
+    mock_engine.short_digest = digest
+    mock_engine.location = location
 
     return mock_engine
 
@@ -33,20 +33,11 @@ def mock_backend():
                 mock_engine(
                     name="Name[1]",
                     description="Description[1]",
-                    installed=False,
-                    hidden=False,
-                ),
-                mock_engine(
-                    name="Name[2]",
-                    description="Description[2]",
-                    installed=True,
-                    digest="Digest[2]",
-                    hidden=True,
+                    digest="Digest[1]",
+                    location="local",
                 ),
             ]
-
             mock_engine_store.get_engines.return_value = mock_engines
-            mock_engine_store.find_engines.return_value = mock_engines
 
             return func(mock_engine_store, *args, **kwargs)
 
@@ -59,7 +50,6 @@ def mock_backend():
 def test_list_engines(mock_engine_store):
     cli = CliRunner()
     result = cli.invoke(list_engines, ["--output-format", "json"])
-    print(result.output)
     assert result.exit_code == 0
     result = json.loads(result.output)
     print(result)
@@ -67,9 +57,9 @@ def test_list_engines(mock_engine_store):
     assert {
         "name": "Name[1]",
         "description": "Description[1]",
-        "digest": "",
-        "installed": False,
-        "update_available": None,
+        "digest": "Digest[1]",
+        "short_digest": "Digest[1]",
+        "location": "local",
     } in result
 
 

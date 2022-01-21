@@ -43,6 +43,7 @@ def root(ctx, opts):
 
     # Pass the global engine setup to the engine command
     # so we can skip it for certain commands
+    setup_global_engine(opts.engine)
+
     if ctx.invoked_subcommand != "engine":
-        setup_global_engine(opts.engine)
         get_engine_env(opts.engine)
