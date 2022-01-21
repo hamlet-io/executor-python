@@ -11,6 +11,16 @@ import json
 from urllib import parse
 
 
+transport = httpx.HTTPTransport(retries=3)
+container_httpx_client = httpx.Client(
+    headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
+    follow_redirects=True,
+    transport=transport,
+)
+
+auth_httpx_client = httpx.Client(transport=transport)
+
+
 class ContainerRepositoryException(BaseException):
     def __init__(self, repository: str, *args: object) -> None:
         self.repository = repository
@@ -52,14 +62,13 @@ class DockerRegistryV2Auth(httpx.Auth):
     def sign_request(
         self, registry_response, repository, actions, username, password
     ) -> str:
-        realm_client = httpx.Client()
 
         if self.username or self.password:
-            realm_client.headers["Authorization"] = self._build_basic_auth_header(
+            auth_httpx_client.headers["Authorization"] = self._build_basic_auth_header(
                 username, password
             )
 
-        realm_response = realm_client.get(
+        realm_response = auth_httpx_client.get(
             self._build_realm_token_url(registry_response, repository, actions)
         )
 
@@ -117,13 +126,8 @@ class ContainerRepository:
         self.username = username
         self.password = password
 
-        transport = httpx.HTTPTransport(retries=3)
-        self.registry_client = httpx.Client(
-            base_url=self.registry_url,
-            auth=DockerRegistryV2Auth(self.repository, self.username, self.password),
-            headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
-            follow_redirects=True,
-            transport=transport,
+        self.auth_token = DockerRegistryV2Auth(
+            self.repository, self.username, self.password
         )
 
     @property
@@ -134,9 +138,10 @@ class ContainerRepository:
         links_complete = False
 
         while True:
-            tag_response = self.registry_client.get(
-                f"/v2/{self.repository}/tags/list",
+            tag_response = container_httpx_client.get(
+                f"{self.registry_url}/v2/{self.repository}/tags/list",
                 params=query_params,
+                auth=self.auth_token,
             )
             try:
                 tag_response.raise_for_status()
@@ -162,8 +167,9 @@ class ContainerRepository:
         return self.get_tag_manifest(tag).headers["docker-content-digest"]
 
     def get_tag_manifest(self, tag):
-        manifest_response = self.registry_client.get(
-            f"/v2/{self.repository}/manifests/{tag}"
+        manifest_response = container_httpx_client.get(
+            f"{self.registry_url}/v2/{self.repository}/manifests/{tag}",
+            auth=self.auth_token,
         )
 
         try:
@@ -188,8 +194,9 @@ class ContainerRepository:
                         dir=stage_dir, delete=False
                     ) as layer_file:
 
-                        layer_blob = self.registry_client.get(
-                            url=f'/v2/{self.repository}/blobs/{layer["digest"]}',
+                        layer_blob = container_httpx_client.get(
+                            url=f'{self.registry_url}/v2/{self.repository}/blobs/{layer["digest"]}',
+                            auth=self.auth_token,
                         )
 
                         try:
@@ -197,9 +204,10 @@ class ContainerRepository:
                         except httpx.HTTPError as e:
                             raise e
 
-                        with self.registry_client.stream(
+                        with container_httpx_client.stream(
                             method="get",
                             url=layer_blob.url,
+                            auth=self.auth_token,
                         ) as r:
                             for chunk in r.iter_raw(chunk_size=(1024 * 1024 * 3)):
                                 layer_file.write(chunk)

@@ -108,7 +108,6 @@ class TramEngineLoader(EngineLoader):
                 engine = Engine(
                     name=tag.replace("schedule-", "tram-"),
                     description="Scheduled build of the official hamlet engine",
-                    hidden=True,
                 )
                 engine.parts = engine_parts
                 engine.sources = engine_sources

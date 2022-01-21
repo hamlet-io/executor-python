@@ -2,7 +2,7 @@ import functools
 import click
 from click._compat import get_text_stderr
 
-import httpx._exceptions as httpx_exceptions
+from httpx import HTTPError
 from click.exceptions import ClickException
 
 from hamlet.backend.common.exceptions import BackendException
@@ -53,14 +53,12 @@ def backend_handler():
             try:
                 return func(*args, **kwargs)
 
-            except httpx_exceptions.RequestError as e:
-
+            except HTTPError as e:
                 msg = f"HTTP error | url: {e.request.url} | msg: {str(e)}"
-                raise CommandError(msg)
+                raise CommandError(msg) from e
 
             except BackendException as e:
-
-                raise CommandError(str(e))
+                raise CommandError(str(e)) from e
 
         return wrapper
 

@@ -46,7 +46,6 @@ class GlobalEngineLoader(EngineLoader):
         engine = GlobalEngine(
             name=ENGINE_GLOBAL_NAME,
             description="The engine used to provide global part mappings",
-            hidden=True,
         )
         engine.parts = engine_parts
         engine.sources = engine_source
@@ -81,10 +80,10 @@ class InstalledEngineLoader(EngineLoader):
                                         engine_states.append(json.load(f))
 
         for engine_state in engine_states:
-            yield InstalledEngine(
+            engine = InstalledEngine(
                 name=engine_state["name"],
                 description=engine_state["description"],
                 digest=engine_state["install"]["digest"],
-                hidden=engine_state["hidden"],
                 state_version=engine_state.get("version", "0.0.0"),
             )
+            yield engine

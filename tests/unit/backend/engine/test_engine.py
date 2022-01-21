@@ -1,13 +1,10 @@
 import tempfile
 import os
-import hashlib
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
 from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine import Engine
-from hamlet.backend.engine.loaders.base import GlobalEngineLoader, InstalledEngineLoader
-from hamlet.backend.engine.loaders.user import UserDefinedEngineLoader
 from hamlet.backend.engine.loaders.unicycle import UnicycleEngineLoader
 from hamlet.backend.engine.engine_part import CoreEnginePart
 from hamlet.backend.engine.engine_source import ShimPathEngineSource
@@ -41,18 +38,21 @@ def test_global_engine_loading():
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
 
-        engine_store.local_engine_loaders = [GlobalEngineLoader()]
-
+        engine_store.load_engines(locations=["global"])
         assert len(engine_store.get_engines()) == 1
+        assert (
+            engine_store.get_engine(ENGINE_GLOBAL_NAME, locations=["global"]).name
+            == ENGINE_GLOBAL_NAME
+        )
 
-        global_engine = engine_store.get_engine(ENGINE_GLOBAL_NAME)
+        engine_store.get_engine(ENGINE_GLOBAL_NAME, locations=["global"]).install()
+        engine_store.load_engines(locations=["installed"], refresh=True)
 
-        assert global_engine.name == ENGINE_GLOBAL_NAME
-
-        global_engine.install()
+        global_engine = engine_store.get_engine(
+            ENGINE_GLOBAL_NAME, locations=["installed"]
+        )
 
         assert os.path.isfile(global_engine.engine_state_file)
-
         generation_dir_path = os.path.join(
             global_engine.install_path, "shim/executor-bash/cli"
         )
@@ -71,11 +71,6 @@ def test_installed_engine_loading():
     """
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
-
-        engine_store.local_engine_loaders = [
-            InstalledEngineLoader(engine_store.engine_dir)
-        ]
-
         assert len(engine_store.get_engines()) == 0
 
         """
@@ -101,6 +96,9 @@ def test_installed_engine_loading():
         """
         Use the Installed loader to discover the manually installed engine
         """
+
+        engine_store.load_engines(locations=["installed"])
+
         discovered_engine = engine_store.get_engine("installed_engine")
         assert discovered_engine.name == "installed_engine"
 
@@ -122,19 +120,19 @@ def test_unicycle_engine_loading(container_repository):
     with tempfile.TemporaryDirectory() as store_dir:
         engine_store = EngineStore(store_dir=store_dir)
 
-        engine_store.external_engine_loaders = [UnicycleEngineLoader()]
+        engine_store._engine_locations["remote"]["loaders"] = [UnicycleEngineLoader()]
 
-        unicycle_engine = engine_store.find_engine("unicycle")
-        unicycle_engine.install()
+        engine_store.load_engines(locations=["remote"])
+        engine_store.get_engine("unicycle", locations=["remote"]).install()
+
+        engine_store.load_engines(locations=["installed"])
+        unicycle_engine = engine_store.get_engine("unicycle", locations=["installed"])
 
         assert unicycle_engine.name == "unicycle"
-
-        container_digests = ["digest[1]"] * len(unicycle_engine.sources)
-        expected_digest = (
-            "sha256:"
-            + hashlib.sha256(":".join(container_digests).encode("utf-8")).hexdigest()
+        assert (
+            unicycle_engine.digest
+            == engine_store.get_engine("unicycle", locations=["remote"]).digest
         )
-        assert unicycle_engine.digest == expected_digest
 
 
 @mock.patch("hamlet.backend.engine.loaders.user.HAMLET_GLOBAL_CONFIG")
@@ -171,9 +169,11 @@ def test_user_engine_loading(global_config):
 
                 engine_store = EngineStore(store_dir=store_dir)
 
-                engine_store.external_engine_loaders = [UserDefinedEngineLoader()]
+                engine_store.load_engines(locations=["local"])
+                engine_store.get_engine("test", locations=["local"]).install()
+                engine_store.load_engines(locations=["installed"])
 
-                local_test_engine = engine_store.find_engine("test")
-                local_test_engine.install()
-
-                assert local_test_engine.name == "test"
+                assert (
+                    engine_store.get_engine("test", locations=["installed"]).name
+                    == "test"
+                )

@@ -1,7 +1,6 @@
 import os
 import shutil
 import json
-from datetime import datetime
 
 from .common import ENGINE_STORE_DEFAULT_DIR, ENGINE_GLOBAL_NAME
 from .exceptions import EngineStoreMissingEngineException
@@ -22,7 +21,7 @@ class EngineStore:
     """
 
     def __init__(self, store_dir):
-        self._engines = {}
+        self._engines = []
         self.store_dir = store_dir
         self._store_state_file = os.path.join(self.store_dir, "store_state.json")
         self.engine_dir = os.path.join(self.store_dir, "engines")
@@ -32,19 +31,50 @@ class EngineStore:
 
         self._global_engine = self.store_state.get("global_engine", None)
 
-        self.local_engine_loaders = [
-            InstalledEngineLoader(engine_dir=self.engine_dir),
-            UserDefinedEngineLoader(),
-            GlobalEngineLoader(),
-        ]
+        self._engine_locations = {
+            "installed": {
+                "loaded": False,
+                "description": "Engines installed in your local engine store",
+                "loaders": [
+                    InstalledEngineLoader(engine_dir=self.engine_dir),
+                ],
+            },
+            "global": {
+                "loaded": False,
+                "description": "Provides the _global engine used for default engine config",
+                "loaders": [
+                    GlobalEngineLoader(),
+                ],
+            },
+            "local": {
+                "loaded": False,
+                "description": "Local user defined engines that are available",
+                "loaders": [
+                    UserDefinedEngineLoader(),
+                ],
+            },
+            "remote": {
+                "loaded": False,
+                "description": "Engines available from remote locations",
+                "loaders": [
+                    UnicycleEngineLoader(),
+                    LatestTramEngineLoader(),
+                    LatestTrainEngineLoader(),
+                    TrainEngineLoader(),
+                ],
+            },
+            "hidden": {
+                "loaded": False,
+                "description": "Engines which are used internally or for release management",
+                "loaders": [
+                    TramEngineLoader(),
+                ],
+            },
+        }
 
-        self.external_engine_loaders = [
-            UnicycleEngineLoader(),
-            LatestTramEngineLoader(),
-            TramEngineLoader(),
-            LatestTrainEngineLoader(),
-            TrainEngineLoader(),
-        ]
+    @property
+    def engine_locations(self):
+        return self._engine_locations
 
     @property
     def global_engine(self):
@@ -84,82 +114,61 @@ class EngineStore:
         self.store_state = {"global_engine": self.global_engine}
         self.save_store_state()
 
-    def _load_local_engines(self):
-        for loader in self.local_engine_loaders:
-            for engine in loader.load():
-                engine.engine_dir = self.engine_dir
-                self._engines[engine.name] = engine
-
-    def _load_external_engines(self, cache_timeout):
-        if (
-            datetime.now()
-            - datetime.strptime(
-                self.store_state.get(
-                    "last_external_load", datetime.now().isoformat(timespec="seconds")
-                ),
-                "%Y-%m-%dT%H:%M:%S",
-            )
-        ).seconds >= cache_timeout:
-
-            for loader in self.external_engine_loaders:
-                for engine in loader.load():
-                    engine.engine_dir = self.engine_dir
-                    self._engines[engine.name] = engine
-
-            self.store_state["last_external_load"] = datetime.now().isoformat(
-                timespec="seconds"
-            )
-            self.save_store_state()
-
-    def get_engines(self):
+    def get_engines(self, locations=None):
         """
-        Return as list of the engines available locally
+        Get availale engines
         """
-        self._load_local_engines()
-        return list(self._engines.values())
+        if locations is None:
+            locations = self.engine_locations.keys()
 
-    def get_engine(self, name, allow_missing=False):
-        """
-        Return an existing engine
-        """
-        self._load_local_engines()
-        result = self._engines.get(name, None)
+        return [engine for engine in self._engines if engine.location in locations]
 
-        if not allow_missing and not result:
+    def get_engine(self, name, locations=None):
+        """
+        Find an engine
+        """
+        if locations is None:
+            locations = self.engine_locations.keys()
+
+        try:
+            result = [
+                engine
+                for engine in self.get_engines(locations=locations)
+                if engine.name == name
+            ][0]
+        except IndexError:
             raise EngineStoreMissingEngineException(
                 (
-                    f"[!] Could not find engine {name} in local engine store\n"
-                    "[!] Check that the engine is installed and the name is correct\n"
-                    f"[!] Run hamlet engine install-engine {name} to install it\n"
+                    f"[!] Could not find the requested engine\n"
+                    f"[!] - name: {name}\n"
+                    f"[!] - locations: {locations}\n"
+                    "[!] Run hamlet engine list-engines to find the engine"
                 )
             )
-
         return result
 
-    def find_engines(self, cache_timeout=0):
-        """
-        Find engines that can be installed from external sources
-        """
-        self._load_external_engines(cache_timeout)
-        return list(self._engines.values())
+    def load_engines(self, locations=None, refresh=False):
+        if locations is None:
+            locations = self.engine_locations.keys()
 
-    def find_engine(self, name, allow_missing=False, cache_timeout=0):
-        """
-        Find an external engine
-        """
-        self._load_external_engines(cache_timeout)
-        result = self._engines.get(name, None)
+        if refresh:
+            self._engines = []
 
-        if not allow_missing and not result:
-            raise EngineStoreMissingEngineException(
-                (
-                    f"[!] Could not find an engine matching engine the name {name}\n"
-                    "[!] Check that the name of the engine is right\n"
-                    "[!] Run hamlet engine list-engines for available engines\n"
-                )
-            )
+        for location in locations:
 
-        return result
+            try:
+                engine_location = self.engine_locations[location]
+            except KeyError:
+                continue
+
+            if not engine_location["loaded"] or refresh:
+                for loader in engine_location["loaders"]:
+                    for engine in loader.load():
+                        engine.engine_dir = self.engine_dir
+                        engine.location = location
+                        self._engines.append(engine)
+                engine_location["loaded"] = True
+        self.save_store_state()
 
     def load_store_state(self):
         """
