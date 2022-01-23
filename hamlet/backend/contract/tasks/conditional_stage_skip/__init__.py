@@ -17,6 +17,6 @@ def run(Condition, Test, Value, env={}):
         result = Value.contains(Test)
 
     if not result:
-        raise TaskConditionFailureException()
+        raise TaskConditionFailureException("Condition not met")
 
     return {"Properties": {"result": result}}

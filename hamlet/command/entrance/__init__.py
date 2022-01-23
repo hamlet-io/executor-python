@@ -8,6 +8,7 @@ from hamlet.command import root as cli
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
+from hamlet.command.common.validate import validate_entrance_inputs
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend import query as query_backend
 
@@ -75,6 +76,7 @@ def list_entrances(options):
     "--entrance-parameter",
     multiple=True,
     help="key=value pairs that are passed to to the entrance",
+    callback=validate_entrance_inputs,
 )
 @click.option(
     "-l",

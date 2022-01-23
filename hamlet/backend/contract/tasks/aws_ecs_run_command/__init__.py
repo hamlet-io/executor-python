@@ -75,4 +75,4 @@ def run(
         region_name=Region,
     )
 
-    return {}
+    return {"Properties": {}}
