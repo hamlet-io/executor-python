@@ -1,6 +1,17 @@
 # Changelog
 
-## latest (2022-01-13)
+## latest (2022-01-23)
+
+#### New Features
+
+* (contract): add kms encryption tasks
+#### Refactorings
+
+* engine management
+
+Full set of changes: [`9.13.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.13.0...latest)
+
+## 9.13.0 (2022-01-13)
 
 #### New Features
 
@@ -16,8 +27,11 @@
 * engine override install process
 * substitution processing for contract params
 * pagination for container tags
+#### Others
 
-Full set of changes: [`9.12.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.12.0...latest)
+* changelog bump ([#280](https://github.com/hamlet-io/executor-python/issues/280))
+
+Full set of changes: [`9.12.0...9.13.0`](https://github.com/hamlet-io/executor-python/compare/9.12.0...9.13.0)
 
 ## 9.12.0 (2022-01-06)
 
