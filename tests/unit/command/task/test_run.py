@@ -15,6 +15,7 @@ from tests.unit.command.test_option_generation import (
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["!-n,--name"] = "RunBook1"
 ALL_VALID_OPTIONS["--confirm"] = False
+ALL_VALID_OPTIONS["--silent"] = False
 ALL_VALID_OPTIONS["--"] = "test=true"
 
 

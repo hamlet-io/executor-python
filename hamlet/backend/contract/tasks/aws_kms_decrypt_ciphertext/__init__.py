@@ -4,8 +4,7 @@ from base64 import b64decode
 
 def run(
     Ciphertext,
-    Base64Encoded,
-    EncryptionScheme,
+    EncryptionScheme=None,
     Region=None,
     AWSAccessKeyId=None,
     AWSSecretAccessKey=None,
@@ -13,16 +12,13 @@ def run(
     env={},
 ):
     """
-    Given an aws kms ciphertext blob decrypt it using the provided
-    credentials and return the plaintext result as a string
+    Given a base64 encoded aws kms ciphertext blob decrypt it using
+    the provided credentials and return the plaintext result as a string
     """
 
-    if Base64Encoded is True:
-        if EncryptionScheme != "":
-            Ciphertext = Ciphertext.replace(EncryptionScheme, "", 1)
-        Ciphertext = b64decode(Ciphertext)
-    else:
-        Ciphertext = bytes(Ciphertext)
+    if EncryptionScheme != "":
+        Ciphertext = Ciphertext.replace(EncryptionScheme, "", 1)
+    Ciphertext = b64decode(Ciphertext)
 
     session = boto3.Session(
         aws_access_key_id=AWSAccessKeyId,

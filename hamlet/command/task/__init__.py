@@ -7,6 +7,7 @@ from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.command import root as cli
 from hamlet.command.common import exceptions
 from hamlet.command.common.config import pass_options
+from hamlet.command.common.validate import validate_entrance_inputs
 from hamlet.backend import query as query_backend
 from hamlet.backend import contract as contract_backend
 
@@ -116,15 +117,21 @@ def describe_runbook(options, name, query=None, **kwargs):
     default=False,
     help="Confirm before starting the runbook",
 )
-@click.argument("parameters", nargs=-1)
+@click.option(
+    "-s",
+    "--silent",
+    is_flag=True,
+    default=False,
+    help="Hide Runbook processing details",
+)
+@click.argument("inputs", nargs=-1, callback=validate_entrance_inputs)
 @exceptions.backend_handler()
 @pass_options
-def run_runbook(options, name, confirm, parameters, **kwargs):
+def run_runbook(options, name, confirm, silent, inputs, **kwargs):
     """
     Run a runbook
+    Runbook inputs are provided as Key=Value inputs
     """
-
-    parameters = dict([arg.split("=") for arg in parameters])
 
     runbook_description = query_runbookinfo_state(
         options=options,
@@ -135,25 +142,26 @@ def run_runbook(options, name, confirm, parameters, **kwargs):
     if runbook_description is None:
         raise exceptions.CommandError("No runbooks found with the provided name")
 
-    click.echo("")
-    click.secho(f"[*] {name}", bold=True, fg="green")
-    if runbook_description["Description"] != "":
-        click.secho(
-            f"[*]   {runbook_description['Description']}", bold=True, fg="green"
-        )
-    click.echo("")
+    if not silent:
+        click.echo("")
+        click.secho(f"[*] {name}", bold=True, fg="green")
+        if runbook_description["Description"] != "":
+            click.secho(
+                f"[*]   {runbook_description['Description']}", bold=True, fg="green"
+            )
+        click.echo("")
 
-    if (confirm and click.confirm("Start Runbook?")) or not confirm:
+    if not silent or ((confirm and click.confirm("Start Runbook?")) or not confirm):
 
         query_args = {
             **options.opts,
             "generation_entrance": "runbook",
             "generation_entrance_parameter": (
                 f"RunBook={name}",
-                f"RunBookInputs={json.dumps(parameters)}",
+                f"RunBookInputs={json.dumps(inputs)}",
             ),
             "output_filename": "runbook-contract.json",
             "use_cache": False,
         }
         contract = query_backend.run(**query_args, cwd=os.getcwd(), query=None)
-        contract_backend.run(contract)
+        contract_backend.run(contract, silent)

@@ -1,20 +1,23 @@
 import importlib
+import click
 from hamlet.backend.contract.tasks.exceptions import (
     TaskConditionFailureException,
     TaskFailureException,
 )
 
 
-def run(contract, **kwargs):
+def run(contract, silent, **kwargs):
 
     properties = contract["Properties"]
 
     for stage in contract["Stages"]:
 
-        print(f"[-] Running contract stage {stage['Id']}")
+        if not silent:
+            click.echo(f"\n[-] Running contract stage {stage['Id']}")
 
         for step in stage["Steps"]:
-            print(f"      Step: {step['Id']} - Task: {step['Type']}")
+            if not silent:
+                click.echo(f"      Step: {step['Id']} - Task: {step['Type']}")
 
             try:
                 task = importlib.import_module(
