@@ -40,7 +40,7 @@ def setup_global_engine(engine_override):
     if engine_store.global_engine is None:
 
         default_engine = (
-            engine_override if engine_override else ENGINE_DEFAULT_GLOBAL_ENGINE
+            engine_override if engine_override is not None else ENGINE_DEFAULT_GLOBAL_ENGINE
         )
 
         try:
@@ -51,6 +51,7 @@ def setup_global_engine(engine_override):
             engine_store.get_engine(
                 default_engine, locations=["local", "remote", "hidden"]
             ).install()
+            engine_store.load_engines(locations=["installed"], refresh=True)
 
         engine_store.global_engine = default_engine
 
