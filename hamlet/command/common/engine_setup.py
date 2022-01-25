@@ -40,7 +40,9 @@ def setup_global_engine(engine_override):
     if engine_store.global_engine is None:
 
         default_engine = (
-            engine_override if engine_override is not None else ENGINE_DEFAULT_GLOBAL_ENGINE
+            engine_override
+            if engine_override is not None
+            else ENGINE_DEFAULT_GLOBAL_ENGINE
         )
 
         try:
