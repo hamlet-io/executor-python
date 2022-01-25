@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2022-01-23)
+## latest (2022-01-25)
+
+#### Fixes
+
+* initial engine loading missing engine ([#289](https://github.com/hamlet-io/executor-python/issues/289))
+
+Full set of changes: [`9.14.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.0...latest)
+
+## 9.14.0 (2022-01-23)
 
 #### New Features
 
@@ -8,8 +16,11 @@
 #### Refactorings
 
 * engine management
+#### Others
 
-Full set of changes: [`9.13.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.13.0...latest)
+* changelog bump ([#284](https://github.com/hamlet-io/executor-python/issues/284))
+
+Full set of changes: [`9.13.0...9.14.0`](https://github.com/hamlet-io/executor-python/compare/9.13.0...9.14.0)
 
 ## 9.13.0 (2022-01-13)
 
