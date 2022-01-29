@@ -17,8 +17,8 @@ jobs:
 
       - name: install reqs
         run: |
-          pip install -r requirements/dev.txt
           pip install -e ./
+          pip install hamlet[dev]
 
       - name: black check
         run: |

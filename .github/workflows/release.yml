@@ -30,8 +30,8 @@ jobs:
 
       - name: install reqs
         run: |
-          pip install -r requirements/dev.txt
           pip install -e ./
+          pip install hamlet[dev]
 
       - name: Run tests
         run: |
@@ -57,8 +57,8 @@ jobs:
 
       - name: Install reqs
         run: |
-          pip install -r requirements/dev.txt
           pip install -e ./
+          pip install hamlet[dev]
 
       - name: Create Release
         run: >-
