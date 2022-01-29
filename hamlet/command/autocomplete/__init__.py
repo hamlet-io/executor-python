@@ -63,6 +63,9 @@ def autocomplete_bash_or_zsh(
     is_flag=True,
 )
 def autocomplete(shell_type: str, regenerate: bool) -> None:
+    """
+    Enable autocomplete for the cli
+    """
     user_home_path = os.path.expanduser("~")
     autocomplete_path = os.path.join(
         __path__[0], "scripts", f".hamlet-complete.{shell_type}"

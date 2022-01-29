@@ -1,8 +1,5 @@
-import subprocess
-
 from setuptools import setup, find_packages
-from setuptools.command.install import install
-from setuptools.command.develop import develop
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -12,29 +9,6 @@ with open("hamlet/__about__.py", "r") as fp:
     exec(fp.read(), about)
 
 packages = find_packages(exclude=["tests.*", "tests"])
-
-
-class InstallCommand(install):
-    def __post_install(self, dir):
-        subprocess.call(["./setup-hamlet.sh"])
-
-    def run(self):
-        install.run(self)
-        self.execute(
-            self.__post_install, (self.install_lib,), msg="Setting up hamlet..."
-        )
-
-
-class DevelopCommand(develop):
-    def __post_install(self, dir):
-        subprocess.call(["./setup-hamlet.sh"])
-
-    def run(self):
-        develop.run(self)
-        self.execute(
-            self.__post_install, (self.install_lib,), msg="Setting up hamlet..."
-        )
-
 
 setup(
     name=about["__title__"],
@@ -67,25 +41,36 @@ setup(
         "marshmallow>=3.7.0,<4.0.0",
         # Template testing
         "pytest>=6.0.0,<7.0.0",
-        # AWS testing dependencies
         "cfn-lint>=0.54.1,<1.0.0",
-        # - boto3 locked to support checkov current requirements
         "checkov>=2.0.461,<3.0.0",
         # contract execution
-        "boto3>=1.17.111,<1.18.0",
-        "botocore>=1.20.112,<2.0.0",
+        "boto3>=1.17.111,<2.0.0",
         "fabric>=2.6.0,<3.0.0",
         "simple-term-menu>=1.4.1,<2.0.0",
         # Diagrams
         "diagrams>=0.18.0,<1.0.0",
     ],
+    extras_require={
+        "dev": [
+            "coverage",
+            "freezegun",
+            "setuptools",
+            # formatting
+            "flake8",
+            "black",
+            # packaging
+            "build",
+            "wheel",
+            "twine",
+            # Docs
+            "Sphinx",
+            "sphinx-markdown-builder",
+            "sphinx-click",
+        ],
+    },
     include_package_data=True,
     python_requires=">=3.6",
     entry_points={"console_scripts": ["hamlet=hamlet:command.root"]},
-    cmdclass={
-        "install": InstallCommand,
-        "develop": DevelopCommand,
-    },
     classifiers=[
         "Natural Language :: English",
         "Intended Audience :: Developers",

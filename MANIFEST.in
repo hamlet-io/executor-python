@@ -1,6 +1,5 @@
 include LICENSE
 include *.md
-include setup-hamlet.sh
 include hamlet/backend/test/templates/*.tmpl
 include hamlet/command/autocomplete/scripts/.hamlet-complete.*
 
