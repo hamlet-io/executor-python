@@ -44,7 +44,8 @@ setup(
         "cfn-lint>=0.54.1,<1.0.0",
         "checkov>=2.0.461,<3.0.0",
         # contract execution
-        "boto3>=1.17.111,<2.0.0",
+        "boto3>=1.20.0,<2.0.0",
+        "botocore>=1.20.0,<2.0.0",
         "fabric>=2.6.0,<3.0.0",
         "simple-term-menu>=1.4.1,<2.0.0",
         # Diagrams
