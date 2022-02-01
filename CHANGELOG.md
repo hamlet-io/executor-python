@@ -1,12 +1,32 @@
 # Changelog
 
-## latest (2022-01-25)
+## latest (2022-02-01)
+
+#### New Features
+
+* update sentry_release command
+#### Fixes
+
+* testing and formatting
+* add output dir for binary files
+* install process
+* add botocore back in
+#### Refactorings
+
+* setup cleanup
+
+Full set of changes: [`9.14.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.1...latest)
+
+## 9.14.1 (2022-01-25)
 
 #### Fixes
 
 * initial engine loading missing engine ([#289](https://github.com/hamlet-io/executor-python/issues/289))
+#### Others
 
-Full set of changes: [`9.14.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.0...latest)
+* changelog bump ([#288](https://github.com/hamlet-io/executor-python/issues/288))
+
+Full set of changes: [`9.14.0...9.14.1`](https://github.com/hamlet-io/executor-python/compare/9.14.0...9.14.1)
 
 ## 9.14.0 (2022-01-23)
 
