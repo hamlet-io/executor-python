@@ -19,6 +19,7 @@ ALL_VALID_OPTIONS["-e,--environment-badge"] = [True, False]
 ALL_VALID_OPTIONS["-d,--environment-badge-content"] = "environment"
 ALL_VALID_OPTIONS["-n,--node-package-manager"] = "yarn"
 ALL_VALID_OPTIONS["-v,--app-version-source"] = "cmdb"
+ALL_VALID_OPTIONS["-o,--binary-output-dir"] = "binary_output_dir"
 
 
 @mock.patch("hamlet.command.run.expo_app_publish.run_expo_app_publish_backend")

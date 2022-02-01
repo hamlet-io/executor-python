@@ -74,13 +74,8 @@ from hamlet.command.common.config import pass_options
 @click.option(
     "-o",
     "--binary-output-dir",
-    type=click.Path(
-        dir_okay=True,
-        file_okay=False,
-        writable=True,
-        resolve_path=True
-    ),
-    help="The directory to save generated binaries to"
+    type=click.Path(dir_okay=True, file_okay=False, writable=True, resolve_path=True),
+    help="The directory to save generated binaries to",
 )
 @click.option(
     "-v",
