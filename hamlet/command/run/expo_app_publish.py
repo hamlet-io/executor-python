@@ -72,6 +72,17 @@ from hamlet.command.common.config import pass_options
     envvar="NODE_PACKAGE_MANAGER",
 )
 @click.option(
+    "-o",
+    "--binary-output-dir",
+    type=click.Path(
+        dir_okay=True,
+        file_okay=False,
+        writable=True,
+        resolve_path=True
+    ),
+    help="The directory to save generated binaries to"
+)
+@click.option(
     "-v",
     "--app-version-source",
     help="The method to use to source the app version",
