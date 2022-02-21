@@ -33,7 +33,7 @@ setup(
         "click-configfile>=0.2.3,<1.0.0",
         "cookiecutter>=1.7.0,<2.0.0",
         "tabulate>=0.8.0,<1.0.0",
-        "Jinja2>=2.11.0,<3.0.0",
+        "Jinja2>=3.0.3,<4.0.0",
         "jmespath>=0.10.0,<1.0.0",
         "importlib-resources>=5.2.0,<6.0.0",
         "www-authenticate>=0.9.2,<1.0.0",
