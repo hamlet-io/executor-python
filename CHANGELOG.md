@@ -1,6 +1,28 @@
 # Changelog
 
-## latest (2022-02-01)
+## latest (2022-03-08)
+
+#### New Features
+
+* add support for ecs run task
+#### Fixes
+
+* formatting and linting
+#### Refactorings
+
+* engine context handling with cli
+
+Full set of changes: [`9.14.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.3...latest)
+
+## 9.14.3 (2022-02-22)
+
+#### Fixes
+
+* update jinja to latest release
+
+Full set of changes: [`9.14.2...9.14.3`](https://github.com/hamlet-io/executor-python/compare/9.14.2...9.14.3)
+
+## 9.14.2 (2022-02-01)
 
 #### New Features
 
@@ -14,8 +36,11 @@
 #### Refactorings
 
 * setup cleanup
+#### Others
 
-Full set of changes: [`9.14.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.1...latest)
+* changelog bump ([#290](https://github.com/hamlet-io/executor-python/issues/290))
+
+Full set of changes: [`9.14.1...9.14.2`](https://github.com/hamlet-io/executor-python/compare/9.14.1...9.14.2)
 
 ## 9.14.1 (2022-01-25)
 
