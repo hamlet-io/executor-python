@@ -1,8 +1,6 @@
 import click
 
-from hamlet.command.common import exceptions
-from hamlet.command.common.config import pass_options
-
+from hamlet.command.common import config, exceptions
 from hamlet.backend.deploy import find_deployments, create_deployment
 
 
@@ -63,7 +61,7 @@ from hamlet.backend.deploy import find_deployments, create_deployment
     help="the directory where the outputs will be saved. Mandatory when input source is set to mock",
 )
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def create_deployments(
     options,
     deployment_mode,
@@ -84,6 +82,7 @@ def create_deployments(
         deployment_units=deployment_unit,
         deployment_states=deployment_state,
         districts=district,
+        engine=options.engine,
         **options.opts,
     )
 
@@ -104,5 +103,6 @@ def create_deployments(
             deployment_unit,
             deployment_mode,
             output_dir,
+            options.engine,
             **options.opts,
         )

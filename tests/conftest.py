@@ -1,8 +1,10 @@
 import os
 import shutil
 import pytest
+from unittest import mock
 from hamlet.loggers import logging, root
 from hamlet.backend.engine import EngineStore
+from hamlet.command.common.config import Options
 
 
 root.setLevel(logging.DEBUG)
@@ -72,18 +74,61 @@ def clear_cmdb():
 
 class __EngineContext:
 
-    if os.getenv("TEST_ENGINE_STORE_DIR", None) is not None:
-        ENGINE_STORE_DIR = os.getenv("TEST_ENGINE_STORE_DIR")
-    else:
-        ENGINE_STORE_DIR = os.getcwd() + "/.engine_store"
-        os.makedirs(ENGINE_STORE_DIR, exist_ok=True)
+    def __init__(self) -> None:
+        if os.getenv("TEST_ENGINE_STORE_DIR", None) is not None:
+            ENGINE_STORE_DIR = os.getenv("TEST_ENGINE_STORE_DIR")
+        else:
+            ENGINE_STORE_DIR = os.getcwd() + "/.engine_store"
+            os.makedirs(ENGINE_STORE_DIR, exist_ok=True)
 
-    engine_store = EngineStore(store_dir=ENGINE_STORE_DIR)
+        self._engine_store = EngineStore(store_dir=ENGINE_STORE_DIR, config_search_paths=ENGINE_STORE_DIR)
+        self._engine_store.load_engines(locations=["local", "remote"], refresh=True)
+        self._engine_store.get_engine("unicycle", ["remote"]).install()
+        self._engine_store.load_engines(locations=["installed"], refresh=True)
+
+        self._engine = self._engine_store.get_engine("unicycle", ["installed"])
+
+    @property
+    def engine(self):
+        return self._engine
+
+    @property
+    def engine_store(self):
+        return self._engine_store
 
 
 @pytest.fixture(scope="session")
 def engine():
-    return __EngineContext
+    return __EngineContext()
+
+
+def mock_engine():
+    engine = mock.MagicMock()
+    engine.name = mock.PropertyMock().return_value = "Name[1]"
+    engine.location = mock.PropertyMock().return_value = "local"
+    engine.description = mock.PropertyMock().return_value = "Description[1]"
+    engine.short_digest = mock.PropertyMock().return_value = "Digest[1]"
+    engine.digest = mock.PropertyMock().return_value = "Digest[1]"
+    return engine
+
+
+def mock_engine_store():
+    engine_store = mock.MagicMock()
+    engine_store.get_engines.return_value = [mock_engine()]
+    return engine_store
+
+
+class __Options(Options):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._engine = mock_engine()
+        self._engine_store = mock_engine_store()
+
+
+@pytest.fixture(scope="session")
+def options():
+    return __Options()
 
 
 def __clear_engine(*args):

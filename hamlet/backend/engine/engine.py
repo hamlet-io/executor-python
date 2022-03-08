@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 import hashlib
+import platform
 
 from abc import ABC, abstractmethod
 
@@ -10,7 +11,7 @@ from hamlet.backend.common.exceptions import BackendException
 from .engine_part import EnginePartInterface
 from .engine_source import EngineSourceInterface
 from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
-from .exceptions import HamletEngineInvalidVersion
+from .exceptions import HamletEngineInvalidVersion, EngineStoreMissingEngineException
 
 
 class EngineInterface(ABC):
@@ -273,6 +274,12 @@ class EngineInterface(ABC):
         """
         pass
 
+    def set_default_engine(self):
+        """
+        A hook to run when an engine_store is set to a new default
+        """
+        pass
+
 
 class InstalledEngine(EngineInterface):
     def __init__(self, name, description, digest, state_version):
@@ -285,6 +292,14 @@ class InstalledEngine(EngineInterface):
         "GENERATION_PLUGIN_DIRS": [
             {"part_type": "engine-plugin-aws", "env_path": ""},
             {"part_type": "engine-plugin-azure", "env_path": ""},
+        ],
+        "GENERATION_WRAPPER_COMMAND": [
+            {
+                "part_type": "bundled-engine-wrapper",
+                "env_path": f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper"
+                if platform.system() != "Windows"
+                else f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper.bat",
+            }
         ],
         "GENERATION_WRAPPER_JAR_FILE": [
             {"part_type": "engine-wrapper", "env_path": "freemarker-wrapper.jar"}
@@ -315,7 +330,26 @@ class InstalledEngine(EngineInterface):
         return self._engine_state.get("install", None)
 
 
-class GlobalEngine(EngineInterface):
+class ShimEngine(EngineInterface):
+    def set_default_engine(self, engine, engine_store):
+
+        try:
+            installed_shim = engine_store.get_engine(self.name, locations=["installed"])
+        except EngineStoreMissingEngineException:
+            return
+
+        for type, path in installed_shim.part_paths.items():
+            if os.path.islink(path):
+                os.unlink(path)
+
+            if os.path.isdir(path):
+                os.rmdir(path)
+
+            if engine.part_paths.get(type, None):
+                os.symlink(engine.part_paths[type], path, target_is_directory=True)
+            else:
+                os.makedirs(path)
+
     def install(self):
 
         source_details = []

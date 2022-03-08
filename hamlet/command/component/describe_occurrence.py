@@ -21,6 +21,7 @@ def query_occurrence_state(ctx, query=None):
 
     base_result = query_occurrences_state(
         options=options_context,
+        engine=options_context.engine,
         query=DESCRIBE_OCCURRENCE_QUERY,
         query_params={"name": describe_context.name},
     )

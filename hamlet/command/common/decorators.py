@@ -1,8 +1,15 @@
+import os
 import click
 from click.types import StringParamType
 import functools
 
 from hamlet.command.common.config import Options
+
+
+def get_home_dir_default(subdir):
+    return os.path.join(
+        click.get_app_dir(app_name="hamlet", force_posix=True, roaming=False), subdir
+    )
 
 
 class CommaSplitParamType(StringParamType):
@@ -23,6 +30,20 @@ def common_cli_config_options(func):
         help="The name of the profile to use for configuration",
         show_envvar=True,
     )
+    @click.option(
+        "--cli-config-dir",
+        type=click.Path(file_okay=False, dir_okay=True, readable=True),
+        envvar="HAMLET_CLI_CONFIG_DIR",
+        default=get_home_dir_default("config"),
+        help="The directory where profile configuration is stored",
+    )
+    @click.option(
+        "--cli-cache-dir",
+        type=click.Path(file_okay=False, dir_okay=True, readable=True, writable=True),
+        envvar="HAMLET_CLI_CACHE_DIR",
+        default=get_home_dir_default("cache"),
+        help="The directory where the cli can cache generation outputs",
+    )
     @click.pass_context
     @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
@@ -30,8 +51,12 @@ def common_cli_config_options(func):
         Config file handling
         """
         opts = ctx.ensure_object(Options)
+        opts.cli_config_dir = kwargs.pop("cli_config_dir")
+        opts.cli_cache_dir = kwargs.pop("cli_cache_dir")
+
         profile = kwargs.pop("profile")
         opts.load_config_file(profile=profile)
+
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 
@@ -60,6 +85,7 @@ def common_logging_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.log_level = kwargs.pop("log_level")
+
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 
@@ -75,6 +101,36 @@ def common_engine_options(func):
         help="The name of the engine to use",
         show_envvar=True,
     )
+    @click.option(
+        "--engine-dir",
+        type=click.Path(
+            dir_okay=True,
+            file_okay=False,
+            writable=True,
+            readable=True,
+        ),
+        default=get_home_dir_default("engine"),
+        envvar="HAMLET_ENGINE_DIR",
+        help="The location of the hamlet engine store",
+    )
+    @click.option(
+        "--engine-config-dir",
+        type=click.Path(
+            dir_okay=True,
+            file_okay=False,
+            writable=True,
+            readable=True,
+        ),
+        default=get_home_dir_default("config"),
+        envvar="HAMLET_ENGINE_CONFIG",
+        help="The location of the hamlet engine config file for local engines",
+    )
+    @click.option(
+        "--engine-search-locations",
+        multiple=True,
+        default=["local", "remote"],
+        type=click.Choice(["local", "remote", "hidden"]),
+    )
     @click.pass_context
     @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
@@ -82,8 +138,10 @@ def common_engine_options(func):
         Engine configuration options
         """
         opts = ctx.ensure_object(Options)
-        opts.engine = kwargs.pop("engine")
-        kwargs["opts"] = opts
+        opts.set_engine_store(
+            kwargs.pop("engine_dir"), [kwargs.pop("engine_config_dir")]
+        )
+        opts.set_engine(kwargs.pop("engine"), kwargs.pop("engine_search_locations"))
         return ctx.invoke(func, *args, **kwargs)
 
     return wrapper
@@ -127,6 +185,7 @@ def common_generation_options(func):
         opts.generation_provider = kwargs.pop("generation_provider")
         opts.generation_framework = kwargs.pop("generation_framework")
         opts.generation_input_source = kwargs.pop("generation_input_source")
+
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 
@@ -185,6 +244,7 @@ def common_district_options(func):
         opts.product = kwargs.pop("product")
         opts.environment = kwargs.pop("environment")
         opts.segment = kwargs.pop("segment")
+
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
 

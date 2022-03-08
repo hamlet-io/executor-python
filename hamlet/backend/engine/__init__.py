@@ -2,10 +2,9 @@ import os
 import shutil
 import json
 
-from .common import ENGINE_STORE_DEFAULT_DIR, ENGINE_GLOBAL_NAME
 from .exceptions import EngineStoreMissingEngineException
 
-from .loaders.base import GlobalEngineLoader, InstalledEngineLoader
+from .loaders.base import ShimEngineLoader, InstalledEngineLoader
 from .loaders.unicycle import UnicycleEngineLoader
 from .loaders.tram import LatestTramEngineLoader, TramEngineLoader
 from .loaders.train import LatestTrainEngineLoader, TrainEngineLoader
@@ -20,37 +19,36 @@ class EngineStore:
     that tracks global properties that effect all engines
     """
 
-    def __init__(self, store_dir):
+    def __init__(self, store_dir, config_search_paths):
         self._engines = []
         self.store_dir = store_dir
         self._store_state_file = os.path.join(self.store_dir, "store_state.json")
         self.engine_dir = os.path.join(self.store_dir, "engines")
+        self.config_search_paths = config_search_paths
 
         self.store_state = {}
         self.load_store_state()
 
-        self._global_engine = self.store_state.get("global_engine", None)
+        self._default_engine = self.store_state.get(
+            "default_engine", self.store_state.get("global_engine", None)
+        )
 
         self._engine_locations = {
             "installed": {
                 "loaded": False,
-                "description": "Engines installed in your local engine store",
+                "description": "Engines installed in the local engine store",
                 "loaders": [
                     InstalledEngineLoader(engine_dir=self.engine_dir),
-                ],
-            },
-            "global": {
-                "loaded": False,
-                "description": "Provides the _global engine used for default engine config",
-                "loaders": [
-                    GlobalEngineLoader(),
                 ],
             },
             "local": {
                 "loaded": False,
                 "description": "Local user defined engines that are available",
                 "loaders": [
-                    UserDefinedEngineLoader(),
+                    ShimEngineLoader(),
+                    UserDefinedEngineLoader(
+                        config_search_paths=self.config_search_paths
+                    ),
                 ],
             },
             "remote": {
@@ -77,41 +75,36 @@ class EngineStore:
         return self._engine_locations
 
     @property
-    def global_engine(self):
+    def default_engine(self):
         """
         The global engine defines a special engine that uses other engines to provide parts
         the global provides a consistent location that will link to other engine installations
         """
-        return self._global_engine
+        return self._default_engine
 
-    @global_engine.setter
-    def global_engine(self, name):
+    @default_engine.setter
+    def default_engine(self, name):
         """
-        Setting the global engine will locate the provided engine then update
-        its symlinks to point to the provided engine.
+        Setting the default engine loads the engine and calls the  set_default_engine
+        hook on all available engines
         """
         if name is None:
-            self._global_engine = None
+            self._default_engine = None
+            self.store_state = {"default_engine": None}
 
         else:
-            global_engine = self.get_engine(ENGINE_GLOBAL_NAME)
-            engine = self.get_engine(name)
 
-            for type, path in global_engine.part_paths.items():
-                if os.path.islink(path):
-                    os.unlink(path)
+            self.load_engines("installed")
+            engine = self.get_engine(name, ["installed"])
 
-                if os.path.isdir(path):
-                    os.rmdir(path)
+            self.load_engines(["local"])
 
-                if engine.part_paths.get(type, None):
-                    os.symlink(engine.part_paths[type], path, target_is_directory=True)
-                else:
-                    os.makedirs(path)
+            for local_engine in self.get_engines("local"):
+                local_engine.set_default_engine(engine, self)
 
-            self._global_engine = engine.name
+            self._default_engine = engine.name
+            self.store_state = {"default_engine": engine.name}
 
-        self.store_state = {"global_engine": self.global_engine}
         self.save_store_state()
 
     def get_engines(self, locations=None):
@@ -196,6 +189,3 @@ class EngineStore:
     def clean_engine(self, name):
         if os.path.isdir(os.path.join(self.engine_dir, name)):
             shutil.rmtree(os.path.join(self.engine_dir, name))
-
-
-engine_store = EngineStore(store_dir=ENGINE_STORE_DEFAULT_DIR)

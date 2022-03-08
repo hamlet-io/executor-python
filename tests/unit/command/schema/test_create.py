@@ -35,6 +35,7 @@ def template_backend_run_mock(data):
         environment=None,
         segment=None,
         entrance_parameters=None,
+        engine=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         unitlist_filename = os.path.join(output_dir, output_filename)

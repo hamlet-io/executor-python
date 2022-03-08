@@ -41,6 +41,11 @@ class WrapperEnginePart(EnginePartInterface):
     description = "hamlet freemarker wrapper jar file"
 
 
+class BundledWrapperEnginePart(EnginePartInterface):
+    type = "bundled-engine-wrapper"
+    description = "hamlet freemarker wrapper as a bundled cli application"
+
+
 class BashExecutorEnginePart(EnginePartInterface):
     type = "executor-bash"
     description = "bash based executor"

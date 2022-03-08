@@ -12,7 +12,9 @@ class DescribeContext:
         self._name = value
 
 
-def query_occurrences_state(options, query, query_params=None, sub_query_text=None):
+def query_occurrences_state(
+    options, engine, query, query_params=None, sub_query_text=None
+):
     query_args = {
         **options.opts,
         "generation_entrance": "occurrences",
@@ -24,7 +26,8 @@ def query_occurrences_state(options, query, query_params=None, sub_query_text=No
         cwd=os.getcwd(),
         query_text=query,
         query_params=query_params,
-        sub_query_text=sub_query_text
+        sub_query_text=sub_query_text,
+        engine=engine
     )
 
     return query_result

@@ -5,7 +5,6 @@ import tempfile
 import jmespath
 
 from jmespath.exceptions import JMESPathError
-from hamlet.env import HAMLET_GLOBAL_CONFIG
 from hamlet.backend.create import template
 from hamlet.backend.common import context
 from hamlet.backend.common import exceptions
@@ -31,7 +30,8 @@ def run(
     product=None,
     environment=None,
     segment=None,
-    _is_cli=False,
+    cache_dir=None,
+    engine=None,
     **kwargs,
 ):
     query = Query(
@@ -44,6 +44,7 @@ def run(
         generation_framework=generation_framework,
         output_filename=output_filename,
         use_cache=use_cache,
+        cache_dir=cache_dir,
         log_level=log_level,
         root_dir=root_dir,
         tenant=tenant,
@@ -51,6 +52,7 @@ def run(
         product=product,
         environment=environment,
         segment=segment,
+        engine=engine,
     )
     if query_text is None:
         result = query.blueprint_data
@@ -73,6 +75,7 @@ class Query:
         generation_framework=None,
         output_filename=None,
         use_cache=None,
+        cache_dir=None,
         log_level=None,
         root_dir=None,
         tenant=None,
@@ -80,6 +83,7 @@ class Query:
         product=None,
         environment=None,
         segment=None,
+        engine=None,
     ):
         # mocked blueprint doesn't need the valid context
         if generation_input_source == "mock":
@@ -90,7 +94,7 @@ class Query:
             ctx = context.Context(
                 directory=cwd,
                 root_dir=root_dir,
-                cache_dir=HAMLET_GLOBAL_CONFIG.cli_cache_dir,
+                cache_dir=cache_dir,
             )
             output_dir = os.path.join(ctx.cache_dir, "query", ctx.md5_hash())
         output_filepath = os.path.join(output_dir, output_filename)
@@ -110,6 +114,7 @@ class Query:
                 product=product,
                 environment=environment,
                 segment=segment,
+                engine=engine,
             )
         with open(output_filepath, "rt") as f:
             self.blueprint_data = json.load(f)

@@ -1,7 +1,5 @@
 import click
-from hamlet.command.common import exceptions
-from hamlet.command.common.config import pass_options
-
+from hamlet.command.common import config, exceptions
 from hamlet.backend.deploy import find_deployments, create_deployment, run_deployment
 
 
@@ -78,7 +76,7 @@ from hamlet.backend.deploy import find_deployments, create_deployment, run_deplo
     help="Perform a dry run of the deployment before the run",
 )
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def run_deployments(
     options,
     deployment_mode,
@@ -101,6 +99,7 @@ def run_deployments(
         deployment_units=deployment_unit,
         deployment_states=deployment_state,
         districts=district,
+        engine=options.engine,
         **options.opts,
     )
 
@@ -129,10 +128,11 @@ def run_deployments(
         if refresh_outputs:
             if deployment_state != "orphaned":
                 create_deployment(
-                    deployment_group,
-                    deployment_unit,
-                    deployment_mode,
-                    output_dir,
+                    deployment_group=deployment_group,
+                    deployment_unit=deployment_unit,
+                    deployment_mode=deployment_mode,
+                    output_dir=output_dir,
+                    engine=options.engine,
                     **options.opts,
                 )
 
@@ -140,12 +140,13 @@ def run_deployments(
 
             if dryrun:
                 run_deployment(
-                    provider,
-                    deployment_group,
-                    deployment_unit,
-                    operation,
-                    output_dir,
-                    dryrun,
+                    provider=provider,
+                    deployment_group=deployment_group,
+                    deployment_unit=deployment_unit,
+                    operation=operation,
+                    output_dir=output_dir,
+                    dryrun=dryrun,
+                    engine=options.engine,
                     **options.opts,
                 )
 
@@ -156,10 +157,11 @@ def run_deployments(
                 )
             ) or not confirm:
                 run_deployment(
-                    provider,
-                    deployment_group,
-                    deployment_unit,
-                    operation,
-                    output_dir,
+                    provider=provider,
+                    deployment_group=deployment_group,
+                    deployment_unit=deployment_unit,
+                    operation=operation,
+                    output_dir=output_dir,
+                    engine=options.engine,
                     **options.opts,
                 )

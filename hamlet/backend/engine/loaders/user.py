@@ -1,9 +1,13 @@
 import click
 import typing
-import os
 
-from click_configfile import ConfigFileReader, SectionSchema, matches_section
-from hamlet.env import HAMLET_GLOBAL_CONFIG
+from click_configfile import (
+    ConfigFileReader,
+    SectionSchema,
+    matches_section,
+    generate_configfile_names,
+    configparser
+)
 
 from hamlet.utils import ConfigParam
 
@@ -21,12 +25,8 @@ from hamlet.backend.engine.engine_part import (
     CMDBEnginePluginPart,
     BashExecutorEnginePart,
     WrapperEnginePart,
+    BundledWrapperEnginePart,
 )
-
-
-def get_engine_config_dir():
-    print("getting engine config")
-    return HAMLET_GLOBAL_CONFIG.config_dir
 
 
 class EngineSchema(object):
@@ -83,6 +83,7 @@ class EngineSchema(object):
                     "engine-plugin-cmdb",
                     "executor-bash",
                     "wrapper",
+                    "bundled-wrapper",
                 ]
             )
         )
@@ -100,7 +101,6 @@ class EngineReader(ConfigFileReader):
 
     config_files = ["engine.ini", "engine"]
     config_name = "engine"
-    config_searchpath = []
     config_section_schemas = [
         EngineSchema.Engine,
         EngineSchema.EnginePart,
@@ -116,15 +116,14 @@ class EngineReader(ConfigFileReader):
         return section_schema
 
     @classmethod
-    def load_engines(cls):
+    def read_config(cls, config_searchpath):
+        cls.config_searchpath = config_searchpath
+        return super().read_config()
+
+    def load_engines(self):
         """Load engines found in the config file."""
 
-        if os.path.exists(HAMLET_GLOBAL_CONFIG.config_dir):
-            if os.path.isdir(HAMLET_GLOBAL_CONFIG.config_dir):
-                cls.config_searchpath.insert(0, HAMLET_GLOBAL_CONFIG.config_dir)
-
-        config = cls.read_config()
-
+        config = self.read_config(self.config_searchpath)
         for k, v in config.items():
             if k.startswith("engine:"):
                 engine = Engine(
@@ -179,20 +178,23 @@ class EngineReader(ConfigFileReader):
                     if part_config["type"] == "engine":
                         parts.append(CoreEnginePart(**part_source_config))
 
-                    if part_config["type"] == "engine-plugin-aws":
+                    elif part_config["type"] == "engine-plugin-aws":
                         parts.append(AWSEnginePluginPart(**part_source_config))
 
-                    if part_config["type"] == "engine-plugin-azure":
+                    elif part_config["type"] == "engine-plugin-azure":
                         parts.append(AzureEnginePluginPart(**part_source_config))
 
-                    if part_config["type"] == "engine-plugin-cmdb":
+                    elif part_config["type"] == "engine-plugin-cmdb":
                         parts.append(CMDBEnginePluginPart(**part_source_config))
 
-                    if part_config["type"] == "executor-bash":
+                    elif part_config["type"] == "executor-bash":
                         parts.append(BashExecutorEnginePart(**part_source_config))
 
-                    if part_config["type"] == "wrapper":
+                    elif part_config["type"] == "wrapper":
                         parts.append(WrapperEnginePart(**part_source_config))
+
+                    elif part_config["type"] == "bundled-wrapper":
+                        parts.append(BundledWrapperEnginePart(**part_source_config))
 
                 engine.sources = sources
                 engine.parts = parts
@@ -205,11 +207,13 @@ class UserDefinedEngineLoader(EngineLoader):
     Loads a user defined configuration file defining engines and their configuration
     """
 
-    def __init__(self):
+    def __init__(self, config_search_paths):
         super().__init__()
+        self.config_search_paths = config_search_paths
 
     def load(self) -> typing.Iterable[Engine]:
 
-        engine_cls = EngineReader
+        engine_cls = EngineReader()
+        engine_cls.config_searchpath = self.config_search_paths
         for engine in engine_cls.load_engines():
             yield engine

@@ -1,9 +1,13 @@
 import click
-import os
 
 from click_configfile import ConfigFileReader, SectionSchema, matches_section
-from hamlet.env import HAMLET_GLOBAL_CONFIG
 from hamlet.utils import ConfigParam
+
+from hamlet.backend.engine.exceptions import (
+    EngineStoreMissingEngineException,
+)
+
+from hamlet.backend.engine import EngineStore
 
 
 class ConfigSchema(object):
@@ -13,25 +17,12 @@ class ConfigSchema(object):
     class Profile(SectionSchema):
         """Profile-specific configuration schema."""
 
-        #: the root directory of the CMDB
         root_dir = ConfigParam(name="root_dir", type=click.Path())
-
-        #: the name of the tenant
         tenant = ConfigParam(name="tenant", type=str)
-
-        #: the name of the account
         account = ConfigParam(name="account", type=str)
-
-        #: the name of the product
         product = ConfigParam(name="product", type=str)
-
-        #: the name of the environment
         environment = ConfigParam(name="environment", type=str)
-
-        #: the name of the segment
         segment = ConfigParam(name="segment", type=str)
-
-        #: the name of the engine to use within this profile
         engine = ConfigParam(name="engine", type=str)
 
 
@@ -40,8 +31,11 @@ class ConfigReader(ConfigFileReader):
 
     config_files = ["config.ini", "config"]
     config_name = "standard"
-    config_searchpath = []
     config_section_schemas = [ConfigSchema.Profile]
+
+    def __init__(self, config_search_paths) -> None:
+        super().__init__()
+        self.config_searchpath = config_search_paths
 
     @classmethod
     def select_config_schema_for(cls, section_name):
@@ -54,10 +48,6 @@ class ConfigReader(ConfigFileReader):
     @classmethod
     def load_config(cls, opts, profile=None):
         """Load a configuration file into an options object."""
-
-        if os.path.exists(HAMLET_GLOBAL_CONFIG.config_dir):
-            if os.path.isdir(HAMLET_GLOBAL_CONFIG.config_dir):
-                cls.config_searchpath.insert(0, HAMLET_GLOBAL_CONFIG.config_dir)
 
         config = cls.read_config()
         values = config.get("default", {})
@@ -97,10 +87,13 @@ class Options:
         for k, v in kwargs:
             setattr(self, k, v)
 
-    @staticmethod
-    def get_config_reader():
+        self.default_engine_name = "train"
+        self._engine_store = None
+        self._engine = None
+
+    def get_config_reader(self):
         """Get the config reader class."""
-        return ConfigReader
+        return ConfigReader(config_search_paths=self.cli_config_dir)
 
     def load_config_file(self, profile=None):
         """Load the config file."""
@@ -116,6 +109,16 @@ class Options:
     def cli_config_dir(self, value):
         """Set the cli config dir"""
         self._set_option("cli_config_dir", value)
+
+    @property
+    def cli_cache_dir(self):
+        """The cli cache dir"""
+        return self._get_option("cli_cache_dir")
+
+    @cli_cache_dir.setter
+    def cli_cache_dir(self, value):
+        """Set the cli cache dir"""
+        self._set_option("cli_cache_dir", value)
 
     @property
     def log_level(self):
@@ -188,16 +191,6 @@ class Options:
         self._set_option("segment", value)
 
     @property
-    def engine(self):
-        """Get the engine to use for the district"""
-        return self._get_option("engine")
-
-    @engine.setter
-    def engine(self, value):
-        """Set the engine setting"""
-        self._set_option("engine", value)
-
-    @property
     def generation_framework(self):
         """Get the generation_framework setting"""
         return self._get_option("generation_framework")
@@ -245,6 +238,42 @@ class Options:
             except AttributeError:
                 pass
         self.opts[name] = value
+
+    @property
+    def engine_store(self):
+        return self._engine_store
+
+    @property
+    def engine(self):
+        return self._engine
+
+    def set_engine_store(self, engine_dir, config_search_paths):
+        self._engine_store = EngineStore(
+            store_dir=engine_dir, config_search_paths=config_search_paths
+        )
+
+    def set_engine(self, engine_name, locations):
+        if self.engine_store:
+            engine_name = (
+                engine_name
+                or self.engine_store.default_engine
+                or self.default_engine_name
+            )
+
+            try:
+                self.engine_store.load_engines(locations=["installed"])
+                self._engine = self.engine_store.get_engine(
+                    engine_name, locations=["installed"]
+                )
+
+            except EngineStoreMissingEngineException:
+                self.engine_store.load_engines(locations=locations)
+                self.engine_store.get_engine(engine_name, locations=locations).install()
+                self.engine_store.load_engines(locations=["installed"], refresh=True)
+
+                self._engine = self.engine_store.get_engine(
+                    engine_name, locations=["installed"]
+                )
 
 
 pass_options = click.make_pass_decorator(Options, ensure=True)

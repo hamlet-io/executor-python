@@ -1,8 +1,6 @@
 import os
 import json
 from unittest import mock
-
-from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.deploy import create_deployment as create_deployment_backend
 from .conftest import conf
 
@@ -15,21 +13,21 @@ LEVEL = "account"
 @mock.patch.dict(os.environ, {"ACCOUNT": ACCOUNT})
 def run(cmdb, engine):
 
-    global_engine_env = engine.engine_store.get_engine(ENGINE_GLOBAL_NAME).environment
-
-    with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR, **global_engine_env}):
+    with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):
 
         create_deployment_backend(
             deployment_group=LEVEL,
             deployment_unit="audit",
             deployment_mode="update",
             output_dir=None,
+            engine=engine.engine
         )
         create_deployment_backend(
             deployment_group=LEVEL,
             deployment_unit="s3",
             deployment_mode="update",
             output_dir=None,
+            engine=engine.engine
         )
 
         #  check that files were created

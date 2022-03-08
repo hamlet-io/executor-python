@@ -1,8 +1,7 @@
 import click
 import json
 
-from hamlet.command.common.config import pass_options
-from hamlet.command.common import exceptions
+from hamlet.command.common import config, exceptions
 
 from .common import query_occurrences_state
 
@@ -17,10 +16,12 @@ from .common import query_occurrences_state
     help="A JMESPath query to apply to the results",
 )
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def query_occurrences(options, query):
     """
     Run a query over all occurrences
     """
-    result = query_occurrences_state(options=options, query=query)
+    result = query_occurrences_state(
+        options=options, engine=options.engine, query=query
+    )
     click.echo(json.dumps(result, indent=4))

@@ -20,6 +20,7 @@ def run(
     product=None,
     environment=None,
     segment=None,
+    engine=None,
     _is_cli=False,
     **kwargs
 ):
@@ -45,4 +46,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("runTask.sh", [], options, env, _is_cli)
+    runner.run("runTask.sh", [], options, engine, env, _is_cli)

@@ -29,6 +29,7 @@ def template_backend_run_mock(data):
         product=None,
         environment=None,
         segment=None,
+        engine=None,
     ):
         os.makedirs(output_dir, exist_ok=True)
         blueprint_filename = os.path.join(output_dir, output_filename)

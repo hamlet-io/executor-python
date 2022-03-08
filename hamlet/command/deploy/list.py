@@ -1,8 +1,7 @@
 import click
 from tabulate import tabulate
 
-from hamlet.command.common import exceptions
-from hamlet.command.common.config import pass_options
+from hamlet.command.common import config, exceptions
 from hamlet.command.common.display import json_or_table_option, wrap_text
 from hamlet.backend.deploy import find_deployments
 
@@ -76,7 +75,7 @@ def deployments_table(data):
 )
 @json_or_table_option(deployments_table)
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def list_deployments(
     options,
     deployment_mode,
@@ -94,5 +93,6 @@ def list_deployments(
         deployment_units=deployment_unit,
         deployment_states=deployment_state,
         districts=district,
-        **options.opts
+        engine=options.engine,
+        **options.opts,
     )

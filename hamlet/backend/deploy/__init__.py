@@ -43,7 +43,7 @@ def find_deployments(
         "use_cache": False,
     }
     available_deployments = query_backend.run(
-        **query_args, cwd=os.getcwd(), query_text=LIST_DEPLOYMENTS_QUERY
+        **query_args, cwd=os.getcwd(), query_text=LIST_DEPLOYMENTS_QUERY,
     )
 
     deployments = []
