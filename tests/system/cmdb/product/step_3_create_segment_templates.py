@@ -35,7 +35,7 @@ def run(cmdb, engine):
             deployment_unit="baseline",
             deployment_mode="update",
             output_dir=None,
-            engine=engine.engine
+            engine=engine.engine,
         )
 
         #  check that files were created

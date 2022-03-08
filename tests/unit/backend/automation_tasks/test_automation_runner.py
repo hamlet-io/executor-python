@@ -18,7 +18,9 @@ def test_automation_runner_task(engine):
     automation_runner.run()
 
     mock_task.assert_called_once_with(
-        env=automation_runner._context_env, mock_task_arg="mock_task_arg_value", engine=engine.engine
+        env=automation_runner._context_env,
+        mock_task_arg="mock_task_arg_value",
+        engine=engine.engine,
     )
 
     assert "AUTOMATION_PROVIDER" in automation_runner._context_env

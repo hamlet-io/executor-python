@@ -73,7 +73,6 @@ def clear_cmdb():
 
 
 class __EngineContext:
-
     def __init__(self) -> None:
         if os.getenv("TEST_ENGINE_STORE_DIR", None) is not None:
             ENGINE_STORE_DIR = os.getenv("TEST_ENGINE_STORE_DIR")
@@ -81,7 +80,9 @@ class __EngineContext:
             ENGINE_STORE_DIR = os.getcwd() + "/.engine_store"
             os.makedirs(ENGINE_STORE_DIR, exist_ok=True)
 
-        self._engine_store = EngineStore(store_dir=ENGINE_STORE_DIR, config_search_paths=ENGINE_STORE_DIR)
+        self._engine_store = EngineStore(
+            store_dir=ENGINE_STORE_DIR, config_search_paths=ENGINE_STORE_DIR
+        )
         self._engine_store.load_engines(locations=["local", "remote"], refresh=True)
         self._engine_store.get_engine("unicycle", ["remote"]).install()
         self._engine_store.load_engines(locations=["installed"], refresh=True)
@@ -119,7 +120,6 @@ def mock_engine_store():
 
 
 class __Options(Options):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._engine = mock_engine()

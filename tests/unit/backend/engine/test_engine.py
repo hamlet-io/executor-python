@@ -128,7 +128,9 @@ def test_user_engine_loading():
                         )
                     )
 
-                engine_store = EngineStore(store_dir=store_dir, config_search_paths=[cli_config_dir])
+                engine_store = EngineStore(
+                    store_dir=store_dir, config_search_paths=[cli_config_dir]
+                )
 
                 engine_store.load_engines(locations=["local"], refresh=True)
                 engine_store.get_engines()

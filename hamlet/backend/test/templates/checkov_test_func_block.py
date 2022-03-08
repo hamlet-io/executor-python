@@ -21,10 +21,7 @@ def checkov_test(filename, framework, skip_checks=None):
         cmd_args.append(",".join(skip_checks))
 
     result = subprocess.run(
-        cmd_args,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        encoding="utf8"
+        cmd_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding="utf8"
     )
 
     if result.returncode == 1:
