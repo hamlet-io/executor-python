@@ -5,8 +5,6 @@ from click_configfile import (
     ConfigFileReader,
     SectionSchema,
     matches_section,
-    generate_configfile_names,
-    configparser
 )
 
 from hamlet.utils import ConfigParam

@@ -20,14 +20,14 @@ def run(cmdb, engine):
             deployment_unit="audit",
             deployment_mode="update",
             output_dir=None,
-            engine=engine.engine
+            engine=engine.engine,
         )
         create_deployment_backend(
             deployment_group=LEVEL,
             deployment_unit="s3",
             deployment_mode="update",
             output_dir=None,
-            engine=engine.engine
+            engine=engine.engine,
         )
 
         #  check that files were created
