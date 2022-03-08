@@ -10,9 +10,10 @@ class AutomationRunner(ABC):
     Executes an automation based task
     """
 
-    def __init__(self, **kwargs):
-        self._context_env = kwargs
+    def __init__(self, engine, **kwargs):
+        self._context_env = {**kwargs, "AUTOMATION_PROVIDER": "hamletcli"}
         self._script_list = []
+        self.engine = engine
 
     @staticmethod
     def _load_properties_to_context(properties_file):
@@ -33,16 +34,15 @@ class AutomationRunner(ABC):
         return itemDict
 
     def run(self):
-
-        self._context_env["AUTOMATION_PROVIDER"] = "hamletcli"
-
         with tempfile.TemporaryDirectory() as tmp_dir:
 
             self._context_env["AUTOMATION_DATA_DIR"] = tmp_dir
 
             for script in self._script_list:
 
-                result = script["func"](env=self._context_env, **script["args"])
+                result = script["func"](
+                    env=self._context_env, engine=self.engine, **script["args"]
+                )
 
                 if isinstance(result, dict):
                     self._context_env.update(result)

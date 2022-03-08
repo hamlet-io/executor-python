@@ -5,12 +5,11 @@ import json
 from tabulate import tabulate
 
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common import exceptions
-from hamlet.command.common.config import pass_options
+from hamlet.command.common import config, exceptions
 from hamlet.backend import query as query_backend
 
 
-def query_info_output(options, query, query_params=None, sub_query_text=None):
+def query_info_output(options, engine, query, query_params=None, sub_query_text=None):
     query_args = {
         **options.opts,
         "generation_entrance": "info",
@@ -22,7 +21,8 @@ def query_info_output(options, query, query_params=None, sub_query_text=None):
         cwd=os.getcwd(),
         query_text=query,
         query_params=query_params,
-        sub_query_text=sub_query_text
+        sub_query_text=sub_query_text,
+        engine=engine
     )
 
     return query_result
@@ -50,7 +50,7 @@ def component_types_table(data):
 @click.option("-q", "--query", help="A query to filter out the results")
 @json_or_table_option(component_types_table)
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def list_component_types(options, query):
     """
     Lists the types of components available
@@ -60,7 +60,9 @@ def list_component_types(options, query):
         "ComponentTypes[]" ".{" "Type:Type," "Description:Description" "}"
     )
 
-    return query_info_output(options, LIST_COMPONENT_TYPES_QUERY, None, query)
+    return query_info_output(
+        options, options.engine, LIST_COMPONENT_TYPES_QUERY, None, query
+    )
 
 
 @click.command(
@@ -73,7 +75,7 @@ def list_component_types(options, query):
 )
 @click.option("-q", "--query", help="a query on the describe result")
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def describe_component_type(options, type, query):
     """
     Describes a specific component type
@@ -83,7 +85,11 @@ def describe_component_type(options, type, query):
     click.echo(
         json.dumps(
             query_info_output(
-                options, DESCRIBE_COMPONENT_TYPE_QUERY, {"type": type}, query
+                options,
+                options.engine,
+                DESCRIBE_COMPONENT_TYPE_QUERY,
+                {"type": type},
+                query,
             ),
             indent=2,
         )
@@ -95,13 +101,14 @@ def describe_component_type(options, type, query):
 )
 @click.option("-q", "--query", help="a query on the describe result")
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def query_component_types(options, query):
     """
     Query across all component types
     """
     click.echo(
         json.dumps(
-            query_info_output(options, "ComponentTypes[]", None, query), indent=2
+            query_info_output(options, options.engine, "ComponentTypes[]", None, query),
+            indent=2,
         )
     )

@@ -16,9 +16,10 @@ class UpdateBuildAutomationRunner(AutomationRunner):
         code_tag=None,
         image_format=None,
         registry_scope=None,
+        engine=None,
         **kwargs
     ):
-        super().__init__()
+        super().__init__(engine=engine)
 
         self._context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,

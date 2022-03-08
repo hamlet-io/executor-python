@@ -2,7 +2,6 @@ import os
 import subprocess
 import shutil
 
-from hamlet.env import HAMLET_GLOBAL_CONFIG
 from .exceptions import BackendException
 
 
@@ -47,16 +46,17 @@ def run(
     args,
     options,
     env,
+    engine,
     _is_cli,
     script_base_path_env="GENERATION_DIR",
     extra_script=None,
 ):
-
     env_overrides = {
-        **HAMLET_GLOBAL_CONFIG.engine_environment,
         **os.environ,
+        **engine.environment,
         **__env_params_to_envvars(env),
     }
+
     try:
         os.path.isdir(env_overrides[script_base_path_env])
     except TypeError:

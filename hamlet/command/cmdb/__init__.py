@@ -102,6 +102,6 @@ def commit_changes(
     }
 
     task = save_repos_backend.SaveCMDBAutomationRunner(
-        **opts.opts, **kwargs, **command_args
+        {"engine": opts.engine}, **opts.opts, **kwargs, **command_args
     )
     task.run()

@@ -14,6 +14,7 @@ def run(
     product=None,
     environment=None,
     segment=None,
+    engine=None,
     _is_cli=False,
 ):
     options = {
@@ -33,4 +34,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("createTemplate.sh", [], options, env, _is_cli)
+    runner.run("createTemplate.sh", [], options, engine, env, _is_cli)

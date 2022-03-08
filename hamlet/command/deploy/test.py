@@ -2,9 +2,7 @@ import os
 import tempfile
 import click
 
-from hamlet.command.common import exceptions
-from hamlet.command.common.config import pass_options
-from hamlet.command.common.exceptions import CommandError
+from hamlet.command.common import config, exceptions
 from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.test.generate import run as test_generate_backend
 from hamlet.backend.test import run as test_run_backend
@@ -58,7 +56,7 @@ from hamlet.backend.deploy import find_deployments, create_deployment
 )
 @click.option("-s", "--silent", "silent", is_flag=True, help="minimize pytest output")
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def test_deployments(
     options,
     deployment_mode,
@@ -86,6 +84,7 @@ def test_deployments(
         deployment_group=deployment_group,
         deployment_units=deployment_unit,
         districts=district,
+        engine=options.engine,
         **options.opts,
     )
 
@@ -108,6 +107,7 @@ def test_deployments(
             deployment_mode,
             output_dir,
             _is_cli=False,
+            engine=options.engine,
             **options.opts,
         )
 
@@ -139,4 +139,4 @@ def test_deployments(
             root_dir=output_dir,
         )
     except Exception as e:
-        raise CommandError(str(e))
+        raise exceptions.CommandError(str(e))

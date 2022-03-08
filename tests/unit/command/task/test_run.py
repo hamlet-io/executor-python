@@ -36,6 +36,7 @@ def template_backend_run_mock(data):
         product=None,
         environment=None,
         segment=None,
+        engine=None,
     ):
         for set in data:
             os.makedirs(output_dir, exist_ok=True)

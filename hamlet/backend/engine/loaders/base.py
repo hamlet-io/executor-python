@@ -4,7 +4,7 @@ import json
 
 from hamlet.backend.engine.engine_loader import EngineLoader
 
-from hamlet.backend.engine.engine import Engine, GlobalEngine, InstalledEngine
+from hamlet.backend.engine.engine import Engine, ShimEngine, InstalledEngine
 from hamlet.backend.engine.engine_part import (
     CoreEnginePart,
     AWSEnginePluginPart,
@@ -16,12 +16,11 @@ from hamlet.backend.engine.engine_part import (
 from hamlet.backend.engine.engine_source import ShimPathEngineSource
 
 from hamlet.backend.engine.common import (
-    ENGINE_GLOBAL_NAME,
     ENGINE_STATE_FILE_NAME,
 )
 
 
-class GlobalEngineLoader(EngineLoader):
+class ShimEngineLoader(EngineLoader):
     """
     Seeds an engine used to create a known engine directory that can be used to establish
     a standard location for hamlet scripts called outside of the cli
@@ -43,9 +42,9 @@ class GlobalEngineLoader(EngineLoader):
             WrapperEnginePart(source_path="engine-wrapper", source_name="shim"),
         ]
 
-        engine = GlobalEngine(
-            name=ENGINE_GLOBAL_NAME,
-            description="The engine used to provide global part mappings",
+        engine = ShimEngine(
+            name="shim",
+            description="The engine used to provide shim based access to a fixed diretory",
         )
         engine.parts = engine_parts
         engine.sources = engine_source

@@ -17,11 +17,7 @@ class SaveCMDBAutomationRunner(AutomationRunner):
         defer_push,
         **kwargs
     ):
-        super().__init__()
-
-        self._context_env = {
-            **kwargs,
-        }
+        super().__init__(**kwargs)
 
         self._script_list = [
             {

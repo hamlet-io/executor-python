@@ -22,6 +22,7 @@ class UploadImageAutomationRunner(AutomationRunner):
         docker_context=None,
         docker_image=None,
         registry_scope=None,
+        engine=None,
         **kwargs
     ):
         super().__init__()

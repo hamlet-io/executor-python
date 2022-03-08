@@ -11,6 +11,7 @@ def run(
     docker_image=None,
     deployment_unit=None,
     log_level=None,
+    engine=None,
     _is_cli=False,
     env={},
 ):
@@ -28,5 +29,11 @@ def run(
 
     env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
     runner.run(
-        "manageImages.sh", [], opts, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+        "manageImages.sh",
+        [],
+        opts,
+        env,
+        engine,
+        _is_cli,
+        script_base_path_env="AUTOMATION_DIR",
     )

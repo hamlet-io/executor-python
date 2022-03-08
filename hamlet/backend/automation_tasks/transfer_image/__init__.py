@@ -15,9 +15,10 @@ class TransferImageAutomationRunner(AutomationRunner):
         deployment_unit,
         build_reference,
         image_format,
+        engine,
         **kwargs
     ):
-        super().__init__(**kwargs)
+        super().__init__(engine=engine)
 
         self._context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,

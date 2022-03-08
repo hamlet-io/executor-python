@@ -3,7 +3,6 @@ import os
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
-from hamlet.backend.engine.common import ENGINE_GLOBAL_NAME
 from hamlet.backend.engine.engine import Engine
 from hamlet.backend.engine.loaders.unicycle import UnicycleEngineLoader
 from hamlet.backend.engine.engine_part import CoreEnginePart
@@ -31,46 +30,13 @@ def mock_container_registry():
     return decorator
 
 
-def test_global_engine_loading():
-    """
-    Tests that the basic global engine is loaded and can be found
-    """
-    with tempfile.TemporaryDirectory() as store_dir:
-        engine_store = EngineStore(store_dir=store_dir)
-
-        engine_store.load_engines(locations=["global"])
-        assert len(engine_store.get_engines()) == 1
-        assert (
-            engine_store.get_engine(ENGINE_GLOBAL_NAME, locations=["global"]).name
-            == ENGINE_GLOBAL_NAME
-        )
-
-        engine_store.get_engine(ENGINE_GLOBAL_NAME, locations=["global"]).install()
-        engine_store.load_engines(locations=["installed"], refresh=True)
-
-        global_engine = engine_store.get_engine(
-            ENGINE_GLOBAL_NAME, locations=["installed"]
-        )
-
-        assert os.path.isfile(global_engine.engine_state_file)
-        generation_dir_path = os.path.join(
-            global_engine.install_path, "shim/executor-bash/cli"
-        )
-        assert global_engine.environment["GENERATION_DIR"] == generation_dir_path
-
-        automation_dir_path = os.path.join(
-            global_engine.install_path, "shim/executor-bash/automation/jenkins/aws"
-        )
-        assert global_engine.environment["AUTOMATION_DIR"] == automation_dir_path
-
-
 def test_installed_engine_loading():
     """
     Tests that we can discover engines that have been installed
     and that they can be discovered by the InstalledEngine basic loader
     """
     with tempfile.TemporaryDirectory() as store_dir:
-        engine_store = EngineStore(store_dir=store_dir)
+        engine_store = EngineStore(store_dir=store_dir, config_search_paths=[store_dir])
         assert len(engine_store.get_engines()) == 0
 
         """
@@ -118,7 +84,7 @@ def test_unicycle_engine_loading(container_repository):
     """
 
     with tempfile.TemporaryDirectory() as store_dir:
-        engine_store = EngineStore(store_dir=store_dir)
+        engine_store = EngineStore(store_dir=store_dir, config_search_paths=[store_dir])
 
         engine_store._engine_locations["remote"]["loaders"] = [UnicycleEngineLoader()]
 
@@ -135,8 +101,7 @@ def test_unicycle_engine_loading(container_repository):
         )
 
 
-@mock.patch("hamlet.backend.engine.loaders.user.HAMLET_GLOBAL_CONFIG")
-def test_user_engine_loading(global_config):
+def test_user_engine_loading():
     """
     Tests the user engine loading process
     """
@@ -144,10 +109,6 @@ def test_user_engine_loading(global_config):
     with tempfile.TemporaryDirectory() as test_dir:
         with tempfile.TemporaryDirectory() as store_dir:
             with tempfile.TemporaryDirectory() as cli_config_dir:
-
-                type(global_config).config_dir = mock.PropertyMock(
-                    return_value=cli_config_dir
-                )
 
                 with open(os.path.join(cli_config_dir, "engine"), "w") as engine_file:
                     engine_file.write(
@@ -167,11 +128,13 @@ def test_user_engine_loading(global_config):
                         )
                     )
 
-                engine_store = EngineStore(store_dir=store_dir)
+                engine_store = EngineStore(store_dir=store_dir, config_search_paths=[cli_config_dir])
 
-                engine_store.load_engines(locations=["local"])
+                engine_store.load_engines(locations=["local"], refresh=True)
+                engine_store.get_engines()
+
                 engine_store.get_engine("test", locations=["local"]).install()
-                engine_store.load_engines(locations=["installed"])
+                engine_store.load_engines(locations=["installed"], refresh=True)
 
                 assert (
                     engine_store.get_engine("test", locations=["installed"]).name

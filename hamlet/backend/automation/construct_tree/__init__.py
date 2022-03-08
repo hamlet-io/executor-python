@@ -15,6 +15,7 @@ def run(
     product=None,
     environment=None,
     segment=None,
+    engine=None,
     _is_cli=False,
     env={},
 ):
@@ -41,6 +42,7 @@ def run(
         [],
         opts,
         env,
+        engine,
         _is_cli,
         script_base_path_env="AUTOMATION_BASE_DIR",
     )

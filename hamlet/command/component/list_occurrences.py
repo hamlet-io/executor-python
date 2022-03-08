@@ -3,8 +3,7 @@ import click
 from tabulate import tabulate
 
 from hamlet.command.common.display import json_or_table_option, wrap_text
-from hamlet.command.common.config import pass_options
-from hamlet.command.common import exceptions
+from hamlet.command.common import config, exceptions
 
 from .common import query_occurrences_state
 
@@ -45,11 +44,14 @@ def list_occurrences_table(data):
 )
 @json_or_table_option(list_occurrences_table)
 @exceptions.backend_handler()
-@pass_options
+@config.pass_options
 def list_occurrences(options, query):
     """
     List available occurrences
     """
     return query_occurrences_state(
-        options=options, query=LIST_OCCURRENCES_QUERY, sub_query_text=query
+        options=options,
+        engine=options.engine,
+        query=LIST_OCCURRENCES_QUERY,
+        sub_query_text=query,
     )

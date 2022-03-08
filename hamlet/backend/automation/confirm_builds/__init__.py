@@ -10,6 +10,7 @@ def run(
     image_format=None,
     registry_scope=None,
     log_level=None,
+    engine=None,
     _is_cli=False,
     env={},
 ):
@@ -25,5 +26,11 @@ def run(
         **env,
     }
     runner.run(
-        "confirmBuilds.sh", [], {}, env, _is_cli, script_base_path_env="AUTOMATION_DIR"
+        "confirmBuilds.sh",
+        [],
+        {},
+        env,
+        engine,
+        _is_cli,
+        script_base_path_env="AUTOMATION_DIR",
     )
