@@ -116,8 +116,14 @@ class Query:
                 segment=segment,
                 engine=engine,
             )
-        with open(output_filepath, "rt") as f:
-            self.blueprint_data = json.load(f)
+
+        try:
+            with open(output_filepath, "rt") as f:
+                self.blueprint_data = json.load(f)
+        except FileNotFoundError:
+            raise exceptions.BackendException(
+                f"Query using entrance {generation_entrance} didn't return any results"
+            )
 
     def query(self, query, params=None, require=None):
         require = require or []
