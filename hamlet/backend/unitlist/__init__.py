@@ -8,6 +8,7 @@ def run(
     generation_framework=None,
     generation_testcase=None,
     log_level=None,
+    log_format=None,
     root_dir=None,
     tenant=None,
     account=None,
@@ -27,6 +28,7 @@ def run(
     }
     env = {
         "GENERATION_LOG_LEVEL": log_level,
+        "GENERATION_LOG_FORMAT": log_format,
         "ROOT_DIR": root_dir,
         "TENANT": tenant,
         "ACCOUNT": account,
