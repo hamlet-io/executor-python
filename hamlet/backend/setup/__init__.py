@@ -23,4 +23,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("setup.sh", [], options, engine, env, _is_cli)
+    runner.run("setup.sh", [], options, env, engine, _is_cli)
