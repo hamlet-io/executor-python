@@ -31,11 +31,7 @@ class ConfigReader(ConfigFileReader):
 
     config_files = ["config.ini", "config"]
     config_name = "standard"
-    config_section_schemas = [ConfigSchema.Profile]
-
-    def __init__(self, config_search_paths) -> None:
-        super().__init__()
-        self.config_searchpath = config_search_paths
+    config_section_schemas = [ConfigSchema.Profile, ConfigSchema.CliConfig]
 
     @classmethod
     def select_config_schema_for(cls, section_name):
@@ -46,16 +42,19 @@ class ConfigReader(ConfigFileReader):
         return section_schema
 
     @classmethod
-    def load_config(cls, opts, profile=None):
+    def read_config(cls, config_searchpath):
+        cls.config_searchpath = config_searchpath
+        return super().read_config()
+
+    def load_config(self, opts, profile=None):
         """Load a configuration file into an options object."""
-
-        config = cls.read_config()
+        config = self.read_config(self.config_searchpath)
         values = config.get("default", {})
-        cls._load_values_into_opts(opts, values)
+        self._load_values_into_opts(opts, values)
 
-        if profile and profile != "default":
+        if profile:
             values = config.get(f"profile:{profile}", {})
-            cls._load_values_into_opts(opts, values)
+            self._load_values_into_opts(opts, values)
 
         return values
 
@@ -93,11 +92,14 @@ class Options:
 
     def get_config_reader(self):
         """Get the config reader class."""
-        return ConfigReader(config_search_paths=self.cli_config_dir)
+        return ConfigReader()
 
-    def load_config_file(self, profile=None):
+    def load_config_file(self, profile=None, searchpath=None):
         """Load the config file."""
         config_cls = self.get_config_reader()
+        if searchpath:
+            config_cls.config_searchpath = [searchpath]
+        print(config_cls.load_config(self, profile=profile))
         return config_cls.load_config(self, profile=profile)
 
     @property
