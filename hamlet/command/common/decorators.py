@@ -36,6 +36,8 @@ def common_cli_config_options(func):
         envvar="HAMLET_CLI_CONFIG_DIR",
         default=get_home_dir_default("config"),
         help="The directory where profile configuration is stored",
+        show_default=True,
+        show_envvar=True,
     )
     @click.option(
         "--cli-cache-dir",
@@ -43,6 +45,8 @@ def common_cli_config_options(func):
         envvar="HAMLET_CLI_CACHE_DIR",
         default=get_home_dir_default("cache"),
         help="The directory where the cli can cache generation outputs",
+        show_default=True,
+        show_envvar=True,
     )
     @click.pass_context
     @functools.wraps(func)
@@ -51,11 +55,10 @@ def common_cli_config_options(func):
         Config file handling
         """
         opts = ctx.ensure_object(Options)
-        opts.cli_config_dir = kwargs.pop("cli_config_dir")
         opts.cli_cache_dir = kwargs.pop("cli_cache_dir")
-
-        profile = kwargs.pop("profile")
-        opts.load_config_file(profile=profile)
+        opts.load_config_file(
+            profile=kwargs.pop("profile"), searchpath=kwargs.pop("cli_config_dir")
+        )
 
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
@@ -112,6 +115,8 @@ def common_engine_options(func):
         default=get_home_dir_default("engine"),
         envvar="HAMLET_ENGINE_DIR",
         help="The location of the hamlet engine store",
+        show_default=True,
+        show_envvar=True,
     )
     @click.option(
         "--engine-config-dir",
@@ -124,12 +129,15 @@ def common_engine_options(func):
         default=get_home_dir_default("config"),
         envvar="HAMLET_ENGINE_CONFIG",
         help="The location of the hamlet engine config file for local engines",
+        show_default=True,
+        show_envvar=True,
     )
     @click.option(
         "--engine-search-locations",
         multiple=True,
-        default=["local", "remote"],
-        type=click.Choice(["local", "remote", "hidden"]),
+        default=["installed", "local", "remote"],
+        type=click.Choice(["installed", "local", "remote", "hidden"]),
+        show_default=True,
     )
     @click.pass_context
     @functools.wraps(func)
