@@ -13,6 +13,22 @@ from hamlet.backend.engine import EngineStore
 class ConfigSchema(object):
     """Schema for standard configuration."""
 
+    @matches_section("default")
+    class CliConfig(SectionSchema):
+        """base level configuration of the cli itself"""
+
+        log_level = ConfigParam(
+            name="log_level",
+            type=click.Choice(
+                ["fatal", "error", "warn", "info", "debug", "trace"],
+                case_sensitive=False,
+            ),
+        )
+        log_format = ConfigParam(
+            name="log_format",
+            type=click.Choice(["compact", "full"], case_sensitive=False),
+        )
+
     @matches_section("profile:*")
     class Profile(SectionSchema):
         """Profile-specific configuration schema."""
