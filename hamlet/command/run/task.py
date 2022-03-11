@@ -73,4 +73,4 @@ def task(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    run_task_backend.run(**args, _is_cli=True)
+    run_task_backend.run(**args, engine=options.engine, _is_cli=True)

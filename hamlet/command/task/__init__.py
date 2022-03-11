@@ -23,6 +23,7 @@ def query_runbookinfo_state(options, query, query_params=None, sub_query_text=No
     query_result = query_backend.run(
         **query_args,
         cwd=os.getcwd(),
+        engine=options.engine,
         query_text=query,
         query_params=query_params,
         sub_query_text=sub_query_text,
@@ -163,5 +164,7 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
             "output_filename": "runbook-contract.json",
             "use_cache": False,
         }
-        contract = query_backend.run(**query_args, cwd=os.getcwd(), query=None)
+        contract = query_backend.run(
+            **query_args, engine=options.engine, cwd=os.getcwd(), query=None
+        )
         contract_backend.run(contract, silent)

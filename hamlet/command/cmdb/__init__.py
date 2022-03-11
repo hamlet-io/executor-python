@@ -65,7 +65,7 @@ def group():
 @exceptions.backend_handler()
 @config.pass_options
 def commit_changes(
-    opts,
+    options,
     accounts,
     products,
     commit_type,
@@ -87,10 +87,10 @@ def commit_changes(
     ]
 
     if accounts:
-        message.append(f"account={opts.account}")
+        message.append(f"account={options.account}")
 
     if products:
-        message.append(f"product={opts.product}")
+        message.append(f"product={options.product}")
 
     command_args = {
         "account_repos": accounts,
@@ -102,6 +102,6 @@ def commit_changes(
     }
 
     task = save_repos_backend.SaveCMDBAutomationRunner(
-        {"engine": opts.engine}, **opts.opts, **kwargs, **command_args
+        **options.opts, **kwargs, **command_args, engine=options.engine
     )
     task.run()

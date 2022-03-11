@@ -31,4 +31,4 @@ def file_crypto(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    manage_file_crypto_backend.run(**args, _is_cli=True)
+    manage_file_crypto_backend.run(**args, engine=options.engine, _is_cli=True)

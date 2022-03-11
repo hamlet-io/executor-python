@@ -53,9 +53,11 @@ def run(
 ):
     env_overrides = {
         **os.environ,
-        **engine.environment,
         **__env_params_to_envvars(env),
     }
+
+    if engine:
+        env_overrides = {**env_overrides, **engine.environment}
 
     try:
         os.path.isdir(env_overrides[script_base_path_env])

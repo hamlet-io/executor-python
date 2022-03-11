@@ -72,4 +72,4 @@ def stack(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    manage_stack_backend.run(**args, _is_cli=True)
+    manage_stack_backend.run(**args, engine=options.engine, _is_cli=True)

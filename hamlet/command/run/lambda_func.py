@@ -39,4 +39,4 @@ def lambda_func(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    run_lambda_func_backend.run(**args, _is_cli=True)
+    run_lambda_func_backend.run(**args, engine=options.engine, _is_cli=True)
