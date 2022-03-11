@@ -77,6 +77,15 @@ def common_logging_options(func):
         show_default=True,
         show_envvar=True,
     )
+    @click.option(
+        "--log-format",
+        envvar="GENERATION_LOG_FORMAT",
+        type=click.Choice(["compact", "full"], case_sensitive=False),
+        default="compact",
+        help="The format used for engine log messages",
+        show_default=True,
+        show_envvar=True,
+    )
     @click.pass_context
     @functools.wraps(func)
     def wrapper(ctx, *args, **kwargs):
@@ -85,6 +94,7 @@ def common_logging_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.log_level = kwargs.pop("log_level")
+        opts.log_format = kwargs.pop("log_format")
 
         kwargs["opts"] = opts
         return ctx.invoke(func, *args, **kwargs)
