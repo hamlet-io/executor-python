@@ -49,4 +49,4 @@ def pipeline(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    run_pipeline_backend.run(**args, _is_cli=True)
+    run_pipeline_backend.run(**args, engine=options.engine, _is_cli=True)

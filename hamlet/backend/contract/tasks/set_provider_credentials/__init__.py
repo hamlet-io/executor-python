@@ -27,6 +27,7 @@ def run(AccountId, ProviderId, Provider, env={}):
             [],
             {},
             env,
+            None,
             True,
             script_base_path_env="AUTOMATION_DIR",
             extra_script=f"&&  env | grep 'AWS' > {output_file.name}",

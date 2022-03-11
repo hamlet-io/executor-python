@@ -92,4 +92,4 @@ def expo_app_publish(options, **kwargs):
     """
 
     args = {**options.opts, **kwargs}
-    run_expo_app_publish_backend.run(**args, _is_cli=True)
+    run_expo_app_publish_backend.run(**args, engine=options.engine, _is_cli=True)

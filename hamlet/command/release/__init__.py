@@ -92,11 +92,13 @@ def group():
 @click.option("--docker-image", help="The tag of an existing docker image")
 @exceptions.backend_handler()
 @config.pass_options
-def upload_image(opts, **kwargs):
+def upload_image(options, **kwargs):
     """
     Upload a code image to a registry
     """
-    task = upload_image_backend.UploadImageAutomationRunner(**opts.opts, **kwargs)
+    task = upload_image_backend.UploadImageAutomationRunner(
+        **options.opts, **kwargs, engine=options.engine
+    )
     task.run()
 
 
@@ -116,11 +118,13 @@ def upload_image(opts, **kwargs):
 )
 @exceptions.backend_handler()
 @config.pass_options
-def transfer_image(opts, **kwargs):
+def transfer_image(options, **kwargs):
     """
     Transfer an image between registries
     """
-    task = transfer_image_backend.TransferImageAutomationRunner(**opts.opts, **kwargs)
+    task = transfer_image_backend.TransferImageAutomationRunner(
+        **options.opts, **kwargs, engine=options.engine
+    )
     task.run()
 
 
@@ -132,9 +136,11 @@ def transfer_image(opts, **kwargs):
 @image_options
 @exceptions.backend_handler()
 @config.pass_options
-def update_image_reference(opts, **kwargs):
+def update_image_reference(options, **kwargs):
     """
     Update the image reference for a component
     """
-    task = update_build_backend.UpdateBuildAutomationRunner(**opts.opts, **kwargs)
+    task = update_build_backend.UpdateBuildAutomationRunner(
+        **options.opts, **kwargs, engine=options.engine
+    )
     task.run()

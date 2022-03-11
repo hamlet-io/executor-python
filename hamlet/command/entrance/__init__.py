@@ -59,7 +59,9 @@ def list_entrances(options):
         "use_cache": False,
     }
 
-    return query_backend.run(**args, cwd=os.getcwd(), query_text=LIST_ENTRANCES_QUERY)
+    return query_backend.run(
+        **args, cwd=os.getcwd(), query_text=LIST_ENTRANCES_QUERY, engine=options.engine
+    )
 
 
 @group.command(
@@ -137,4 +139,4 @@ def invoke_entrance(options, **kwargs):
     """
     args = {**options.opts, **kwargs}
 
-    create_template_backend.run(**args, _is_cli=True)
+    create_template_backend.run(**args, engine=options.engine, _is_cli=True)

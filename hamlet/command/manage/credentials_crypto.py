@@ -66,4 +66,4 @@ def credentials_crypto(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    manage_credentials_crypto_backend.run(**args, _is_cli=True)
+    manage_credentials_crypto_backend.run(**args, engine=options.engine, _is_cli=True)

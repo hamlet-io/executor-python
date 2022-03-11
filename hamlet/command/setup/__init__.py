@@ -12,4 +12,4 @@ def setup(options, **kwargs):
     Loads the plugins defined as part of the current district
     """
     args = {**options.opts, **kwargs}
-    setup_backend.run(**args, _is_cli=True)
+    setup_backend.run(**args, engine=options.engine, _is_cli=True)

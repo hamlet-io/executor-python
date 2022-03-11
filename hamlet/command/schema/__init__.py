@@ -21,7 +21,10 @@ def find_schemas_from_options(options, schema):
         "use_cache": False,
     }
     available_schemas = query_backend.run(
-        **query_args, cwd=os.getcwd(), query_text=LIST_SCHEMAS_QUERY
+        **query_args,
+        cwd=os.getcwd(),
+        engine=options.engine,
+        query_text=LIST_SCHEMAS_QUERY,
     )
 
     schemas = []
@@ -129,4 +132,6 @@ def create_schemas(options, schema, output_dir, **kwargs):
             "entrance_parameter": f"Schema={schema_task['Schema']}",
         }
 
-        create_template_backend.run(**template_args, _is_cli=True)
+        create_template_backend.run(
+            **template_args, engine=options.engine, _is_cli=True
+        )

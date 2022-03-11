@@ -23,7 +23,8 @@ def query_info_output(options, query, query_params=None, sub_query_text=None):
         cwd=os.getcwd(),
         query_text=query,
         query_params=query_params,
-        sub_query_text=sub_query_text
+        sub_query_text=sub_query_text,
+        engine=options.engine
     )
 
     return query_result

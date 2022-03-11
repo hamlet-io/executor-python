@@ -27,7 +27,10 @@ def find_diagrams_from_options(options, ids):
         "use_cache": False,
     }
     available_diagrams = query_backend.run(
-        **query_args, cwd=os.getcwd(), query_text=LIST_DIAGRAMS_QUERY
+        **query_args,
+        cwd=os.getcwd(),
+        engine=options.engine,
+        query_text=LIST_DIAGRAMS_QUERY,
     )
 
     diagrams = []
@@ -151,9 +154,12 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
             "deployment_unit": diagram_id,
             "output_dir": src_dir,
         }
-        create_template_backend.run(**args, _is_cli=False)
+        create_template_backend.run(**args, engine=options.engine, _is_cli=False)
         create_diagram_backend.run(
-            diagram_id=diagram_id, src_dir=src_dir, output_dir=asset_dir
+            diagram_id=diagram_id,
+            src_dir=src_dir,
+            output_dir=asset_dir,
+            engine=options.engine,
         )
 
     if temp_dir is not None:
@@ -201,5 +207,8 @@ def list_diagram_types(options):
     }
 
     return query_backend.run(
-        **args, cwd=os.getcwd(), query_text=LIST_DIAGRAM_TYPES_QUERY
+        **args,
+        cwd=os.getcwd(),
+        engine=options.engine,
+        query_text=LIST_DIAGRAM_TYPES_QUERY,
     )

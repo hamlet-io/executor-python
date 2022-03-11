@@ -68,4 +68,4 @@ def deployment(options, **kwargs):
 
     args = {**options.opts, **kwargs}
 
-    manage_deployment_backend.run(**args, _is_cli=True)
+    manage_deployment_backend.run(**args, engine=options.engine, _is_cli=True)

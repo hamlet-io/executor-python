@@ -45,4 +45,4 @@ def sentry_release(options, **kwargs):
     """
 
     args = {**options.opts, **kwargs}
-    run_sentry_release_backend.run(**args, _is_cli=True)
+    run_sentry_release_backend.run(**args, engine=options.engine, _is_cli=True)
