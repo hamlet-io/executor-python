@@ -115,7 +115,6 @@ class Options:
         config_cls = self.get_config_reader()
         if searchpath:
             config_cls.config_searchpath = [searchpath]
-        print(config_cls.load_config(self, profile=profile))
         return config_cls.load_config(self, profile=profile)
 
     @property

@@ -163,8 +163,6 @@ def describe_engine(options, name, location):
         "install_state": engine_instance.install_state,
     }
 
-    print(f"deets: {engine_details} - name {name} - location {location}")
-
     sources = []
     for source in engine_instance.sources:
 
