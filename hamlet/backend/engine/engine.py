@@ -32,7 +32,6 @@ class EngineInterface(ABC):
         self._parts = {}
         self._sources = {}
 
-    _environment = {}
 
     @property
     def engine_dir(self):
@@ -178,24 +177,7 @@ class EngineInterface(ABC):
         Using the part parts generate a dict of hamlet environment variables that are used
         to determine where different engine parts are by the executor
         """
-        env_result = {}
-        self._load_engine_state()
-        if self.part_paths is not None:
-            for k, part_mappings in self._environment.items():
-                env_values = []
-                for part_mapping in part_mappings:
-                    if self.part_paths.get(part_mapping["part_type"], None) is not None:
-                        env_values.append(
-                            os.path.dirname(
-                                os.path.join(
-                                    self.part_paths[part_mapping["part_type"]],
-                                    part_mapping["env_path"],
-                                )
-                                + "/"
-                            )
-                        )
-                env_result[k] = ";".join(env_values)
-        return env_result
+        return {}
 
     def _get_source(self, source_name):
         """
@@ -274,7 +256,7 @@ class EngineInterface(ABC):
         """
         pass
 
-    def set_default_engine(self):
+    def set_default_engine(self, engine, engine_store):
         """
         A hook to run when an engine_store is set to a new default
         """
@@ -287,32 +269,68 @@ class InstalledEngine(EngineInterface):
         self._installed_digest = digest
         self._engine_state["version"] = state_version
 
-    _environment = {
-        "GENERATION_ENGINE_DIR": [{"part_type": "core-engine", "env_path": ""}],
-        "GENERATION_PLUGIN_DIRS": [
-            {"part_type": "engine-plugin-aws", "env_path": ""},
-            {"part_type": "engine-plugin-azure", "env_path": ""},
-        ],
-        "GENERATION_WRAPPER_COMMAND": [
-            {
-                "part_type": "bundled-engine-wrapper",
-                "env_path": f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper"
-                if platform.system() != "Windows"
-                else f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper.bat",
-            }
-        ],
-        "GENERATION_WRAPPER_JAR_FILE": [
-            {"part_type": "engine-wrapper", "env_path": "freemarker-wrapper.jar"}
-        ],
-        "GENERATION_BASE_DIR": [{"part_type": "executor-bash", "env_path": ""}],
-        "GENERATION_DIR": [{"part_type": "executor-bash", "env_path": "cli"}],
-        "AUTOMATION_DIR": [
-            {"part_type": "executor-bash", "env_path": "automation/jenkins/aws"}
-        ],
-        "AUTOMATION_BASE_DIR": [
-            {"part_type": "executor-bash", "env_path": "automation"}
-        ],
-    }
+    @property
+    def environment(self):
+        """
+        Using the part parts generate a dict of hamlet environment variables that are used
+        to determine where different engine parts are by the executor
+        """
+
+        _environment = {
+            "GENERATION_ENGINE_DIR": [{"part_type": "core-engine", "env_path": ""}],
+            "GENERATION_PLUGIN_DIRS": [
+                {"part_type": "engine-plugin-aws", "env_path": ""},
+                {"part_type": "engine-plugin-azure", "env_path": ""},
+            ],
+            "GENERATION_WRAPPER_LOCAL_JAVA": [
+                {
+                    "env_value": "false" if "bundled-engine-wrapper" in self.part_paths else "true"
+                }
+            ],
+            "GENERATION_WRAPPER_SCRIPT_FILE": [
+                {
+                    "part_type": "bundled-engine-wrapper",
+                    "env_path": f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper"
+                    if platform.system() != "Windows"
+                    else f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper.bat",
+                }
+            ],
+            "GENERATION_WRAPPER_JAR_FILE": [
+                {"part_type": "engine-wrapper", "env_path": "freemarker-wrapper.jar"}
+            ],
+            "GENERATION_BASE_DIR": [{"part_type": "executor-bash", "env_path": ""}],
+            "GENERATION_DIR": [{"part_type": "executor-bash", "env_path": "cli"}],
+            "AUTOMATION_DIR": [
+                {"part_type": "executor-bash", "env_path": "automation/jenkins/aws"}
+            ],
+            "AUTOMATION_BASE_DIR": [
+                {"part_type": "executor-bash", "env_path": "automation"}
+            ],
+        }
+
+        env_result = {}
+        self._load_engine_state()
+        if self.part_paths is not None:
+            for k, part_mappings in _environment.items():
+                env_values = []
+                for part_mapping in part_mappings:
+                    if "env_value" in part_mapping:
+                        env_values.append(
+                            part_mapping["env_value"]
+                        )
+
+                    if "part_type" in part_mapping and self.part_paths.get(part_mapping["part_type"], None) is not None:
+                        env_values.append(
+                            os.path.dirname(
+                                os.path.join(
+                                    self.part_paths[part_mapping["part_type"]],
+                                    part_mapping["env_path"],
+                                )
+                                + "/"
+                            )
+                        )
+                env_result[k] = ";".join(env_values)
+        return env_result
 
     @property
     def digest(self):
