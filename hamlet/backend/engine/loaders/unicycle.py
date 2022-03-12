@@ -9,7 +9,7 @@ from hamlet.backend.engine.engine_part import (
     AWSEnginePluginPart,
     AzureEnginePluginPart,
     BashExecutorEnginePart,
-    BundledWrapperEnginePart
+    BundledWrapperEnginePart,
 )
 from hamlet.backend.engine.engine_source import ContainerEngineSource
 
@@ -55,7 +55,7 @@ class UnicycleEngineLoader(EngineLoader):
                 description="hamlet freemarker wrapper",
                 registry_url="https://ghcr.io",
                 repository="hamlet-io/engine-core",
-                tag=f"edge-{platform.system()}"
+                tag=f"edge-{platform.system()}",
             ),
         ]
 

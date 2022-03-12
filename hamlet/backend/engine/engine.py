@@ -32,7 +32,6 @@ class EngineInterface(ABC):
         self._parts = {}
         self._sources = {}
 
-
     @property
     def engine_dir(self):
         """
@@ -284,7 +283,9 @@ class InstalledEngine(EngineInterface):
             ],
             "GENERATION_WRAPPER_LOCAL_JAVA": [
                 {
-                    "env_value": "false" if "bundled-engine-wrapper" in self.part_paths else "true"
+                    "env_value": "false"
+                    if "bundled-engine-wrapper" in self.part_paths
+                    else "true"
                 }
             ],
             "GENERATION_WRAPPER_SCRIPT_FILE": [
@@ -315,11 +316,13 @@ class InstalledEngine(EngineInterface):
                 env_values = []
                 for part_mapping in part_mappings:
                     if "env_value" in part_mapping:
-                        env_values.append(
-                            part_mapping["env_value"]
-                        )
+                        env_values.append(part_mapping["env_value"])
 
-                    if "part_type" in part_mapping and self.part_paths.get(part_mapping["part_type"], None) is not None:
+                    if (
+                        "part_type" in part_mapping
+                        and self.part_paths.get(part_mapping["part_type"], None)
+                        is not None
+                    ):
                         env_values.append(
                             os.path.dirname(
                                 os.path.join(
