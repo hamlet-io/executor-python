@@ -30,6 +30,7 @@ def find_deployments(
     deployment_mode,
     deployment_group,
     deployment_units,
+    engine,
     deployment_states=["deployed", "notdeployed"],
     districts=["segment"],
     **kwargs,
@@ -46,6 +47,7 @@ def find_deployments(
         **query_args,
         cwd=os.getcwd(),
         query_text=LIST_DEPLOYMENTS_QUERY,
+        engine=engine,
     )
 
     deployments = []
@@ -73,6 +75,7 @@ def create_deployment(
     deployment_unit,
     deployment_mode,
     output_dir,
+    engine,
     _is_cli=True,
     **kwargs,
 ):
@@ -85,7 +88,7 @@ def create_deployment(
         "deployment_mode": deployment_mode,
         "output_dir": output_dir,
     }
-    create_template_backend.run(**generate_args, _is_cli=_is_cli)
+    create_template_backend.run(**generate_args, engine=engine, _is_cli=_is_cli)
 
 
 def run_deployment(
@@ -94,6 +97,7 @@ def run_deployment(
     deployment_unit,
     operation,
     output_dir,
+    engine,
     dryrun=False,
     **kwargs,
 ):
@@ -110,10 +114,10 @@ def run_deployment(
         manage_args["delete"] = True
 
     if deployment_provider == "aws":
-        manage_stack_backend.run(**manage_args, _is_cli=True)
+        manage_stack_backend.run(**manage_args, engine=engine, _is_cli=True)
 
     elif deployment_provider == "azure":
-        manage_deployment_backend.run(**manage_args, _is_cli=True)
+        manage_deployment_backend.run(**manage_args, engine=engine, _is_cli=True)
 
     else:
         raise UnsupportedDeploymentProviderException(

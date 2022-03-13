@@ -48,4 +48,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("manageStack.sh", [], options, engine, env, _is_cli)
+    runner.run("manageStack.sh", [], options, env, engine, _is_cli)

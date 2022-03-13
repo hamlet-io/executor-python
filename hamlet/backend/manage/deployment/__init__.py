@@ -48,4 +48,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("manageDeployment.sh", [], options, engine, env, _is_cli)
+    runner.run("manageDeployment.sh", [], options, env, engine, _is_cli)

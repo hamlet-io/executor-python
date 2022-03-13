@@ -40,4 +40,4 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("manageCredentialCrypto.sh", [], options, engine, env, _is_cli)
+    runner.run("manageCredentialCrypto.sh", [], options, env, engine, _is_cli)

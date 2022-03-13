@@ -167,4 +167,4 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
         contract = query_backend.run(
             **query_args, engine=options.engine, cwd=os.getcwd(), query=None
         )
-        contract_backend.run(contract, silent)
+        contract_backend.run(contract, silent, options.engine)
