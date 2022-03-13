@@ -119,7 +119,9 @@ def test_deployments(
             "deployment_mode": deployment_mode,
             "output_dir": output_dir,
         }
-        create_template_backend.run(**generate_args, _is_cli=False)
+        create_template_backend.run(
+            **generate_args, engine=options.engine, _is_cli=False
+        )
 
     click.echo("")
     click.secho("[*] Testing deployments:", bold=True, fg="green")
