@@ -1,6 +1,23 @@
 # Changelog
 
-## latest (2022-03-08)
+## latest (2022-03-13)
+
+#### New Features
+
+* bundled engine-core for unicycle ([#305](https://github.com/hamlet-io/executor-python/issues/305))
+* add backend exception for missing query results
+* add cli decorators for log control
+* add support for log formatting control
+#### Fixes
+
+* further engine passing updates for commands ([#306](https://github.com/hamlet-io/executor-python/issues/306))
+* loading of cli profiles
+* setup ordering for setup command
+* pass engine context to all backend commands
+
+Full set of changes: [`9.15.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.15.0...latest)
+
+## 9.15.0 (2022-03-08)
 
 #### New Features
 
@@ -11,8 +28,11 @@
 #### Refactorings
 
 * engine context handling with cli
+#### Others
 
-Full set of changes: [`9.14.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.14.3...latest)
+* changelog bump
+
+Full set of changes: [`9.14.3...9.15.0`](https://github.com/hamlet-io/executor-python/compare/9.14.3...9.15.0)
 
 ## 9.14.3 (2022-02-22)
 
