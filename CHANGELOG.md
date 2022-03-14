@@ -4,9 +4,20 @@
 
 #### Fixes
 
-* more engine parameters for runners ([#312](https://github.com/hamlet-io/executor-python/issues/312))
+* deploy parameter name ([#314](https://github.com/hamlet-io/executor-python/issues/314))
 
-Full set of changes: [`9.16.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.2...latest)
+Full set of changes: [`9.16.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.3...latest)
+
+## 9.16.3 (2022-03-14)
+
+#### Fixes
+
+* more engine parameters for runners ([#312](https://github.com/hamlet-io/executor-python/issues/312))
+#### Others
+
+* changelog bump ([#311](https://github.com/hamlet-io/executor-python/issues/311))
+
+Full set of changes: [`9.16.2...9.16.3`](https://github.com/hamlet-io/executor-python/compare/9.16.2...9.16.3)
 
 ## 9.16.2 (2022-03-14)
 
