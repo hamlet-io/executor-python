@@ -56,4 +56,11 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("createTemplate.sh", [], options, env, engine, _is_cli)
+    runner.run(
+        "createTemplate.sh",
+        args=[],
+        options=options,
+        env=env,
+        engine=engine,
+        _is_cli=_is_cli,
+    )

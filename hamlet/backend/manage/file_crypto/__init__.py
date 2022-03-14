@@ -29,4 +29,11 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("manageFileCrypto.sh", [], options, env, engine, _is_cli)
+    runner.run(
+        "manageFileCrypto.sh",
+        args=[],
+        options=options,
+        env=env,
+        envine=engine,
+        _is_cli=_is_cli,
+    )

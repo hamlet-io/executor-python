@@ -27,10 +27,10 @@ def run(
     }
     runner.run(
         "confirmBuilds.sh",
-        [],
-        {},
-        env,
-        engine,
-        _is_cli,
+        args=[],
+        options={},
+        env=env,
+        engine=engine,
+        _is_cli=_is_cli,
         script_base_path_env="AUTOMATION_DIR",
     )

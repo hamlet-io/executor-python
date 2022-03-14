@@ -48,4 +48,6 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("runTask.sh", [], options, engine, env, _is_cli)
+    runner.run(
+        "runTask.sh", args=[], options=options, engine=engine, eng=env, _is_cli=_is_cli
+    )

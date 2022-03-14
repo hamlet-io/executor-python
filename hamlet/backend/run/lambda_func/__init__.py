@@ -34,4 +34,11 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("runLambda.sh", [], options, engine, env, _is_cli)
+    runner.run(
+        "runLambda.sh",
+        args=[],
+        options=options,
+        engine=engine,
+        env=env,
+        _is_cli=_is_cli,
+    )

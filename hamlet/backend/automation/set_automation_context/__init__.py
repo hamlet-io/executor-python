@@ -31,10 +31,10 @@ def run(
     }
     runner.run(
         "setContext.sh",
-        [],
-        opts,
-        env,
-        engine,
-        _is_cli,
+        args=[],
+        options=opts,
+        env=env,
+        engine=engine,
+        _is_cli=_is_cli,
         script_base_path_env="AUTOMATION_BASE_DIR",
     )
