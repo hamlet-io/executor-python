@@ -15,9 +15,10 @@ class SaveCMDBAutomationRunner(AutomationRunner):
         reference,
         tag,
         defer_push,
+        engine,
         **kwargs
     ):
-        super().__init__(**kwargs)
+        super().__init__(engine=engine, **kwargs)
 
         self._script_list = [
             {
