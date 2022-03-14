@@ -34,6 +34,6 @@ def run(
         args=[],
         options=options,
         env=env,
-        envine=engine,
+        engine=engine,
         _is_cli=_is_cli,
     )
