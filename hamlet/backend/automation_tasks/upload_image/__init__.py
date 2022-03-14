@@ -25,15 +25,16 @@ class UploadImageAutomationRunner(AutomationRunner):
         engine=None,
         **kwargs
     ):
-        super().__init__()
 
-        self._context_env = {
+        _context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,
             "GIT_COMMIT": build_reference,
             "IMAGE_FORMATS": image_format,
             "REGISTRY_SCOPE": registry_scope,
             **kwargs,
         }
+
+        super().__init__(engine=engine, **_context_env)
 
         self._script_list = [
             {

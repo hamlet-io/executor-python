@@ -18,9 +18,7 @@ class TransferImageAutomationRunner(AutomationRunner):
         engine,
         **kwargs
     ):
-        super().__init__(engine=engine)
-
-        self._context_env = {
+        _context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,
             "IMAGE_FORMATS": image_format,
             "GIT_COMMIT": build_reference,
@@ -28,6 +26,8 @@ class TransferImageAutomationRunner(AutomationRunner):
             "FROM_ENVIRONMENT": source_environment,
             **kwargs,
         }
+
+        super().__init__(engine=engine, **_context_env)
 
         self._script_list = [
             {

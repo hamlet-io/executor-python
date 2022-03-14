@@ -19,9 +19,7 @@ class UpdateBuildAutomationRunner(AutomationRunner):
         engine=None,
         **kwargs
     ):
-        super().__init__(engine=engine)
-
-        self._context_env = {
+        _context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,
             "GIT_COMMIT": build_reference,
             "CODE_TAGS": code_tag,
@@ -30,6 +28,8 @@ class UpdateBuildAutomationRunner(AutomationRunner):
             "DEFER_REPO_PUSH": "true",
             **kwargs,
         }
+
+        super().__init__(engine=engine, **_context_env)
 
         self._script_list = [
             {
