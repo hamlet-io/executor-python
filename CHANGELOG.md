@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2022-03-13)
+## latest (2022-03-14)
+
+#### Fixes
+
+* named params for runner invocation ([#308](https://github.com/hamlet-io/executor-python/issues/308))
+
+Full set of changes: [`9.16.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.0...latest)
+
+## 9.16.0 (2022-03-13)
 
 #### New Features
 
@@ -14,8 +22,11 @@
 * loading of cli profiles
 * setup ordering for setup command
 * pass engine context to all backend commands
+#### Others
 
-Full set of changes: [`9.15.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.15.0...latest)
+* changelog bump ([#300](https://github.com/hamlet-io/executor-python/issues/300))
+
+Full set of changes: [`9.15.0...9.16.0`](https://github.com/hamlet-io/executor-python/compare/9.15.0...9.16.0)
 
 ## 9.15.0 (2022-03-08)
 
