@@ -140,7 +140,7 @@ def run_deployments(
 
             if dryrun:
                 run_deployment(
-                    provider=provider,
+                    deployment_provider=provider,
                     deployment_group=deployment_group,
                     deployment_unit=deployment_unit,
                     operation=operation,
@@ -157,7 +157,7 @@ def run_deployments(
                 )
             ) or not confirm:
                 run_deployment(
-                    provider=provider,
+                    deployment_provider=provider,
                     deployment_group=deployment_group,
                     deployment_unit=deployment_unit,
                     operation=operation,
