@@ -48,4 +48,11 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("runExpoAppPublish.sh", [], options, engine, env, _is_cli)
+    runner.run(
+        "runExpoAppPublish.sh",
+        args=[],
+        options=options,
+        engine=engine,
+        env=env,
+        _is_cli=_is_cli,
+    )

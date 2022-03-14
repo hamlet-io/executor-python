@@ -38,4 +38,11 @@ def run(
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
     }
-    runner.run("runPipeline.sh", [], options, engine, env, _is_cli)
+    runner.run(
+        "runPipeline.sh",
+        args=[],
+        options=options,
+        engine=engine,
+        env=env,
+        _is_cli=_is_cli,
+    )

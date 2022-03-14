@@ -38,10 +38,10 @@ def run(
     env = {"AUTOMATION_LOG_LEVEL": log_level, **env}
     runner.run(
         "manageBuildReferences.sh",
-        [],
-        opts,
-        env,
-        engine,
-        _is_cli,
+        args=[],
+        options=opts,
+        env=env,
+        engine=engine,
+        _is_cli=_is_cli,
         script_base_path_env="AUTOMATION_DIR",
     )
