@@ -1,12 +1,23 @@
 # Changelog
 
-## latest (2022-03-14)
+## latest (2022-03-15)
+
+#### Fixes
+
+* engine name provided to install-engine
+
+Full set of changes: [`9.16.4...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.4...latest)
+
+## 9.16.4 (2022-03-14)
 
 #### Fixes
 
 * deploy parameter name ([#314](https://github.com/hamlet-io/executor-python/issues/314))
+#### Others
 
-Full set of changes: [`9.16.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.3...latest)
+* changelog bump ([#313](https://github.com/hamlet-io/executor-python/issues/313))
+
+Full set of changes: [`9.16.3...9.16.4`](https://github.com/hamlet-io/executor-python/compare/9.16.3...9.16.4)
 
 ## 9.16.3 (2022-03-14)
 
