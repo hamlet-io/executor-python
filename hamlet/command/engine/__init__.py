@@ -255,7 +255,7 @@ def install_engine(options, name, location, update):
     options.engine_store.load_engines(locations=location, refresh=True)
 
     if name is None and options.engine:
-        name = options.engine
+        name = options.engine.name
 
     if name is None:
         raise click.exceptions.BadParameter(
