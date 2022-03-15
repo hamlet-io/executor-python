@@ -17,7 +17,7 @@ container_httpx_client = httpx.Client(
     headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
     follow_redirects=True,
     transport=transport,
-    timeout=timeout
+    timeout=timeout,
 )
 
 auth_httpx_client = httpx.Client(
