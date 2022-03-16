@@ -32,6 +32,8 @@ def run(
     )
 
     if "FunctionError" in result:
-        raise BackendException(f"Lambda Function Failure - {result['FunctionError']} - {result['Payload'].read().decode('utf-8')}")
+        raise BackendException(
+            f"Lambda Function Failure - {result['FunctionError']} - {result['Payload'].read().decode('utf-8')}"
+        )
 
     return {"Properties": {"payload": result["Payload"].read().decode("utf-8")}}
