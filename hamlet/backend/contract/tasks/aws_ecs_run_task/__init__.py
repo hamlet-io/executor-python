@@ -1,21 +1,19 @@
 import json
 import boto3
-import click
 
 from botocore.exceptions import WaiterError
 from hamlet.backend.common.utilities import to_bool
+from hamlet.backend.common.exceptions import BackendException
 
 
 def run(
     ClusterArn=None,
     TaskFamily=None,
+    ContainerName=None,
     CapacityProvider=None,
     SubnetIds=None,
     SecurityGroupIds=None,
     PublicIP=None,
-    ShowStatus=None,
-    WaitToStop=None,
-    OverrideContainerName=None,
     CommandOverride=None,
     EnvironmentOverrides=None,
     Region=None,
@@ -39,7 +37,7 @@ def run(
 
     network_config = None
 
-    if SubnetIds is not None and SecurityGroupIds is not None:
+    if SubnetIds and SecurityGroupIds:
         network_config = {
             "awsvpcConfiguration": {
                 "subnets": SubnetIds.split(","),
@@ -49,12 +47,11 @@ def run(
         }
 
     container_override = None
-    if OverrideContainerName is not None and (
-        CommandOverride is not None or EnvironmentOverrides is not None
-    ):
-        container_override = {"name": OverrideContainerName}
 
-        if CommandOverride is not None:
+    if CommandOverride or EnvironmentOverrides:
+        container_override = {"name": ContainerName}
+
+        if CommandOverride:
 
             try:
                 command = json.loads(CommandOverride)
@@ -62,19 +59,15 @@ def run(
                 command = [CommandOverride]
 
             if isinstance(command, str):
-                command = [command]
+                command = [command.split(" ")]
 
             container_override["command"] = command
 
-        if EnvironmentOverrides is not None:
+        if EnvironmentOverrides:
             container_override["environment"] = [
                 {"name": key, "value": value}
                 for key, value in json.loads(EnvironmentOverrides).items()
             ]
-
-    overrides = None
-    if container_override is not None:
-        overrides = {"containerOverrides": [container_override]}
 
     task_response = ecs.run_task(
         cluster=ClusterArn,
@@ -88,16 +81,13 @@ def run(
         enableECSManagedTags=True,
         propagateTags="TASK_DEFINITION",
         networkConfiguration=network_config,
-        overrides=overrides,
+        overrides={"containerOverrides": [container_override]} if container_override else None,
     )
 
     task_args = {
         "cluster": ClusterArn,
         "tasks": [task["taskArn"] for task in task_response["tasks"]],
     }
-
-    if to_bool(ShowStatus, True):
-        click.echo("waiting for task to start", err=True)
 
     try:
         running_waiter = ecs.get_waiter("tasks_running")
@@ -111,57 +101,61 @@ def run(
         ]:
             pass
 
-    if to_bool(WaitToStop, True):
-
-        if to_bool(ShowStatus, True):
-            click.echo("waiting for task to stop", err=True)
-
-        stopped_waiter = ecs.get_waiter("tasks_stopped")
-        stopped_waiter.wait(**task_args)
-
-    if to_bool(ShowStatus, True):
-        task_describe = ecs.describe_tasks(**task_args)
-        run_status = {"tasks": []}
-
+    while(True):
         try:
-            run_status["failures"] = task_describe["failures"]
-        except KeyError:
-            pass
+            stopped_waiter = ecs.get_waiter("tasks_stopped")
+            stopped_waiter.wait(**task_args)
+        except WaiterError:
+            continue
 
-        task_keys = [
-            "stopCode",
-            "stoppedReason",
-            "taskArn",
-            "lastStatus",
-            "capacityProviderName",
-        ]
-        container_keys = [
-            "name",
-            "image",
-            "runtimeId",
-            "lastStatus",
-            "exitCode",
-            "reason",
-        ]
+        break
 
-        for task in task_describe["tasks"]:
-            task_status = {k: v for k, v in task.items() if k in task_keys}
+    task_describe = ecs.describe_tasks(**task_args)
+    run_status = {"tasks": []}
 
-            task_status["startedAt"] = task["startedAt"].isoformat()
-            task_status["stoppedAt"] = task["stoppedAt"].isoformat()
+    if task_describe.get("failures", None):
+        raise BackendException(task_describe["failures"])
 
-            task_status["containers"] = []
-            for container in task["containers"]:
-                task_status["containers"].append(
-                    {k: v for k, v in container.items() if k in container_keys}
+    task_keys = [
+        "stopCode",
+        "stoppedReason",
+        "taskArn",
+        "lastStatus",
+        "capacityProviderName",
+    ]
+    container_keys = [
+        "name",
+        "image",
+        "runtimeId",
+        "lastStatus",
+        "exitCode",
+        "reason",
+    ]
+
+    for task in task_describe["tasks"]:
+        task_status = {k: v for k, v in task.items() if k in task_keys}
+
+        task_status["startedAt"] = task["startedAt"].isoformat()
+        task_status["stoppedAt"] = task["stoppedAt"].isoformat()
+
+        task_status["containers"] = []
+        for container in task["containers"]:
+            task_status["containers"].append(
+                {k: v for k, v in container.items() if k in container_keys}
+            )
+            if container["name"] == ContainerName and container["exitCode"] != 0:
+                raise BackendException(
+                    (
+                        "Primary container did not run successfully "
+                        f"- exitCode: {container['exitCode']}"
+                    )
                 )
 
-            run_status["tasks"].append(task_status)
-
-        click.echo(json.dumps(run_status, indent=2))
+        run_status["tasks"].append(task_status)
 
     return {
         "Properties": {
-            "task_arns": [task["taskArn"] for task in task_response["tasks"]],
+            "task_arns": json.dumps([task["taskArn"] for task in task_response["tasks"]]),
+            "run_status": json.dumps(run_status)
         }
     }
