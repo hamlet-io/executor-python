@@ -10,7 +10,7 @@ LEVEL = "account"
 
 
 #  test is made accordingly to quickstart guide
-@mock.patch.dict(os.environ, {"ACCOUNT": ACCOUNT})
+@mock.patch.dict(os.environ, {"ACCOUNT": ACCOUNT, "DISTRICT": "account"})
 def run(cmdb, engine):
 
     with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):

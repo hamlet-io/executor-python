@@ -32,7 +32,7 @@ def find_deployments(
     deployment_units,
     engine,
     deployment_states=["deployed", "notdeployed"],
-    districts=["segment"],
+    district_type="segment",
     **kwargs,
 ):
 
@@ -60,7 +60,7 @@ def find_deployments(
             else:
                 deployment["District"] = "segment"
 
-        if deployment["District"] in districts:
+        if deployment["District"] == district_type:
             if re.fullmatch(deployment_group, deployment["DeploymentGroup"]):
                 for deployment_unit in deployment_units:
                     if re.fullmatch(deployment_unit, deployment["DeploymentUnit"]):
