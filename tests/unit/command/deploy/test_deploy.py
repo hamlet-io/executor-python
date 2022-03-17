@@ -16,7 +16,6 @@ ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["-o,--output-dir"] = "output_dir"
 ALL_VALID_OPTIONS["-u,--deployment-unit"] = "DeploymentUnit1"
 ALL_VALID_OPTIONS["-l,--deployment-group"] = "DeploymentGroup1"
-ALL_VALID_OPTIONS["-d,--district"] = "segment"
 ALL_VALID_OPTIONS["-m,--deployment-mode"] = "deployment_mode"
 ALL_VALID_OPTIONS["-s,--deployment-state"] = "deployed"
 ALL_VALID_OPTIONS["--refresh-outputs"] = True

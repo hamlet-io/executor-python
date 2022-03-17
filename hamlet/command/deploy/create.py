@@ -43,13 +43,6 @@ from hamlet.backend.deploy import find_deployments, create_deployment
     help="The states of deployments to include",
 )
 @click.option(
-    "-d",
-    "--district",
-    default=["segment"],
-    multiple=True,
-    help="The districts to include deployments from",
-)
-@click.option(
     "-o",
     "--output-dir",
     type=click.Path(
@@ -69,7 +62,6 @@ def create_deployments(
     deployment_unit,
     deployment_state,
     output_dir,
-    district,
     **kwargs,
 ):
     """
@@ -81,7 +73,6 @@ def create_deployments(
         deployment_group,
         deployment_units=deployment_unit,
         deployment_states=deployment_state,
-        districts=district,
         engine=options.engine,
         **options.opts,
     )

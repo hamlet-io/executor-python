@@ -220,6 +220,13 @@ def common_district_options(func):
         show_envvar=True,
     )
     @click.option(
+        "--district-type",
+        envvar="DISTRICT",
+        help="The type of district to target",
+        default="segment",
+        show_envvar=True,
+    )
+    @click.option(
         "--tenant",
         envvar="TENANT",
         help="The tenant name to use (default: CMDB current location)",
@@ -257,6 +264,7 @@ def common_district_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.root_dir = kwargs.pop("root_dir")
+        opts.district = kwargs.pop("district_type")
         opts.tenant = kwargs.pop("tenant")
         opts.account = kwargs.pop("account")
         opts.product = kwargs.pop("product")

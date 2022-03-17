@@ -34,13 +34,6 @@ from hamlet.backend.deploy import find_deployments, create_deployment
     help="The deployment unit pattern to match",
 )
 @click.option(
-    "-d",
-    "--district",
-    default=["segment"],
-    multiple=True,
-    help="The districts to include deployments from",
-)
-@click.option(
     "-o",
     "--output-dir",
     type=click.Path(
@@ -62,7 +55,6 @@ def test_deployments(
     deployment_mode,
     deployment_group,
     deployment_unit,
-    district,
     output_dir,
     pytest_args,
     silent,
@@ -83,7 +75,6 @@ def test_deployments(
         deployment_mode=deployment_mode,
         deployment_group=deployment_group,
         deployment_units=deployment_unit,
-        districts=district,
         engine=options.engine,
         **options.opts,
     )

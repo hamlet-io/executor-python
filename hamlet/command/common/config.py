@@ -34,6 +34,7 @@ class ConfigSchema(object):
         """Profile-specific configuration schema."""
 
         root_dir = ConfigParam(name="root_dir", type=click.Path())
+        district_type = ConfigParam(name="district_type", type=str)
         tenant = ConfigParam(name="tenant", type=str)
         account = ConfigParam(name="account", type=str)
         product = ConfigParam(name="product", type=str)
@@ -156,6 +157,16 @@ class Options:
     def root_dir(self, value):
         """Set the root_dir setting"""
         self._set_option("root_dir", value)
+
+    @property
+    def district_type(self):
+        """Get the district type setting"""
+        return self._get_option("district_type")
+
+    @district_type.setter
+    def district_type(self, value):
+        """Set the district type setting"""
+        self._set_option("district_type", value)
 
     @property
     def tenant(self):
