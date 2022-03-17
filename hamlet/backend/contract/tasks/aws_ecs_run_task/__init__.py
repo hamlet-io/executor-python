@@ -81,7 +81,9 @@ def run(
         enableECSManagedTags=True,
         propagateTags="TASK_DEFINITION",
         networkConfiguration=network_config,
-        overrides={"containerOverrides": [container_override]} if container_override else None,
+        overrides={"containerOverrides": [container_override]}
+        if container_override
+        else None,
     )
 
     task_args = {
@@ -101,7 +103,7 @@ def run(
         ]:
             pass
 
-    while(True):
+    while True:
         try:
             stopped_waiter = ecs.get_waiter("tasks_stopped")
             stopped_waiter.wait(**task_args)
@@ -155,7 +157,9 @@ def run(
 
     return {
         "Properties": {
-            "task_arns": json.dumps([task["taskArn"] for task in task_response["tasks"]]),
-            "run_status": json.dumps(run_status)
+            "task_arns": json.dumps(
+                [task["taskArn"] for task in task_response["tasks"]]
+            ),
+            "run_status": json.dumps(run_status),
         }
     }
