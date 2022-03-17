@@ -28,7 +28,9 @@ LEVEL = "segment"
 )
 def run(cmdb, engine):
 
-    with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR, "DISTRICT": "segment"}):
+    with mock.patch.dict(
+        os.environ, {"ROOT_DIR": cmdb.ROOT_DIR, "DISTRICT": "segment"}
+    ):
 
         create_deployment_backend(
             deployment_group=LEVEL,
