@@ -1,12 +1,37 @@
 # Changelog
 
-## latest (2022-03-15)
+## latest (2022-03-17)
+
+#### New Features
+
+* add support for providing the district type
+* (contract): add aws tasks
+#### Fixes
+
+* formatting
+* extend read timeout for container image handling
+#### Refactorings
+
+* aws ecs run task error handling
+* (ci): update pipeline to align with latest cli
+#### Others
+
+* formatting updates
+* formatting
+* formatting fixes
+
+Full set of changes: [`9.16.5...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.5...latest)
+
+## 9.16.5 (2022-03-15)
 
 #### Fixes
 
 * engine name provided to install-engine
+#### Others
 
-Full set of changes: [`9.16.4...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.4...latest)
+* changelog bump ([#315](https://github.com/hamlet-io/executor-python/issues/315))
+
+Full set of changes: [`9.16.4...9.16.5`](https://github.com/hamlet-io/executor-python/compare/9.16.4...9.16.5)
 
 ## 9.16.4 (2022-03-14)
 
