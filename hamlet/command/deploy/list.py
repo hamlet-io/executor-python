@@ -15,7 +15,6 @@ def deployments_table(data):
                 wrap_text(row["DeploymentUnit"]),
                 wrap_text(row["DeploymentProvider"]),
                 wrap_text(row["CurrentState"]),
-                wrap_text(row["District"]),
             ]
         )
     return tabulate(
@@ -25,7 +24,6 @@ def deployments_table(data):
             "Deployment Unit",
             "Provider",
             "State",
-            "District",
         ],
         tablefmt="github",
     )
