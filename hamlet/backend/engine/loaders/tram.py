@@ -9,7 +9,7 @@ from hamlet.backend.engine.engine_part import (
     AWSEnginePluginPart,
     AzureEnginePluginPart,
     BashExecutorEnginePart,
-    WrapperEnginePart,
+    BundledWrapperEnginePart,
 )
 from hamlet.backend.engine.engine_source import ContainerEngineSource
 from hamlet.backend.container_registry import ContainerRepository
@@ -34,8 +34,8 @@ class LatestTramEngineLoader(EngineLoader):
         ]
 
         engine_parts = [
-            WrapperEnginePart(
-                source_path="engine-core/", source_name="hamlet-engine-base"
+            BundledWrapperEnginePart(
+                source_path="engine-core/image/", source_name="hamlet-engine-base"
             ),
             CoreEnginePart(source_path="engine/", source_name="hamlet-engine-base"),
             BashExecutorEnginePart(
@@ -86,8 +86,9 @@ class TramEngineLoader(EngineLoader):
                 ]
 
                 engine_parts = [
-                    WrapperEnginePart(
-                        source_path="engine-core/", source_name="hamlet-engine-base"
+                    BundledWrapperEnginePart(
+                        source_path="engine-core/image/",
+                        source_name="hamlet-engine-base",
                     ),
                     CoreEnginePart(
                         source_path="engine/", source_name="hamlet-engine-base"

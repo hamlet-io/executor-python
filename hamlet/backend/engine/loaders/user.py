@@ -1,5 +1,6 @@
 import click
 import typing
+import os
 
 from click_configfile import (
     ConfigFileReader,
@@ -146,7 +147,9 @@ class EngineReader(ConfigFileReader):
                             LocalDirectoryEngineSource(
                                 name=source_name,
                                 description=source_config.get("description", None),
-                                env_path=source_config["local_dir_path"],
+                                env_path=os.path.abspath(
+                                    source_config["local_dir_path"]
+                                ),
                             )
                         )
 
