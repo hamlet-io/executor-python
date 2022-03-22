@@ -1,6 +1,18 @@
 # Changelog
 
-## latest (2022-03-17)
+## latest (2022-03-22)
+
+#### Fixes
+
+* engine updates ([#326](https://github.com/hamlet-io/executor-python/issues/326))
+* use full engine-core image ([#325](https://github.com/hamlet-io/executor-python/issues/325))
+#### Refactorings
+
+* district to district type rename ([#324](https://github.com/hamlet-io/executor-python/issues/324))
+
+Full set of changes: [`9.17.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.17.0...latest)
+
+## 9.17.0 (2022-03-18)
 
 #### New Features
 
@@ -16,11 +28,12 @@
 * (ci): update pipeline to align with latest cli
 #### Others
 
+* changelog bump ([#317](https://github.com/hamlet-io/executor-python/issues/317))
 * formatting updates
 * formatting
 * formatting fixes
 
-Full set of changes: [`9.16.5...latest`](https://github.com/hamlet-io/executor-python/compare/9.16.5...latest)
+Full set of changes: [`9.16.5...9.17.0`](https://github.com/hamlet-io/executor-python/compare/9.16.5...9.17.0)
 
 ## 9.16.5 (2022-03-15)
 
