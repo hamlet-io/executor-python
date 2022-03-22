@@ -87,7 +87,8 @@ class TramEngineLoader(EngineLoader):
 
                 engine_parts = [
                     BundledWrapperEnginePart(
-                        source_path="engine-core/image/", source_name="hamlet-engine-base"
+                        source_path="engine-core/image/",
+                        source_name="hamlet-engine-base",
                     ),
                     CoreEnginePart(
                         source_path="engine/", source_name="hamlet-engine-base"
