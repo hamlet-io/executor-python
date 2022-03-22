@@ -33,6 +33,7 @@ def template_backend_run_mock(data):
         generation_framework=None,
         log_level=None,
         root_dir=None,
+        district_type=None,
         tenant=None,
         account=None,
         product=None,
@@ -100,7 +101,6 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation11"],
                         "CurrentState": "deployed",
-                        "District": "segment",
                     },
                 },
                 {
@@ -111,7 +111,6 @@ unit_list = {
                         "DeploymentProvider": "aws",
                         "Operations": ["Operation21"],
                         "CurrentState": "deployed",
-                        "District": "segment",
                     },
                 },
             ],

@@ -19,6 +19,7 @@ def template_backend_run_mock(data):
         deployment_mode=None,
         log_level=None,
         root_dir=None,
+        district_type=None,
         tenant=None,
         account=None,
         product=None,

@@ -51,7 +51,7 @@ def run(
         "GENERATION_LOG_LEVEL": log_level,
         "GENERATION_LOG_FORMAT": log_format,
         "ROOT_DIR": root_dir,
-        "DISTRICT": district_type,
+        "DISTRICT_TYPE": district_type,
         "TENANT": tenant,
         "ACCOUNT": account,
         "PRODUCT": product,

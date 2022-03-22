@@ -221,7 +221,7 @@ def common_district_options(func):
     )
     @click.option(
         "--district-type",
-        envvar="DISTRICT",
+        envvar="DISTRICT_TYPE",
         help="The type of district to target",
         default="segment",
         show_envvar=True,
@@ -264,7 +264,7 @@ def common_district_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.root_dir = kwargs.pop("root_dir")
-        opts.district = kwargs.pop("district_type")
+        opts.district_type = kwargs.pop("district_type")
         opts.tenant = kwargs.pop("tenant")
         opts.account = kwargs.pop("account")
         opts.product = kwargs.pop("product")
