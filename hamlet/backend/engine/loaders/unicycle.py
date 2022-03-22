@@ -1,5 +1,4 @@
 import typing
-import platform
 
 from hamlet.backend.engine.engine_loader import EngineLoader
 
@@ -55,7 +54,7 @@ class UnicycleEngineLoader(EngineLoader):
                 description="hamlet freemarker wrapper",
                 registry_url="https://ghcr.io",
                 repository="hamlet-io/engine-core",
-                tag=f"edge-{platform.system()}",
+                tag="edge",
             ),
         ]
 
