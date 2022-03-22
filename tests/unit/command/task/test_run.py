@@ -31,6 +31,7 @@ def template_backend_run_mock(data):
         generation_framework=None,
         log_level=None,
         root_dir=None,
+        district_type=None,
         tenant=None,
         account=None,
         product=None,
