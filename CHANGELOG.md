@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2022-03-22)
+## latest (2022-03-23)
+
+#### New Features
+
+* add bundled shim engine loader ([#328](https://github.com/hamlet-io/executor-python/issues/328))
+
+Full set of changes: [`9.17.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.17.1...latest)
+
+## 9.17.1 (2022-03-23)
 
 #### Fixes
 
@@ -9,8 +17,11 @@
 #### Refactorings
 
 * district to district type rename ([#324](https://github.com/hamlet-io/executor-python/issues/324))
+#### Others
 
-Full set of changes: [`9.17.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.17.0...latest)
+* changelog bump ([#323](https://github.com/hamlet-io/executor-python/issues/323))
+
+Full set of changes: [`9.17.0...9.17.1`](https://github.com/hamlet-io/executor-python/compare/9.17.0...9.17.1)
 
 ## 9.17.0 (2022-03-18)
 
