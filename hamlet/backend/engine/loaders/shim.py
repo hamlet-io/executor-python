@@ -10,7 +10,7 @@ from hamlet.backend.engine.engine_part import (
     CMDBEnginePluginPart,
     BashExecutorEnginePart,
     WrapperEnginePart,
-    BundledWrapperEnginePart
+    BundledWrapperEnginePart,
 )
 from hamlet.backend.engine.engine_source import ShimPathEngineSource
 
