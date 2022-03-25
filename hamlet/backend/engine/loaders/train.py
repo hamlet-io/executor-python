@@ -10,7 +10,7 @@ from hamlet.backend.engine.engine_part import (
     AzureEnginePluginPart,
     BashExecutorEnginePart,
     WrapperEnginePart,
-    BundledWrapperEnginePart
+    BundledWrapperEnginePart,
 )
 from hamlet.backend.engine.engine_source import ContainerEngineSource
 from hamlet.backend.container_registry import ContainerRepository
@@ -111,7 +111,8 @@ class TrainEngineLoader(EngineLoader):
                 if version.match(">=8.5.0"):
                     engine_parts.append(
                         BundledWrapperEnginePart(
-                            source_path="engine-core/image/", source_name="hamlet-engine-base"
+                            source_path="engine-core/image/",
+                            source_name="hamlet-engine-base",
                         )
                     )
                 else:
