@@ -1,5 +1,5 @@
 import typing
-import re
+import semver
 
 from hamlet.backend.engine.engine_loader import EngineLoader
 
@@ -10,6 +10,7 @@ from hamlet.backend.engine.engine_part import (
     AzureEnginePluginPart,
     BashExecutorEnginePart,
     WrapperEnginePart,
+    BundledWrapperEnginePart
 )
 from hamlet.backend.engine.engine_source import ContainerEngineSource
 from hamlet.backend.container_registry import ContainerRepository
@@ -33,8 +34,8 @@ class LatestTrainEngineLoader(EngineLoader):
         ]
 
         engine_parts = [
-            WrapperEnginePart(
-                source_path="engine-core/", source_name="hamlet-engine-base"
+            BundledWrapperEnginePart(
+                source_path="engine-core/image/", source_name="hamlet-engine-base"
             ),
             CoreEnginePart(source_path="engine/", source_name="hamlet-engine-base"),
             BashExecutorEnginePart(
@@ -72,7 +73,13 @@ class TrainEngineLoader(EngineLoader):
         )
 
         for tag in container_repo.tags:
-            if re.fullmatch("^v?[0-9]*.[0-9]*.[0-9]*.$", tag) is not None:
+
+            try:
+                version = semver.VersionInfo.parse(tag)
+            except ValueError:
+                continue
+
+            if not version.prerelease:
 
                 engine_sources = [
                     ContainerEngineSource(
@@ -85,9 +92,6 @@ class TrainEngineLoader(EngineLoader):
                 ]
 
                 engine_parts = [
-                    WrapperEnginePart(
-                        source_path="engine-core/", source_name="hamlet-engine-base"
-                    ),
                     CoreEnginePart(
                         source_path="engine/", source_name="hamlet-engine-base"
                     ),
@@ -103,6 +107,19 @@ class TrainEngineLoader(EngineLoader):
                         source_name="hamlet-engine-base",
                     ),
                 ]
+
+                if version.match(">=8.5.0"):
+                    engine_parts.append(
+                        BundledWrapperEnginePart(
+                            source_path="engine-core/image/", source_name="hamlet-engine-base"
+                        )
+                    )
+                else:
+                    engine_parts.append(
+                        WrapperEnginePart(
+                            source_path="engine-core/", source_name="hamlet-engine-base"
+                        )
+                    )
 
                 engine = Engine(
                     name=tag,
