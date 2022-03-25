@@ -11,7 +11,7 @@ Manages the installation and versioning of hamlet engines
 Engine
 _______
 
- .. automodule:: hamlet.backend.engine.engine
+.. automodule:: hamlet.backend.engine.engine
     :members:
 
 Engine Part
