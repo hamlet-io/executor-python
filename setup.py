@@ -50,6 +50,7 @@ setup(
         "simple-term-menu>=1.4.1,<2.0.0",
         # Diagrams
         "diagrams>=0.18.0,<1.0.0",
+        "semver>=2.13.0,<3.0.0",
     ],
     extras_require={
         "dev": [
