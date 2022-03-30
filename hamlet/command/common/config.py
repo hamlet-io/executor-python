@@ -129,6 +129,16 @@ class Options:
         self._set_option("cli_config_dir", value)
 
     @property
+    def hamlet_home_dir(self):
+        """The home dir used by hamlet"""
+        return self._get_option("hamlet_home_dir")
+
+    @hamlet_home_dir.setter
+    def hamlet_home_dir(self, value):
+        """set the hamlet home dir"""
+        self._set_option("hamlet_home_dir", value)
+
+    @property
     def cli_cache_dir(self):
         """The cli cache dir"""
         return self._get_option("cli_cache_dir")

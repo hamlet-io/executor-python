@@ -6,7 +6,7 @@ import functools
 from hamlet.command.common.config import Options
 
 
-def get_home_dir_default(subdir):
+def get_home_dir_default(subdir=""):
     return os.path.join(
         click.get_app_dir(app_name="hamlet", force_posix=True, roaming=False), subdir
     )
@@ -40,6 +40,15 @@ def common_cli_config_options(func):
         show_envvar=True,
     )
     @click.option(
+        "--hamlet-home-dir",
+        type=click.Path(file_okay=False, dir_okay=True, readable=True, writable=True),
+        envvar="HAMLET_HOME_DIR",
+        default=get_home_dir_default(),
+        help="The home directory used by hamlet",
+        show_default=True,
+        show_envvar=True,
+    )
+    @click.option(
         "--cli-cache-dir",
         type=click.Path(file_okay=False, dir_okay=True, readable=True, writable=True),
         envvar="HAMLET_CLI_CACHE_DIR",
@@ -56,6 +65,7 @@ def common_cli_config_options(func):
         """
         opts = ctx.ensure_object(Options)
         opts.cli_cache_dir = kwargs.pop("cli_cache_dir")
+        opts.hamlet_home_dir = kwargs.pop("hamlet_home_dir")
         opts.load_config_file(
             profile=kwargs.pop("profile"), searchpath=kwargs.pop("cli_config_dir")
         )

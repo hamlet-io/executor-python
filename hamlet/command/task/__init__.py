@@ -167,4 +167,9 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
         contract = query_backend.run(
             **query_args, engine=options.engine, cwd=os.getcwd(), query=None
         )
-        contract_backend.run(contract, silent, options.engine)
+        contract_backend.run(
+            contract,
+            silent,
+            options.engine,
+            {"HAMLET_HOME_DIR": options.opts.get("hamlet_home_dir", "")},
+        )
