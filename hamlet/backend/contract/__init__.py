@@ -6,7 +6,7 @@ from hamlet.backend.contract.tasks.exceptions import (
 )
 
 
-def run(contract, silent, engine):
+def run(contract, silent, engine, env):
 
     properties = contract["Properties"]
 
@@ -41,7 +41,7 @@ def run(contract, silent, engine):
                                 properties.get(property, ""),
                             )
 
-            replaced_params["env"] = engine.environment
+            replaced_params["env"] = {**engine.environment, **env}
             try:
                 task_result = task.run(**replaced_params)
 
