@@ -1,15 +1,24 @@
 # Changelog
 
-## latest (2022-03-25)
+## latest (2022-03-30)
+
+#### Fixes
+
+* add hamlet_home_dir back to base options ([#333](https://github.com/hamlet-io/executor-python/issues/333))
+
+Full set of changes: [`9.19.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.19.0...latest)
+
+## 9.19.0 (2022-03-25)
 
 #### New Features
 
 * add support for bundled engine train releases
 #### Others
 
+* changelog bump ([#329](https://github.com/hamlet-io/executor-python/issues/329))
 * formatting fixes
 
-Full set of changes: [`9.18.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.18.0...latest)
+Full set of changes: [`9.18.0...9.19.0`](https://github.com/hamlet-io/executor-python/compare/9.18.0...9.19.0)
 
 ## 9.18.0 (2022-03-24)
 
