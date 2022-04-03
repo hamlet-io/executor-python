@@ -67,7 +67,7 @@ setup(
             # Docs
             "Sphinx",
             "sphinx-markdown-builder",
-            "sphinx-click",
+            "sphinx-click @ git+https://github.com/hamlet-io/sphinx-click@9f9ff310864e356624fad73a7f9e9c85468ce435",
         ],
     },
     include_package_data=True,

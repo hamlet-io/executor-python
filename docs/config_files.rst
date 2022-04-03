@@ -23,7 +23,7 @@ The config file is the default configuration file to use when configuring hamlet
 
 The following sections are supported in the config file
 
- .. autoclass:: hamlet.command.common.config.ConfigSchema
+.. autoclass:: hamlet.command.common.config.ConfigSchema
     :members:
 
 engine
