@@ -38,6 +38,6 @@ def run(
     return {
         "Properties": {
             "object_count": str(object_count),
-            "s3_path": f"s3://{BucketName}/" + Prefix
+            "s3_path": f"s3://{BucketName}/" + Prefix,
         }
     }

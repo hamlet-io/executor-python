@@ -31,7 +31,7 @@ def run(
         object_count += 1
         local_path = os.path.join(
             os.path.abspath(LocalPath),
-            object.key[len(os.path.commonpath([Prefix, object.key])):]
+            object.key[len(os.path.commonpath([Prefix, object.key])) :],
         )
 
         os.makedirs(os.path.dirname(local_path), exist_ok=True)
@@ -41,6 +41,6 @@ def run(
         "Properties": {
             "object_count": str(object_count),
             "s3_path": f"s3://{BucketName}/" + Prefix,
-            "local_path": LocalPath
+            "local_path": LocalPath,
         }
     }
