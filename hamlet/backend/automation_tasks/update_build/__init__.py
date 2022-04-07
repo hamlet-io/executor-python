@@ -3,8 +3,7 @@ from hamlet.backend.automation import (
     properties_file,
     set_automation_context,
     construct_tree,
-    confirm_builds,
-    update_build_references,
+    manage_build_references,
 )
 
 
@@ -20,12 +19,6 @@ class UpdateBuildAutomationRunner(AutomationRunner):
         **kwargs
     ):
         _context_env = {
-            "DEPLOYMENT_UNITS": deployment_unit,
-            "GIT_COMMIT": build_reference,
-            "CODE_TAGS": code_tag,
-            "IMAGE_FORMATS": image_format,
-            "REGISTRY_SCOPE": registry_scope,
-            "DEFER_REPO_PUSH": "true",
             **kwargs,
         }
 
@@ -44,6 +37,28 @@ class UpdateBuildAutomationRunner(AutomationRunner):
                 "args": {**self._context_env},
             },
             {"func": set_automation_context.run, "args": {"_is_cli": True}},
-            {"func": confirm_builds.run, "args": {"_is_cli": True}},
-            {"func": update_build_references.run, "args": {"_is_cli": True}},
+            {
+                "func": manage_build_references.run,
+                "args": {
+                    "_is_cli": True,
+                    "verify": "latest",
+                    "code_commits": build_reference,
+                    "deployment_units": deployment_unit,
+                    "image_formats": image_format,
+                    "code_tags": code_tag,
+                    "registry_scopes": registry_scope,
+                },
+            },
+            {
+                "func": manage_build_references.run,
+                "args": {
+                    "_is_cli": True,
+                    "update": True,
+                    "code_commits": build_reference,
+                    "deployment_units": deployment_unit,
+                    "image_formats": image_format,
+                    "code_tags": code_tag,
+                    "registry_scopes": registry_scope,
+                },
+            },
         ]
