@@ -54,7 +54,6 @@ def group():
 @click.option(
     "-b",
     "--branch",
-    default="main",
     help="The repository reference to commit changes on",
 )
 @click.option(
