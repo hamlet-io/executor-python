@@ -1,12 +1,30 @@
 # Changelog
 
-## latest (2022-03-30)
+## latest (2022-04-07)
+
+#### New Features
+
+* aws s3 copy rm tasks
+#### Fixes
+
+* formatting
+#### Refactorings
+
+* use base commands for build refererences and images
+* distutils strtobool
+
+Full set of changes: [`9.19.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.19.1...latest)
+
+## 9.19.1 (2022-03-31)
 
 #### Fixes
 
 * add hamlet_home_dir back to base options ([#333](https://github.com/hamlet-io/executor-python/issues/333))
+#### Others
 
-Full set of changes: [`9.19.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.19.0...latest)
+* changelog bump ([#332](https://github.com/hamlet-io/executor-python/issues/332))
+
+Full set of changes: [`9.19.0...9.19.1`](https://github.com/hamlet-io/executor-python/compare/9.19.0...9.19.1)
 
 ## 9.19.0 (2022-03-25)
 
