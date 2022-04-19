@@ -35,18 +35,27 @@ def run(
     )
     ecs = session.client("ecs")
 
-    network_config = None
+    run_task_args = {
+        "cluster": ClusterArn,
+        "taskDefinition": TaskFamily,
+        "capacityProviderStrategy": [
+            {
+                "capacityProvider": CapacityProvider,
+            }
+        ],
+        "count": 1,
+        "enableECSManagedTags": True,
+        "propagateTags": "TASK_DEFINITION",
+    }
 
     if SubnetIds and SecurityGroupIds:
-        network_config = {
+        run_task_args["networkConfiguration"] = {
             "awsvpcConfiguration": {
                 "subnets": SubnetIds.split(","),
                 "securityGroups": SecurityGroupIds.split(","),
                 "assignPublicIp": "ENABLED" if to_bool(PublicIP, False) else "DISABLED",
             }
         }
-
-    container_override = None
 
     if CommandOverride or EnvironmentOverrides:
         container_override = {"name": ContainerName}
@@ -69,22 +78,9 @@ def run(
                 for key, value in json.loads(EnvironmentOverrides).items()
             ]
 
-    task_response = ecs.run_task(
-        cluster=ClusterArn,
-        taskDefinition=TaskFamily,
-        capacityProviderStrategy=[
-            {
-                "capacityProvider": CapacityProvider,
-            }
-        ],
-        count=1,
-        enableECSManagedTags=True,
-        propagateTags="TASK_DEFINITION",
-        networkConfiguration=network_config,
-        overrides={"containerOverrides": [container_override]}
-        if container_override
-        else None,
-    )
+        run_task_args["overrides"] = {"containerOverrides": [container_override]}
+
+    task_response = ecs.run_task(**run_task_args)
 
     task_args = {
         "cluster": ClusterArn,
