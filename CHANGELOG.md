@@ -1,6 +1,17 @@
 # Changelog
 
-## latest (2022-04-07)
+## latest (2022-04-19)
+
+#### New Features
+
+* add image reference listing
+#### Fixes
+
+* network configuration params for run task ([#342](https://github.com/hamlet-io/executor-python/issues/342))
+
+Full set of changes: [`9.20.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.20.0...latest)
+
+## 9.20.0 (2022-04-08)
 
 #### New Features
 
@@ -12,8 +23,11 @@
 
 * use base commands for build refererences and images
 * distutils strtobool
+#### Others
 
-Full set of changes: [`9.19.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.19.1...latest)
+* changelog bump ([#334](https://github.com/hamlet-io/executor-python/issues/334))
+
+Full set of changes: [`9.19.1...9.20.0`](https://github.com/hamlet-io/executor-python/compare/9.19.1...9.20.0)
 
 ## 9.19.1 (2022-03-31)
 
