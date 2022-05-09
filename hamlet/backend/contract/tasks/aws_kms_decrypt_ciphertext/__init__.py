@@ -16,7 +16,7 @@ def run(
     the provided credentials and return the plaintext result as a string
     """
 
-    if EncryptionScheme != "":
+    if EncryptionScheme:
         Ciphertext = Ciphertext.replace(EncryptionScheme, "", 1)
     Ciphertext = b64decode(Ciphertext)
 
