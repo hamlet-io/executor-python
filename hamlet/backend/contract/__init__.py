@@ -36,10 +36,15 @@ def run(contract, silent, engine, env):
                     for substitution in substitutions:
                         if substitution.startswith("Properties:"):
                             property = substitution.split(":", 1)[1]
-                            replaced_params[k] = replaced_params[k].replace(
-                                f"__Properties:{property}__",
-                                properties.get(property, ""),
-                            )
+
+                            replacement_value = properties.get(property, "")
+                            if isinstance(replacement_value, bool):
+                                replaced_params[k] = replacement_value
+                            else:
+                                replaced_params[k] = replaced_params[k].replace(
+                                    f"__Properties:{property}__",
+                                    str(properties.get(property, "")),
+                                )
 
             replaced_params["env"] = {**engine.environment, **env}
             try:
