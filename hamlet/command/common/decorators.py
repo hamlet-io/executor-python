@@ -77,7 +77,7 @@ def common_cli_config_options(func):
 
 
 def common_logging_options(func):
-    """Add commmon options for logging"""
+    """Add common options for logging"""
 
     @click.option(
         "--log-level",
@@ -176,7 +176,7 @@ def common_engine_options(func):
 
 
 def common_generation_options(func):
-    """Add commmon options for generation"""
+    """Add common options for generation"""
 
     @click.option(
         "-p",
@@ -226,8 +226,15 @@ def common_district_options(func):
     @click.option(
         "--root-dir",
         envvar="ROOT_DIR",
-        help="The root CMDB directory (default: CMDB current location)",
+        help="The root CMDB directory",
         show_envvar=True,
+        type=click.Path(
+            file_okay=False,
+            dir_okay=True,
+            writable=True,
+            resolve_path=True,
+            allow_dash=False,
+        ),
     )
     @click.option(
         "--district-type",
@@ -239,7 +246,7 @@ def common_district_options(func):
     @click.option(
         "--tenant",
         envvar="TENANT",
-        help="The tenant name to use (default: CMDB current location)",
+        help="The tenant name to use",
         show_envvar=True,
     )
     @click.option(
@@ -251,19 +258,19 @@ def common_district_options(func):
     @click.option(
         "--product",
         envvar="PRODUCT",
-        help="The product name to use (default: CMDB current location)",
+        help="The product name to use",
         show_envvar=True,
     )
     @click.option(
         "--environment",
         envvar="ENVIRONMENT",
-        help="The environment name to use (default: CMDB current location)",
+        help="The environment name to use",
         show_envvar=True,
     )
     @click.option(
         "--segment",
         envvar="SEGMENT",
-        help="The segment name to use (default: CMDB current location)",
+        help="The segment name to use",
         show_envvar=True,
     )
     @click.pass_context

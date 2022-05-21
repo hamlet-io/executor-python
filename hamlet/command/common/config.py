@@ -33,7 +33,16 @@ class ConfigSchema(object):
     class Profile(SectionSchema):
         """Profile-specific configuration schema."""
 
-        root_dir = ConfigParam(name="root_dir", type=click.Path())
+        root_dir = ConfigParam(
+            name="root_dir",
+            type=click.Path(
+                file_okay=False,
+                dir_okay=True,
+                writable=True,
+                resolve_path=True,
+                allow_dash=False,
+            ),
+        )
         district_type = ConfigParam(name="district_type", type=str)
         tenant = ConfigParam(name="tenant", type=str)
         account = ConfigParam(name="account", type=str)
