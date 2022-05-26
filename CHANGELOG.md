@@ -1,6 +1,21 @@
 # Changelog
 
-## latest (2022-04-19)
+## latest (2022-05-23)
+
+#### New Features
+
+* (task): add secrets manager task
+* add contract task for SES SMTP password generation
+#### Fixes
+
+* resolve root dir to absolute path
+#### Refactorings
+
+* remove solution layer from cmdb generation
+
+Full set of changes: [`9.21.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.21.0...latest)
+
+## 9.21.0 (2022-04-20)
 
 #### New Features
 
@@ -8,8 +23,11 @@
 #### Fixes
 
 * network configuration params for run task ([#342](https://github.com/hamlet-io/executor-python/issues/342))
+#### Others
 
-Full set of changes: [`9.20.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.20.0...latest)
+* changelog bump ([#339](https://github.com/hamlet-io/executor-python/issues/339))
+
+Full set of changes: [`9.20.0...9.21.0`](https://github.com/hamlet-io/executor-python/compare/9.20.0...9.21.0)
 
 ## 9.20.0 (2022-04-08)
 
