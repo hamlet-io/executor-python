@@ -8,6 +8,7 @@ from hamlet.command.common import exceptions
     "deployment",
     short_help="Manage an Azure Resource Manager (ARM) deployment",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option("-d", "--delete", help="delete the deployment", is_flag=True)
 @click.option(

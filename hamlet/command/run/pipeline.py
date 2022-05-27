@@ -8,6 +8,7 @@ from hamlet.command.common.config import pass_options
     "pipeline",
     short_help="Run an AWS Data pipeline",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option(
     "-i",

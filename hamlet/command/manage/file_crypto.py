@@ -8,6 +8,7 @@ from hamlet.command.common import exceptions
     "file-crypto",
     short_help="Manage crypto for files",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option("-d", "--decrypt", is_flag=True, help="decrypt file")
 @click.option("-e", "--encrypt", is_flag=True, help="encrypt file")
