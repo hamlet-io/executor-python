@@ -8,6 +8,7 @@ from hamlet.command.common import exceptions
     "credential-crypto",
     short_help="Manage crypto for credential storage",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option(
     "-e",

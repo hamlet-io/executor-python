@@ -8,6 +8,7 @@ from hamlet.command.common.config import pass_options
     "lambda",
     short_help="Run an AWS Lambda Function",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option(
     "-f",

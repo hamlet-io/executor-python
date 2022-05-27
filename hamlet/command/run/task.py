@@ -5,7 +5,10 @@ from hamlet.command.common.config import pass_options
 
 
 @click.command(
-    "task", short_help="Run an ECS task", context_settings=dict(max_content_width=240)
+    "task",
+    short_help="Run an ECS task",
+    context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option(
     "-t",

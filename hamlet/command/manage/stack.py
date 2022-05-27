@@ -8,6 +8,7 @@ from hamlet.command.common import exceptions
     "stack",
     short_help="Manage a CloudFormation stack",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option("-d", "--delete", help="delete the stack", is_flag=True)
 @click.option(

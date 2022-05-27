@@ -8,6 +8,7 @@ from hamlet.command.common import exceptions
     "crypto",
     short_help="Manage cryptographic operations using KMS",
     context_settings=dict(max_content_width=240),
+    deprecated=True,
 )
 @click.option("-a", "--alias", help="alias for the master key to be used")
 @click.option(
