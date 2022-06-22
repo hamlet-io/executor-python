@@ -39,18 +39,19 @@ setup(
         "www-authenticate>=0.9.2,<1.0.0",
         "httpx>=0.21.2,<1.0.0",
         "marshmallow>=3.7.0,<4.0.0",
-        # Template testing
-        "pytest>=6.0.0,<7.0.0",
-        "cfn-lint>=0.54.1,<1.0.0",
-        "checkov>=2.0.461,<3.0.0",
         # contract execution
         "boto3>=1.20.0,<2.0.0",
         "botocore>=1.20.0,<2.0.0",
         "fabric>=2.6.0,<3.0.0",
         "simple-term-menu>=1.4.1,<2.0.0",
+        "docker>=5.0.3,<6.0.0",
         # Diagrams
         "diagrams>=0.18.0,<1.0.0",
         "semver>=2.13.0,<3.0.0",
+        # Template testing
+        "pytest>=6.0.0,<7.0.0",
+        "cfn-lint>=0.54.1,<1.0.0",
+        "checkov>=2.0.461,<3.0.0",
     ],
     extras_require={
         "dev": [

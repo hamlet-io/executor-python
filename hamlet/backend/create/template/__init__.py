@@ -28,8 +28,12 @@ def run(
     segment=None,
     engine=None,
     _is_cli=False,
-    **kwargs
+    **kwargs,
 ):
+
+    if isinstance(entrance_parameter, dict):
+        entrance_parameter = tuple([f"{k}={v}" for k, v in entrance_parameter.items()])
+
     options = {
         "-e": entrance,
         "-c": config_ref,
