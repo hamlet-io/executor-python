@@ -9,6 +9,8 @@ def run(Condition, Test, Value, env={}):
 
     if Condition == "Equals":
         result = Test == Value
+    elif Condition == "NotEquals":
+        result = Test != Value
     elif Condition == "StartsWith":
         result = Value.startswith(Test)
     elif Condition == "EndsWith":

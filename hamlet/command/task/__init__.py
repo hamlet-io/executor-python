@@ -171,5 +171,8 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
             contract,
             silent,
             options.engine,
-            {"HAMLET_HOME_DIR": options.opts.get("hamlet_home_dir", "")},
+            {
+                "HAMLET_HOME_DIR": options.opts.get("hamlet_home_dir", ""),
+                "_engine": options.engine,
+            },
         )
