@@ -19,7 +19,6 @@ def query_imagedetails_output(options, query, query_params=None, sub_query_text=
         **options.opts,
         "generation_entrance": "imagedetails",
         "output_filename": "imagedetails-config.json",
-        "use_cache": False,
     }
     query_result = query_backend.run(
         **query_args,

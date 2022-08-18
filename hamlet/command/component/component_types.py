@@ -14,7 +14,6 @@ def query_info_output(options, engine, query, query_params=None, sub_query_text=
         **options.opts,
         "generation_entrance": "info",
         "output_filename": "info.json",
-        "use_cache": False,
     }
     query_result = query_backend.run(
         **query_args,

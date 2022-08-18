@@ -12,7 +12,6 @@ def get_automation_properties(engine=None, **kwargs):
         "generation_entrance": "releaseinfo",
         "output_filename": "releaseinfo-config.json",
         "output_format": "default",
-        "use_cache": False,
     }
     automation_properties = query_backend.run(
         **query_args,
