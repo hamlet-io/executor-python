@@ -31,7 +31,7 @@ setup(
     install_requires=[
         "click>=8.0.3,<9.0.0",
         "click-configfile>=0.2.3,<1.0.0",
-        "cookiecutter>=1.7.0,<2.0.0",
+        "cookiecutter>=2.1.1,<3.0.0",
         "tabulate>=0.8.0,<1.0.0",
         "Jinja2>=3.0.3,<4.0.0",
         "jmespath>=0.10.0,<1.0.0",
