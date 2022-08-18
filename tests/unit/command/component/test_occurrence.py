@@ -1,7 +1,5 @@
 import os
-import hashlib
 import json
-import tempfile
 from unittest import mock
 from click.testing import CliRunner
 
@@ -13,49 +11,21 @@ from hamlet.command.component.common import DescribeContext
 
 
 def template_backend_run_mock(data):
-    def run(
-        entrance="occurrences",
-        entrance_parameter=None,
-        output_filename="occurrences-state.json",
-        output_dir=None,
-        deployment_mode=None,
-        generation_input_source=None,
-        generation_provider=None,
-        generation_framework=None,
-        log_level=None,
-        district_type=None,
-        root_dir=None,
-        tenant=None,
-        account=None,
-        product=None,
-        environment=None,
-        segment=None,
-        engine=None,
-    ):
-        os.makedirs(output_dir, exist_ok=True)
-        blueprint_filename = os.path.join(output_dir, output_filename)
-        with open(blueprint_filename, "wt+") as f:
+    def run(output_filename="occurrences-state.json", output_dir=None, *args, **kwargs):
+        filename = os.path.join(output_dir, output_filename)
+        with open(filename, "wt+") as f:
             json.dump(data, f)
 
     return run
 
 
-def mock_backend(blueprint=None):
+def mock_backend(data=None):
     def decorator(func):
-        @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
-        def wrapper(blueprint_mock, ContextClassMock, *args, **kwargs):
-            with tempfile.TemporaryDirectory() as temp_cache_dir:
+        def wrapper(blueprint_mock, *args, **kwargs):
 
-                ContextObjectMock = ContextClassMock()
-                ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(blueprint).encode()).hexdigest()
-                )
-                ContextObjectMock.cache_dir = temp_cache_dir
-
-                blueprint_mock.run.side_effect = template_backend_run_mock(blueprint)
-
-                return func(blueprint_mock, ContextClassMock, *args, **kwargs)
+            blueprint_mock.run.side_effect = template_backend_run_mock(data)
+            return func(blueprint_mock, *args, **kwargs)
 
         return wrapper
 
@@ -116,10 +86,10 @@ occurrence_state_data = {
 
 
 @mock_backend(occurrence_state_data)
-def test_list_occurrences(blueprint_mock, ContextClassMock):
+def test_list_occurrences(blueprint_mock):
     cli = CliRunner()
     result = cli.invoke(list_occurrences, ["--output-format", "json"])
-    print(result.exception)
+    print(result.stdout)
     assert result.exit_code == 0
     result = json.loads(result.output)
     print(result)
@@ -140,7 +110,7 @@ def test_list_occurrences(blueprint_mock, ContextClassMock):
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence(blueprint_mock, ContextClassMock):
+def test_describe_occurrence(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]"])
@@ -151,7 +121,7 @@ def test_describe_occurrence(blueprint_mock, ContextClassMock):
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
+def test_describe_occurrence_query(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(
@@ -165,7 +135,7 @@ def test_describe_occurrence_query(blueprint_mock, ContextClassMock):
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
+def test_describe_occurrence_query_solution(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "solution"])
@@ -176,7 +146,7 @@ def test_describe_occurrence_query_solution(blueprint_mock, ContextClassMock):
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
+def test_describe_occurrence_query_resources(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "resources"])
@@ -189,7 +159,7 @@ def test_describe_occurrence_query_resources(blueprint_mock, ContextClassMock):
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextClassMock):
+def test_describe_occurrence_query_setting_namespaces(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(
@@ -202,7 +172,7 @@ def test_describe_occurrence_query_setting_namespaces(blueprint_mock, ContextCla
 
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
-def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
+def test_describe_occurrence_query_attributes(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(
@@ -221,7 +191,7 @@ def test_describe_occurrence_query_attributes(blueprint_mock, ContextClassMock):
 
 
 @mock_backend(occurrence_state_data)
-def test_query_occurrences(blueprint_mock, ContextClassMock):
+def test_query_occurrences(blueprint_mock):
 
     cli = CliRunner()
     result = cli.invoke(

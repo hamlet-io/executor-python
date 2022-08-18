@@ -1,7 +1,5 @@
 import os
-import hashlib
 import json
-import tempfile
 import collections
 
 from unittest import mock
@@ -38,23 +36,7 @@ info_mock_output = {
 
 def template_backend_run_mock(data):
     def run(
-        entrance="imagedetails",
-        entrance_parameter=None,
-        output_filename="imagedetails-config.json",
-        deployment_mode=None,
-        output_dir=None,
-        generation_input_source=None,
-        generation_provider=None,
-        generation_framework=None,
-        log_level=None,
-        root_dir=None,
-        district_type=None,
-        tenant=None,
-        account=None,
-        product=None,
-        environment=None,
-        segment=None,
-        engine=None,
+        output_filename="imagedetails-config.json", output_dir=None, *args, **kwargs
     ):
         os.makedirs(output_dir, exist_ok=True)
         filename = os.path.join(output_dir, output_filename)
@@ -66,19 +48,10 @@ def template_backend_run_mock(data):
 
 def mock_backend(data=None):
     def decorator(func):
-        @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
-        def wrapper(blueprint_mock, ContextClassMock, *args, **kwargs):
-            with tempfile.TemporaryDirectory() as temp_cache_dir:
-
-                ContextObjectMock = ContextClassMock()
-                ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(data).encode()).hexdigest()
-                )
-                ContextObjectMock.cache_dir = temp_cache_dir
-                blueprint_mock.run.side_effect = template_backend_run_mock(data)
-
-                return func(blueprint_mock, ContextClassMock, *args, **kwargs)
+        def wrapper(blueprint_mock, *args, **kwargs):
+            blueprint_mock.run.side_effect = template_backend_run_mock(data)
+            return func(blueprint_mock, *args, **kwargs)
 
         return wrapper
 
@@ -93,7 +66,6 @@ LIST_TYPES_VALID_OPTIONS["--output-format"] = "json"
 @mock_backend(info_mock_output)
 def test_list_image_references_input_valid(
     blueprint_mock,
-    ContextClassMock,
 ):
     run_options_test(
         CliRunner(), list_image_references, LIST_TYPES_VALID_OPTIONS, blueprint_mock.run
@@ -101,7 +73,7 @@ def test_list_image_references_input_valid(
 
 
 @mock_backend(info_mock_output)
-def test_list_image_references(blueprint_mock, ContextClassMock):
+def test_list_image_references(blueprint_mock):
     obj = Options()
 
     cli = CliRunner()

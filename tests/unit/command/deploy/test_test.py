@@ -1,6 +1,4 @@
 import collections
-import tempfile
-import hashlib
 import json
 import os
 
@@ -23,23 +21,10 @@ ALL_VALID_OPTIONS["-s,--silent"] = False
 
 def template_backend_run_mock(data):
     def run(
-        entrance="unitlist",
-        entrance_parameter=None,
         output_filename="unitlist-managementcontract.json",
-        deployment_mode=None,
         output_dir=None,
-        generation_input_source=None,
-        generation_provider=None,
-        generation_framework=None,
-        log_level=None,
-        root_dir=None,
-        district_type=None,
-        tenant=None,
-        account=None,
-        product=None,
-        environment=None,
-        segment=None,
-        engine=None,
+        *args,
+        **kwargs
     ):
         os.makedirs(output_dir, exist_ok=True)
         unitlist_filename = os.path.join(output_dir, output_filename)
@@ -55,33 +40,17 @@ def mock_backend(unitlist=None):
         @mock.patch("hamlet.command.deploy.test.test_generate_backend")
         @mock.patch("hamlet.command.deploy.test.create_template_backend")
         @mock.patch("hamlet.command.deploy.test.create_deployment")
-        @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
         def wrapper(
             blueprint_mock,
-            ContextClassMock,
             create_deployment_backend,
             create_template_backend,
             *args,
             **kwargs
         ):
-            with tempfile.TemporaryDirectory() as temp_cache_dir:
+            blueprint_mock.run.side_effect = template_backend_run_mock(unitlist)
 
-                ContextObjectMock = ContextClassMock()
-                ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(unitlist).encode()).hexdigest()
-                )
-                ContextObjectMock.cache_dir = temp_cache_dir
-
-                blueprint_mock.run.side_effect = template_backend_run_mock(unitlist)
-
-                return func(
-                    blueprint_mock,
-                    ContextClassMock,
-                    create_template_backend,
-                    *args,
-                    **kwargs
-                )
+            return func(blueprint_mock, create_template_backend, *args, **kwargs)
 
         return wrapper
 
@@ -122,7 +91,6 @@ unit_list = {
 @mock_backend(unit_list)
 def test_input_valid(
     blueprint_mock,
-    ContextClassMock,
     create_template_backend,
     test_generate_backend,
     test_run_backend,
@@ -136,7 +104,6 @@ def test_input_valid(
 @mock_backend(unit_list)
 def test_input_validation(
     blueprint_mock,
-    ContextClassMock,
     create_template_backend,
     test_generate_backend,
     test_run_backend,
