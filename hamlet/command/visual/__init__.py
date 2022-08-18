@@ -24,7 +24,6 @@ def find_diagrams_from_options(options, ids):
         **options.opts,
         "generation_entrance": "diagraminfo",
         "output_filename": "diagraminfo.json",
-        "use_cache": False,
     }
     available_diagrams = query_backend.run(
         **query_args,
@@ -203,7 +202,6 @@ def list_diagram_types(options):
         "generation_input_source": "mock",
         "generation_entrance": "diagraminfo",
         "output_filename": "diagraminfo.json",
-        "use_cache": False,
     }
 
     return query_backend.run(

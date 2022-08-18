@@ -56,7 +56,6 @@ def list_entrances(options):
         "generation_input_source": "mock",
         "generation_entrance": "info",
         "output_filename": "info.json",
-        "use_cache": False,
     }
 
     return query_backend.run(

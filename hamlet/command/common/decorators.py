@@ -31,15 +31,6 @@ def common_cli_config_options(func):
         show_envvar=True,
     )
     @click.option(
-        "--cli-config-dir",
-        type=click.Path(file_okay=False, dir_okay=True, readable=True),
-        envvar="HAMLET_CLI_CONFIG_DIR",
-        default=get_home_dir_default("config"),
-        help="The directory where profile configuration is stored",
-        show_default=True,
-        show_envvar=True,
-    )
-    @click.option(
         "--hamlet-home-dir",
         type=click.Path(file_okay=False, dir_okay=True, readable=True, writable=True),
         envvar="HAMLET_HOME_DIR",
@@ -49,11 +40,11 @@ def common_cli_config_options(func):
         show_envvar=True,
     )
     @click.option(
-        "--cli-cache-dir",
-        type=click.Path(file_okay=False, dir_okay=True, readable=True, writable=True),
-        envvar="HAMLET_CLI_CACHE_DIR",
-        default=get_home_dir_default("cache"),
-        help="The directory where the cli can cache generation outputs",
+        "--cli-config-dir",
+        type=click.Path(file_okay=False, dir_okay=True, readable=True),
+        envvar="HAMLET_CLI_CONFIG_DIR",
+        default=get_home_dir_default("config"),
+        help="The directory where profile configuration is stored",
         show_default=True,
         show_envvar=True,
     )
@@ -64,7 +55,6 @@ def common_cli_config_options(func):
         Config file handling
         """
         opts = ctx.ensure_object(Options)
-        opts.cli_cache_dir = kwargs.pop("cli_cache_dir")
         opts.hamlet_home_dir = kwargs.pop("hamlet_home_dir")
         opts.load_config_file(
             profile=kwargs.pop("profile"), searchpath=kwargs.pop("cli_config_dir")

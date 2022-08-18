@@ -148,16 +148,6 @@ class Options:
         self._set_option("hamlet_home_dir", value)
 
     @property
-    def cli_cache_dir(self):
-        """The cli cache dir"""
-        return self._get_option("cli_cache_dir")
-
-    @cli_cache_dir.setter
-    def cli_cache_dir(self, value):
-        """Set the cli cache dir"""
-        self._set_option("cli_cache_dir", value)
-
-    @property
     def log_level(self):
         """Get the log_level setting"""
         return self._get_option("log_level")

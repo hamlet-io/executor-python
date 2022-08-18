@@ -40,7 +40,6 @@ def find_deployments(
         "deployment_mode": deployment_mode,
         "generation_entrance": "unitlist",
         "output_filename": "unitlist-managementcontract.json",
-        "use_cache": False,
     }
     available_deployments = query_backend.run(
         **query_args,

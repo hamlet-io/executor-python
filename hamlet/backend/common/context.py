@@ -1,6 +1,4 @@
 import os
-import json
-import hashlib
 from .exceptions import BackendException
 from .fsutils import ContextSearch, Search, File
 
@@ -83,11 +81,6 @@ class Context:
     def root_dir(self, value):
         self.__root_dir = value
 
-    # Cache dir path
-    @property
-    def cache_dir(self):
-        return self.__cache_dir
-
     @property
     def account_dir(self):
         return self._account_dir
@@ -108,16 +101,11 @@ class Context:
     def setup(self):
         pass
 
-    def md5_hash(self):
-        hash_str = f"{self.level_name}:{self.level_file}:{self.directory}:{json.dumps(self.config)}"
-        return hashlib.md5(hash_str.encode()).hexdigest()
-
     def __init__(
         self,
         directory: str,
         root_dir: str = None,
         config: dict = None,
-        cache_dir: str = None,
     ):
         config = config or {}
         self.config = config
@@ -133,11 +121,6 @@ class Context:
             self.__root_dir = root_dir
         else:
             self.__try_to_find_root()
-
-        if cache_dir is not None:
-            self.__cache_dir = cache_dir
-        else:
-            self.__cache_dir = os.path.join(self.__root_dir, "cache")
 
         if self.ACCOUNT_REQUIRED or self.TENANT_REQUIRED:
             self.__try_to_set_tenant()

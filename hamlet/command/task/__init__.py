@@ -18,7 +18,6 @@ def query_runbookinfo_state(options, query, query_params=None, sub_query_text=No
         **options.opts,
         "generation_entrance": "runbookinfo",
         "output_filename": "runbookinfo-config.json",
-        "use_cache": False,
     }
     query_result = query_backend.run(
         **query_args,
@@ -162,7 +161,6 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
                 f"RunBookInputs={json.dumps(inputs)}",
             ),
             "output_filename": "runbook-contract.json",
-            "use_cache": False,
         }
         contract = query_backend.run(
             **query_args, engine=options.engine, cwd=os.getcwd(), query=None

@@ -18,7 +18,6 @@ def find_schemas_from_options(options, schema):
         "deployment_mode": None,
         "generation_entrance": "schemalist",
         "output_filename": "schemalist-schemacontract.json",
-        "use_cache": False,
     }
     available_schemas = query_backend.run(
         **query_args,
