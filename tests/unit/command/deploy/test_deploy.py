@@ -1,6 +1,4 @@
 import collections
-import tempfile
-import hashlib
 import json
 import os
 
@@ -25,27 +23,14 @@ ALL_VALID_OPTIONS["--dryrun"] = True
 
 def template_backend_run_mock(data):
     def run(
-        entrance="unitlist",
-        entrance_parameter=None,
         output_filename="unitlist-managementcontract.json",
-        deployment_mode=None,
         output_dir=None,
-        generation_input_source=None,
-        generation_provider=None,
-        generation_framework=None,
-        log_level=None,
-        root_dir=None,
-        district_type=None,
-        tenant=None,
-        account=None,
-        product=None,
-        environment=None,
-        segment=None,
-        engine=None,
+        *args,
+        **kwargs
     ):
         os.makedirs(output_dir, exist_ok=True)
-        unitlist_filename = os.path.join(output_dir, output_filename)
-        with open(unitlist_filename, "wt+") as f:
+        filepath = os.path.join(output_dir, output_filename)
+        with open(filepath, "wt+") as f:
             json.dump(data, f)
 
     return run
@@ -55,34 +40,23 @@ def mock_backend(unitlist=None):
     def decorator(func):
         @mock.patch("hamlet.command.deploy.run.run_deployment")
         @mock.patch("hamlet.command.deploy.run.create_deployment")
-        @mock.patch("hamlet.backend.query.context.Context")
         @mock.patch("hamlet.backend.query.template")
         def wrapper(
             blueprint_mock,
-            ContextClassMock,
             create_deployment_backend,
             run_deployment_backend,
             *args,
             **kwargs
         ):
-            with tempfile.TemporaryDirectory() as temp_cache_dir:
+            blueprint_mock.run.side_effect = template_backend_run_mock(unitlist)
 
-                ContextObjectMock = ContextClassMock()
-                ContextObjectMock.md5_hash.return_value = str(
-                    hashlib.md5(str(unitlist).encode()).hexdigest()
-                )
-                ContextObjectMock.cache_dir = temp_cache_dir
-
-                blueprint_mock.run.side_effect = template_backend_run_mock(unitlist)
-
-                return func(
-                    blueprint_mock,
-                    ContextClassMock,
-                    create_deployment_backend,
-                    run_deployment_backend,
-                    *args,
-                    **kwargs
-                )
+            return func(
+                blueprint_mock,
+                create_deployment_backend,
+                run_deployment_backend,
+                *args,
+                **kwargs
+            )
 
         return wrapper
 
@@ -121,9 +95,7 @@ unit_list = {
 
 
 @mock_backend(unit_list)
-def test_input_valid(
-    blueprint_mock, ContextClassMock, create_deployment_backend, run_deployment_backend
-):
+def test_input_valid(blueprint_mock, create_deployment_backend, run_deployment_backend):
     run_options_test(
         CliRunner(), run_deployments, ALL_VALID_OPTIONS, blueprint_mock.run
     )
@@ -131,7 +103,7 @@ def test_input_valid(
 
 @mock_backend(unit_list)
 def test_input_validation(
-    blueprint_mock, ContextClassMock, create_deployment_backend, run_deployment_backend
+    blueprint_mock, create_deployment_backend, run_deployment_backend
 ):
     runner = CliRunner()
     run_validatable_option_test(

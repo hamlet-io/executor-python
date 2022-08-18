@@ -5,7 +5,7 @@ that we need to maintain. And because of that tests become much more accurate
 and reliable.
 
 Sure, manual individual testing is somewhat better but I think that we'll test "backend" part of our script separately.
-Therefore this module will be usefull even after we'll rewrite everything in python.
+Therefore this module will be useful even after we'll rewrite everything in python.
 """
 
 
@@ -130,7 +130,7 @@ def generate_test_options_collection(all_options):
             '--option', 'value',
             '--multi', 'b'
         ]
-    Function does not create all posible combinations. Instead it freezes first value of all keys with
+    Function does not create all possible combinations. Instead it freezes first value of all keys with
     iterable collection values and then creates variations by iterating over one of the keys with collection values
     untill all of them iterated.
     """
@@ -292,6 +292,7 @@ def run_options_test(runner, cmd, options, runner_mock):
     for args in generate_test_options_collection(options):
         result = runner.invoke(cmd, args)
         logger.info(result.exc_info)
+        print(result.stdout)
         assert result.exit_code == 0, result.output
         assert runner_mock.call_count == 1
         runner_mock.call_count = 0
