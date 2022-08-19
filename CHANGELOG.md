@@ -1,6 +1,23 @@
 # Changelog
 
-## latest (2022-05-23)
+## latest (2022-08-19)
+
+#### New Features
+
+* add support for image management via tasks
+#### Refactorings
+
+* test updates for caching and cleanup
+* remove context cache used for queries
+* changelog share pipeline
+* deprecate commands replaced by runbooks and native commands
+#### Others
+
+* update cookiecutter
+
+Full set of changes: [`9.22.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.22.0...latest)
+
+## 9.22.0 (2022-05-27)
 
 #### New Features
 
@@ -12,8 +29,11 @@
 #### Refactorings
 
 * remove solution layer from cmdb generation
+#### Others
 
-Full set of changes: [`9.21.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.21.0...latest)
+* changelog bump ([#343](https://github.com/hamlet-io/executor-python/issues/343))
+
+Full set of changes: [`9.21.0...9.22.0`](https://github.com/hamlet-io/executor-python/compare/9.21.0...9.22.0)
 
 ## 9.21.0 (2022-04-20)
 
