@@ -17,11 +17,5 @@ class HTTPClient(Client):
         **kwargs
     ):
         super().__init__(
-            *args,
-            http1,
-            http2,
-            timeout,
-            follow_redirects,
-            trust_env,
-            **kwargs
+            *args, http1, http2, timeout, follow_redirects, trust_env, **kwargs
         )
