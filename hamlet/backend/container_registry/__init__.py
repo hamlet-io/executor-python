@@ -8,7 +8,7 @@ import typing
 import www_authenticate
 import json
 
-from common.http_client import HTTPClient
+from hamlet.backend.common.http_client import HTTPClient
 
 from urllib import parse
 
