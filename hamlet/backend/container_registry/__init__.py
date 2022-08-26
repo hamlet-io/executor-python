@@ -8,21 +8,15 @@ import typing
 import www_authenticate
 import json
 
+from common.http_client import HTTPClient
+
 from urllib import parse
 
-timeout = httpx.Timeout(timeout=5.0, read=120.0)
-transport = httpx.HTTPTransport(retries=3)
-
-container_httpx_client = httpx.Client(
-    headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"},
-    follow_redirects=True,
-    transport=transport,
-    timeout=timeout,
+container_httpx_client = HTTPClient(
+    headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"}
 )
 
-auth_httpx_client = httpx.Client(
-    transport=transport,
-)
+auth_httpx_client = HTTPClient()
 
 
 class ContainerRepositoryException(BaseException):
