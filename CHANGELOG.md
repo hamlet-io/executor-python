@@ -12,6 +12,7 @@
 * remove deprecated expo_app_publish param
 #### Others
 
+* update changelog ([#353](https://github.com/hamlet-io/executor-python/issues/353))
 * fix formatting
 
 Full set of changes: [`9.23.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.23.0...latest)
