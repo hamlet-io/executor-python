@@ -9,16 +9,9 @@ from tests.unit.command.test_option_generation import (
 
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
+ALL_VALID_OPTIONS["-l,--deployment-group"] = "group"
 ALL_VALID_OPTIONS["!-u,--deployment-unit"] = "unit"
-ALL_VALID_OPTIONS["-s,--run-setup"] = [True, False]
-ALL_VALID_OPTIONS["-f,--force-binary-build"] = [True, False]
-ALL_VALID_OPTIONS["-m,--submit-binary"] = [True, False]
-ALL_VALID_OPTIONS["-b,--binary-build-process"] = "fastlane"
-ALL_VALID_OPTIONS["-l,--build-logs"] = [True, False]
-ALL_VALID_OPTIONS["-e,--environment-badge"] = [True, False]
-ALL_VALID_OPTIONS["-d,--environment-badge-content"] = "environment"
-ALL_VALID_OPTIONS["-n,--node-package-manager"] = "yarn"
-ALL_VALID_OPTIONS["-v,--app-version-source"] = "cmdb"
+ALL_VALID_OPTIONS["-n,--node-package-manager"] = "auto"
 ALL_VALID_OPTIONS["-o,--binary-output-dir"] = "binary_output_dir"
 
 
