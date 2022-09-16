@@ -1,6 +1,22 @@
 # Changelog
 
-## latest (2022-08-19)
+## latest (2022-09-16)
+
+#### Fixes
+
+* testing updates
+* import
+* remove use of transport from httpx client
+#### Refactorings
+
+* remove deprecated expo_app_publish param
+#### Others
+
+* fix formatting
+
+Full set of changes: [`9.23.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.23.0...latest)
+
+## 9.23.0 (2022-08-19)
 
 #### New Features
 
@@ -13,9 +29,10 @@
 * deprecate commands replaced by runbooks and native commands
 #### Others
 
+* update changelog ([#348](https://github.com/hamlet-io/executor-python/issues/348))
 * update cookiecutter
 
-Full set of changes: [`9.22.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.22.0...latest)
+Full set of changes: [`9.22.0...9.23.0`](https://github.com/hamlet-io/executor-python/compare/9.22.0...9.23.0)
 
 ## 9.22.0 (2022-05-27)
 
