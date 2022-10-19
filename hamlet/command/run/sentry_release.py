@@ -30,6 +30,11 @@ from hamlet.command.common.config import pass_options
     type=click.Choice(["", "react-native"]),
     help="The application framework being used",
 )
+@click.option(
+    "-d",
+    "--dist",
+    help="A distribution Identifier for the file",
+)
 @click.option("-p", "--sentry-url-prefix", help="prefix for sourcemap files")
 @click.option(
     "-r",

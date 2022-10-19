@@ -8,6 +8,7 @@ def run(
     sentry_url_prefix=None,
     sentry_release_name=None,
     app_type=None,
+    dist=None,
     log_level=None,
     log_format=None,
     root_dir=None,
@@ -27,6 +28,7 @@ def run(
         "-u": deployment_unit,
         "-g": deployment_group,
         "-a": app_type,
+        "-d": dist,
     }
     env = {
         "GENERATION_LOG_LEVEL": log_level,
