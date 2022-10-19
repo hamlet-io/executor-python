@@ -11,6 +11,7 @@ ALL_VALID_OPTIONS["!-r,--sentry-release-name"] = "release_name"
 ALL_VALID_OPTIONS["-g,--deployment-group"] = "deployment_group"
 ALL_VALID_OPTIONS["-p,--sentry-url-prefix"] = "url_prefix"
 ALL_VALID_OPTIONS["-a,--app-type"] = "react-native"
+ALL_VALID_OPTIONS["-d,--dist"] = "distribution"
 
 
 @mock.patch("hamlet.command.run.sentry_release.run_sentry_release_backend")
