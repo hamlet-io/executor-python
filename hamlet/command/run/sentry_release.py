@@ -33,7 +33,7 @@ from hamlet.command.common.config import pass_options
 @click.option(
     "-d",
     "--dist",
-    help="The distribution value",
+    help="A distribution Identifier for the file",
 )
 @click.option("-p", "--sentry-url-prefix", help="prefix for sourcemap files")
 @click.option(
