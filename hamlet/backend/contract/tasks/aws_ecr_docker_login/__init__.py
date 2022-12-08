@@ -4,6 +4,7 @@ from base64 import b64decode
 import boto3
 import docker
 import docker.errors
+import subprocess
 
 
 def run(
@@ -47,14 +48,20 @@ def run(
         .decode("utf-8")
     )
 
+    # See https://github.com/docker/docker-py/issues/1091
+    # docker-py caches its login processes and they are only available for the lifetime
+    # of the docker-py session
+    # So we don't have to pass the docker client around we perform the docker login
+    # directly using the docker command
     try:
-        docker_client.login(
-            username="AWS", password=ecr_password, registry=auth_token["proxyEndpoint"]
+        subprocess.run(
+            ["docker", "login", "--username", "AWS", "--password-stdin", auth_token["proxyEndpoint"]],
+            input=ecr_password,
+            check=True,
+            text=True
         )
 
-    except docker.errors.APIError as e:
+    except subprocess.CalledProcessError as e:
         raise BackendException(str(e))
-
-    docker_client.ping()
 
     return {"Properties": {"registry": auth_token["proxyEndpoint"]}}
