@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
       - name: install reqs
         run: |
-          pip install -e ./[dev]
+          pip install -e ./[dev] ./[output_testing] ./[diagrams]
 
       - name: Run tests
         run: |
@@ -37,10 +37,10 @@ jobs:
       - 'testing'
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
@@ -49,11 +49,11 @@ jobs:
           pip install -e ./[dev]
 
       - name: Create Release
-        run: >-
+        run: |
           python -m build --sdist --wheel --outdir dist/ .
 
       - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages_dir: dist

@@ -1,14 +1,14 @@
 import os
 import shutil
 import tempfile
-import importlib_resources
 
+from importlib.resources import files, is_resource, path
 from cookiecutter.main import cookiecutter as cookiecutter_main
 from hamlet.backend.common.exceptions import BackendException
 
 
 def extract_package_to_temp(package, tmp_dir, root_dir, package_dir):
-    for entry in importlib_resources.files(package).joinpath(package_dir).iterdir():
+    for entry in files(package).joinpath(package_dir).iterdir():
         entry_path = os.path.commonprefix([root_dir, entry])
         entry_path = str(entry).replace(entry_path, "").lstrip("/")
 
@@ -32,12 +32,10 @@ def cookiecutter(template_package, output_dir, **kwargs):
 
     with tempfile.TemporaryDirectory() as template_dir:
 
-        if importlib_resources.is_resource(template_package, "cookiecutter.json"):
-            with importlib_resources.path(
-                template_package, "cookiecutter.json"
-            ) as path:
+        if is_resource(template_package, "cookiecutter.json"):
+            with path(template_package, "cookiecutter.json") as package_path:
                 extract_package_to_temp(
-                    template_package, template_dir, os.path.dirname(path), ""
+                    template_package, template_dir, os.path.dirname(package_path), ""
                 )
         else:
             raise BackendException(

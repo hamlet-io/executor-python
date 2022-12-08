@@ -4,6 +4,12 @@
 def checkov_test(filename, framework, skip_checks=None):
     import json
     import subprocess
+    import shutil
+
+    if shutil.which("checkov") is None:
+        raise Exception(
+            "checkov command not found install from https://www.checkov.io/"
+        )
 
     cmd_args = [
         "checkov",
