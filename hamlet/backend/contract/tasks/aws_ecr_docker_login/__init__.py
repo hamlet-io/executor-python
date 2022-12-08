@@ -55,10 +55,17 @@ def run(
     # directly using the docker command
     try:
         subprocess.run(
-            ["docker", "login", "--username", "AWS", "--password-stdin", auth_token["proxyEndpoint"]],
+            [
+                "docker",
+                "login",
+                "--username",
+                "AWS",
+                "--password-stdin",
+                auth_token["proxyEndpoint"],
+            ],
             input=ecr_password,
             check=True,
-            text=True
+            text=True,
         )
 
     except subprocess.CalledProcessError as e:
