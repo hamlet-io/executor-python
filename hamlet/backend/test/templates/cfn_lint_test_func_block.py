@@ -4,6 +4,12 @@
 def cfn_lint_test(filename, ignore_checks=None):
     import json
     import subprocess
+    import shutil
+
+    if shutil.which("cfn-lint") is None:
+        raise Exception(
+            "cfn-lint command not found install from https://github.com/aws-cloudformation/cfn-lint"
+        )
 
     cmd_args = ["cfn-lint", "-f", "json", filename]
 
