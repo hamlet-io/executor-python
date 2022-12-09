@@ -65,15 +65,6 @@ setup(
             "Sphinx",
             "sphinx-markdown-builder",
             "sphinx-click",
-            "hamlet[output_testing]",
-            "hamlet[diagrams]",
-        ],
-        "output_testing": [
-            "cfn-lint>=0.72.2,<1.0.0",
-            "checkov>=2.2.130,<3.0.0",
-        ],
-        "diagrams": [
-            "diagrams>=0.18.0,<1.0.0",
         ],
     },
     include_package_data=True,

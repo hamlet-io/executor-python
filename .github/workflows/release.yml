@@ -24,7 +24,7 @@ jobs:
 
       - name: install reqs
         run: |
-          pip install -e ./[dev]
+          pip install -e ./[dev] checkov cfn-lint diagrams
 
       - name: Run tests
         run: |
