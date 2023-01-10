@@ -13,7 +13,7 @@ def run(SourcePath, DestinationPath, env={}):
         create_zip = False
         try:
             source_zip = ZipFile(SourcePath, "r")
-            source_zip.getinfo()
+            source_zip.testzip()
         except (BadZipFile, LargeZipFile):
             create_zip = True
 
