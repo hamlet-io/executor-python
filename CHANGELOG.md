@@ -7,11 +7,15 @@
 * add dist option for sentry release ([#358](https://github.com/hamlet-io/executor-python/issues/358))
 #### Fixes
 
+* (ci): update the gh action for pypi release ([#363](https://github.com/hamlet-io/executor-python/issues/363))
 * zip checking for zip task ([#361](https://github.com/hamlet-io/executor-python/issues/361))
 * ecr docker login process ([#359](https://github.com/hamlet-io/executor-python/issues/359))
 #### Refactorings
 
 * package management ([#360](https://github.com/hamlet-io/executor-python/issues/360))
+#### Others
+
+* update changelog ([#357](https://github.com/hamlet-io/executor-python/issues/357))
 
 Full set of changes: [`9.24.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.24.0...latest)
 
