@@ -1,6 +1,29 @@
 # Changelog
 
-## latest (2022-09-16)
+## latest (2023-01-10)
+
+#### New Features
+
+* add dist option for sentry release ([#358](https://github.com/hamlet-io/executor-python/issues/358))
+#### Fixes
+
+* zip checking for zip task ([#361](https://github.com/hamlet-io/executor-python/issues/361))
+* ecr docker login process ([#359](https://github.com/hamlet-io/executor-python/issues/359))
+#### Refactorings
+
+* package management ([#360](https://github.com/hamlet-io/executor-python/issues/360))
+
+Full set of changes: [`9.24.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.24.0...latest)
+
+## 9.24.0 (2022-10-14)
+
+#### Others
+
+* update changelog ([#356](https://github.com/hamlet-io/executor-python/issues/356))
+
+Full set of changes: [`9.23.1...9.24.0`](https://github.com/hamlet-io/executor-python/compare/9.23.1...9.24.0)
+
+## 9.23.1 (2022-09-16)
 
 #### Fixes
 
@@ -15,7 +38,7 @@
 * update changelog ([#353](https://github.com/hamlet-io/executor-python/issues/353))
 * fix formatting
 
-Full set of changes: [`9.23.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.23.0...latest)
+Full set of changes: [`9.23.0...9.23.1`](https://github.com/hamlet-io/executor-python/compare/9.23.0...9.23.1)
 
 ## 9.23.0 (2022-08-19)
 
