@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2023-01-10)
+## latest (2023-01-20)
+
+#### Fixes
+
+* add importlib_resources for backwards compat ([#365](https://github.com/hamlet-io/executor-python/issues/365))
+
+Full set of changes: [`9.25.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.0...latest)
+
+## 9.25.0 (2023-01-10)
 
 #### New Features
 
@@ -15,9 +23,10 @@
 * package management ([#360](https://github.com/hamlet-io/executor-python/issues/360))
 #### Others
 
+* update changelog ([#362](https://github.com/hamlet-io/executor-python/issues/362))
 * update changelog ([#357](https://github.com/hamlet-io/executor-python/issues/357))
 
-Full set of changes: [`9.24.0...latest`](https://github.com/hamlet-io/executor-python/compare/9.24.0...latest)
+Full set of changes: [`9.24.0...9.25.0`](https://github.com/hamlet-io/executor-python/compare/9.24.0...9.25.0)
 
 ## 9.24.0 (2022-10-14)
 
