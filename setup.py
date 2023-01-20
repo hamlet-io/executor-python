@@ -40,6 +40,7 @@ setup(
         "marshmallow>=3.7.0,<4.0.0",
         "dulwich>=0.20.45,<1.0.0",
         "semver>=2.13.0,<3.0.0",
+        "importlib_resources>=5.10.2,<6.0.0",
         # contract execution
         "boto3>=1.20.0,<2.0.0",
         "botocore>=1.20.0,<2.0.0",
