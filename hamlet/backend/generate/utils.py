@@ -37,7 +37,9 @@ def cookiecutter(template_package, output_dir, **kwargs):
     with tempfile.TemporaryDirectory() as template_dir:
 
         if files(template_package).joinpath("cookiecutter.json").is_file():
-            with as_file(files(template_package).joinpath("cookiecutter.json")) as package_path:
+            with as_file(
+                files(template_package).joinpath("cookiecutter.json")
+            ) as package_path:
                 extract_package_to_temp(
                     template_package, template_dir, os.path.dirname(package_path), ""
                 )
