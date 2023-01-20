@@ -2,9 +2,13 @@ import os
 import shutil
 import tempfile
 
-from importlib.resources import files, is_resource, path
 from cookiecutter.main import cookiecutter as cookiecutter_main
 from hamlet.backend.common.exceptions import BackendException
+
+try:
+    from importlib.resources import files, as_file
+except ModuleNotFoundError:
+    from importlib_resources import files, as_file
 
 
 def extract_package_to_temp(package, tmp_dir, root_dir, package_dir):
@@ -32,8 +36,8 @@ def cookiecutter(template_package, output_dir, **kwargs):
 
     with tempfile.TemporaryDirectory() as template_dir:
 
-        if is_resource(template_package, "cookiecutter.json"):
-            with path(template_package, "cookiecutter.json") as package_path:
+        if files(template_package).joinpath("cookiecutter.json").is_file():
+            with as_file(files(template_package).joinpath("cookiecutter.json")) as package_path:
                 extract_package_to_temp(
                     template_package, template_dir, os.path.dirname(package_path), ""
                 )
