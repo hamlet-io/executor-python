@@ -20,7 +20,7 @@ setup(
     license="GPLv3",
     project_urls={"Repository": about["__repository_url__"]},
     packages=packages,
-    setup_requires=["setuptools_scm>=6.0.1,<7.0.0"],
+    setup_requires=["setuptools_scm>=7.1.0,<8.0.0"],
     use_scm_version={
         "root": "",
         "relative_to": __file__,
