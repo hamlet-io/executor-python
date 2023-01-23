@@ -7,13 +7,22 @@ import httpx
 import typing
 import www_authenticate
 import json
+import click
 
 from hamlet.backend.common.http_client import HTTPClient
 
 from urllib import parse
 
 container_httpx_client = HTTPClient(
-    headers={"Accept": "application/vnd.docker.distribution.manifest.v2+json"}
+    headers={
+        "Accept": ", ".join(
+            [
+                "application/vnd.oci.image.index.v1+json",
+                "application/vnd.oci.image.manifest.v1+json",
+                "application/vnd.docker.distribution.manifest.v2+json",
+            ]
+        )
+    }
 )
 
 auth_httpx_client = HTTPClient()
@@ -116,7 +125,15 @@ class DockerRegistryV2Auth(httpx.Auth):
 
 
 class ContainerRepository:
-    def __init__(self, registry_url, repository, username=None, password=None) -> None:
+    def __init__(
+        self,
+        registry_url,
+        repository,
+        username=None,
+        password=None,
+        architecture="amd64",
+        os="linux",
+    ) -> None:
 
         self.registry_url = registry_url
         self.repository = repository
@@ -127,6 +144,9 @@ class ContainerRepository:
         self.auth_token = DockerRegistryV2Auth(
             self.repository, self.username, self.password
         )
+
+        self.architecture = architecture
+        self.os = os
 
     @property
     def tags(self):
@@ -174,10 +194,50 @@ class ContainerRepository:
             manifest_response.raise_for_status()
 
         except httpx.HTTPStatusError as e:
+
             if e.response.status_code == httpx.codes.NOT_FOUND:
                 raise ContainerTagNotFoundException(self.repository, tag, e)
-
             raise e
+
+        # Handle support for Image Indexes
+        # https://github.com/opencontainers/image-spec/blob/main/image-index.md
+        if (
+            manifest_response.json().get("mediaType")
+            == "application/vnd.oci.image.index.v1+json"
+        ):
+
+            listed_manifest_entry = next(
+                iter(
+                    [
+                        manifest
+                        for manifest in manifest_response.json()["manifests"]
+                        if manifest["platform"]["architecture"] == self.architecture
+                        and manifest["platform"]["os"] == self.os
+                    ]
+                ),
+                None,
+            )
+
+            if listed_manifest_entry is None:
+                raise ContainerTagNotFoundException(
+                    self.repository,
+                    tag,
+                    f"No manifest for platform {self.os}/{self.architecture}",
+                )
+
+            manifest_response = container_httpx_client.get(
+                f"{self.registry_url}/v2/{self.repository}/manifests/{listed_manifest_entry['digest']}",
+                auth=self.auth_token,
+            )
+
+            try:
+                manifest_response.raise_for_status()
+
+            except httpx.HTTPStatusError as e:
+
+                if e.response.status_code == httpx.codes.NOT_FOUND:
+                    raise ContainerTagNotFoundException(self.repository, tag, e)
+                raise e
 
         return manifest_response
 
@@ -232,10 +292,20 @@ class ContainerRepository:
 
                         if (
                             layer["mediaType"]
-                            == "application/vnd.docker.image.rootfs.diff.tar.gzip"
+                            in [
+                                "application/vnd.docker.image.rootfs.diff.tar.gzip",
+                                "application/vnd.oci.image.layer.v1.tar+gzip"
+                            ]
                         ):
-
                             shutil.unpack_archive(layer_file.name, extract_dir, "gztar")
+
+                        elif (
+                            layer["mediaType"]
+                            in [
+                                "application/vnd.oci.image.layer.v1.tar"
+                            ]
+                        ):
+                            shutil.unpack_archive(layer_file.name, extract_dir, "tar")
 
                 if os.listdir(extract_dir):
                     if os.path.isdir(dst_dir):
