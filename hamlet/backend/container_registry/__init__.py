@@ -290,21 +290,15 @@ class ContainerRepository:
                                 )
                             )
 
-                        if (
-                            layer["mediaType"]
-                            in [
-                                "application/vnd.docker.image.rootfs.diff.tar.gzip",
-                                "application/vnd.oci.image.layer.v1.tar+gzip"
-                            ]
-                        ):
+                        if layer["mediaType"] in [
+                            "application/vnd.docker.image.rootfs.diff.tar.gzip",
+                            "application/vnd.oci.image.layer.v1.tar+gzip",
+                        ]:
                             shutil.unpack_archive(layer_file.name, extract_dir, "gztar")
 
-                        elif (
-                            layer["mediaType"]
-                            in [
-                                "application/vnd.oci.image.layer.v1.tar"
-                            ]
-                        ):
+                        elif layer["mediaType"] in [
+                            "application/vnd.oci.image.layer.v1.tar"
+                        ]:
                             shutil.unpack_archive(layer_file.name, extract_dir, "tar")
 
                 if os.listdir(extract_dir):
