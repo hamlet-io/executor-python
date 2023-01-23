@@ -7,7 +7,6 @@ import httpx
 import typing
 import www_authenticate
 import json
-import click
 
 from hamlet.backend.common.http_client import HTTPClient
 
