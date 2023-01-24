@@ -7,7 +7,7 @@ from hamlet.backend.common.exceptions import BackendException
 
 try:
     from importlib.resources import files, as_file
-except ModuleNotFoundError:
+except (ImportError, ModuleNotFoundError):
     from importlib_resources import files, as_file
 
 
