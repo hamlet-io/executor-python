@@ -1,12 +1,23 @@
 # Changelog
 
-## latest (2023-01-23)
+## latest (2023-01-24)
+
+#### Fixes
+
+* handle import failure for py36 compat ([#370](https://github.com/hamlet-io/executor-python/issues/370))
+
+Full set of changes: [`9.25.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.2...latest)
+
+## 9.25.2 (2023-01-23)
 
 #### New Features
 
 * add support for OCI image indexes ([#368](https://github.com/hamlet-io/executor-python/issues/368))
+#### Others
 
-Full set of changes: [`9.25.1...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.1...latest)
+* update changelog ([#366](https://github.com/hamlet-io/executor-python/issues/366))
+
+Full set of changes: [`9.25.1...9.25.2`](https://github.com/hamlet-io/executor-python/compare/9.25.1...9.25.2)
 
 ## 9.25.1 (2023-01-21)
 
