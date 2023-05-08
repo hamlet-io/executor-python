@@ -2,8 +2,7 @@ import json
 import os
 from unittest import mock
 
-from hamlet.backend.deploy import \
-    create_deployment as create_deployment_backend
+from hamlet.backend.deploy import create_deployment as create_deployment_backend
 
 from .conftest import conf
 
@@ -42,7 +41,6 @@ def run(cmdb, engine):
                     ACCOUNT,
                     conf["cmdb"]["tenant"]["default_region"],
                 ]
-
 
             assert os.path.exists(
                 filename(*prefix("s3"), "generation-contract", sep="-", ext="json")
