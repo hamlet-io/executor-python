@@ -1,10 +1,11 @@
-from hamlet.backend.common.exceptions import BackendException
+import subprocess
 from base64 import b64decode
 
 import boto3
 import docker
 import docker.errors
-import subprocess
+
+from hamlet.backend.common.exceptions import BackendException
 
 
 def run(
@@ -66,6 +67,7 @@ def run(
             input=ecr_password,
             check=True,
             text=True,
+            stdout=subprocess.DEVNULL,
         )
 
     except subprocess.CalledProcessError as e:

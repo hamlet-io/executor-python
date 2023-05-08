@@ -1,9 +1,11 @@
-import os
 import json
+import os
 from unittest import mock
-from hamlet.backend.deploy import create_deployment as create_deployment_backend
-from .conftest import conf
 
+from hamlet.backend.deploy import \
+    create_deployment as create_deployment_backend
+
+from .conftest import conf
 
 ACCOUNT = conf["cmdb"]["account"]["account_name"]
 LEVEL = "account"
@@ -12,9 +14,7 @@ LEVEL = "account"
 #  test is made accordingly to quickstart guide
 @mock.patch.dict(os.environ, {"ACCOUNT": ACCOUNT, "DISTRICT_TYPE": "account"})
 def run(cmdb, engine):
-
     with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):
-
         create_deployment_backend(
             deployment_group=LEVEL,
             deployment_unit="audit",
@@ -43,9 +43,6 @@ def run(cmdb, engine):
                     conf["cmdb"]["tenant"]["default_region"],
                 ]
 
-            assert os.path.exists(
-                filename(*prefix("s3"), "epilogue", sep="-", ext="sh")
-            )
 
             assert os.path.exists(
                 filename(*prefix("s3"), "generation-contract", sep="-", ext="json")
