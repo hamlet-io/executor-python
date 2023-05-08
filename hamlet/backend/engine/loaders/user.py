@@ -168,7 +168,6 @@ class EngineReader(ConfigFileReader):
 
                 parts = []
                 for part_name in v.get("parts"):
-
                     part_config = config[f"engine_part:{part_name}"]
 
                     part_source_config = {
@@ -213,7 +212,6 @@ class UserDefinedEngineLoader(EngineLoader):
         self.config_search_paths = config_search_paths
 
     def load(self) -> typing.Iterable[Engine]:
-
         engine_cls = EngineReader()
         engine_cls.config_searchpath = self.config_search_paths
         for engine in engine_cls.load_engines():

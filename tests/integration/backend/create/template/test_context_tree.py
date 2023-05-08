@@ -20,7 +20,6 @@ def test_find_gen3_dirs(clear_cmdb, cmdb):
     environment_name = conf["cmdb"]["product"]["environment_name"]
 
     with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):
-
         with cmdb() as path:
             tenant.run(**conf["cmdb"]["tenant"], output_dir=path())
         with cmdb("accounts") as path:
@@ -705,7 +704,6 @@ def test_upgrade_cmdb(
     upgrade_cmdb_repo_to_v1_1_0,
     upgrade_cmdb_repo_to_v1_0_0,
 ):
-
     with tempfile.TemporaryDirectory() as root:
         root = FSNode(root)
         root[".git"].mkdir()

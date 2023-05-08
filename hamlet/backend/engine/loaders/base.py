@@ -63,7 +63,6 @@ class InstalledEngineLoader(EngineLoader):
         self.engine_dir = engine_dir
 
     def load(self) -> typing.Iterable[Engine]:
-
         engine_states = []
         if os.path.isdir(self.engine_dir):
             with os.scandir(self.engine_dir) as engines:

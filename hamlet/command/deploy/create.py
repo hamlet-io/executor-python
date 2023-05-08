@@ -81,7 +81,6 @@ def create_deployments(
         raise exceptions.CommandError("No deployments found that match pattern")
 
     for deployment in deployments:
-
         deployment_group = deployment["DeploymentGroup"]
         deployment_unit = deployment["DeploymentUnit"]
 

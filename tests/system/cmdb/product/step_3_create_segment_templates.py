@@ -27,11 +27,9 @@ LEVEL = "segment"
     },
 )
 def run(cmdb, engine):
-
     with mock.patch.dict(
         os.environ, {"ROOT_DIR": cmdb.ROOT_DIR, "DISTRICT_TYPE": "segment"}
     ):
-
         create_deployment_backend(
             deployment_group=LEVEL,
             deployment_unit="baseline",
@@ -46,7 +44,6 @@ def run(cmdb, engine):
         ) as filename:
 
             def prefix(unit):
-
                 level_prefix = LEVEL
                 if LEVEL == "segment":
                     level_prefix = "seg"

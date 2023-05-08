@@ -22,7 +22,6 @@ class LatestTrainEngineLoader(EngineLoader):
     """
 
     def load(self) -> typing.Iterable[Engine]:
-
         engine_sources = [
             ContainerEngineSource(
                 name="hamlet-engine-base",
@@ -67,20 +66,17 @@ class TrainEngineLoader(EngineLoader):
     """
 
     def load(self) -> typing.Iterable[Engine]:
-
         container_repo = ContainerRepository(
             registry_url="https://ghcr.io", repository="hamlet-io/hamlet-engine-base"
         )
 
         for tag in container_repo.tags:
-
             try:
                 version = semver.VersionInfo.parse(tag)
             except ValueError:
                 continue
 
             if not version.prerelease:
-
                 engine_sources = [
                     ContainerEngineSource(
                         name="hamlet-engine-base",

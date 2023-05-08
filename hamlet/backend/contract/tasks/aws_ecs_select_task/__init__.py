@@ -30,7 +30,6 @@ def run(
 
     list_token = None
     while True:
-
         params = {
             "cluster": ClusterArn,
             "desiredStatus": "RUNNING",
@@ -56,7 +55,6 @@ def run(
     task_details = ecs.describe_tasks(cluster=ClusterArn, tasks=taskArns)
 
     def get_task_preview(task_arn):
-
         task = list(
             filter(lambda task: task["taskArn"] == task_arn, task_details["tasks"])
         )[0]

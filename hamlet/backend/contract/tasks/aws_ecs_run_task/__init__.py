@@ -61,7 +61,6 @@ def run(
         container_override = {"name": ContainerName}
 
         if CommandOverride:
-
             try:
                 command = json.loads(CommandOverride)
             except json.decoder.JSONDecodeError:

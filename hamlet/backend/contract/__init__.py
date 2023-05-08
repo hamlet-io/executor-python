@@ -7,11 +7,9 @@ from hamlet.backend.contract.tasks.exceptions import (
 
 
 def run(contract, silent, engine, env):
-
     properties = contract["Properties"]
 
     for stage in contract["Stages"]:
-
         if not silent:
             click.echo(f"\n[-] Running contract stage {stage['Id']}")
 

@@ -73,7 +73,6 @@ def semver_clean(version):
 
 
 def semver_compare(v1, v2):
-
     v1 = semver_clean(v1)
     v2 = semver_clean(v2)
 

@@ -51,7 +51,6 @@ class DockerRegistryV2Auth(httpx.Auth):
     def auth_flow(
         self, request: httpx.Request
     ) -> typing.Generator[httpx.Request, httpx.Response, None]:
-
         if self.token:
             request.headers["Authorization"] = self.token
 
@@ -68,7 +67,6 @@ class DockerRegistryV2Auth(httpx.Auth):
     def sign_request(
         self, registry_response, repository, actions, username, password
     ) -> str:
-
         if self.username or self.password:
             auth_httpx_client.headers["Authorization"] = self._build_basic_auth_header(
                 username, password
@@ -89,7 +87,6 @@ class DockerRegistryV2Auth(httpx.Auth):
         return f"Bearer {realm_token}"
 
     def _build_basic_auth_header(self, username, password) -> str:
-
         userpass = b":".join((httpx.to_bytes(username), httpx.to_bytes(password)))
         token = base64.b64encode(userpass).decode()
         return f"Basic {token}"
@@ -133,7 +130,6 @@ class ContainerRepository:
         architecture="amd64",
         os="linux",
     ) -> None:
-
         self.registry_url = registry_url
         self.repository = repository
 
@@ -149,7 +145,6 @@ class ContainerRepository:
 
     @property
     def tags(self):
-
         tags = []
         query_params = {"n": 20}
         links_complete = False
@@ -193,7 +188,6 @@ class ContainerRepository:
             manifest_response.raise_for_status()
 
         except httpx.HTTPStatusError as e:
-
             if e.response.status_code == httpx.codes.NOT_FOUND:
                 raise ContainerTagNotFoundException(self.repository, tag, e)
             raise e
@@ -204,7 +198,6 @@ class ContainerRepository:
             manifest_response.json().get("mediaType")
             == "application/vnd.oci.image.index.v1+json"
         ):
-
             listed_manifest_entry = next(
                 iter(
                     [
@@ -233,7 +226,6 @@ class ContainerRepository:
                 manifest_response.raise_for_status()
 
             except httpx.HTTPStatusError as e:
-
                 if e.response.status_code == httpx.codes.NOT_FOUND:
                     raise ContainerTagNotFoundException(self.repository, tag, e)
                 raise e
@@ -250,7 +242,6 @@ class ContainerRepository:
                     with tempfile.NamedTemporaryFile(
                         dir=stage_dir, delete=False
                     ) as layer_file:
-
                         layer_blob = container_httpx_client.get(
                             url=f'{self.registry_url}/v2/{self.repository}/blobs/{layer["digest"]}',
                             auth=self.auth_token,

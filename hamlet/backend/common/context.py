@@ -206,7 +206,6 @@ class Context:
 
 
 class SegmentLevel(Context):
-
     ACCOUNT_REQUIRED = True
 
     level_name = "segment"
@@ -226,7 +225,6 @@ class SegmentLevel(Context):
 
 
 class EnvironmentLevel(Context):
-
     ACCOUNT_REQUIRED = True
 
     level_name = "environment"
@@ -250,7 +248,6 @@ class TenantLevel(Context):
 
 
 class AccountLevel(Context):
-
     TENANT_REQUIRED = True
 
     level_name = "account"
@@ -262,7 +259,6 @@ class AccountLevel(Context):
 
 
 class ProductLevel(Context):
-
     ACCOUNT_REQUIRED = True
 
     level_name = "product"
@@ -274,7 +270,6 @@ class ProductLevel(Context):
 
 
 class IntegratorLevel(Context):
-
     name = "integrator"
     filename = "integrator.json"
 

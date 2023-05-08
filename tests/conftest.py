@@ -11,7 +11,6 @@ root.setLevel(logging.DEBUG)
 
 
 class __CMDBContext:
-
     if os.getenv("TEST_ROOT_DIR", None) is not None:
         ROOT_DIR = os.getenv("TEST_ROOT_DIR")
     else:

@@ -6,7 +6,6 @@ GET_PROPERTIES_ENVIRONMENT_QUERY = "Environment"
 
 
 def get_automation_properties(engine=None, **kwargs):
-
     query_args = {
         **kwargs,
         "generation_entrance": "releaseinfo",

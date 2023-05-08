@@ -13,7 +13,6 @@ def run(
     _is_cli=False,
     env={},
 ):
-
     opts = {
         "-a": account_repos,
         "-m": commit_message,

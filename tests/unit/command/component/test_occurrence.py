@@ -23,7 +23,6 @@ def mock_backend(data=None):
     def decorator(func):
         @mock.patch("hamlet.backend.query.template")
         def wrapper(blueprint_mock, *args, **kwargs):
-
             blueprint_mock.run.side_effect = template_backend_run_mock(data)
             return func(blueprint_mock, *args, **kwargs)
 
@@ -111,7 +110,6 @@ def test_list_occurrences(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]"])
     print(result.exc_info)
@@ -122,7 +120,6 @@ def test_describe_occurrence(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(
         describe_occurrence,
@@ -136,7 +133,6 @@ def test_describe_occurrence_query(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_solution(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "solution"])
     print(result.exc_info)
@@ -147,7 +143,6 @@ def test_describe_occurrence_query_solution(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_resources(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(describe_occurrence, ["--name", "CoreRawName[1]", "resources"])
     print(result.exc_info)
@@ -160,7 +155,6 @@ def test_describe_occurrence_query_resources(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_setting_namespaces(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(
         describe_occurrence, ["--name", "CoreRawName[1]", "setting-namespaces"]
@@ -173,7 +167,6 @@ def test_describe_occurrence_query_setting_namespaces(blueprint_mock):
 @mock_describe_context("CoreRawName[1]")
 @mock_backend(occurrence_state_data)
 def test_describe_occurrence_query_attributes(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(
         describe_occurrence,
@@ -192,7 +185,6 @@ def test_describe_occurrence_query_attributes(blueprint_mock):
 
 @mock_backend(occurrence_state_data)
 def test_query_occurrences(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(
         query_occurrences,

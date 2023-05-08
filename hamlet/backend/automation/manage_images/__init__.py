@@ -15,7 +15,6 @@ def run(
     _is_cli=False,
     env={},
 ):
-
     opts = {
         "-c": registry_scope,
         "-d": dockerfile,

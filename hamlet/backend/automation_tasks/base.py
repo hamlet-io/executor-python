@@ -17,7 +17,6 @@ class AutomationRunner(ABC):
 
     @staticmethod
     def _load_properties_to_context(properties_file):
-
         itemDict = {}
 
         if os.path.isfile(properties_file):
@@ -35,11 +34,9 @@ class AutomationRunner(ABC):
 
     def run(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
-
             self._context_env["AUTOMATION_DATA_DIR"] = tmp_dir
 
             for script in self._script_list:
-
                 result = script["func"](
                     env=self._context_env, engine=self.engine, **script["args"]
                 )

@@ -14,7 +14,6 @@ def get_connect_args(password, ssh_key):
         connect_kwargs["password"] = password
 
     if ssh_key is not None:
-
         if isinstance(ssh_key, str):
             private_key = RSAKey.from_private_key(io.StringIO(ssh_key))
         else:

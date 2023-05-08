@@ -24,7 +24,6 @@ def mock_backend(unitlist=None):
     def decorator(func):
         @mock.patch("hamlet.backend.query.template")
         def wrapper(blueprint_mock, *args, **kwargs):
-
             blueprint_mock.run.side_effect = template_backend_run_mock(unitlist)
 
             return func(blueprint_mock, *args, **kwargs)
@@ -91,7 +90,6 @@ def mock_backend(unitlist=None):
     }
 )
 def test_query_list_deployments(blueprint_mock):
-
     cli = CliRunner()
     result = cli.invoke(list_deployments, ["--output-format", "json"])
     print(result.output)

@@ -6,7 +6,6 @@
 
 def CFNStructure(JSONValidator):
     class CFNStructure(JSONValidator):
-
         RESOURCES_KEY = "Resources"
         RESOURCE_TYPE_KEY = "Type"
         OUTPUT_KEY = "Outputs"

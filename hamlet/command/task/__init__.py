@@ -13,7 +13,6 @@ from hamlet.backend import contract as contract_backend
 
 
 def query_runbookinfo_state(options, query, query_params=None, sub_query_text=None):
-
     query_args = {
         **options.opts,
         "generation_entrance": "runbookinfo",
@@ -152,7 +151,6 @@ def run_runbook(options, name, confirm, silent, inputs, **kwargs):
         click.echo("")
 
     if not silent or ((confirm and click.confirm("Start Runbook?")) or not confirm):
-
         query_args = {
             **options.opts,
             "generation_entrance": "runbook",

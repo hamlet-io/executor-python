@@ -113,7 +113,6 @@ class ContainerEngineSource(EngineSourceInterface):
         )
 
     def pull(self, dst_dir):
-
         pull_digest = self._container_repository.pull(self.tag, dst_dir)
 
         return EngineSourcePullState(
@@ -133,7 +132,6 @@ class ContainerEngineSource(EngineSourceInterface):
         return self._container_repository.get_tag_digest(self.tag)
 
     def _get_build_details(self, dst_dir):
-
         engine_source = ".hamlet/engine_source.json"
         if dst_dir is not None:
             engine_source_paths = pathlib.Path(dst_dir).glob(f"**/{engine_source}")

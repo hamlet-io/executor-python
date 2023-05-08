@@ -9,7 +9,6 @@ SHELL_SCRIPT_FILENAME = os.path.join(os.path.dirname(__file__), "shell_vars_to_j
 
 
 def shell_vars_to_json(filename=None, vars_mapping=None):
-
     if shutil.which("bash") is None:
         raise BackendException("Could not find bash installation")
 

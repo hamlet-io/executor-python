@@ -30,7 +30,6 @@ def run(
     _is_cli=False,
     **kwargs,
 ):
-
     if isinstance(entrance_parameter, dict):
         entrance_parameter = tuple([f"{k}={v}" for k, v in entrance_parameter.items()])
 

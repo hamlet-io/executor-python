@@ -353,7 +353,6 @@ class InstalledEngine(EngineInterface):
 
 class ShimEngine(EngineInterface):
     def set_default_engine(self, engine, engine_store):
-
         try:
             installed_shim = engine_store.get_engine(self.name, locations=["installed"])
         except EngineStoreMissingEngineException:
@@ -372,7 +371,6 @@ class ShimEngine(EngineInterface):
                 os.makedirs(path)
 
     def install(self):
-
         source_details = []
         for source in self.sources:
             source_dir = self._get_engine_source_dir(source.name)
@@ -382,7 +380,6 @@ class ShimEngine(EngineInterface):
 
 class Engine(EngineInterface):
     def install(self):
-
         if os.path.isdir(self.install_path):
             shutil.rmtree(self.install_path)
 

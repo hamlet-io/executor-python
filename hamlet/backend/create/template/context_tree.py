@@ -60,7 +60,6 @@ def parse_stack_filename(filename):
 
 
 def find_gen3_root_dir(dirname):
-
     if os.environ.get("ROOT_DIR"):
         return os.environ.get("ROOT_DIR")
 
@@ -1042,7 +1041,6 @@ def process_cmdb(root_dir, action, gen3_version, versions, dry_run):
     dry_run = "(Dryrun)" if dry_run else ""
 
     for cmdb_git_repo in cmdb_git_repos:
-
         cmdb_repo = os.path.dirname(cmdb_git_repo)
         cmdb_version_file = os.path.join(cmdb_repo, ".cmdb")
         current_version = ""
