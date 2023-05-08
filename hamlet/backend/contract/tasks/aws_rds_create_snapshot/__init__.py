@@ -42,7 +42,6 @@ def run(
     )
 
     if to_bool(Cluster, False):
-
         cluster = rds.describe_db_clusters(DBClusterIdentifier=DbId)
 
         snapshot_response = rds.create_db_cluster_snapshot(
@@ -60,7 +59,6 @@ def run(
         snapshot_arn = snapshot_response["DBClusterSnapshot"]["DBClusterSnapshotArn"]
 
     else:
-
         instance = rds.describe_db_instances(DBInstanceIdentifier=DbId)
 
         snapshot_response = rds.create_db_snapshot(

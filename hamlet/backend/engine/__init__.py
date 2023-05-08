@@ -95,7 +95,6 @@ class EngineStore:
             self.store_state = {"default_engine": None}
 
         else:
-
             self.load_engines("installed")
             engine = self.get_engine(name, ["installed"])
 
@@ -150,7 +149,6 @@ class EngineStore:
             self._engines = []
 
         for location in locations:
-
             try:
                 engine_location = self.engine_locations[location]
             except KeyError:

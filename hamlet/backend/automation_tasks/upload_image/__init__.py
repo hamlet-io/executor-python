@@ -25,7 +25,6 @@ class UploadImageAutomationRunner(AutomationRunner):
         engine=None,
         **kwargs
     ):
-
         _context_env = {
             "DEPLOYMENT_UNITS": deployment_unit,
             "GIT_COMMIT": build_reference,

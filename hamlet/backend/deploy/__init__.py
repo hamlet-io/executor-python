@@ -34,7 +34,6 @@ def find_deployments(
     deployment_states=["deployed", "notdeployed"],
     **kwargs,
 ):
-
     query_args = {
         **kwargs,
         "deployment_mode": deployment_mode,
@@ -69,7 +68,6 @@ def create_deployment(
     _is_cli=True,
     **kwargs,
 ):
-
     generate_args = {
         **kwargs,
         "entrance": "deployment",
@@ -91,7 +89,6 @@ def run_deployment(
     dryrun=False,
     **kwargs,
 ):
-
     manage_args = {
         "deployment_group": deployment_group,
         "deployment_unit": deployment_unit,

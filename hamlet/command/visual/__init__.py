@@ -143,7 +143,6 @@ def draw_diagrams(options, diagram_id, src_dir, asset_dir):
         raise exceptions.CommandError("No diagrams found that match pattern")
 
     for diagram in diagrams:
-
         diagram_id = diagram["Id"]
 
         click.echo((click.style(f"[*] {diagram_id}", bold=True, fg="green")))

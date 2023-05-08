@@ -299,7 +299,6 @@ def run_options_test(runner, cmd, options, runner_mock):
 
 
 def test_run_options_test():
-
     runner_mock = mock.MagicMock()
     runner = CliRunner()
 
@@ -364,7 +363,6 @@ def test_run_options_test():
 
 
 def test_validatable_options_test():
-
     runner_mock = mock.MagicMock()
     runner = CliRunner()
 

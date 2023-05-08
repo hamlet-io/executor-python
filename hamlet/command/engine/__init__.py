@@ -133,7 +133,6 @@ def describe_engine(options, name, location):
             if x.name == name
         ]
         if len(engines) > 1:
-
             extra_engines = "\n".join(
                 [f" - name: {x.name} - location: {x.location}" for x in engines]
             )
@@ -165,7 +164,6 @@ def describe_engine(options, name, location):
 
     sources = []
     for source in engine_instance.sources:
-
         try:
             source_digest = source.digest
         except BaseException as e:

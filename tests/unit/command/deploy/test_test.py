@@ -95,7 +95,6 @@ def test_input_valid(
     test_generate_backend,
     test_run_backend,
 ):
-
     run_options_test(
         CliRunner(), test_deployments, ALL_VALID_OPTIONS, blueprint_mock.run
     )
@@ -108,7 +107,6 @@ def test_input_validation(
     test_generate_backend,
     test_run_backend,
 ):
-
     runner = CliRunner()
     run_validatable_option_test(
         runner,

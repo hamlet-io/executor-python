@@ -86,7 +86,6 @@ def test_deployments(
     click.echo(click.style("[*] Creating deployments:", bold=True, fg="green"))
     click.echo("")
     for deployment in deployments:
-
         deployment_group = deployment["DeploymentGroup"]
         deployment_unit = deployment["DeploymentUnit"]
 

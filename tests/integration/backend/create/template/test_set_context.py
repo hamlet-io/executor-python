@@ -11,7 +11,6 @@ def test(cmdb, clear_cmdb):
     clear_cmdb()
 
     with mock.patch.dict(os.environ, {"ROOT_DIR": cmdb.ROOT_DIR}):
-
         tenant_id = conf["cmdb"]["tenant"]["tenant_id"]
         tenant_name = conf["cmdb"]["tenant"]["tenant_name"]
         account_id = conf["cmdb"]["account"]["account_id"]

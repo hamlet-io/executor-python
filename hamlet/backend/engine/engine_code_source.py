@@ -67,7 +67,6 @@ class EngineCodeSourceBuildData:
 
     @property
     def details(self):
-
         details = {}
 
         if self._is_git_repo():

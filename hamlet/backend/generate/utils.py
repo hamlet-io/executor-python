@@ -33,9 +33,7 @@ def replace_parameters_values(kwargs, replacers=None):
 
 
 def cookiecutter(template_package, output_dir, **kwargs):
-
     with tempfile.TemporaryDirectory() as template_dir:
-
         if files(template_package).joinpath("cookiecutter.json").is_file():
             with as_file(
                 files(template_package).joinpath("cookiecutter.json")

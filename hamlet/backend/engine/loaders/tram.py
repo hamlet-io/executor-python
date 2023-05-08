@@ -74,7 +74,6 @@ class TramEngineLoader(EngineLoader):
             ) <= datetime.timedelta(
                 days=90
             ):
-
                 engine_sources = [
                     ContainerEngineSource(
                         name="hamlet-engine-base",

@@ -82,7 +82,6 @@ def invoke(
 
     except OSError as ex:
         if ex.errno == errno.ENOENT:
-
             # start-session api call returns response and starts the
             # session on ssm-agent and response is forwarded to
             # session-manager-plugin. If plugin is not present, terminate

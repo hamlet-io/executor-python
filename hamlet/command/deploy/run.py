@@ -98,7 +98,6 @@ def run_deployments(
         raise exceptions.CommandError("No deployments found that match pattern")
 
     for deployment in deployments:
-
         deployment_group = deployment["DeploymentGroup"]
         deployment_unit = deployment["DeploymentUnit"]
         deployment_state = deployment["CurrentState"]
@@ -128,7 +127,6 @@ def run_deployments(
                 )
 
         for operation in deployment["Operations"]:
-
             if dryrun:
                 run_deployment(
                     deployment_provider=provider,

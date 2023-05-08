@@ -7,7 +7,6 @@ from hamlet.command import root as cli
 
 
 def regenerate_autocompletion_files(shell_type: str, autocomplete_path: str) -> None:
-
     subprocess.check_call(
         f"_HAMLET_COMPLETE={shell_type}_source hamlet > {autocomplete_path}",
         stderr=subprocess.DEVNULL,
@@ -34,7 +33,6 @@ def autocomplete_fish(user_home_path: str, autocomplete_path: str) -> None:
 def autocomplete_bash_or_zsh(
     user_home_path: str, autocomplete_path: str, shell_type: str = "bash"
 ) -> None:
-
     autocomplete_path = autocomplete_path.replace(user_home_path, "~")
 
     autocompletion_string = f"# HAMLET-AUTOCOMPLETE\n. {autocomplete_path}"

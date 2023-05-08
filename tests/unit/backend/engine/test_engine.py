@@ -13,7 +13,6 @@ def mock_container_registry():
     def decorator(func):
         @mock.patch("hamlet.backend.engine.engine_source.ContainerRepository")
         def wrapper(container_repository, *args, **kwargs):
-
             container_repository.return_value.get_tag_digest.return_value = "digest[1]"
             container_repository.return_value.get_tag_manifest.return_value = {
                 "schemaVersion": 2,
@@ -109,7 +108,6 @@ def test_user_engine_loading():
     with tempfile.TemporaryDirectory() as test_dir:
         with tempfile.TemporaryDirectory() as store_dir:
             with tempfile.TemporaryDirectory() as cli_config_dir:
-
                 with open(os.path.join(cli_config_dir, "engine"), "w") as engine_file:
                     engine_file.write(
                         (

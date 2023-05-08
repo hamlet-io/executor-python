@@ -131,7 +131,6 @@ def test_json_validator_object():
 
 
 def test_testcase_schema():
-
     Testcase().load({"filename": "Test"})
 
     Testcase().load(
