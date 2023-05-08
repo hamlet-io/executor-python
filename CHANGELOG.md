@@ -1,12 +1,23 @@
 # Changelog
 
-## latest (2023-01-24)
+## latest (2023-05-08)
+
+#### Fixes
+
+* remove stdout from docker login task ([#372](https://github.com/hamlet-io/executor-python/issues/372))
+
+Full set of changes: [`9.25.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.3...latest)
+
+## 9.25.3 (2023-01-24)
 
 #### Fixes
 
 * handle import failure for py36 compat ([#370](https://github.com/hamlet-io/executor-python/issues/370))
+#### Others
 
-Full set of changes: [`9.25.2...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.2...latest)
+* update changelog ([#369](https://github.com/hamlet-io/executor-python/issues/369))
+
+Full set of changes: [`9.25.2...9.25.3`](https://github.com/hamlet-io/executor-python/compare/9.25.2...9.25.3)
 
 ## 9.25.2 (2023-01-23)
 
