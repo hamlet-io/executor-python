@@ -38,7 +38,7 @@ def run(
         "PRODUCT": product,
         "ENVIRONMENT": environment,
         "SEGMENT": segment,
-        **env
+        **env,
     }
     runner.run(
         "saveCMDBRepos.sh",
