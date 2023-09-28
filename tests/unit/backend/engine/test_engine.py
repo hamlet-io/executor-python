@@ -28,8 +28,6 @@ def mock_container_registry():
     return decorator
 
 
-
-
 @mock_container_registry()
 def test_unicycle_engine_loading(container_repository):
     """

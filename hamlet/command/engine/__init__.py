@@ -6,7 +6,9 @@ from tabulate import tabulate
 
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
 from hamlet.backend.engine.exceptions import (
-    EngineStoreMissingEngineException, HamletEngineInvalidVersion)
+    EngineStoreMissingEngineException,
+    HamletEngineInvalidVersion,
+)
 from hamlet.command import root as cli
 from hamlet.command.common import config, exceptions
 from hamlet.command.common.display import json_or_table_option, wrap_text
