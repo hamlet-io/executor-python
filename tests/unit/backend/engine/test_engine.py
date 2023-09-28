@@ -3,8 +3,6 @@ import tempfile
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
-from hamlet.backend.engine.engine import Engine
-from hamlet.backend.engine.engine_part import CoreEnginePart
 from hamlet.backend.engine.loaders.unicycle import UnicycleEngineLoader
 
 
