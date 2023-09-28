@@ -1,12 +1,32 @@
 # Changelog
 
-## latest (2023-05-08)
+## latest (2023-09-28)
+
+#### Fixes
+
+* path to the sh script for set_provider_credentails task
+* override of black formatting
+#### Refactorings
+
+* legacy bash approach removal
+#### Others
+
+* liniting cleanup
+* foramtting cleanups
+* formatting cleanup
+
+Full set of changes: [`9.25.4...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.4...latest)
+
+## 9.25.4 (2023-06-16)
 
 #### Fixes
 
 * remove stdout from docker login task ([#372](https://github.com/hamlet-io/executor-python/issues/372))
+#### Others
 
-Full set of changes: [`9.25.3...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.3...latest)
+* update changelog ([#371](https://github.com/hamlet-io/executor-python/issues/371))
+
+Full set of changes: [`9.25.3...9.25.4`](https://github.com/hamlet-io/executor-python/compare/9.25.3...9.25.4)
 
 ## 9.25.3 (2023-01-24)
 
