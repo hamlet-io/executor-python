@@ -1,7 +1,7 @@
 import tempfile
 from configparser import ConfigParser
-from hamlet.backend.common import aws_credentials_session
-from hamlet.backend.common import runner
+
+from hamlet.backend.common import aws_credentials_session, runner
 
 
 def run(AccountId, ProviderId, Provider, env={}):
@@ -23,13 +23,13 @@ def run(AccountId, ProviderId, Provider, env={}):
             "ACCOUNT_PROVIDER": Provider,
         }
         runner.run(
-            "setCredentials.sh",
+            "/execution/setCredentials.sh",
             args=[],
             options={},
             env=env,
             engine=None,
             _is_cli=True,
-            script_base_path_env="AUTOMATION_DIR",
+            script_base_path_env="GENERATION_BASE_DIR",
             extra_script=f"&&  env | grep 'AWS' > {output_file.name}",
         )
 

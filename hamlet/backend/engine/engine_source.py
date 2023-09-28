@@ -1,10 +1,9 @@
 import hashlib
-import os
-
-import pathlib
 import json
-
+import os
+import pathlib
 from abc import ABC, abstractmethod
+
 from hamlet.backend.container_registry import ContainerRepository
 
 
@@ -36,24 +35,6 @@ class EngineSourceInterface(ABC):
         Return a digest of the source to use for verification and version updates
         """
         raise NotImplementedError
-
-
-class ShimPathEngineSource(EngineSourceInterface):
-    """
-    Sets a standard source path to use for shim based providers
-    """
-
-    def pull(self, dst_dir):
-        if not os.path.isdir(dst_dir):
-            os.makedirs(dst_dir)
-
-        return EngineSourcePullState(
-            name=self.name, type=self.__class__.__name__, digest=self.name
-        )
-
-    @property
-    def digest(self):
-        return self.name
 
 
 class LocalDirectoryEngineSource(EngineSourceInterface):

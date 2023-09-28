@@ -1,12 +1,11 @@
-import tempfile
 import os
+import tempfile
 from unittest import mock
 
 from hamlet.backend.engine import EngineStore
 from hamlet.backend.engine.engine import Engine
-from hamlet.backend.engine.loaders.unicycle import UnicycleEngineLoader
 from hamlet.backend.engine.engine_part import CoreEnginePart
-from hamlet.backend.engine.engine_source import ShimPathEngineSource
+from hamlet.backend.engine.loaders.unicycle import UnicycleEngineLoader
 
 
 def mock_container_registry():
@@ -29,51 +28,6 @@ def mock_container_registry():
     return decorator
 
 
-def test_installed_engine_loading():
-    """
-    Tests that we can discover engines that have been installed
-    and that they can be discovered by the InstalledEngine basic loader
-    """
-    with tempfile.TemporaryDirectory() as store_dir:
-        engine_store = EngineStore(store_dir=store_dir, config_search_paths=[store_dir])
-        assert len(engine_store.get_engines()) == 0
-
-        """
-        Engine is created in a directory which matches the engine_store engine search location
-        The engine isn't loaded through an engine loader yet
-        """
-        manually_installed_engine = Engine(
-            name="installed_engine", description="an installed engine"
-        )
-        manually_installed_engine.engine_dir = engine_store.engine_dir
-
-        manually_installed_engine.sources = [
-            ShimPathEngineSource(name="shim_source", description="A basic shim engine")
-        ]
-
-        manually_installed_engine.parts = [
-            CoreEnginePart(source_name="shim_source", source_path="")
-        ]
-
-        manually_installed_engine.install()
-        assert os.path.isfile(manually_installed_engine.engine_state_file)
-
-        """
-        Use the Installed loader to discover the manually installed engine
-        """
-
-        engine_store.load_engines(locations=["installed"])
-
-        discovered_engine = engine_store.get_engine("installed_engine")
-        assert discovered_engine.name == "installed_engine"
-
-        generation_engine_path = os.path.join(
-            discovered_engine.install_path, "shim_source"
-        )
-        assert (
-            discovered_engine.environment["GENERATION_ENGINE_DIR"]
-            == generation_engine_path
-        )
 
 
 @mock_container_registry()

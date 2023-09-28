@@ -1,14 +1,12 @@
+import json
 import os
 import shutil
-import json
 
 from .exceptions import EngineStoreMissingEngineException
-
 from .loaders.base import InstalledEngineLoader
-from .loaders.shim import ShimEngineLoader, BundledShimEngineLoader
-from .loaders.unicycle import UnicycleEngineLoader
-from .loaders.tram import LatestTramEngineLoader, TramEngineLoader
 from .loaders.train import LatestTrainEngineLoader, TrainEngineLoader
+from .loaders.tram import LatestTramEngineLoader, TramEngineLoader
+from .loaders.unicycle import UnicycleEngineLoader
 from .loaders.user import UserDefinedEngineLoader
 
 
@@ -46,8 +44,6 @@ class EngineStore:
                 "loaded": False,
                 "description": "Local user defined engines that are available",
                 "loaders": [
-                    ShimEngineLoader(),
-                    BundledShimEngineLoader(),
                     UserDefinedEngineLoader(
                         config_search_paths=self.config_search_paths
                     ),

@@ -9,9 +9,7 @@ import hamlet.command.engine  # noqa
 import hamlet.command.entrance  # noqa
 import hamlet.command.generate  # noqa
 import hamlet.command.layer  # noqa
-import hamlet.command.manage  # noqa
 import hamlet.command.reference  # noqa
-import hamlet.command.release  # noqa
 import hamlet.command.run  # noqa
 import hamlet.command.schema  # noqa
 import hamlet.command.setup  # noqa

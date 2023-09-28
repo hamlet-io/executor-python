@@ -1,9 +1,8 @@
 import click
 
+from hamlet.backend.cmdb import save as save_cmdb_backend
 from hamlet.command import root as cli
-from hamlet.command.common import exceptions, config
-
-from hamlet.backend.automation_tasks import save_repos as save_repos_backend
+from hamlet.command.common import config, exceptions
 
 
 @cli.group("cmdb", context_settings=dict(max_content_width=240))
@@ -100,7 +99,6 @@ def commit_changes(
         "tag": tag,
     }
 
-    task = save_repos_backend.SaveCMDBAutomationRunner(
-        **options.opts, **kwargs, **command_args, engine=options.engine
+    save_cmdb_backend.run(
+        **options.opts, **kwargs, **command_args, engine=options.engine, _is_cli=True
     )
-    task.run()
