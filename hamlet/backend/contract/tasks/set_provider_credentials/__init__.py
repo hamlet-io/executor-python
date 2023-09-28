@@ -23,7 +23,7 @@ def run(AccountId, ProviderId, Provider, env={}):
             "ACCOUNT_PROVIDER": Provider,
         }
         runner.run(
-            "/execution/setCredentials.sh",
+            "execution/setCredentials.sh",
             args=[],
             options={},
             env=env,
