@@ -1,17 +1,15 @@
-import click
-import os
 import json
-from tabulate import tabulate
+import os
 
-from hamlet.command import root as cli
-from hamlet.command.common import config, exceptions
-from hamlet.command.common.display import json_or_table_option, wrap_text
+import click
+from tabulate import tabulate
 
 from hamlet.backend.engine.engine_code_source import EngineCodeSourceBuildData
 from hamlet.backend.engine.exceptions import (
-    HamletEngineInvalidVersion,
-    EngineStoreMissingEngineException,
-)
+    EngineStoreMissingEngineException, HamletEngineInvalidVersion)
+from hamlet.command import root as cli
+from hamlet.command.common import config, exceptions
+from hamlet.command.common.display import json_or_table_option, wrap_text
 
 
 def engine_locations_table(data):
@@ -325,31 +323,6 @@ def get_engine(options):
         options.engine.name if options.engine else options.engine_store.default_engine
     )
     click.echo(options.engine_store.get_engine(name, locations=["installed"]).name)
-
-
-@group.command("env", short_help="", context_settings=dict(max_content_width=240))
-@click.argument(
-    "environment_variable",
-    required=False,
-    type=click.STRING,
-)
-@exceptions.backend_handler()
-@config.pass_options
-def env(options, environment_variable):
-    """
-    Get the environment variables for the current engine
-    """
-
-    if environment_variable is None:
-        click.echo("# run eval $(hamlet engine env) to set variables")
-        for k, v in options.engine.environment.items():
-            click.echo(f'export {k}="{v}"')
-
-    else:
-        try:
-            click.echo(options.engine.environment[environment_variable])
-        except KeyError:
-            click.echo("")
 
 
 @group.command(

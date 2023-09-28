@@ -1,15 +1,10 @@
 import json
 from unittest import mock
+
 from click.testing import CliRunner
 
-from hamlet.command.engine import (
-    list_engines,
-    describe_engine,
-    clean_engines,
-    install_engine,
-    set_engine,
-    env,
-)
+from hamlet.command.engine import (clean_engines, describe_engine,
+                                   install_engine, list_engines, set_engine)
 
 
 def test_list_engines(options):
@@ -41,15 +36,6 @@ def test_install_engine(options):
     result = cli.invoke(install_engine, ["engine[1]"], obj=options)
     print(result.exception)
     assert result.exit_code == 0
-
-
-def test_env(options):
-    cli = CliRunner()
-    result = cli.invoke(env, [], obj=options)
-    print(result.exception)
-    assert result.exit_code == 0
-    print(result.output)
-    assert result.output == "# run eval $(hamlet engine env) to set variables\n"
 
 
 def test_set_engine(options):

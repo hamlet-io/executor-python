@@ -1,17 +1,16 @@
-import os
-import json
-import shutil
 import hashlib
+import json
+import os
 import platform
-
+import shutil
 from abc import ABC, abstractmethod
 
 from hamlet.backend.common.exceptions import BackendException
 
+from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
 from .engine_part import EnginePartInterface
 from .engine_source import EngineSourceInterface
-from .common import ENGINE_STATE_FILE_NAME, ENGINE_STATE_VERSION
-from .exceptions import HamletEngineInvalidVersion, EngineStoreMissingEngineException
+from .exceptions import HamletEngineInvalidVersion
 
 
 class EngineInterface(ABC):
@@ -349,33 +348,6 @@ class InstalledEngine(EngineInterface):
         """
         self._load_engine_state()
         return self._engine_state.get("install", None)
-
-
-class ShimEngine(EngineInterface):
-    def set_default_engine(self, engine, engine_store):
-        try:
-            installed_shim = engine_store.get_engine(self.name, locations=["installed"])
-        except EngineStoreMissingEngineException:
-            return
-
-        for type, path in installed_shim.part_paths.items():
-            if os.path.islink(path):
-                os.unlink(path)
-
-            if os.path.isdir(path):
-                os.rmdir(path)
-
-            if engine.part_paths.get(type, None):
-                os.symlink(engine.part_paths[type], path, target_is_directory=True)
-            else:
-                os.makedirs(path)
-
-    def install(self):
-        source_details = []
-        for source in self.sources:
-            source_dir = self._get_engine_source_dir(source.name)
-            source_details.append(source.pull(source_dir))
-        self.update_install_state(source_details)
 
 
 class Engine(EngineInterface):
