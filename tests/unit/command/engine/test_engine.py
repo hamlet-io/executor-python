@@ -3,13 +3,8 @@ from unittest import mock
 
 from click.testing import CliRunner
 
-from hamlet.command.engine import (
-    clean_engines,
-    describe_engine,
-    install_engine,
-    list_engines,
-    set_engine,
-)
+from hamlet.command.engine import (clean_engines, describe_engine,
+                                   install_engine, list_engines, set_engine)
 
 
 def test_list_engines(options):
