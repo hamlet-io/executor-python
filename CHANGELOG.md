@@ -1,6 +1,14 @@
 # Changelog
 
-## latest (2023-09-28)
+## latest (2023-10-10)
+
+#### Fixes
+
+* pin urllib to version 2 ([#377](https://github.com/hamlet-io/executor-python/issues/377))
+
+Full set of changes: [`10.0.0...latest`](https://github.com/hamlet-io/executor-python/compare/10.0.0...latest)
+
+## 10.0.0 (2023-09-29)
 
 #### Fixes
 
@@ -11,11 +19,12 @@
 * legacy bash approach removal
 #### Others
 
+* update changelog ([#373](https://github.com/hamlet-io/executor-python/issues/373))
 * liniting cleanup
 * foramtting cleanups
 * formatting cleanup
 
-Full set of changes: [`9.25.4...latest`](https://github.com/hamlet-io/executor-python/compare/9.25.4...latest)
+Full set of changes: [`9.25.4...10.0.0`](https://github.com/hamlet-io/executor-python/compare/9.25.4...10.0.0)
 
 ## 9.25.4 (2023-06-16)
 
