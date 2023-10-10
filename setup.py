@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -49,6 +48,8 @@ setup(
         "docker>=5.0.3,<6.0.0",
         # Template testing
         "pytest>=6.0.0,<7.0.0",
+        # pin urllib for docker-py https://github.com/docker/docker-py/issues/3113
+        "urllib3<2",
     ],
     extras_require={
         "dev": [
