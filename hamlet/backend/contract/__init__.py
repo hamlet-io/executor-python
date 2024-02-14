@@ -1,9 +1,9 @@
 import importlib
+
 import click
+
 from hamlet.backend.contract.tasks.exceptions import (
-    TaskConditionFailureException,
-    TaskFailureException,
-)
+    TaskConditionFailureException, TaskFailureException)
 
 
 def run(contract, silent, engine, env):
@@ -47,7 +47,6 @@ def run(contract, silent, engine, env):
             replaced_params["env"] = {**engine.environment, **env}
             try:
                 task_result = task.run(**replaced_params)
-
                 try:
                     for k, v in task_result["Properties"].items():
                         properties[f"output:{step['Id']}:{k}"] = v

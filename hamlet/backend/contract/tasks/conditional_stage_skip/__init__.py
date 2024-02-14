@@ -1,4 +1,5 @@
-from hamlet.backend.contract.tasks.exceptions import TaskConditionFailureException
+from hamlet.backend.contract.tasks.exceptions import \
+    TaskConditionFailureException
 
 
 def run(Condition, Test, Value, env={}):

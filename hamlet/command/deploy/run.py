@@ -1,6 +1,13 @@
+import json
+import pathlib
+
 import click
+
+from hamlet.backend import contract as contract_backend
+from hamlet.backend.create.template import cf_dir as cf_dir_backend
+from hamlet.backend.deploy import (create_deployment, find_deployments,
+                                   run_deployment)
 from hamlet.command.common import config, exceptions
-from hamlet.backend.deploy import find_deployments, create_deployment, run_deployment
 
 
 @click.command(
@@ -126,31 +133,50 @@ def run_deployments(
                     **options.opts,
                 )
 
-        for operation in deployment["Operations"]:
-            if dryrun:
-                run_deployment(
-                    deployment_provider=provider,
-                    deployment_group=deployment_group,
-                    deployment_unit=deployment_unit,
-                    operation=operation,
-                    output_dir=output_dir,
-                    dryrun=dryrun,
-                    engine=options.engine,
-                    **options.opts,
-                )
+        cf_dir = cf_dir_backend.run(
+            deployment_group=deployment_group,
+            deployment_unit=deployment_unit,
+            engine=options.engine,
+            output_dir=output_dir,
+            **options.opts,
+        )
+        contract_path = pathlib.Path(cf_dir, "deployment-contract.json")
 
-            if (
-                confirm
-                and click.confirm(
-                    f"Start Deployment of {deployment_group}/{deployment_unit} ?"
-                )
-            ) or not confirm:
-                run_deployment(
-                    deployment_provider=provider,
-                    deployment_group=deployment_group,
-                    deployment_unit=deployment_unit,
-                    operation=operation,
-                    output_dir=output_dir,
-                    engine=options.engine,
-                    **options.opts,
-                )
+        if contract_path.exists():
+            contract_backend.run(
+                contract=json.loads(open(contract_path).read()),
+                silent=False,
+                engine=options.engine,
+                env={}
+            )
+
+        else:
+
+            for operation in deployment["Operations"]:
+                if dryrun:
+                    run_deployment(
+                        deployment_provider=provider,
+                        deployment_group=deployment_group,
+                        deployment_unit=deployment_unit,
+                        operation=operation,
+                        output_dir=output_dir,
+                        dryrun=dryrun,
+                        engine=options.engine,
+                        **options.opts,
+                    )
+
+                if (
+                    confirm
+                    and click.confirm(
+                        f"Start Deployment of {deployment_group}/{deployment_unit} ?"
+                    )
+                ) or not confirm:
+                    run_deployment(
+                        deployment_provider=provider,
+                        deployment_group=deployment_group,
+                        deployment_unit=deployment_unit,
+                        operation=operation,
+                        output_dir=output_dir,
+                        engine=options.engine,
+                        **options.opts,
+                    )

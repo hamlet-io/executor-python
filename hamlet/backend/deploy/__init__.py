@@ -1,11 +1,15 @@
+import json
 import os
+import pathlib
 import re
 
+from hamlet.backend import contract as contract_backend
 from hamlet.backend import query as query_backend
-from hamlet.backend.manage import stack as manage_stack_backend
-from hamlet.backend.manage import deployment as manage_deployment_backend
-from hamlet.backend.create import template as create_template_backend
 from hamlet.backend.common.exceptions import BackendException
+from hamlet.backend.create import template as create_template_backend
+from hamlet.backend.create.template import cf_dir as cf_dir_backend
+from hamlet.backend.manage import deployment as manage_deployment_backend
+from hamlet.backend.manage import stack as manage_stack_backend
 
 
 class UnsupportedDeploymentProviderException(BackendException):
@@ -111,3 +115,19 @@ def run_deployment(
             f"Deployment provider {deployment_provider} is not supported",
             deployment_provider=deployment_provider,
         )
+
+
+def run_deployment_contract(
+    contract,
+    engine,
+    **kwargs,
+):
+    """
+    Pull the deployment contract from the cf_dir and
+    execute the steps
+    """
+    contract_backend.run(
+        contract,
+        False,
+        engine,
+    )
