@@ -7,7 +7,9 @@ from click.testing import CliRunner
 
 from hamlet.command.deploy.run import run_deployments
 from tests.unit.command.test_option_generation import (
-    run_options_test, run_validatable_option_test)
+    run_options_test,
+    run_validatable_option_test,
+)
 
 ALL_VALID_OPTIONS = collections.OrderedDict()
 ALL_VALID_OPTIONS["-o,--output-dir"] = "output_dir"
@@ -100,7 +102,13 @@ unit_list = {
 
 
 @mock_backend(unit_list)
-def test_input_valid(blueprint_mock, create_deployment_backend, run_deployment_backend, contract_backend, cf_dir_backend):
+def test_input_valid(
+    blueprint_mock,
+    create_deployment_backend,
+    run_deployment_backend,
+    contract_backend,
+    cf_dir_backend,
+):
     run_options_test(
         CliRunner(), run_deployments, ALL_VALID_OPTIONS, blueprint_mock.run
     )
@@ -108,7 +116,11 @@ def test_input_valid(blueprint_mock, create_deployment_backend, run_deployment_b
 
 @mock_backend(unit_list)
 def test_input_validation(
-    blueprint_mock, create_deployment_backend, run_deployment_backend, contract_backend, cf_dir_backend
+    blueprint_mock,
+    create_deployment_backend,
+    run_deployment_backend,
+    contract_backend,
+    cf_dir_backend,
 ):
     runner = CliRunner()
     run_validatable_option_test(
