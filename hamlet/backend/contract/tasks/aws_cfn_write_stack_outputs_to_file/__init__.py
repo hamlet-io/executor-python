@@ -9,6 +9,7 @@ def run(
     AWSAccessKeyId=None,
     AWSSecretAccessKey=None,
     AWSSessionToken=None,
+    FilePath=None,
     env={},
 ):
     """
@@ -38,6 +39,20 @@ def run(
     except IndexError:
         stack_outputs = []
 
+    if stack_outputs:
+        with open(FilePath, "w") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "Stacks": [
+                            {
+                                "Outputs": stack_outputs
+                            }
+                        ]
+                    },
+                    indent=2
+                )
+            )
 
     return {
         "Properties": {

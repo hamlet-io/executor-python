@@ -96,11 +96,13 @@ def run(
             cfn.update_stack(**stack_params)
         except botocore.exceptions.ClientError as error:
             if (
-                not (
-                    error.response["Error"]["Code"] == "ValidationError"
-                    and error.response["Error"]["Message"] == "No updates are to be performed."
-                )
+                error.response["Error"]["Code"] == "ValidationError"
+                and error.response["Error"]["Message"] == "No updates are to be performed."
             ):
+                return {
+                    "Properties": {}
+                }
+            else:
                 raise error
 
         try:
@@ -116,6 +118,5 @@ def run(
                 raise CloudFormationStackException(StackName, cfn, client_request_token)
 
     return {
-        "Properties": {
-        }
+        "Properties": {}
     }

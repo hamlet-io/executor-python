@@ -1,13 +1,16 @@
+import json
 import os
 import shutil
 import tempfile
 from configparser import ConfigParser
+
 from hamlet.backend.common.runner import run as script_run
 
 
 def run(
-    ScriptFilePath=None,
+    ScriptPath=None,
     AWSRegion=None,
+    Environment=None,
     AWSAccessKeyId=None,
     AWSSecretAccessKey=None,
     AWSSessionToken=None,
@@ -24,16 +27,20 @@ def run(
         env["AWS_SECRET_ACCESS_KEY"] = AWSSecretAccessKey
         env["AWS_SESSION_TOKEN"] = AWSSessionToken
         env["AWS_DEFAULT_REGION"] = AWSRegion
-        env["AWS_CLI_BASH_SCRIPT_DIR"] = os.path.dirname(ScriptFilePath)
+        env["AWS_CLI_BASH_SCRIPT_DIR"] = os.path.dirname(ScriptPath)
         env["HAMLET_OUTPUTS"] = output_file.name
+
+        if Environment:
+            param_env = json.loads(Environment)
+            env = {**env, **param_env}
 
         try:
             del env["AWS_SECURITY_TOKEN"]
-        except NameError:
+        except KeyError:
             pass
         try:
             del env["AWS_PROFILE"]
-        except NameError:
+        except KeyError:
             pass
 
         if shutil.which("aws") is None:
@@ -45,10 +52,14 @@ def run(
             )
 
         script_run(
-            script_name=os.path.basename(ScriptFilePath),
+            script_name=os.path.basename(ScriptPath),
             script_base_path_env="AWS_CLI_BASH_SCRIPT_DIR",
             env=env,
             _is_cli=True,
+            args=[],
+            options={},
+            engine=None,
+            source=True,
         )
 
         config = ConfigParser(strict=False)
