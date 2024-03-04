@@ -1,13 +1,10 @@
-import json
 import os
-import pathlib
 import re
 
 from hamlet.backend import contract as contract_backend
 from hamlet.backend import query as query_backend
 from hamlet.backend.common.exceptions import BackendException
 from hamlet.backend.create import template as create_template_backend
-from hamlet.backend.create.template import cf_dir as cf_dir_backend
 from hamlet.backend.manage import deployment as manage_deployment_backend
 from hamlet.backend.manage import stack as manage_stack_backend
 
