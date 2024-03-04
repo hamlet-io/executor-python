@@ -7,7 +7,8 @@ class CloudFormationStackException(BackendException):
         self.stack_name = stack_name
 
         stack_events = [
-            "* " + " - ".join(
+            "* "
+            + " - ".join(
                 [
                     stack_event["LogicalResourceId"],
                     stack_event["ResourceType"],
@@ -16,7 +17,8 @@ class CloudFormationStackException(BackendException):
                 ]
             )
             for sublist in [
-                x["StackEvents"] for x in cfn_client.get_paginator("describe_stack_events").paginate(
+                x["StackEvents"]
+                for x in cfn_client.get_paginator("describe_stack_events").paginate(
                     StackName=self.stack_name
                 )
             ]
@@ -24,7 +26,8 @@ class CloudFormationStackException(BackendException):
             if (
                 stack_event.get("ClientRequestToken")
                 and stack_event["ClientRequestToken"] == client_request_token
-                and stack_event["ResourceStatus"] in [
+                and stack_event["ResourceStatus"]
+                in [
                     "CREATE_FAILED",
                     "DELETE_FAILED",
                     "UPDATE_FAILED",
@@ -37,5 +40,7 @@ class CloudFormationStackException(BackendException):
         ]
 
         super().__init__(
-            msg="Cloudformation failed to update the stack\n\n" + '\n'.join(stack_events) + "\n"
+            msg="Cloudformation failed to update the stack\n\n"
+            + "\n".join(stack_events)
+            + "\n"
         )

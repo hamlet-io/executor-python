@@ -90,19 +90,15 @@ def run(
         )
     except botocore.exceptions.WaiterError as error:
         change_set_state = cfn.describe_change_set(
-            ChangeSetName=ChangeSetName,
-            StackName=StackName
+            ChangeSetName=ChangeSetName, StackName=StackName
         )
         if (
             change_set_state["Status"] == "FAILED"
-            and change_set_state["StatusReason"] == "The submitted information didn't contain changes. Submit different information to create a change set."
+            and change_set_state["StatusReason"]
+            == "The submitted information didn't contain changes. Submit different information to create a change set."
         ):
             changes_required = False
         else:
             raise error
 
-    return {
-        "Properties": {
-            "changes_required": str(changes_required)
-        }
-    }
+    return {"Properties": {"changes_required": str(changes_required)}}

@@ -26,15 +26,8 @@ def run(
     s3 = session.client("s3")
     presigned_url = s3.generate_presigned_url(
         ClientMethod=ClientMethod,
-        Params={
-            "Bucket": BucketName,
-            "Key": Object
-        },
-        ExpiresIn=Expiration
+        Params={"Bucket": BucketName, "Key": Object},
+        ExpiresIn=Expiration,
     )
 
-    return {
-        "Properties": {
-            "presigned_url": presigned_url
-        }
-    }
+    return {"Properties": {"presigned_url": presigned_url}}

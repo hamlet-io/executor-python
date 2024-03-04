@@ -3,7 +3,9 @@ import importlib
 import click
 
 from hamlet.backend.contract.tasks.exceptions import (
-    TaskConditionFailureException, TaskFailureException)
+    TaskConditionFailureException,
+    TaskFailureException,
+)
 
 
 def run(contract, silent, engine, env):

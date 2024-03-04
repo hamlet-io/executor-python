@@ -42,7 +42,8 @@ def run(
             engine=engine,
             _is_cli=_is_cli,
             script_base_path_env="GENERATION_BASE_DIR",
-            extra_script='; . ${GENERATION_BASE_DIR}/execution/setStackContext.sh ; echo $CF_DIR > ' + output_file.name,
+            extra_script="; . ${GENERATION_BASE_DIR}/execution/setStackContext.sh ; echo $CF_DIR > "
+            + output_file.name,
             source=True,
         )
 

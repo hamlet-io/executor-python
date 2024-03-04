@@ -437,9 +437,9 @@ def test_upgrade_version_1_3_0():
         operations = root["infrastructure"]["operations"]
 
         cf["seg-cmk-1-stack.json"] = CMK_STACK_DATA
-        cf[
-            "stacklevel-deplymentunit-10000000000-us-east-1-stack.json"
-        ] = EMPTY_STACK_DATA
+        cf["stacklevel-deplymentunit-10000000000-us-east-1-stack.json"] = (
+            EMPTY_STACK_DATA
+        )
         cf["stacklevel-deplyment-unit-xxxx-us-east-1-stack.json"] = EMPTY_STACK_DATA
         cf["stacklevel-deplymentunit-us-east-1-stack.json"] = EMPTY_STACK_DATA
 

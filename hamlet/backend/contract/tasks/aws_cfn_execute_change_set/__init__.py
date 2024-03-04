@@ -62,6 +62,4 @@ def run(
         ]:
             raise CloudFormationStackException(StackName, cfn, client_request_token)
 
-    return {
-        "Properties": {}
-    }
+    return {"Properties": {}}

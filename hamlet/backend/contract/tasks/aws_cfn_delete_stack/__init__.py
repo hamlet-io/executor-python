@@ -26,7 +26,8 @@ def run(
 
     cfn = session.client("cloudformation")
     cfn.delete_stack(
-        StackName=StackName, ClientRequestToken=client_request_token,
+        StackName=StackName,
+        ClientRequestToken=client_request_token,
     )
 
     cfn.get_waiter("stack_delete_complete").wait(StackName=StackName)

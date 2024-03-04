@@ -23,14 +23,14 @@ def run(
     )
 
     cfn = session.client("cloudformation")
-    stack_response = cfn.describe_stacks(
-        StackName=StackName
-    )
+    stack_response = cfn.describe_stacks(StackName=StackName)
 
     try:
         stack_outputs = [
-            stack for stack in stack_response["Stacks"]
-            if stack["StackStatus"] not in [
+            stack
+            for stack in stack_response["Stacks"]
+            if stack["StackStatus"]
+            not in [
                 "CREATE_FAILED",
                 "DELETE_COMPLETE",
             ]
@@ -38,9 +38,4 @@ def run(
     except IndexError:
         stack_outputs = []
 
-
-    return {
-        "Properties": {
-            "Outputs": stack_outputs
-        }
-    }
+    return {"Properties": {"Outputs": stack_outputs}}

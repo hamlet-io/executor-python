@@ -95,7 +95,6 @@ class EngineSchema(object):
 
 
 class EngineReader(ConfigFileReader):
-
     """Reader for local engine configuration."""
 
     config_files = ["engine.ini", "engine"]

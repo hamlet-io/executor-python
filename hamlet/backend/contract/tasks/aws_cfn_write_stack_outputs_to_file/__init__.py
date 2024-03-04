@@ -24,14 +24,14 @@ def run(
     )
 
     cfn = session.client("cloudformation")
-    stack_response = cfn.describe_stacks(
-        StackName=StackName
-    )
+    stack_response = cfn.describe_stacks(StackName=StackName)
 
     try:
         stack_outputs = [
-            stack for stack in stack_response["Stacks"]
-            if stack["StackStatus"] not in [
+            stack
+            for stack in stack_response["Stacks"]
+            if stack["StackStatus"]
+            not in [
                 "CREATE_FAILED",
                 "DELETE_COMPLETE",
             ]
@@ -41,21 +41,6 @@ def run(
 
     if stack_outputs:
         with open(FilePath, "w") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "Stacks": [
-                            {
-                                "Outputs": stack_outputs
-                            }
-                        ]
-                    },
-                    indent=2
-                )
-            )
+            f.write(json.dumps({"Stacks": [{"Outputs": stack_outputs}]}, indent=2))
 
-    return {
-        "Properties": {
-            "Outputs": stack_outputs
-        }
-    }
+    return {"Properties": {"Outputs": stack_outputs}}

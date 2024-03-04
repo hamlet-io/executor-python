@@ -5,8 +5,7 @@ import click
 
 from hamlet.backend import contract as contract_backend
 from hamlet.backend.create.template import cf_dir as cf_dir_backend
-from hamlet.backend.deploy import (create_deployment, find_deployments,
-                                   run_deployment)
+from hamlet.backend.deploy import create_deployment, find_deployments, run_deployment
 from hamlet.command.common import config, exceptions
 
 
@@ -147,7 +146,7 @@ def run_deployments(
                 contract=json.loads(open(contract_path).read()),
                 silent=False,
                 engine=options.engine,
-                env={}
+                env={},
             )
 
         else:

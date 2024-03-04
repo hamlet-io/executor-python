@@ -77,7 +77,10 @@ def run(
                 raise CloudFormationStackException(StackName, cfn, client_request_token)
 
     # Handle the switch between create and update
-    if len(existing_stacks) == 0 or all(stack["StackStatus"] in ["CREATE_FAILED", "DELETE_COMPLETE"] for stack in existing_stacks):
+    if len(existing_stacks) == 0 or all(
+        stack["StackStatus"] in ["CREATE_FAILED", "DELETE_COMPLETE"]
+        for stack in existing_stacks
+    ):
         cfn.create_stack(**stack_params)
 
         try:
@@ -97,18 +100,15 @@ def run(
         except botocore.exceptions.ClientError as error:
             if (
                 error.response["Error"]["Code"] == "ValidationError"
-                and error.response["Error"]["Message"] == "No updates are to be performed."
+                and error.response["Error"]["Message"]
+                == "No updates are to be performed."
             ):
-                return {
-                    "Properties": {}
-                }
+                return {"Properties": {}}
             else:
                 raise error
 
         try:
-            cfn.get_waiter("stack_update_complete").wait(
-                StackName=StackName
-            )
+            cfn.get_waiter("stack_update_complete").wait(StackName=StackName)
         except botocore.exceptions.WaiterError as error:
             if error.last_response["Stacks"][0]["StackStatus"] in [
                 "UPDATE_ROLLBACK_FAILED",
@@ -117,6 +117,4 @@ def run(
             ]:
                 raise CloudFormationStackException(StackName, cfn, client_request_token)
 
-    return {
-        "Properties": {}
-    }
+    return {"Properties": {}}

@@ -282,17 +282,21 @@ class InstalledEngine(EngineInterface):
             ],
             "GENERATION_WRAPPER_LOCAL_JAVA": [
                 {
-                    "env_value": "false"
-                    if "bundled-engine-wrapper" in self.part_paths
-                    else "true"
+                    "env_value": (
+                        "false"
+                        if "bundled-engine-wrapper" in self.part_paths
+                        else "true"
+                    )
                 }
             ],
             "GENERATION_WRAPPER_SCRIPT_FILE": [
                 {
                     "part_type": "bundled-engine-wrapper",
-                    "env_path": f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper"
-                    if platform.system() != "Windows"
-                    else f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper.bat",
+                    "env_path": (
+                        f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper"
+                        if platform.system() != "Windows"
+                        else f"freemarker-wrapper-{platform.system()}/bin/freemarker-wrapper.bat"
+                    ),
                 }
             ],
             "GENERATION_WRAPPER_JAR_FILE": [
