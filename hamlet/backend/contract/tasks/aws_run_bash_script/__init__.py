@@ -28,6 +28,7 @@ def run(
         env["AWS_SESSION_TOKEN"] = AWSSessionToken
         env["AWS_DEFAULT_REGION"] = AWSRegion
         env["AWS_CLI_BASH_SCRIPT_DIR"] = os.path.dirname(ScriptPath)
+        env["AWS_PAGER"] = ""
         env["HAMLET_OUTPUTS"] = output_file.name
 
         if Environment:
