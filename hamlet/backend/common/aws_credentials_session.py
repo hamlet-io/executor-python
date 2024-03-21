@@ -34,8 +34,8 @@ def boto3_session(
             token=existing_creds["aws_session_token"],
         )
 
-    session.get_component("credential_provider").get_provider(
-        "assume-role"
-    ).cache = credentials.JSONFileCache(cli_cache)
+    session.get_component("credential_provider").get_provider("assume-role").cache = (
+        credentials.JSONFileCache(cli_cache)
+    )
 
     return boto3.Session(botocore_session=session)

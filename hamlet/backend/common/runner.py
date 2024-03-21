@@ -1,12 +1,12 @@
 import os
-import subprocess
 import shutil
+import subprocess
 
 from .exceptions import BackendException
 
 
 def __cli_params_to_script_call(
-    script_path, script_name, args=None, options=None, extra_script=None
+    script_path, script_name, args=None, options=None, extra_script=None, source=False
 ):
     args = list(arg for arg in (args if args is not None else []) if arg is not None)
     options_list = []
@@ -23,9 +23,15 @@ def __cli_params_to_script_call(
                 options_list.append(str(key))
                 options_list.append(str(f"'{value}'"))
     script_fullpath = os.path.join(script_path, script_name)
+
+    script_call_parts = [script_fullpath] + options_list + args
+
     if extra_script is not None:
-        return " ".join([".", script_fullpath] + options_list + args + [extra_script])
-    return " ".join([script_fullpath] + options_list + args)
+        script_call_parts += [extra_script]
+    if source:
+        script_call_parts = ["."] + script_call_parts
+
+    return " ".join(script_call_parts)
 
 
 def __env_params_to_envvars(env=None):
@@ -50,6 +56,7 @@ def run(
     _is_cli,
     script_base_path_env="GENERATION_DIR",
     extra_script=None,
+    source=False,
 ):
     env_overrides = {
         **os.environ,
@@ -76,6 +83,7 @@ def run(
             args=args,
             options=options,
             extra_script=extra_script,
+            source=source,
         )
         process = subprocess.Popen(
             [shutil.which("bash"), "-c", script_call_line],

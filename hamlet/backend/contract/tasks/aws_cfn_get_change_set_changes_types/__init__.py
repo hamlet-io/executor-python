@@ -2,7 +2,6 @@ import boto3
 
 
 def run(
-    ResourceIds=None,
     StackName=None,
     ChangeSetName=None,
     Region=None,
@@ -12,7 +11,7 @@ def run(
     env={},
 ):
     """
-    Check to see if a given set of resource Ids are going to be replaced
+    Return a list of all resources that will be changed
     """
 
     session = boto3.Session(
@@ -25,23 +24,24 @@ def run(
     cfn = session.client("cloudformation")
 
     resource_modifications = [
-        change["ResourceChange"]
-        for sublist in [
-            x["Changes"]
-            for x in cfn.get_paginator("describe_change_set").paginate(
-                ChangeSetName=ChangeSetName, StackName=StackName
-            )
+        change
+        for change in [
+            change_list["ResourceChange"]
+            for sublist in [
+                x["Changes"]
+                for x in cfn.get_paginator("describe_change_set").paginate(
+                    ChangeSetName=ChangeSetName, StackName=StackName
+                )
+            ]
+            for change_list in sublist
         ]
-        for change in sublist
-        if change["ResourceType"] == "ResourceType"
-        and change["ResourceChange"] == "Modify"
+        if change["Action"] == "Modify"
     ]
 
     replacementResourceIds = [
         mod["LogicalResourceId"]
         for mod in resource_modifications
-        if mod["Replacement"] in ["Conditonally", "Always"]
-        and (mod["LogicalResourceId"] in ResourceIds or ResourceIds is None)
+        if mod["Replacement"] in ["Conditional", "True"]
     ]
 
     return {
