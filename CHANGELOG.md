@@ -1,12 +1,26 @@
 # Changelog
 
-## latest (2023-10-10)
+## latest (2024-04-04)
+
+#### New Features
+
+* contract based deployments ([#379](https://github.com/hamlet-io/executor-python/issues/379))
+#### Others
+
+* update github actions tasks to latest versions ([#380](https://github.com/hamlet-io/executor-python/issues/380))
+
+Full set of changes: [`10.0.1...latest`](https://github.com/hamlet-io/executor-python/compare/10.0.1...latest)
+
+## 10.0.1 (2023-10-10)
 
 #### Fixes
 
 * pin urllib to version 2 ([#377](https://github.com/hamlet-io/executor-python/issues/377))
+#### Others
 
-Full set of changes: [`10.0.0...latest`](https://github.com/hamlet-io/executor-python/compare/10.0.0...latest)
+* update changelog ([#376](https://github.com/hamlet-io/executor-python/issues/376))
+
+Full set of changes: [`10.0.0...10.0.1`](https://github.com/hamlet-io/executor-python/compare/10.0.0...10.0.1)
 
 ## 10.0.0 (2023-09-29)
 
