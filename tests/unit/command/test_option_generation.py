@@ -8,7 +8,6 @@ Sure, manual individual testing is somewhat better but I think that we'll test "
 Therefore this module will be useful even after we'll rewrite everything in python.
 """
 
-
 import copy
 import collections
 from unittest import mock
