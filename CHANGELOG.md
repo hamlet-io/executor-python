@@ -7,6 +7,7 @@
 * contract based deployments ([#379](https://github.com/hamlet-io/executor-python/issues/379))
 #### Others
 
+* update changelog ([#378](https://github.com/hamlet-io/executor-python/issues/378))
 * update github actions tasks to latest versions ([#380](https://github.com/hamlet-io/executor-python/issues/380))
 
 Full set of changes: [`10.0.1...latest`](https://github.com/hamlet-io/executor-python/compare/10.0.1...latest)
