@@ -48,6 +48,7 @@ setup(
         "docker>=5.0.3,<6.0.0",
         # Template testing
         "pytest>=6.0.0,<7.0.0",
+        "requests < 2.32.0",  # See https://github.com/docker/docker-py/issues/3256
         # pin urllib for docker-py https://github.com/docker/docker-py/issues/3113
         "urllib3<2",
     ],

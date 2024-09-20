@@ -50,13 +50,13 @@
         "untaggedInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-                "ImageId": "ami-123456"
+                "ImageId": "ami-12345678"
             }
         },
         "myInstance": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
-                "ImageId": "ami-123456",
+                "ImageId": "ami-12345678",
                 "Tags": [
                     {
                         "Key": "application",
@@ -71,7 +71,7 @@
                         }
                     },
                     {
-                        "Key": "environment",
+                        "Key": "environment-fn-if",
                         "Value": {
                             "Fn::If": [
                                 "isProd",
@@ -83,7 +83,7 @@
                         }
                     },
                     {
-                        "Key": "environment",
+                        "Key": "environment-test",
                         "Value": {
                             "Ref": "TestEnvironment"
                         }
